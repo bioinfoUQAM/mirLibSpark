@@ -14,6 +14,12 @@ Le programme implemente le pipeline d'analyse des sRAN et prediction des miRNAs.
   - 6 validaiton/filtrage avec l'expression
   
 La version actuelle accepte un seul argument qui est le fichier contenant les sequences reads a traiter.
+
+personal note - julie's launching command linein her computer:
+
+spark-submit mirLibPipeline.py a_thaliana /home/cloudera/workspace/miRNA_predictor/sudoData/a_th_3.txt 2>/dev/null
+
+spark-submit mirLibPipeline.py a_thaliana /home/cloudera/workspace/miRNA_predictor/sudoData/a_th_10.txt 2>/dev/null
 '''
 
 import os, sys
@@ -55,14 +61,31 @@ if __name__ == '__main__' :
   # print(distFile.collect())
   
   input_rdd = distFile.flatMap(lambda line: line.split())
-  
+
+  #====================================================================
+  # Filtering low frequency
+  rm_low_obj = mru.prog_remove_low_freq(values_sep, keyval_sep)
+  rm_low_rdd = input_rdd.filter(rm_low_obj.lowfreq_filter_rule)
+
+  # Filtering short length
+  rm_short_obj = mru.prog_remove_short_length(values_sep, keyval_sep)
+  rm_short_rdd = rm_low_rdd.filter(rm_short_obj.shortlen_filter_rule)
+  #====================================================================
+
   # Filtering with DustMasker
-  # dmask_obj = mru.prog_dustmasker(values_sep, keyval_sep)
-  # dmask_rdd = input_rdd.filter(dmask_obj.dmask_filter_rule)
+  dmask_obj = mru.prog_dustmasker(values_sep, keyval_sep)
+  dmask_rdd = rm_short_rdd.filter(dmask_obj.dmask_filter_rule)
+  #print dmask_rdd.collect()
   
   # Mapping with Bowtie
   bowtie_obj = mru.prog_bowtie(values_sep, keyval_sep, b_index)
-  bowtie_rdd = input_rdd.map(bowtie_obj.Bowtie_map_rule)
-  
+  #bowtie_rdd = input_rdd.map(bowtie_obj.Bowtie_map_rule)
+  bowtie_rdd = dmask_rdd.map(bowtie_obj.Bowtie_map_rule)
   print bowtie_rdd.collect()
+  
+  #=========================================
+  # Filtering high nbLocations and zero location
+  #nbLoc_obj = mru.prog_remove_invalid_nbLocations(values_sep, keyval_sep)
+  #nbLoc_rdd = bowtie_rdd.filter(nbLoc_obj.nbLocations_filter_rule)
+  #print nbLoc_rdd.collect()
   
