@@ -9,74 +9,61 @@ Le programme
 
 '''
 
-import os, sys
 import subprocess as sbp
 
-#=========================================================
+
 class prog_remove_low_freq ():
   
-  def __init__(self, vals_sep, kv_sep):
+  def __init__(self, vals_sep, kv_sep, limit_freq):
     self.values_sep = vals_sep
     self.keyval_sep = kv_sep
+    self.limit_freq = limit_freq
 
   def lowfreq_filter_rule(self, kv_arg):
-    limit_freq = 6 # set up upper limit of frequency
     keyvalue = kv_arg.split(self.keyval_sep)
     key = keyvalue[0]
     value = keyvalue[1]
     freq = value.split(self.values_sep)[1]
-    if int(freq) < limit_freq:
+    if int(freq) < self.limit_freq:
         return False
-    return True  ## false data will automatically excluded in the new RDD
-
+    return True
 
 
 class prog_remove_short_length ():
   
-  def __init__(self, vals_sep, kv_sep):
+  def __init__(self, vals_sep, kv_sep, limit_len):
     self.values_sep = vals_sep
     self.keyval_sep = kv_sep
+    self.limit_len = limit_len
 
   def shortlen_filter_rule(self, kv_arg):
-    limit_len = 14 # set up lower limit of the length of RNA sequence
     keyvalue = kv_arg.split(self.keyval_sep)
     key = keyvalue[0]
     value = keyvalue[1]
     RNAseq = value.split(self.values_sep)[0]
-    if len(RNAseq) < limit_len:
+    if len(RNAseq) < self.limit_len:
         return False
-    return True  ## false data will automatically excluded in the new RDD
-
+    return True
 
 
 class prog_remove_invalid_nbLocations ():
   
-  def __init__(self, vals_sep, kv_sep):
+  def __init__(self, vals_sep, kv_sep, limit_nbLoc):
     self.values_sep = vals_sep
     self.keyval_sep = kv_sep
+    self.limit_nbLoc = limit_nbLoc
 
   def nbLocations_filter_rule(self, kv_arg):
-    limit_nbLocations = 5 # set up lower limit of nbLocation
-
-    ## FACT ## len(kv_arg) = 1, it is a list, can not split
-
-    #nbLoc_by_bowtie = len(kv_arg) - 1
-    #if nbLoc_by_bowtie == 2:
-    #    return True
-    #return False
-    
-    #keyvalue = kv_arg.split(self.keyval_sep) # keyvalue = kv_arg.split(self.keyval_sep) AttributeError: 'list' object has no attribute 'split'
-    #key = keyvalue[0]
-    #value = keyvalue[1]
-
-    if len(value) > limit_nbLocations + 1:
-        return False
-    if len(value) == 2:
-        bowtie_result_1 = value[1]
-        if bowtie_result_1[0] == 'NA':
-            return False
-    return True  ## false data will automatically excluded in the new RDD
-#============================================================
+    # kv_arg = [u'000000001', [u'ATACGATCAACTAGAATGACAATT<>20', [u'-', u'Chr4', u'11833108']]]
+    key = kv_arg[0] # 000000001
+    values = kv_arg[1] # [u'ATACGATCAACTAGAATGACAATT<>20', [u'-', u'Chr4', u'11833108']]
+    nbLoc = len(values) - 1
+    if nbLoc > self.limit_nbLoc:
+      return False
+    bowtie_location_result_1 = values[1]
+    if bowtie_location_result_1 == ['NA', 'NA', 'NA']: # remove zero location mapped by this sequence
+      return False
+    return True
 
 
 class prog_dustmasker ():
@@ -99,7 +86,7 @@ class prog_dustmasker ():
     nblines = len(output.split('\n'))
     if nblines == 1:
         return True
-    return False  ## false data will automatically excluded in the new RDD
+    return False  ## false data will be automatically excluded in the new RDD
 
 
 class prog_bowtie ():

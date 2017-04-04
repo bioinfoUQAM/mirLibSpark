@@ -22,7 +22,7 @@ spark-submit mirLibPipeline.py a_thaliana /home/cloudera/workspace/miRNA_predict
 spark-submit mirLibPipeline.py a_thaliana /home/cloudera/workspace/miRNA_predictor/sudoData/a_th_10.txt 2>/dev/null
 '''
 
-import os, sys
+import sys
 import os.path
 #
 import utils as ut
@@ -45,6 +45,11 @@ if __name__ == '__main__' :
   # Separators
   values_sep = "<>"
   keyval_sep = "::"
+
+  # Cutoffs
+  limit_freq = 5 # exclude RNA freq < limit_freq
+  limit_len = 14 # exclude RNA length < limit_len
+  limit_nbLoc = 5 # exculde nbLoc mapped with bowtie  > limit_nbLoc
   
   # Spark context
   sc = ut.pyspark_configuration("local", "mirLibHadoop", "1g")
@@ -62,30 +67,27 @@ if __name__ == '__main__' :
   
   input_rdd = distFile.flatMap(lambda line: line.split())
 
-  #====================================================================
   # Filtering low frequency
-  rm_low_obj = mru.prog_remove_low_freq(values_sep, keyval_sep)
+  rm_low_obj = mru.prog_remove_low_freq(values_sep, keyval_sep, limit_freq)
   rm_low_rdd = input_rdd.filter(rm_low_obj.lowfreq_filter_rule)
 
   # Filtering short length
-  rm_short_obj = mru.prog_remove_short_length(values_sep, keyval_sep)
+  rm_short_obj = mru.prog_remove_short_length(values_sep, keyval_sep, limit_len)
   rm_short_rdd = rm_low_rdd.filter(rm_short_obj.shortlen_filter_rule)
-  #====================================================================
 
   # Filtering with DustMasker
   dmask_obj = mru.prog_dustmasker(values_sep, keyval_sep)
   dmask_rdd = rm_short_rdd.filter(dmask_obj.dmask_filter_rule)
-  #print dmask_rdd.collect()
   
   # Mapping with Bowtie
   bowtie_obj = mru.prog_bowtie(values_sep, keyval_sep, b_index)
-  #bowtie_rdd = input_rdd.map(bowtie_obj.Bowtie_map_rule)
   bowtie_rdd = dmask_rdd.map(bowtie_obj.Bowtie_map_rule)
-  print bowtie_rdd.collect()
   
-  #=========================================
   # Filtering high nbLocations and zero location
-  #nbLoc_obj = mru.prog_remove_invalid_nbLocations(values_sep, keyval_sep)
-  #nbLoc_rdd = bowtie_rdd.filter(nbLoc_obj.nbLocations_filter_rule)
-  #print nbLoc_rdd.collect()
+  nbLoc_obj = mru.prog_remove_invalid_nbLocations(values_sep, keyval_sep, limit_nbLoc)
+  nbLoc_rdd = bowtie_rdd.filter(nbLoc_obj.nbLocations_filter_rule)
+  print nbLoc_rdd.collect()
+
+
+
   
