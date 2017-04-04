@@ -9,8 +9,84 @@ Le programme
 
 '''
 
-import os, sys
 import subprocess as sbp
+
+
+class prog_remove_low_freq ():
+  
+  def __init__(self, vals_sep, kv_sep, limit_freq):
+    self.values_sep = vals_sep
+    self.keyval_sep = kv_sep
+    self.limit_freq = limit_freq
+
+  def lowfreq_filter_rule(self, kv_arg):
+    keyvalue = kv_arg.split(self.keyval_sep)
+    key = keyvalue[0]
+    value = keyvalue[1]
+    freq = value.split(self.values_sep)[1]
+    if int(freq) < self.limit_freq:
+        return False
+    return True
+
+
+class prog_remove_short_length ():
+  
+  def __init__(self, vals_sep, kv_sep, limit_len):
+    self.values_sep = vals_sep
+    self.keyval_sep = kv_sep
+    self.limit_len = limit_len
+
+  def shortlen_filter_rule(self, kv_arg):
+    keyvalue = kv_arg.split(self.keyval_sep)
+    key = keyvalue[0]
+    value = keyvalue[1]
+    RNAseq = value.split(self.values_sep)[0]
+    if len(RNAseq) < self.limit_len:
+        return False
+    return True
+
+
+class prog_remove_invalid_nbLocations ():
+  
+  def __init__(self, vals_sep, kv_sep, limit_nbLoc):
+    self.values_sep = vals_sep
+    self.keyval_sep = kv_sep
+    self.limit_nbLoc = limit_nbLoc
+
+  def nbLocations_filter_rule(self, kv_arg):
+    # kv_arg = [u'000000001', [u'ATACGATCAACTAGAATGACAATT<>20', [u'-', u'Chr4', u'11833108']]]
+    key = kv_arg[0] # 000000001
+    values = kv_arg[1] # [u'ATACGATCAACTAGAATGACAATT<>20', [u'-', u'Chr4', u'11833108']]
+    nbLoc = len(values) - 1
+    if nbLoc > self.limit_nbLoc:
+      return False
+    bowtie_location_result_1 = values[1]
+    if bowtie_location_result_1 == ['NA', 'NA', 'NA']: # remove zero location mapped by this sequence
+      return False
+    return True
+
+
+class prog_dustmasker ():
+  
+  def __init__(self, vals_sep, kv_sep):
+    self.values_sep = vals_sep
+    self.keyval_sep = kv_sep
+
+  def dmask_filter_rule(self, kv_arg):
+    keyvalue = kv_arg.split(self.keyval_sep)
+    key = keyvalue[0]
+    value = keyvalue[1]
+    sRNAseq = value.split(self.values_sep)[0]
+    line1 = ['echo', '>seq1\n' + sRNAseq]
+    line2 = ['dustmasker']
+    p1 = sbp.Popen(line1, stdout=sbp.PIPE)
+    p2 = sbp.Popen(line2, stdin=p1.stdout, stdout=sbp.PIPE)
+    p1.stdout.close()  # Allow p1 to receive a SIGPIPE if p2 exits.
+    output = p2.communicate()[0].rstrip('\n')
+    nblines = len(output.split('\n'))
+    if nblines == 1:
+        return True
+    return False  ## false data will be automatically excluded in the new RDD
 
 
 class prog_bowtie ():
