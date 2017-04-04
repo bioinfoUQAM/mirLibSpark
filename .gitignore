@@ -1,0 +1,4 @@
+input/
+tests/
+src/*.pyc
+src/*.kv.txt
