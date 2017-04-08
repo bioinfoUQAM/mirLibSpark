@@ -6,9 +6,6 @@ date: 2017-03-25
 version: 0.00.01
 '''
 
-import os, sys
-from pyspark import SparkConf, SparkContext
-
 
 # Configure a spark context
 def pyspark_configuration(appMaster, appName, appMemory):
@@ -21,6 +18,7 @@ def pyspark_configuration(appMaster, appName, appMemory):
 
 # Convert a file to hadoop file
 def convertTOhadoop(rfile, hdfsFile):
+  import os
   print('if pre-existing in hdfs, the file would be deleted before the re-distribution of a new file with the same name.\n')
   os.system('hadoop fs -rm ' + hdfsFile) # force delete any pre-existing file in hdfs with the same name.
   os.system('hadoop fs -copyFromLocal ' + rfile + ' ' + hdfsFile)
@@ -62,11 +60,3 @@ def convert_seq_freq_file_to_KeyValue(infile, outfile, vals_sep, kv_sep):
       
   fh.close()
   fh_out.close()
-
-# Spark context
-# def pyspark_configuration():
-  # conf = SparkConf()
-  # conf.setMaster("local")
-  # conf.setAppName("test Bowtie")
-  # conf.set("spark.executor.memory", "1g")
-  # return SparkContext(conf = conf)

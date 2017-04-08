@@ -10,15 +10,17 @@ Le programme
 '''
 
 import subprocess as sbp
+import os
 
+class filter_rules ():
 
-class prog_remove_low_freq ():
-  
-  def __init__(self, vals_sep, kv_sep, limit_freq):
+  def __init__(self, vals_sep, kv_sep, limit_freq=5, limit_len=15, limit_nbLoc=5):
     self.values_sep = vals_sep
     self.keyval_sep = kv_sep
     self.limit_freq = limit_freq
-
+    self.limit_len = limit_len
+    self.limit_nbLoc = limit_nbLoc
+  
   def lowfreq_filter_rule(self, kv_arg):
     keyvalue = kv_arg.split(self.keyval_sep)
     key = keyvalue[0]
@@ -27,15 +29,7 @@ class prog_remove_low_freq ():
     if int(freq) < self.limit_freq:
         return False
     return True
-
-
-class prog_remove_short_length ():
   
-  def __init__(self, vals_sep, kv_sep, limit_len):
-    self.values_sep = vals_sep
-    self.keyval_sep = kv_sep
-    self.limit_len = limit_len
-
   def shortlen_filter_rule(self, kv_arg):
     keyvalue = kv_arg.split(self.keyval_sep)
     key = keyvalue[0]
@@ -44,14 +38,6 @@ class prog_remove_short_length ():
     if len(RNAseq) < self.limit_len:
         return False
     return True
-
-
-class prog_remove_invalid_nbLocations ():
-  
-  def __init__(self, vals_sep, kv_sep, limit_nbLoc):
-    self.values_sep = vals_sep
-    self.keyval_sep = kv_sep
-    self.limit_nbLoc = limit_nbLoc
 
   def nbLocations_filter_rule(self, kv_arg):
     # kv_arg = [u'000000001', [u'ATACGATCAACTAGAATGACAATT<>20', [u'-', u'Chr4', u'11833108']]]
@@ -71,7 +57,12 @@ class prog_dustmasker ():
   def __init__(self, vals_sep, kv_sep):
     self.values_sep = vals_sep
     self.keyval_sep = kv_sep
-
+    
+    # The object has to be initialized in the driver program 
+    # to permit the capture of its env variables and pass them 
+    # to the subprocess in the worker nodes
+    self.env = os.environ
+    
   def dmask_filter_rule(self, kv_arg):
     keyvalue = kv_arg.split(self.keyval_sep)
     key = keyvalue[0]
@@ -79,9 +70,11 @@ class prog_dustmasker ():
     sRNAseq = value.split(self.values_sep)[0]
     line1 = ['echo', '>seq1\n' + sRNAseq]
     line2 = ['dustmasker']
-    p1 = sbp.Popen(line1, stdout=sbp.PIPE)
-    p2 = sbp.Popen(line2, stdin=p1.stdout, stdout=sbp.PIPE)
+    
+    p1 = sbp.Popen(line1, stdout=sbp.PIPE, env=self.env)
+    p2 = sbp.Popen(line2, stdin=p1.stdout, stdout=sbp.PIPE, env=self.env)
     p1.stdout.close()  # Allow p1 to receive a SIGPIPE if p2 exits.
+    
     output = p2.communicate()[0].rstrip('\n')
     nblines = len(output.split('\n'))
     if nblines == 1:
@@ -96,16 +89,23 @@ class prog_bowtie ():
     self.values_sep = vals_sep
     self.keyval_sep = kv_sep
     
+    # The object has to be initialized in the driver program 
+    # to permit the capture of its env variables and pass them 
+    # to the subprocess in the worker nodes
+    self.env = os.environ
     
   def run_bowtie(self, seq):
     append_values = []
+    FNULL = open(os.devnull, 'w')
     
     # self.cmd = 'bowtie --mm -a -v 0 --suppress 1,5,6,7,8 -c ' + self.bowtie_index + ' '+ seq  # shell=True
     self.cmd = ['bowtie', '--mm', '-a', '-v', '0', '--suppress', '1,5,6,7,8', '-c', self.bowtie_index, seq] # shell=False
     
-    sproc = sbp.Popen(self.cmd, stdout=sbp.PIPE, shell=False)
+    sproc = sbp.Popen(self.cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
     bsout = sproc.communicate()[0]
     bwout = bsout.decode("ascii").rstrip('\n')
+    
+    FNULL.close()
     
     if bwout :
       bwList = bwout.split('\n')

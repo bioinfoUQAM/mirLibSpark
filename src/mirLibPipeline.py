@@ -39,7 +39,7 @@ if __name__ == '__main__' :
   
   inBasename = os.path.splitext(os.path.basename(infile))[0]
   
-  inKvfile = inBasename + '.kv.txt'
+  inKvfile = '../tmp/' + inBasename + '.kv.txt'
   hdfsFile = inBasename + '.hkv.txt'
   
   # Separators
@@ -52,7 +52,9 @@ if __name__ == '__main__' :
   limit_nbLoc = 5 # exculde nbLoc mapped with bowtie  > limit_nbLoc
   
   # Spark context
-  sc = ut.pyspark_configuration("local", "mirLibHadoop", "1g")
+  sc = ut.pyspark_configuration("yarn-client", "mirLibHadoop", "2g") # local
+  sc.addPyFile('utils.py')
+  sc.addPyFile('mirLibRules.py')
   
   # Convert the input file to a Key value file
   ut.convert_seq_freq_file_to_KeyValue(infile, inKvfile, values_sep, keyval_sep)
@@ -60,34 +62,28 @@ if __name__ == '__main__' :
   # Save a local file to HDFS system
   ut.convertTOhadoop(inKvfile, hdfsFile)
   
+  # Object fo rule functions
+  filter_obj = mru.filter_rules(values_sep, keyval_sep, limit_freq, limit_len, limit_nbLoc)
+  dmask_obj = mru.prog_dustmasker(values_sep, keyval_sep)
+  bowtie_obj = mru.prog_bowtie(values_sep, keyval_sep, b_index)
+  
   # Convert the text file to RDD object
   distFile = sc.textFile(hdfsFile)
-  
-  # print(distFile.collect())
-  
   input_rdd = distFile.flatMap(lambda line: line.split())
 
   # Filtering low frequency
-  rm_low_obj = mru.prog_remove_low_freq(values_sep, keyval_sep, limit_freq)
-  rm_low_rdd = input_rdd.filter(rm_low_obj.lowfreq_filter_rule)
+  rm_low_rdd = input_rdd.filter(filter_obj.lowfreq_filter_rule)
 
   # Filtering short length
-  rm_short_obj = mru.prog_remove_short_length(values_sep, keyval_sep, limit_len)
-  rm_short_rdd = rm_low_rdd.filter(rm_short_obj.shortlen_filter_rule)
+  rm_short_rdd = rm_low_rdd.filter(filter_obj.shortlen_filter_rule)
 
   # Filtering with DustMasker
-  dmask_obj = mru.prog_dustmasker(values_sep, keyval_sep)
   dmask_rdd = rm_short_rdd.filter(dmask_obj.dmask_filter_rule)
-  
+
   # Mapping with Bowtie
-  bowtie_obj = mru.prog_bowtie(values_sep, keyval_sep, b_index)
   bowtie_rdd = dmask_rdd.map(bowtie_obj.Bowtie_map_rule)
-  
+
   # Filtering high nbLocations and zero location
-  nbLoc_obj = mru.prog_remove_invalid_nbLocations(values_sep, keyval_sep, limit_nbLoc)
-  nbLoc_rdd = bowtie_rdd.filter(nbLoc_obj.nbLocations_filter_rule)
+  nbLoc_rdd = bowtie_rdd.filter(filter_obj.nbLocations_filter_rule)
+
   print nbLoc_rdd.collect()
-
-
-
-  
