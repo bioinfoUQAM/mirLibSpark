@@ -130,6 +130,66 @@ class prog_bowtie ():
     kv2 = [key, [value] + append_value]
     return kv2
 
+'''
+#=== partition ========================================================================
+def portable_hash(x):
+    """
+    This function returns consistent hash code for builtin types, especially
+    for None and tuple with None.
+
+    The algorithm is similar to that one used by CPython 2.7
+
+    >>> portable_hash(None)
+    0
+    >>> portable_hash((None, 1)) & 0xffffffff
+    219750521
+    """
+    if sys.version >= '3.3' and 'PYTHONHASHSEED' not in os.environ:
+        raise Exception("Randomness of hash of string should be disabled via PYTHONHASHSEED")
+
+    if x is None:
+        return 0
+    if isinstance(x, tuple):
+        h = 0x345678
+        for i in x:
+            h ^= portable_hash(i)
+            h *= 1000003
+            h &= sys.maxsize
+        h ^= len(x)
+        if h == -1:
+            h = -2
+        return int(h)
+    return hash(x)
+
+def partitionBy(numPartitions, partitionFunc=portable_hash):
+    """
+    Return a copy of the RDD partitioned using the specified partitioner.
+
+    >>> pairs = sc.parallelize([1, 2, 3, 4, 2, 4, 1]).map(lambda x: (x, x))
+    >>> sets = pairs.partitionBy(2).glom().collect()
+    >>> len(set(sets[0]).intersection(set(sets[1])))
+    0
+    """
+    #if numPartitions is None:
+    #    numPartitions = self._defaultReducePartitions()
+    #partitioner = Partitioner(numPartitions, partitionFunc)
+    #if self.partitioner == partitioner:
+    #    return self
+
+    # Transferring O(n) objects to Java is too expensive.
+    # Instead, we'll form the hash buckets in Python,
+    # transferring O(numPartitions) objects to Java.
+    # Each object is a (splitNumber, [objects]) pair.
+    # In order to avoid too huge objects, the objects are
+    # grouped into chunks.
+    outputSerializer = self.ctx._unbatched_serializer
+
+    limit = (_parse_memory(self.ctx._conf.get(
+        "spark.python.worker.memory", "512m")) / 2)
+#======================================================================
+'''
+
+
 if __name__ == '__main__' :
    
    values_sep = "<>"
