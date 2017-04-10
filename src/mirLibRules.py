@@ -95,6 +95,24 @@ class prog_bowtie ():
     self.env = os.environ
     
   def run_bowtie(self, seq):
+    #'''
+    tmp_file = '/home/cloudera/workspace/miRNA_predictor/logOutput/bowtie_result_tmp.txt'
+    seq = 'ATACGATCAACTAGAATGACAATT'
+    line = 'bowtie -a -v 0 --suppress 1,5,6,7,8 -c  ' + self.bowtie_index + '  ' + seq + ' 1>' + tmp_file
+    os.system(line)
+    fh = open (tmp_file, 'r')
+    DATA = fh.readlines()
+    fh.close()
+    append_values = []
+    if len(DATA) == 0:
+        append_values = [['NA', 'NA', 'NA']]
+    for line in DATA:
+        append_value = line.rstrip('\n').split('\t')
+        append_values += [append_value]
+    return append_values
+    #'''
+
+    #'''
     append_values = []
     FNULL = open(os.devnull, 'w')
     
@@ -117,6 +135,7 @@ class prog_bowtie ():
       append_values = [['NA', 'NA', 'NA']]
     
     return append_values
+    #'''
   
   def Bowtie_map_rule(self, kv_arg):
     
