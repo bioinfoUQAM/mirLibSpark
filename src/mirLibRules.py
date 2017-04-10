@@ -130,6 +130,44 @@ class prog_bowtie ():
     kv2 = [key, [value] + append_value]
     return kv2
 
+
+
+class prog_RNAfold ():
+  
+  def __init__(self, vals_sep, kv_sep):
+    self.values_sep = vals_sep
+    self.keyval_sep = kv_sep
+    
+    # The object has to be initialized in the driver program 
+    # to permit the capture of its env variables and pass them 
+    # to the subprocess in the worker nodes
+    self.env = os.environ
+
+
+  def run_RNAfold(self, kv_arg):
+    #keyvalue = kv_arg.split(self.keyval_sep)
+    #key = keyvalue[0]
+    #value = keyvalue[1]
+    #longRNAseq = value.split(self.values_sep)[0] # this is not ready
+    PME = pre_miRNA_example = 'GUGGAGCUCCUAUCAUUCCAAUGAAGGGUCUACCGGAAGGGUUUGUGCAGCUGCUCGUUCAUGGUUCCCACUAUCCUAUCUCCAUAGAAAACGAGGAGAGAGGCCUGUGGUUUGCAUGACCGAGGAGCCGCUUCGAUCCCUCGCUGACCGCUGUUUGGAUUGAAGGGAGCUCUGCAU'
+    longRNAseq = PME
+    line1 = ['echo', longRNAseq]
+    line2 = ['RNAfold']
+    
+    p1 = sbp.Popen(line1, stdout=sbp.PIPE)#, env=self.env)
+    p2 = sbp.Popen(line2, stdin=p1.stdout, stdout=sbp.PIPE) #, env=self.env)
+    p1.stdout.close()  # Allow p1 to receive a SIGPIPE if p2 exits.
+    
+    output = p2.communicate()[0].rstrip('\n').split('\n')
+    RNAfold_results = output[1].split(' (')
+    folding = RNAfold_results[0] # ...(((....)))......
+    MFE = float(RNAfold_results[1][:-1]) # minimun free energy
+    
+    print output
+    print folding
+    print MFE
+
+
 '''
 #=== partition ========================================================================
 def portable_hash(x):
