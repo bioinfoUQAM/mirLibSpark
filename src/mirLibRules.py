@@ -165,6 +165,11 @@ class prog_RNAfold ():
 
 
   def run_RNAfold(self, kv_arg):
+    '''
+    example line = echo GUGGAGCUCCUAUCAUUCCAAUGAAGGGUCUACCGGAAGGGUUUGUGCAGCUGCUCGUUCAUGGUUCCCACUAUCCUAUCUCCAUAGAAAACGAGGAGAGAGGCCUGUGGUUUGCAUGACCGAGGAGCCGCUUCGAUCCCUCGCUGACCGCUGUUUGGAUUGAAGGGAGCUCUGCAU | RNAfold
+    task: echo and pipe the sequence to RNAfold
+    this requires two subprocesses
+    '''
     #keyvalue = kv_arg.split(self.keyval_sep)
     #key = keyvalue[0]
     #value = keyvalue[1]
@@ -187,7 +192,53 @@ class prog_RNAfold ():
     print folding
     print MFE
 
+#==================================================================
+class prog_mirCheck ():
+  
+  def __init__(self, vals_sep, kv_sep):
+    self.values_sep = vals_sep
+    self.keyval_sep = kv_sep
+    
+    # The object has to be initialized in the driver program 
+    # to permit the capture of its env variables and pass them 
+    # to the subprocess in the worker nodes
+    self.env = os.environ
 
+
+  def run_mirCheck(self, folding, miRNA_start, miRNA_stop):
+    '''
+    example line = perl eval_mircheck.pl "((((((.((((((....).))))).)))))).........." 46 64 def
+    '''
+    cmd = ['perl', 'eval_mircheck.pl', folding, miRNA_start, miRNA_stop, 'def']
+    FNULL = open(os.devnull, 'w')
+    sproc = sbp.Popen(cmd, stdout=sbp.PIPE, shell=False, stderr=FNULL)#, env=self.env)
+    mirCheck_results = sproc.communicate()[0].rstrip('\n').split('\t') #= 3prime 1 173
+    FNULL.close()
+
+    return mirCheck_results
+
+  def mirCheck_map_rule(self, kv_arg):  
+    #keyvalue = kv_arg.split(self.keyval_sep)
+    #key = keyvalue[0]
+    #value = keyvalue[1]
+    #sRNAseq = value.split(self.values_sep)[0] #= not ready
+
+    #= artificial variables
+    folding = '(((((((((((.(((.(((((...((((((...((..((((.(((.((.(((.((((.(((((....((((...(((.(((((...........))))).)))...))))....))))).)))).))).))..))).))))))..)))).))..))))).))).)))))))))))..'
+    miRNA_start = '153'
+    miRNA_stop = '173'
+    
+    append_value = mirCheck_results = self.run_mirCheck(folding, miRNA_start, miRNA_stop)
+    fback = mirCheck_results[0] # True = ['3prime', '5prime']
+    fback_start = mirCheck_results[1] #= '1'
+    fback_stop = mirCheck_results[2] #= '173'
+    print fback, fback_start, fback_stop
+
+    #kv2 = [key, [value] + append_value] #= not ready
+    #return kv2
+
+
+#==================================================================
 
 '''
 #=== partition ========================================================================
@@ -255,8 +306,12 @@ if __name__ == '__main__' :
    keyval_sep = "::"
    b_index = "a_thaliana_t10"
    
-   bowtie = prog_bowtie(values_sep, keyval_sep, b_index)
-   print(bowtie.run_bowtie('CAAAGACTCATATGGACTTTGG'))
+   #bowtie = prog_bowtie(values_sep, keyval_sep, b_index)
+   #print(bowtie.run_bowtie('ATACGATCCAAGACGAGTCTCAAT'))
+   mirCheck = prog_mirCheck(values_sep, keyval_sep)
+   #print mirCheck.run_mirCheck('test')
+   mirCheck.mirCheck_map_rule('test')
+   
 
 '''
 http://stackoverflow.com/questions/30010939/python-subprocess-popen-error-no-such-file-or-directory
