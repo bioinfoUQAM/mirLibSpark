@@ -5,6 +5,15 @@
 # The program run miRcheck
 # counting position by 0 based for both start and stop
 
+# pre-miRNA from miRBase:
+# GUGGAGCUCCUAUCAUUCCAAUGAAGGGUCUACCGGAAGGGUUUGUGCAGCUGCUCGUUCAUGGUUCCCACUAUCCUAUCUCCAUAGAAAACGAGGAGAGAGGCCUGUGGUUUGCAUGACCGAGGAGCCGCUUCGAUCCCUCGCUGACCGCUGUUUGGAUUGAAGGGAGCUCUGCAU
+# (((((((((((.(((.(((((...((((((...((..((((.(((.((.(((.((((.(((((....((((...(((.(((((...........))))).)))...))))....))))).)))).))).))..))).))))))..)))).))..))))).))).)))))))))))..
+# start: 153	stop: 173
+# line = perl eval_mircheck.pl "(((((((((((.(((.(((((...((((((...((..((((.(((.((.(((.((((.(((((....((((...(((.(((((...........))))).)))...))))....))))).)))).))).))..))).))))))..)))).))..))))).))).))))))))))).." 153 173 def
+# output of mirCheck: 
+# 3prime	1	173
+
+
 use strict;
 use warnings;
 use lib '../lib/';
