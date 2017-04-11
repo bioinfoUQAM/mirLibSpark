@@ -6,6 +6,7 @@
 
 use strict;
 use warnings;
+use lib '../lib/miRcheck';
 use miRcheck;
 
 my $usage = 'perl eval_mircheck.pl "((((((.((((((....).))))).)))))).........." 46 64 def\n';
