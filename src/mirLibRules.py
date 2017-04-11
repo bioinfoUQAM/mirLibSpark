@@ -117,10 +117,10 @@ class prog_bowtie ():
     append_values = []
     FNULL = open(os.devnull, 'w')
     
-    # self.cmd = 'bowtie --mm -a -v 0 --suppress 1,5,6,7,8 -c ' + self.bowtie_index + ' '+ seq  # shell=True
-    self.cmd = ['bowtie', '--mm', '-a', '-v', '0', '--suppress', '1,5,6,7,8', '-c', self.bowtie_index, seq] # shell=False
+    # cmd = 'bowtie --mm -a -v 0 --suppress 1,5,6,7,8 -c ' + self.bowtie_index + ' '+ seq  # shell=True
+    cmd = ['bowtie', '--mm', '-a', '-v', '0', '--suppress', '1,5,6,7,8', '-c', self.bowtie_index, seq] # shell=False
     
-    sproc = sbp.Popen(self.cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
+    sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
     bsout = sproc.communicate()[0]
     bwout = bsout.decode("ascii").rstrip('\n')
     
@@ -186,6 +186,7 @@ class prog_RNAfold ():
     print output
     print folding
     print MFE
+
 
 
 '''
