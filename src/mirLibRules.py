@@ -95,7 +95,7 @@ class prog_bowtie ():
     self.env = os.environ
     
   def run_bowtie(self, seq):
-    #'''
+    '''
     tmp_file = '/home/cloudera/workspace/miRNA_predictor/logOutput/bowtie_result_tmp.txt'
     seq = 'ATACGATCAACTAGAATGACAATT'
     #line = 'bowtie -a -v 0 --suppress 1,5,6,7,8 -c ' + self.bowtie_index + ' ' + seq + ' 1>' + tmp_file
@@ -111,7 +111,7 @@ class prog_bowtie ():
         append_value = line.rstrip('\n').split('\t')
         append_values += [append_value]
     return append_values
-    #'''
+    '''
 
     #'''
     append_values = []
