@@ -98,7 +98,8 @@ class prog_bowtie ():
     #'''
     tmp_file = '/home/cloudera/workspace/miRNA_predictor/logOutput/bowtie_result_tmp.txt'
     seq = 'ATACGATCAACTAGAATGACAATT'
-    line = 'bowtie -a -v 0 --suppress 1,5,6,7,8 -c  ' + self.bowtie_index + '  ' + seq + ' 1>' + tmp_file
+    #line = 'bowtie -a -v 0 --suppress 1,5,6,7,8 -c ' + self.bowtie_index + ' ' + seq + ' 1>' + tmp_file
+    line = 'bowtie -a -v 0 --suppress 1,5,6,7,8 -c ' + self.bowtie_index + ' ' + seq + ' 1>/home/cloudera/workspace/miRNA_predictor/logOutput/bowtie_result_tmp.txt'
     os.system(line)
     fh = open (tmp_file, 'r')
     DATA = fh.readlines()
