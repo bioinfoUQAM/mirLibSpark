@@ -164,33 +164,34 @@ class prog_RNAfold ():
     self.env = os.environ
 
 
-  def run_RNAfold(self, kv_arg):
+  def run_RNAfold(self, longRNAseq):
     '''
     example line = echo GUGGAGCUCCUAUCAUUCCAAUGAAGGGUCUACCGGAAGGGUUUGUGCAGCUGCUCGUUCAUGGUUCCCACUAUCCUAUCUCCAUAGAAAACGAGGAGAGAGGCCUGUGGUUUGCAUGACCGAGGAGCCGCUUCGAUCCCUCGCUGACCGCUGUUUGGAUUGAAGGGAGCUCUGCAU | RNAfold
     task: echo and pipe the sequence to RNAfold
     this requires two subprocesses
     '''
-    #keyvalue = kv_arg.split(self.keyval_sep)
-    #key = keyvalue[0]
-    #value = keyvalue[1]
-    #longRNAseq = value.split(self.values_sep)[0] # this is not ready
-    PME = pre_miRNA_example = 'GUGGAGCUCCUAUCAUUCCAAUGAAGGGUCUACCGGAAGGGUUUGUGCAGCUGCUCGUUCAUGGUUCCCACUAUCCUAUCUCCAUAGAAAACGAGGAGAGAGGCCUGUGGUUUGCAUGACCGAGGAGCCGCUUCGAUCCCUCGCUGACCGCUGUUUGGAUUGAAGGGAGCUCUGCAU'
-    longRNAseq = PME
     line1 = ['echo', longRNAseq]
     line2 = ['RNAfold']
-    
     p1 = sbp.Popen(line1, stdout=sbp.PIPE)#, env=self.env)
     p2 = sbp.Popen(line2, stdin=p1.stdout, stdout=sbp.PIPE) #, env=self.env)
     p1.stdout.close()  # Allow p1 to receive a SIGPIPE if p2 exits.
-    
     output = p2.communicate()[0].rstrip('\n').split('\n')
     RNAfold_results = output[1].split(' (')
     folding = RNAfold_results[0] # ...(((....)))......
     MFE = float(RNAfold_results[1][:-1]) # minimun free energy
-    
-    print output
-    print folding
-    print MFE
+    return folding, MFE
+
+  def RNAfold_map_rule(self, kv_arg):
+    #keyvalue = kv_arg.split(self.keyval_sep)
+    #key = keyvalue[0]
+    #value = keyvalue[1]
+    #longRNAseq = value.split(self.values_sep)[0] # this is not ready
+    pre_miRNA_example = 'GUGGAGCUCCUAUCAUUCCAAUGAAGGGUCUACCGGAAGGGUUUGUGCAGCUGCUCGUUCAUGGUUCCCACUAUCCUAUCUCCAUAGAAAACGAGGAGAGAGGCCUGUGGUUUGCAUGACCGAGGAGCCGCUUCGAUCCCUCGCUGACCGCUGUUUGGAUUGAAGGGAGCUCUGCAU'
+    folding, MFE = run_RNAfold(pre_miRNA_example)
+    append_value = [folding, MFE]
+    #kv2 = [key, [value] + append_value] #= NOT READY
+    #return kv2
+
 
 #==================================================================
 class prog_mirCheck ():
@@ -212,9 +213,8 @@ class prog_mirCheck ():
     cmd = ['perl', 'eval_mircheck.pl', folding, miRNA_start, miRNA_stop, 'def']
     FNULL = open(os.devnull, 'w')
     sproc = sbp.Popen(cmd, stdout=sbp.PIPE, shell=False, stderr=FNULL)#, env=self.env)
-    mirCheck_results = sproc.communicate()[0].rstrip('\n').split('\t') #= 3prime 1 173
+    mirCheck_results = sproc.communicate()[0].rstrip('\n').split('\t') #= ['3prime', '1', '173']
     FNULL.close()
-
     return mirCheck_results
 
   def mirCheck_map_rule(self, kv_arg):  
@@ -236,6 +236,16 @@ class prog_mirCheck ():
 
     #kv2 = [key, [value] + append_value] #= not ready
     #return kv2
+
+  def mirCheck_filter_rule(self, kv_arg):
+    #keyvalue = kv_arg.split(self.keyval_sep)
+    #key = keyvalue[0]
+    #value = keyvalue[1]
+    #sRNAseq = value.split(self.values_sep)[0] #= not ready
+    fback = '3prime' #= sudo affactation
+    if fback == '3prime' or fback == '5prime':
+        return True
+    return False
 
 
 #==================================================================
@@ -311,7 +321,7 @@ if __name__ == '__main__' :
    mirCheck = prog_mirCheck(values_sep, keyval_sep)
    #print mirCheck.run_mirCheck('test')
    mirCheck.mirCheck_map_rule('test')
-   
+   print mirCheck.mirCheck_filter_rule('test')
 
 '''
 http://stackoverflow.com/questions/30010939/python-subprocess-popen-error-no-such-file-or-directory

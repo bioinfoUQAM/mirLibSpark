@@ -71,6 +71,9 @@ if __name__ == '__main__' :
   filter_obj = mru.filter_rules(values_sep, keyval_sep, limit_freq, limit_len, limit_nbLoc)
   dmask_obj = mru.prog_dustmasker(values_sep, keyval_sep)
   bowtie_obj = mru.prog_bowtie(values_sep, keyval_sep, b_index)
+  #= insert extraction obj here =#
+  prog_RNAfold_obj = mru.prog_RNAfold(values_sep, keyval_sep)
+  prog_mirCheck_obj = mru.prog_mirCheck(values_sep, keyval_sep)
   
   # Convert the text file to RDD object
   distFile = sc.textFile(hdfsFile)
@@ -92,3 +95,11 @@ if __name__ == '__main__' :
   nbLoc_rdd = bowtie_rdd.filter(filter_obj.nbLocations_filter_rule)
 
   print nbLoc_rdd.collect()
+
+  # RNAfold
+  #yy_rdd = xx_rdd.map(prog_RNAfold_obj.RNAfold_map_rule)
+
+  ## mirCheck
+  #zz_rdd = yy_rdd.map(prog_mirCheck_obj.mirCheck_map_rule).filter(prog_mirCheck_obj.mirCheck_filter_rule)
+
+
