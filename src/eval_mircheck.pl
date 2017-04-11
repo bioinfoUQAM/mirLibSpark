@@ -3,10 +3,11 @@
 #Date : 11/04/2017
 
 # The program run miRcheck
+# counting position by 0 based for both start and stop
 
 use strict;
 use warnings;
-use lib '../lib/miRcheck';
+use lib '../lib/';
 use miRcheck;
 
 my $usage = 'perl eval_mircheck.pl "((((((.((((((....).))))).)))))).........." 46 64 def\n';
