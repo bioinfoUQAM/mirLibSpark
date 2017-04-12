@@ -57,6 +57,7 @@ class prog_bowtie ():
     FNULL = open(os.devnull, 'w')
     
     # self.cmd = 'bowtie --mm -a -v 0 --suppress 1,5,6,7,8 -c ' + self.bowtie_index + ' '+ seq  # shell=True
+
     cmd = ['bowtie', '--mm', '-a', '-v', '0', '--suppress', '1,5,6,7,8', '-c', self.bowtie_index, seq] # shell=False
     
     sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
@@ -71,8 +72,8 @@ class prog_bowtie ():
         map_value = line.rstrip('\n').split('\t')
         mappings += [map_value]
       
-    
     return mappings
+
   
   def Bowtie_map_rule(self, elem):
     sRNAseq = str(elem[1][0])
@@ -81,6 +82,100 @@ class prog_bowtie ():
     
     return elem
 
+class prog_RNAfold ():
+  
+  def __init__(self, vals_sep, kv_sep):
+    self.values_sep = vals_sep
+    self.keyval_sep = kv_sep
+    
+    # The object has to be initialized in the driver program 
+    # to permit the capture of its env variables and pass them 
+    # to the subprocess in the worker nodes
+    self.env = os.environ
+
+
+  def run_RNAfold(self, kv_arg):
+    #keyvalue = kv_arg.split(self.keyval_sep)
+    #key = keyvalue[0]
+    #value = keyvalue[1]
+    #longRNAseq = value.split(self.values_sep)[0] # this is not ready
+    PME = pre_miRNA_example = 'GUGGAGCUCCUAUCAUUCCAAUGAAGGGUCUACCGGAAGGGUUUGUGCAGCUGCUCGUUCAUGGUUCCCACUAUCCUAUCUCCAUAGAAAACGAGGAGAGAGGCCUGUGGUUUGCAUGACCGAGGAGCCGCUUCGAUCCCUCGCUGACCGCUGUUUGGAUUGAAGGGAGCUCUGCAU'
+    longRNAseq = PME
+    line1 = ['echo', longRNAseq]
+    line2 = ['RNAfold']
+    
+    p1 = sbp.Popen(line1, stdout=sbp.PIPE)#, env=self.env)
+    p2 = sbp.Popen(line2, stdin=p1.stdout, stdout=sbp.PIPE) #, env=self.env)
+    p1.stdout.close()  # Allow p1 to receive a SIGPIPE if p2 exits.
+    
+    output = p2.communicate()[0].rstrip('\n').split('\n')
+    RNAfold_results = output[1].split(' (')
+    folding = RNAfold_results[0] # ...(((....)))......
+    MFE = float(RNAfold_results[1][:-1]) # minimun free energy
+    
+    print output
+    print folding
+    print MFE
+
+
+'''
+#=== partition ========================================================================
+def portable_hash(x):
+    """
+    This function returns consistent hash code for builtin types, especially
+    for None and tuple with None.
+
+    The algorithm is similar to that one used by CPython 2.7
+
+    >>> portable_hash(None)
+    0
+    >>> portable_hash((None, 1)) & 0xffffffff
+    219750521
+    """
+    if sys.version >= '3.3' and 'PYTHONHASHSEED' not in os.environ:
+        raise Exception("Randomness of hash of string should be disabled via PYTHONHASHSEED")
+
+    if x is None:
+        return 0
+    if isinstance(x, tuple):
+        h = 0x345678
+        for i in x:
+            h ^= portable_hash(i)
+            h *= 1000003
+            h &= sys.maxsize
+        h ^= len(x)
+        if h == -1:
+            h = -2
+        return int(h)
+    return hash(x)
+
+def partitionBy(numPartitions, partitionFunc=portable_hash):
+    """
+    Return a copy of the RDD partitioned using the specified partitioner.
+
+    >>> pairs = sc.parallelize([1, 2, 3, 4, 2, 4, 1]).map(lambda x: (x, x))
+    >>> sets = pairs.partitionBy(2).glom().collect()
+    >>> len(set(sets[0]).intersection(set(sets[1])))
+    0
+    """
+    #if numPartitions is None:
+    #    numPartitions = self._defaultReducePartitions()
+    #partitioner = Partitioner(numPartitions, partitionFunc)
+    #if self.partitioner == partitioner:
+    #    return self
+
+    # Transferring O(n) objects to Java is too expensive.
+    # Instead, we'll form the hash buckets in Python,
+    # transferring O(numPartitions) objects to Java.
+    # Each object is a (splitNumber, [objects]) pair.
+    # In order to avoid too huge objects, the objects are
+    # grouped into chunks.
+    outputSerializer = self.ctx._unbatched_serializer
+
+    limit = (_parse_memory(self.ctx._conf.get(
+        "spark.python.worker.memory", "512m")) / 2)
+#======================================================================
+'''
 
 class extract_precurosrs ():
   
