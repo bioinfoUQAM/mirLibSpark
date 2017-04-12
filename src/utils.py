@@ -40,7 +40,7 @@ def covert_fasta_to_KeyValue(infile, outfile):
 
 
 # Convert a seq abundance file into a key value file
-def convert_seq_freq_file_to_KeyValue(infile, outfile, vals_sep, kv_sep):
+def convert_seq_freq_file_to_KeyValue(infile, outfile, v_sep):
   fh = open (infile, 'r')
   fh_out = open (outfile, 'w')
 
@@ -48,15 +48,34 @@ def convert_seq_freq_file_to_KeyValue(infile, outfile, vals_sep, kv_sep):
   i = 1
   
   for line in fh:
-    key = str(i).zfill(9)
-    i+= 1
     data = line.rstrip('\n').split('\t')
+    value = data[0] + v_sep + data[1]
     
-    value = data[0] + vals_sep + data[1]
     # check if the read was treated before (redundancy)
     if data[0] not in dict_sRNA:
+      key = str(i).zfill(9)
+      i+= 1
       dict_sRNA[data[0]] = 1
-      print >>fh_out, key + kv_sep + value
+      print >>fh_out, key + v_sep + value
       
   fh.close()
   fh_out.close()
+  
+  def getRevComp (seq):
+    from string import maketrans
+    
+    intab = "ACGT"
+    outab = "TGCA"
+    trantab = maketrans(intab, outab)
+    n_seq = seq.translate(trantab)
+    return n_seq[::-1];
+  
+  def tr_T_U (seq):
+    from string import maketrans
+    trantab = maketrans("T", "U")
+    return seq.translate(trantab)
+  
+  def tr_U_T (seq):
+    from string import maketrans
+    trantab = maketrans("U", "T")
+    return seq.translate(trantab)
