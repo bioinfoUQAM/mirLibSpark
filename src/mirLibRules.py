@@ -167,7 +167,8 @@ class sudo ():
     #bowtie = kv_arg[1][2]
     #pri_miRNA = kv_arg[1][3]
     kv_arg[1].append([])
-    for i in range(len(kv_arg[1][2])):
+    nbLoc = len(kv_arg[1][2])
+    for i in range(nbLoc):
       kv_arg[1][3].append([pre_miRNA_example, '153'])
     return kv_arg  
 #===============
@@ -205,23 +206,17 @@ class prog_RNAfold ():
   def RNAfold_map_rule(self, kv_arg):
     '''
     kv_arg = (id, [seq, frq, [bowtie], [pri_miRNA])
-    key = kv_arg[0]
-    values = kv_arg[1]
-    #bowtie = values[2] #= [['+', 'ch5', '781234'], [...], ...]
-    pri_miRNA = values[3] #= [[seq, pos], [seq, pos], ...] #= usually 2, or extremity 1, or special case 0
-    new_pri_miRNA = [[seq, pos, folding], [seq, pos, folding], ...]
-    
     pre_miRNA_example = 'GUGGAGCUCCUAUCAUUCCAAUGAAGGGUCUACCGGAAGGGUUUGUGCAGCUGCUCGUUCAUGGUUCCCACUAUCCUAUCUCCAUAGAAAACGAGGAGAGAGGCCUGUGGUUUGCAUGACCGAGGAGCCGCUUCGAUCCCUCGCUGACCGCUGUUUGGAUUGAAGGGAGCUCUGCAU'
     folding, MFE = run_RNAfold(pre_miRNA_example)
     '''
-    bowtie = kv_arg[1][2]
+    nbLoc = len(kv_arg[1][2])
     pri_miRNAs = kv_arg[1][3]
-    for i in range(len(bowtie)):
-      for j in range(len(pri_miRNAs)):
-        pri_seq = kv_arg[1][3][i -1][0]
-        #pos_miRNA_start = kv_arg[1][3][i -1][1]
+    for i in range(nbLoc):
+      nb_pri_miRNA_OF_thisLoc = len(kv_arg[1][3][i])
+      for j in range(nb_pri_miRNA_OF_thisLoc):
+        pri_seq = kv_arg[1][3][i][0]
         folding, MFE = run_RNAfold(pri_seq)
-        kv_arg[1][3][i - 1].append(folding)
+        kv_arg[1][3][i].append(folding)
     return kv_arg
 #==================================================================
 class prog_mirCheck ():
@@ -293,10 +288,22 @@ class prog_mirCheck ():
     #key = keyvalue[0]
     #value = keyvalue[1]
     #sRNAseq = value.split(self.values_sep)[0] #= not ready
-    fback = '3prime' #= sudo affactation
-    if fback == '3prime' or fback == '5prime':
-        return True
+    #fback = '3prime' #= sudo affactation
+    #if fback == '3prime' or fback == '5prime':
+    #    return True
+    #return False
+    pre_miRNAs = kv_arg[1][4] #= [['3prime', '1', '173'], [...], ...]
+    nbLoc = len(kv_arg[1][2])
+    for i in range(nbLoc):
+      nb_pre_miRNA_OF_thisLoc = len(kv_arg[1][4][i])
+      for j in range(nb_pre_miRNA_OF_thisLoc):
+        fback = kv_arg[1][4][i][j][0]
+        if fback == '3prime' or fback == '5prime':
+          return True
     return False
+
+      
+    
 
 
 #==================================================================
