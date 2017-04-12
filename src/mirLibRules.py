@@ -151,6 +151,27 @@ class prog_bowtie ():
     return kv2
 
 
+#== sudo code ==
+class sudo ():
+  def __init__(self, vals_sep, kv_sep):
+    self.values_sep = vals_sep
+    self.keyval_sep = kv_sep
+    self.env = os.environ
+
+  def sudo_long (self, kv_arg):
+    '''
+    kv_arg = (id, [seq, frq, [bowtie], [pri_miRNA])
+    kv_arg_after = (id, [seq, frq, [bowtie], [pri_miRNA])
+    '''
+    pre_miRNA_example = 'GUGGAGCUCCUAUCAUUCCAAUGAAGGGUCUACCGGAAGGGUUUGUGCAGCUGCUCGUUCAUGGUUCCCACUAUCCUAUCUCCAUAGAAAACGAGGAGAGAGGCCUGUGGUUUGCAUGACCGAGGAGCCGCUUCGAUCCCUCGCUGACCGCUGUUUGGAUUGAAGGGAGCUCUGCAU'
+    #bowtie = kv_arg[1][2]
+    #pri_miRNA = kv_arg[1][3]
+    kv_arg[1].append([])
+    for i in range(len(kv_arg[1][2])):
+      kv_arg[1][3].append([pre_miRNA_example, '153'])
+    return kv_arg  
+#===============
+
 
 class prog_RNAfold ():
   
@@ -177,8 +198,8 @@ class prog_RNAfold ():
     p1.stdout.close()  # Allow p1 to receive a SIGPIPE if p2 exits.
     output = p2.communicate()[0].rstrip('\n').split('\n')
     RNAfold_results = output[1].split(' (')
-    folding = RNAfold_results[0] # ...(((....)))......
-    MFE = float(RNAfold_results[1][:-1]) # minimun free energy
+    folding = RNAfold_results[0]               # ...(((....)))......
+    MFE = float(RNAfold_results[1][:-1])       # minimun free energy
     return folding, MFE
 
   def RNAfold_map_rule(self, kv_arg):
@@ -193,16 +214,15 @@ class prog_RNAfold ():
     pre_miRNA_example = 'GUGGAGCUCCUAUCAUUCCAAUGAAGGGUCUACCGGAAGGGUUUGUGCAGCUGCUCGUUCAUGGUUCCCACUAUCCUAUCUCCAUAGAAAACGAGGAGAGAGGCCUGUGGUUUGCAUGACCGAGGAGCCGCUUCGAUCCCUCGCUGACCGCUGUUUGGAUUGAAGGGAGCUCUGCAU'
     folding, MFE = run_RNAfold(pre_miRNA_example)
     '''
-    #pri_miRNAs = kv_arg[1][3]
-    for i in len(pri_miRNAs):
-      seq = pri_miRNAs[i - 1][0]
-      folding, MFE = run_RNAfold(seq)
-      kv_arg[1][3][i - 1].append(folding)
+    bowtie = kv_arg[1][2]
+    pri_miRNAs = kv_arg[1][3]
+    for i in range(len(bowtie)):
+      for j in range(len(pri_miRNAs)):
+        pri_seq = kv_arg[1][3][i -1][0]
+        #pos_miRNA_start = kv_arg[1][3][i -1][1]
+        folding, MFE = run_RNAfold(pri_seq)
+        kv_arg[1][3][i - 1].append(folding)
     return kv_arg
-
-
-
-
 #==================================================================
 class prog_mirCheck ():
   
@@ -228,10 +248,33 @@ class prog_mirCheck ():
     return mirCheck_results
 
   def mirCheck_map_rule(self, kv_arg):  
-    #keyvalue = kv_arg.split(self.keyval_sep)
-    #key = keyvalue[0]
-    #value = keyvalue[1]
-    #sRNAseq = value.split(self.values_sep)[0] #= not ready
+    '''
+    kv_arg = (id, [seq, frq, [bowtie], [pri_miRNA])
+    key = kv_arg[0]
+    values = kv_arg[1]
+    #bowtie = values[2] #= [['+', 'ch5', '781234'], [...], ...]
+    pri_miRNA = values[3] #= [[seq, pos], [seq, pos], ...] #= usually 2, or extremity 1, or special case 0
+    new_pri_miRNA = [[seq, pos, folding], [seq, pos, folding], ...]
+    '''
+    kv_arg[1].append([])    #= pre_miRNAs = kv_arg[1][4]
+    len_miRNAseq = len(kv_arg[1][0]) ###############
+    bowtie = kv_arg[1][2]
+    pri_miRNAs = kv_arg[1][3]
+    for i in range(len(bowtie)):
+      for j in range(len(pri_miRNAs)):
+        pri_seq = kv_arg[1][3][i -1][0]
+        pos_miRNA_start = kv_arg[1][3][i -1][1]
+        folding = kv_arg[1][3][i -1][2]
+        pos_miRNA_stop = pos_miRNA_start + len_miRNAseq - 1
+
+        mirCheck_results = self.run_mirCheck(folding, pos_miRNA_start, pos_miRNA_stop)
+        #fback = mirCheck_results[0] # True = ['3prime', '5prime']
+        #fback_start = mirCheck_results[1] #= '1'
+        #fback_stop = mirCheck_results[2] #= '173'
+        #print fback, fback_start, fback_stop
+        kv_arg[1][4][i - 1].append(mirCheck_results)
+    return kv_arg
+
 
     #= artificial variables
     folding = '(((((((((((.(((.(((((...((((((...((..((((.(((.((.(((.((((.(((((....((((...(((.(((((...........))))).)))...))))....))))).)))).))).))..))).))))))..)))).))..))))).))).)))))))))))..'
@@ -244,8 +287,6 @@ class prog_mirCheck ():
     fback_stop = mirCheck_results[2] #= '173'
     print fback, fback_start, fback_stop
 
-    #kv2 = [key, [value] + append_value] #= not ready
-    #return kv2
 
   def mirCheck_filter_rule(self, kv_arg):
     #keyvalue = kv_arg.split(self.keyval_sep)

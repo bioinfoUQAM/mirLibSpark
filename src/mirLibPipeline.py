@@ -72,8 +72,9 @@ if __name__ == '__main__' :
   dmask_obj = mru.prog_dustmasker(values_sep, keyval_sep)
   bowtie_obj = mru.prog_bowtie(values_sep, keyval_sep, b_index)
   #= insert extraction obj here =#
-  prog_RNAfold_obj = mru.prog_RNAfold(values_sep, keyval_sep)
-  prog_mirCheck_obj = mru.prog_mirCheck(values_sep, keyval_sep)
+  sudo_obj = mru.sudo(values_sep, keyval_sep)
+  RNAfold_obj = mru.prog_RNAfold(values_sep, keyval_sep)
+  mirCheck_obj = mru.prog_mirCheck(values_sep, keyval_sep)
   
   # Convert the text file to RDD object
   distFile = sc.textFile(hdfsFile)
@@ -94,13 +95,16 @@ if __name__ == '__main__' :
   # Filtering high nbLocations and zero location
   nbLoc_rdd = bowtie_rdd.filter(filter_obj.nbLocations_filter_rule)
 
-  print nbLoc_rdd.collect()
+  #print nbLoc_rdd.collect()
 
+  # sudo_extraction
+  sudo_rdd = nbLoc_rdd.map(sudo_obj.sudo_long)
+  print sudo_rdd.collect()
   # RNAfold
-  #yy_rdd = xx_rdd.map(prog_RNAfold_obj.RNAfold_map_rule)
+  #yy_rdd = xx_rdd.map(RNAfold_obj.RNAfold_map_rule)
 
   ## mirCheck
-  #zz_rdd = yy_rdd.map(prog_mirCheck_obj.mirCheck_map_rule).filter(prog_mirCheck_obj.mirCheck_filter_rule)
+  #zz_rdd = yy_rdd.map(mirCheck_obj.mirCheck_map_rule).filter(mirCheck_obj.mirCheck_filter_rule)
 
 
 
