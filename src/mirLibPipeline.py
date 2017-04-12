@@ -100,7 +100,7 @@ if __name__ == '__main__' :
   #yy_rdd = xx_rdd.map(prog_RNAfold_obj.RNAfold_map_rule)
 
   ## mirCheck
-  #zz_rdd = yy_rdd.map(prog_mirCheck_obj.mirCheck_map_rule)
-  #aa_rdd = zz_rdd.filter(prog_mirCheck_obj.mirCheck_filter_rule)
+  #zz_rdd = yy_rdd.map(prog_mirCheck_obj.mirCheck_map_rule).filter(prog_mirCheck_obj.mirCheck_filter_rule)
+
 
 
