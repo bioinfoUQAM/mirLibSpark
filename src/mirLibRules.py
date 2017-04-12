@@ -182,15 +182,25 @@ class prog_RNAfold ():
     return folding, MFE
 
   def RNAfold_map_rule(self, kv_arg):
-    #keyvalue = kv_arg.split(self.keyval_sep)
-    #key = keyvalue[0]
-    #value = keyvalue[1]
-    #longRNAseq = value.split(self.values_sep)[0] # this is not ready
+    '''
+    kv_arg = (id, [seq, frq, [bowtie], [pri_miRNA])
+    key = kv_arg[0]
+    values = kv_arg[1]
+    #bowtie = values[2] #= [['+', 'ch5', '781234'], [...], ...]
+    pri_miRNA = values[3] #= [[seq, pos], [seq, pos], ...] #= usually 2, or extremity 1, or special case 0
+    new_pri_miRNA = [[seq, pos, folding], [seq, pos, folding], ...]
+    
     pre_miRNA_example = 'GUGGAGCUCCUAUCAUUCCAAUGAAGGGUCUACCGGAAGGGUUUGUGCAGCUGCUCGUUCAUGGUUCCCACUAUCCUAUCUCCAUAGAAAACGAGGAGAGAGGCCUGUGGUUUGCAUGACCGAGGAGCCGCUUCGAUCCCUCGCUGACCGCUGUUUGGAUUGAAGGGAGCUCUGCAU'
     folding, MFE = run_RNAfold(pre_miRNA_example)
-    append_value = [folding, MFE]
-    #kv2 = [key, [value] + append_value] #= NOT READY
-    #return kv2
+    '''
+    #pri_miRNAs = kv_arg[1][3]
+    for i in len(pri_miRNAs):
+      seq = pri_miRNAs[i - 1][0]
+      folding, MFE = run_RNAfold(seq)
+      kv_arg[1][3][i - 1].append(folding)
+    return kv_arg
+
+
 
 
 #==================================================================
