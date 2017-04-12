@@ -110,11 +110,10 @@ if __name__ == '__main__' :
   # sudo_extraction
   sudo_rdd = nbLoc_rdd.map(sudo_obj.sudo_long)
   #print sudo_rdd.collect()
-
   # RNAfold
   yy_rdd = sudo_rdd.map(RNAfold_obj.RNAfold_map_rule)
   print yy_rdd.collect()
 
   ## mirCheck
   #zz_rdd = yy_rdd.map(mirCheck_obj.mirCheck_map_rule).filter(mirCheck_obj.mirCheck_filter_rule)
-  #print zz_rdd.collect()
+
