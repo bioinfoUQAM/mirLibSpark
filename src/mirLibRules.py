@@ -84,9 +84,7 @@ class prog_bowtie ():
 
 #== sudo code ==
 class sudo ():
-  def __init__(self, vals_sep, kv_sep):
-    self.values_sep = vals_sep
-    self.keyval_sep = kv_sep
+  def __init__(self):
     self.env = os.environ
 
   def sudo_long (self, kv_arg):
@@ -106,10 +104,7 @@ class sudo ():
 
 class prog_RNAfold ():
   
-  def __init__(self, vals_sep, kv_sep):
-    self.values_sep = vals_sep
-    self.keyval_sep = kv_sep
-    
+  def __init__(self):
     # The object has to be initialized in the driver program 
     # to permit the capture of its env variables and pass them 
     # to the subprocess in the worker nodes
@@ -151,10 +146,7 @@ class prog_RNAfold ():
 #==================================================================
 class prog_mirCheck ():
   
-  def __init__(self, vals_sep, kv_sep):
-    self.values_sep = vals_sep
-    self.keyval_sep = kv_sep
-    
+  def __init__(self):    
     # The object has to be initialized in the driver program 
     # to permit the capture of its env variables and pass them 
     # to the subprocess in the worker nodes
@@ -301,10 +293,10 @@ class extract_precurosrs ():
     self.ext_left = ext_left
     self.ext_right = ext_right
     #
-    self.genome = getGenome()
+    self.genome = 0 ###
     
-  def getGenome ():
-    return 0
+  #def getGenome ():
+    #return 0
     
   def extract_precursor (self, contig, strand, start_srna, len_srna):
     ext_left = self.ext_left

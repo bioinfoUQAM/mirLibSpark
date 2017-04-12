@@ -78,9 +78,9 @@ if __name__ == '__main__' :
   bowtie_obj = mru.prog_bowtie(b_index)
   primir_obj = mru.extract_precurosrs(genome_path, l_flank, r_flank)
 
-  sudo_obj = mru.sudo(values_sep, keyval_sep)
-  RNAfold_obj = mru.prog_RNAfold(values_sep, keyval_sep)
-  mirCheck_obj = mru.prog_mirCheck(values_sep, keyval_sep)
+  sudo_obj = mru.sudo()
+  RNAfold_obj = mru.prog_RNAfold()
+  mirCheck_obj = mru.prog_mirCheck()
 
   
   # Convert the text file to RDD object
@@ -105,7 +105,7 @@ if __name__ == '__main__' :
   # Extraction of the pri-miRNA
   # primir_rdd = nbLoc_rdd.map(primir_obj.extract_prec_rule)
   
-  print nbLoc_rdd.collect()
+  #print nbLoc_rdd.collect()
 
   # sudo_extraction
   sudo_rdd = nbLoc_rdd.map(sudo_obj.sudo_long)
