@@ -43,47 +43,55 @@ if __name__ == '__main__' :
   hdfsFile = inBasename + '.hkv.txt'
   
   # Separators
-  values_sep = "<>"
-  keyval_sep = "::"
+  my_sep = ","
 
-  # Cutoffs
+  # Parameters and cutoffs
+  #
+  genome_path = "../input/ATH/TAIR/Genome/"
+  #
   limit_freq = 5 # exclude RNA freq < limit_freq
-  limit_len = 14 # exclude RNA length < limit_len
+  limit_len = 14  # exclude RNA length < limit_len
   limit_nbLoc = 5 # exculde nbLoc mapped with bowtie  > limit_nbLoc
+  # pri-mirna
+  l_flank = 10
+  r_flank = 50
   
   # Spark context
-  sc = ut.pyspark_configuration("yarn-client", "mirLibHadoop", "2g") # local
+  sc = ut.pyspark_configuration("local", "mirLibHadoop", "2g") # yarn-client
   sc.addPyFile('utils.py')
   sc.addPyFile('mirLibRules.py')
   
   # Convert the input file to a Key value file
-  ut.convert_seq_freq_file_to_KeyValue(infile, inKvfile, values_sep, keyval_sep)
+  ut.convert_seq_freq_file_to_KeyValue(infile, inKvfile, my_sep)
   
   # Save a local file to HDFS system
   ut.convertTOhadoop(inKvfile, hdfsFile)
   
   # Object fo rule functions
-  filter_obj = mru.filter_rules(values_sep, keyval_sep, limit_freq, limit_len, limit_nbLoc)
-  dmask_obj = mru.prog_dustmasker(values_sep, keyval_sep)
-  bowtie_obj = mru.prog_bowtie(values_sep, keyval_sep, b_index)
+  dmask_obj = mru.prog_dustmasker()
+  bowtie_obj = mru.prog_bowtie(b_index)
+  primir_obj = mru.extract_precurosrs(genome_path, l_flank, r_flank)
   
   # Convert the text file to RDD object
   distFile = sc.textFile(hdfsFile)
-  input_rdd = distFile.flatMap(lambda line: line.split())
-
+  input_rdd = distFile.map(lambda line: mru.rearrange_rule(line, my_sep))
+  
   # Filtering low frequency
-  rm_low_rdd = input_rdd.filter(filter_obj.lowfreq_filter_rule)
+  rm_low_rdd = input_rdd.filter(lambda elem: int(elem[1][1]) > limit_freq)
 
-  # Filtering short length
-  rm_short_rdd = rm_low_rdd.filter(filter_obj.shortlen_filter_rule)
+  # Filtering short length 
+  rm_short_rdd = rm_low_rdd.filter(lambda elem: len(str(elem[1][0])) > limit_len)
 
-  # Filtering with DustMasker
+  # # Filtering with DustMasker
   dmask_rdd = rm_short_rdd.filter(dmask_obj.dmask_filter_rule)
 
   # Mapping with Bowtie
-  bowtie_rdd = dmask_rdd.map(bowtie_obj.Bowtie_map_rule)
+  bowtie_rdd = rm_low_rdd.map(bowtie_obj.Bowtie_map_rule)
 
   # Filtering high nbLocations and zero location
-  nbLoc_rdd = bowtie_rdd.filter(filter_obj.nbLocations_filter_rule)
-
+  nbLoc_rdd = bowtie_rdd.filter(lambda elem: len(elem[1][2]) > 0 and len(elem[1][2]) < limit_nbLoc)
+  
+  # Extraction of the pri-miRNA
+  # primir_rdd = nbLoc_rdd.map(primir_obj.extract_prec_rule)
+  
   print nbLoc_rdd.collect()
