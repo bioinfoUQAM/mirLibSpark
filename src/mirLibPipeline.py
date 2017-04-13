@@ -119,7 +119,9 @@ if __name__ == '__main__' :
   #elem = (id, [seq, frq, [bowtie], [pri_miRNA]])
   strand = '-'
   chromo = 'Chr3'
-  totalfrq = bowtie_rdd.filter(lambda elem: strand in elem[1][2][0] and chromo in elem[1][2][0] and int(elem[1][2][0][2]) > 3366300)
+  x = 3366340
+  y = 3366440
+  totalfrq = bowtie_rdd.filter(lambda elem: strand in elem[1][2][0] and chromo in elem[1][2][0] and x < int(elem[1][2][0][2]) < y)
   print totalfrq.collect()
   
 
