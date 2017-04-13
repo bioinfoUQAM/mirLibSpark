@@ -25,6 +25,9 @@ $ time spark-submit mirLibPipeline.py a_thaliana /home/cloudera/workspace/miRNA_
 around 10 mins (6m, 12m, 9.5min)
 
 $ time spark-submit mirLibPipeline.py a_thaliana /home/cloudera/workspace/miRNA_predictor/sudoData/1102.txt 1>/home/cloudera/workspace/miRNA_predictor/logOutput/170407_result_pipeline_1.txt 2>/dev/null
+
+##########################
+spark-submit mirLibPipeline.py ../paramfile_julie.txt /home/cloudera/workspace/miRNA_predictor/sudoData/a_th_3.txt 2>/dev/null
 '''
 
 import sys
@@ -36,36 +39,53 @@ import mirLibRules as mru
 if __name__ == '__main__' :
 
   if not len(sys.argv) == 3:
-    sys.stderr.write('Two arguments required\nUsage: spark-submit mirLibPipeline.py <bowtie_index_name> <path to your input> 2>/dev/null\n')
+    sys.stderr.write('Two arguments required\nUsage: spark-submit mirLibPipeline.py <path to paramfile> <path to your input> 2>/dev/null\n')
     sys.exit()
-  
-  b_index = sys.argv[1]
+
+
+  paramfile = sys.argv[1]
   infile = sys.argv[2]
+ 
+  paramDict = ut.readparam (paramfile)
+  # Parameters and cutoffs
+  # Separators
+  my_sep = paramDict['my_sep']
+  # tmp file folder
+  rep_tmp = paramDict['rep_tmp']
+
+  # spark parameter
+  master = paramDict['master'] #"local" 
+  appname = paramDict['appname'] #"mirLibHadoop"
+  memory = paramDict['memory'] #"2g"
+  # genome
+  genome_path = paramDict['genome_path'] #"../input/ATH/TAIR/Genome/"
+  # cutoffs
+  limit_freq = paramDict['limit_freq'] #200            # exclude RNA freq < limit_freq
+  limit_len = paramDict['limit_len'] #18              # exclude RNA length < limit_len
+  limit_nbLoc = paramDict['limit_nbLoc'] #2             # exculde nbLoc mapped with bowtie  > limit_nbLoc
+  # bowtie
+  b_index = paramDict['b_index']
+  # pri-mirna
+  pri_l_flank = paramDict['pri_l_flank'] #120
+  pri_r_flank = paramDict['pri_r_flank'] #60
+  pre_flank = paramDict['pre_flank'] #30
+  # mircheck parameter
+  mcheck_param = paramDict['mcheck_param'] #'def'        # def : default parameters / mey : meyers parameters
+
+
+
+
+
+
   
   inBasename = os.path.splitext(os.path.basename(infile))[0]
   
-  inKvfile = '../tmp/' + inBasename + '.kv.txt'
+  inKvfile = rep_tmp + inBasename + '.kv.txt'
   hdfsFile = inBasename + '.hkv.txt'
   
-  # Separators
-  my_sep = ","
 
-  # Parameters and cutoffs
-  #
-  genome_path = "../input/ATH/TAIR/Genome/"
-  #
-  limit_freq = 200            # exclude RNA freq < limit_freq
-  limit_len = 18              # exclude RNA length < limit_len
-  limit_nbLoc = 2             # exculde nbLoc mapped with bowtie  > limit_nbLoc
-  # pri-mirna
-  pri_l_flank = 120
-  pri_r_flank = 60
-  pre_flank = 30
-  # mircheck parameter
-  mcheck_param = 'def'        # def : default parameters / mey : meyers parameters
-  
   # Spark context
-  sc = ut.pyspark_configuration("local", "mirLibHadoop", "2g") # yarn-client
+  sc = ut.pyspark_configuration(master, appname, memory) # yarn-client
   sc.addPyFile('utils.py')
   sc.addPyFile('mirLibRules.py')
   
@@ -75,11 +95,10 @@ if __name__ == '__main__' :
   # Save a local file to HDFS system
   ut.convertTOhadoop(inKvfile, hdfsFile)
   
-  # Object fo rule functions
+  # Object for rule functions
 
   dmask_obj = mru.prog_dustmasker()
   bowtie_obj = mru.prog_bowtie(b_index)
- 
   prec_obj = mru.extract_precurosrs(genome_path, pri_l_flank, pri_r_flank, pre_flank)
   rnafold_obj = mru.prog_RNAfold()
   mircheck_obj = mru.prog_mirCheck(mcheck_param)
@@ -106,7 +125,6 @@ if __name__ == '__main__' :
   # Extraction of the pri-miRNA
   primir_rdd = nbLoc_rdd.map(prec_obj.extract_prim_rule)
   
-
   # pri-miRNA folding
   pri_fold_rdd = primir_rdd.map(lambda elem: rnafold_obj.RNAfold_map_rule(elem, 3))
   

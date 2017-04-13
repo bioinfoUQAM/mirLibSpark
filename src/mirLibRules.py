@@ -57,7 +57,7 @@ class prog_bowtie ():
     mappings = []
     FNULL = open(os.devnull, 'w')
     
-    # self.cmd = 'bowtie --mm -a -v 0 --suppress 1,5,6,7,8 -c ' + self.bowtie_index + ' '+ seq  # shell=True
+    # cmd = 'bowtie --mm -a -v 0 --suppress 1,5,6,7,8 -c ' + self.bowtie_index + ' '+ seq  # shell=True
 
     cmd = ['bowtie', '--mm', '-a', '-v', '0', '--suppress', '1,5,6,7,8', '-c', self.bowtie_index, seq] # shell=False
     
@@ -90,7 +90,8 @@ class extract_precurosrs ():
     self.ext_right = ext_right
     self.pre_flank = pre_flank
     #
-    self.genome = ut.getGenome(genome_path, ".fas")
+    #self.genome = ut.getGenome(genome_path, ".fas")
+    self.genome = 0
 
   def extract_precursors (self, contig, strand, start_srna, len_srna):
     ext_left = self.ext_left
