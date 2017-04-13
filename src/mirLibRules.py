@@ -90,8 +90,7 @@ class extract_precurosrs ():
     self.ext_right = ext_right
     self.pre_flank = pre_flank
     #
-    #self.genome = ut.getGenome(genome_path, ".fas")
-    self.genome = 0
+    self.genome = ut.getGenome(genome_path, ".fas")
 
   def extract_precursors (self, contig, strand, start_srna, len_srna):
     ext_left = self.ext_left

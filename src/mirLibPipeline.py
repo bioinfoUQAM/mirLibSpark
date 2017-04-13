@@ -47,6 +47,7 @@ if __name__ == '__main__' :
   infile = sys.argv[2]
  
   paramDict = ut.readparam (paramfile)
+  print paramDict
   # Parameters and cutoffs
   # Separators
   my_sep = paramDict['my_sep']
@@ -60,29 +61,25 @@ if __name__ == '__main__' :
   # genome
   genome_path = paramDict['genome_path'] #"../input/ATH/TAIR/Genome/"
   # cutoffs
-  limit_freq = paramDict['limit_freq'] #200            # exclude RNA freq < limit_freq
-  limit_len = paramDict['limit_len'] #18              # exclude RNA length < limit_len
-  limit_nbLoc = paramDict['limit_nbLoc'] #2             # exculde nbLoc mapped with bowtie  > limit_nbLoc
+  limit_freq = int(paramDict['limit_freq']) #200            # exclude RNA freq < limit_freq
+  limit_len = int(paramDict['limit_len']) #18              # exclude RNA length < limit_len
+  limit_nbLoc = int(paramDict['limit_nbLoc']) #2             # exculde nbLoc mapped with bowtie  > limit_nbLoc
   # bowtie
   b_index = paramDict['b_index']
   # pri-mirna
-  pri_l_flank = paramDict['pri_l_flank'] #120
-  pri_r_flank = paramDict['pri_r_flank'] #60
-  pre_flank = paramDict['pre_flank'] #30
+  pri_l_flank = int(paramDict['pri_l_flank']) #120
+  pri_r_flank = int(paramDict['pri_r_flank']) #60
+  pre_flank = int(paramDict['pre_flank']) #30
   # mircheck parameter
   mcheck_param = paramDict['mcheck_param'] #'def'        # def : default parameters / mey : meyers parameters
-
-
-
-
-
 
   
   inBasename = os.path.splitext(os.path.basename(infile))[0]
   
   inKvfile = rep_tmp + inBasename + '.kv.txt'
   hdfsFile = inBasename + '.hkv.txt'
-  
+  print inKvfile
+  print hdfsFile
 
   # Spark context
   sc = ut.pyspark_configuration(master, appname, memory) # yarn-client
@@ -115,9 +112,10 @@ if __name__ == '__main__' :
 
   # # Filtering with DustMasker
   dmask_rdd = rm_short_rdd.filter(dmask_obj.dmask_filter_rule)
-
+  print dmask_rdd.collect()
   # Mapping with Bowtie
   bowtie_rdd = dmask_rdd.map(bowtie_obj.Bowtie_map_rule)
+  
 
   # Filtering high nbLocations and zero location
   nbLoc_rdd = bowtie_rdd.filter(lambda elem: len(elem[1][2]) > 0 and len(elem[1][2]) < limit_nbLoc)
