@@ -11,64 +11,24 @@ Le programme
 
 import subprocess as sbp
 import os
+import utils as ut
 
-class filter_rules ():
 
-  def __init__(self, vals_sep, kv_sep, limit_freq=5, limit_len=15, limit_nbLoc=5):
-    self.values_sep = vals_sep
-    self.keyval_sep = kv_sep
-    self.limit_freq = limit_freq
-    self.limit_len = limit_len
-    self.limit_nbLoc = limit_nbLoc
-  
-  def lowfreq_filter_rule(self, kv_arg):
-    keyvalue = kv_arg.split(self.keyval_sep)
-    key = keyvalue[0]
-    value = keyvalue[1]
-    freq = value.split(self.values_sep)[1]
-    if int(freq) < self.limit_freq:
-        return False
-    return True
-  
-  def shortlen_filter_rule(self, kv_arg):
-    keyvalue = kv_arg.split(self.keyval_sep)
-    key = keyvalue[0]
-    value = keyvalue[1]
-    RNAseq = value.split(self.values_sep)[0]
-    if len(RNAseq) < self.limit_len:
-        return False
-    return True
-
-  def nbLocations_filter_rule(self, kv_arg):
-    # kv_arg = [u'000000001', [u'ATACGATCAACTAGAATGACAATT<>20', [u'-', u'Chr4', u'11833108']]]
-    key = kv_arg[0] # 000000001
-    values = kv_arg[1] # [u'ATACGATCAACTAGAATGACAATT<>20', [u'-', u'Chr4', u'11833108']]
-    nbLoc = len(values) - 1
-    if nbLoc > self.limit_nbLoc:
-      return False
-    bowtie_location_result_1 = values[1]
-    if bowtie_location_result_1 == ['NA', 'NA', 'NA']: # remove zero location mapped by this sequence
-      return False
-    return True
-
+def rearrange_rule(kv_arg, kv_sep):
+  tab = kv_arg.split(kv_sep)
+  return (tab[0],[tab[1],tab[2]])
 
 class prog_dustmasker ():
   
-  def __init__(self, vals_sep, kv_sep):
-    self.values_sep = vals_sep
-    self.keyval_sep = kv_sep
-    
+  def __init__(self):
     # The object has to be initialized in the driver program 
     # to permit the capture of its env variables and pass them 
     # to the subprocess in the worker nodes
     self.env = os.environ
     
-  def dmask_filter_rule(self, kv_arg):
-    keyvalue = kv_arg.split(self.keyval_sep)
-    key = keyvalue[0]
-    value = keyvalue[1]
-    sRNAseq = value.split(self.values_sep)[0]
-    line1 = ['echo', '>seq1\n' + sRNAseq]
+  def dmask_filter_rule(self, elem):
+    sRNAseq = str(elem[1][0])
+    line1 = ['echo', '>seqMir\n' + sRNAseq]
     line2 = ['dustmasker']
     
     p1 = sbp.Popen(line1, stdout=sbp.PIPE, env=self.env)
@@ -84,10 +44,8 @@ class prog_dustmasker ():
 
 class prog_bowtie ():
   
-  def __init__(self, vals_sep, kv_sep, b_index):
+  def __init__(self, b_index):
     self.bowtie_index = b_index
-    self.values_sep = vals_sep
-    self.keyval_sep = kv_sep
     
     # The object has to be initialized in the driver program 
     # to permit the capture of its env variables and pass them 
@@ -95,29 +53,11 @@ class prog_bowtie ():
     self.env = os.environ
     
   def run_bowtie(self, seq):
-    '''
-    tmp_file = '/home/cloudera/workspace/miRNA_predictor/logOutput/bowtie_result_tmp.txt'
-    seq = 'ATACGATCAACTAGAATGACAATT'
-    #line = 'bowtie -a -v 0 --suppress 1,5,6,7,8 -c ' + self.bowtie_index + ' ' + seq + ' 1>' + tmp_file
-    line = 'bowtie -a -v 0 --suppress 1,5,6,7,8 -c ' + self.bowtie_index + ' ' + seq + ' 1>/home/cloudera/workspace/miRNA_predictor/logOutput/bowtie_result_tmp.txt'
-    os.system(line)
-    fh = open (tmp_file, 'r')
-    DATA = fh.readlines()
-    fh.close()
-    append_values = []
-    if len(DATA) == 0:
-        append_values = [['NA', 'NA', 'NA']]
-    for line in DATA:
-        append_value = line.rstrip('\n').split('\t')
-        append_values += [append_value]
-    return append_values
-    '''
-
-    #'''
-    append_values = []
+    mappings = []
     FNULL = open(os.devnull, 'w')
     
-    # cmd = 'bowtie --mm -a -v 0 --suppress 1,5,6,7,8 -c ' + self.bowtie_index + ' '+ seq  # shell=True
+    # self.cmd = 'bowtie --mm -a -v 0 --suppress 1,5,6,7,8 -c ' + self.bowtie_index + ' '+ seq  # shell=True
+
     cmd = ['bowtie', '--mm', '-a', '-v', '0', '--suppress', '1,5,6,7,8', '-c', self.bowtie_index, seq] # shell=False
     
     sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
@@ -129,35 +69,42 @@ class prog_bowtie ():
     if bwout :
       bwList = bwout.split('\n')
       for line in bwList:
-        append_value = line.rstrip('\n').split('\t')
-        append_values += [append_value]
+        map_value = line.rstrip('\n').split('\t')
+        mappings += [map_value]
       
-    else :
-      append_values = [['NA', 'NA', 'NA']]
-    
-    return append_values
-    #'''
+    return mappings
+
   
-  def Bowtie_map_rule(self, kv_arg):
-    
-    keyvalue = kv_arg.split(self.keyval_sep)
-    key = keyvalue[0]
-    value = keyvalue[1]
-    sRNAseq = value.split(self.values_sep)[0]
-    
+  def Bowtie_map_rule(self, elem):
+    sRNAseq = str(elem[1][0])
     append_value = self.run_bowtie(sRNAseq)
-    
-    kv2 = [key, [value] + append_value]
-    return kv2
+    elem[1].append(append_value)
+    return elem
 
 
+#== sudo code ==
+class sudo ():
+  def __init__(self):
+    self.env = os.environ
+
+  def sudo_long (self, kv_arg):
+    '''
+    kv_arg = (id, [seq, frq, [bowtie], [pri_miRNA])
+    kv_arg_after = (id, [seq, frq, [bowtie], [pri_miRNA])
+    '''
+    pre_miRNA_example = 'GUGGAGCUCCUAUCAUUCCAAUGAAGGGUCUACCGGAAGGGUUUGUGCAGCUGCUCGUUCAUGGUUCCCACUAUCCUAUCUCCAUAGAAAACGAGGAGAGAGGCCUGUGGUUUGCAUGACCGAGGAGCCGCUUCGAUCCCUCGCUGACCGCUGUUUGGAUUGAAGGGAGCUCUGCAU'
+    #bowtie = kv_arg[1][2]
+    #pri_miRNA = kv_arg[1][3]
+    kv_arg[1].append([])
+    nbLoc = len(kv_arg[1][2])
+    for i in range(nbLoc):
+      kv_arg[1][3].append([[pre_miRNA_example, '153']])
+    return kv_arg  
+#===============
 
 class prog_RNAfold ():
   
-  def __init__(self, vals_sep, kv_sep):
-    self.values_sep = vals_sep
-    self.keyval_sep = kv_sep
-    
+  def __init__(self):
     # The object has to be initialized in the driver program 
     # to permit the capture of its env variables and pass them 
     # to the subprocess in the worker nodes
@@ -177,39 +124,29 @@ class prog_RNAfold ():
     p1.stdout.close()  # Allow p1 to receive a SIGPIPE if p2 exits.
     output = p2.communicate()[0].rstrip('\n').split('\n')
     RNAfold_results = output[1].split(' (')
-    folding = RNAfold_results[0] # ...(((....)))......
-    MFE = float(RNAfold_results[1][:-1]) # minimun free energy
+    folding = RNAfold_results[0]               # ...(((....)))......
+    MFE = float(RNAfold_results[1][:-1])       # minimun free energy
     return folding, MFE
 
   def RNAfold_map_rule(self, kv_arg):
     '''
     kv_arg = (id, [seq, frq, [bowtie], [pri_miRNA])
-    key = kv_arg[0]
-    values = kv_arg[1]
-    #bowtie = values[2] #= [['+', 'ch5', '781234'], [...], ...]
-    pri_miRNA = values[3] #= [[seq, pos], [seq, pos], ...] #= usually 2, or extremity 1, or special case 0
-    new_pri_miRNA = [[seq, pos, folding], [seq, pos, folding], ...]
-    
     pre_miRNA_example = 'GUGGAGCUCCUAUCAUUCCAAUGAAGGGUCUACCGGAAGGGUUUGUGCAGCUGCUCGUUCAUGGUUCCCACUAUCCUAUCUCCAUAGAAAACGAGGAGAGAGGCCUGUGGUUUGCAUGACCGAGGAGCCGCUUCGAUCCCUCGCUGACCGCUGUUUGGAUUGAAGGGAGCUCUGCAU'
     folding, MFE = run_RNAfold(pre_miRNA_example)
     '''
-    #pri_miRNAs = kv_arg[1][3]
-    for i in len(pri_miRNAs):
-      seq = pri_miRNAs[i - 1][0]
-      folding, MFE = run_RNAfold(seq)
-      kv_arg[1][3][i - 1].append(folding)
+    nbLoc = len(kv_arg[1][2])
+    pri_miRNAs = kv_arg[1][3]
+    for i in range(nbLoc):
+      nb_pri_miRNA_OF_thisLoc = len(kv_arg[1][3][i])
+      for j in range(nb_pri_miRNA_OF_thisLoc): ######
+        pri_seq = kv_arg[1][3][i][0]
+        folding, MFE = self.run_RNAfold(pri_seq)
+        kv_arg[1][3][i].append(folding)
     return kv_arg
-
-
-
-
 #==================================================================
 class prog_mirCheck ():
   
-  def __init__(self, vals_sep, kv_sep):
-    self.values_sep = vals_sep
-    self.keyval_sep = kv_sep
-    
+  def __init__(self):    
     # The object has to be initialized in the driver program 
     # to permit the capture of its env variables and pass them 
     # to the subprocess in the worker nodes
@@ -228,10 +165,33 @@ class prog_mirCheck ():
     return mirCheck_results
 
   def mirCheck_map_rule(self, kv_arg):  
-    #keyvalue = kv_arg.split(self.keyval_sep)
-    #key = keyvalue[0]
-    #value = keyvalue[1]
-    #sRNAseq = value.split(self.values_sep)[0] #= not ready
+    '''
+    kv_arg = (id, [seq, frq, [bowtie], [pri_miRNA])
+    key = kv_arg[0]
+    values = kv_arg[1]
+    #bowtie = values[2] #= [['+', 'ch5', '781234'], [...], ...]
+    pri_miRNA = values[3] #= [[seq, pos], [seq, pos], ...] #= usually 2, or extremity 1, or special case 0
+    new_pri_miRNA = [[seq, pos, folding], [seq, pos, folding], ...]
+    '''
+    kv_arg[1].append([])    #= pre_miRNAs = kv_arg[1][4]
+    len_miRNAseq = len(kv_arg[1][0]) ###############
+    nbLoc = len(kv_arg[1][2])
+    for i in range(nbLoc):
+      nb_pri_miRNA_OF_thisLoc = len(kv_arg[1][3][i])
+      for j in range(nb_pri_miRNA_OF_thisLoc): ######
+        pri_seq = kv_arg[1][3][i][j][0]
+        pos_miRNA_start = kv_arg[1][3][i][j][1]
+        folding = kv_arg[1][3][i][j][2]
+        pos_miRNA_stop = str( int(pos_miRNA_start) + len_miRNAseq - 1 )
+
+        mirCheck_results = self.run_mirCheck(folding, pos_miRNA_start, pos_miRNA_stop)
+        #fback = mirCheck_results[0] # True = ['3prime', '5prime']
+        #fback_start = mirCheck_results[1] #= '1'
+        #fback_stop = mirCheck_results[2] #= '173'
+        #print fback, fback_start, fback_stop
+        kv_arg[1][4][i].append(mirCheck_results)
+    return kv_arg
+
 
     #= artificial variables
     folding = '(((((((((((.(((.(((((...((((((...((..((((.(((.((.(((.((((.(((((....((((...(((.(((((...........))))).)))...))))....))))).)))).))).))..))).))))))..)))).))..))))).))).)))))))))))..'
@@ -244,21 +204,28 @@ class prog_mirCheck ():
     fback_stop = mirCheck_results[2] #= '173'
     print fback, fback_start, fback_stop
 
-    #kv2 = [key, [value] + append_value] #= not ready
-    #return kv2
 
   def mirCheck_filter_rule(self, kv_arg):
     #keyvalue = kv_arg.split(self.keyval_sep)
     #key = keyvalue[0]
     #value = keyvalue[1]
     #sRNAseq = value.split(self.values_sep)[0] #= not ready
-    fback = '3prime' #= sudo affactation
-    if fback == '3prime' or fback == '5prime':
-        return True
+    #fback = '3prime' #= sudo affactation
+    #if fback == '3prime' or fback == '5prime':
+    #    return True
+    #return False
+    pre_miRNAs = kv_arg[1][4] #= [['3prime', '1', '173'], [...], ...]
+    nbLoc = len(kv_arg[1][2])
+    for i in range(nbLoc):
+      nb_pre_miRNA_OF_thisLoc = len(kv_arg[1][4][i])
+      for j in range(nb_pre_miRNA_OF_thisLoc):
+        fback = kv_arg[1][4][i][j][0]
+        if fback == '3prime' or fback == '5prime':
+          return True
     return False
 
-
 #==================================================================
+
 
 '''
 #=== partition ========================================================================
@@ -319,7 +286,69 @@ def partitionBy(numPartitions, partitionFunc=portable_hash):
 #======================================================================
 '''
 
-
+class extract_precurosrs ():
+  
+  def __init__(self, genome_path, ext_left, ext_right):
+    self.genome_path = genome_path
+    self.ext_left = ext_left
+    self.ext_right = ext_right
+    #
+    self.genome = 0 ###
+    
+  #def getGenome ():
+    #return 0
+    
+  def extract_precursor (self, contig, strand, start_srna, len_srna):
+    ext_left = self.ext_left
+    ext_right = self.ext_right
+    
+    # all positions are zero-based
+    s1 = start_srna - ext_left
+    pos_5p = ext_left
+    if s1 < 0:
+      s1 = 0
+      pos_5p = start_srna
+      ext_left = start_srna
+    
+    t_len1 = len_srna + ext_left + ext_right
+    
+    s2 = start_srna - ext_right
+    pos_3p = ext_right
+    if s2 < 0:
+      s2 = 0
+      pos_3p = start_srna
+      ext_right = start_srna
+      
+    t_len2 = len_srna + ext_left + ext_right
+    
+    seq_5p = contig[s1:(s1+t_len1)]
+    seq_3p = contig[s2:(s2+t_len2)]
+    
+    if strand == "-":
+      seq_5p = ut.getRevComp(seq_5p);
+      pos_5p = len(seq_5p) - pos_5p - len_srna
+      
+      seq_3p = ut.getRevComp(seq_3p);
+      pos_3p = len(seq_3p) - pos_3p - len_srna
+    
+    seq_5p = ut.tr_T_U(seq_5p)
+    seq_3p = ut.tr_T_U(seq_3p)
+    
+    return [[seq_5p, pos_5p], [seq_3p, pos_3p]]
+    
+  def extract_prec_rule(self, elem):
+    # (u'000000001', [u'GAGGTTGGACAAGGCTTT', u'549', [[u'+', u'Chr2', u'1647574']]])
+    primirnas = []
+    len_srna = len(elem[1][0])
+    
+    for mapping in elem[1][2]:
+      contig = self.genome[mapping[1]]
+      primirnas.append(extract_precursor(contig, mapping[0], mapping[2], len_srna))
+    
+    elem[1].append(primirnas)
+    return elem
+  
+  
 if __name__ == '__main__' :
    
    values_sep = "<>"
