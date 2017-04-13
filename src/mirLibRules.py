@@ -18,14 +18,15 @@ def rearrange_rule(kv_arg, kv_sep):
   tab = kv_arg.split(kv_sep)
   return (tab[0],[tab[1],tab[2]])
 
+
 class prog_dustmasker ():
-  
+
   def __init__(self):
     # The object has to be initialized in the driver program 
     # to permit the capture of its env variables and pass them 
     # to the subprocess in the worker nodes
     self.env = os.environ
-    
+
   def dmask_filter_rule(self, elem):
     sRNAseq = str(elem[1][0])
     line1 = ['echo', '>seqMir\n' + sRNAseq]
@@ -43,7 +44,7 @@ class prog_dustmasker ():
 
 
 class prog_bowtie ():
-  
+
   def __init__(self, b_index):
     self.bowtie_index = b_index
     
@@ -51,7 +52,7 @@ class prog_bowtie ():
     # to permit the capture of its env variables and pass them 
     # to the subprocess in the worker nodes
     self.env = os.environ
-    
+
   def run_bowtie(self, seq):
     mappings = []
     FNULL = open(os.devnull, 'w')
@@ -74,7 +75,6 @@ class prog_bowtie ():
       
     return mappings
 
-  
   def Bowtie_map_rule(self, elem):
     sRNAseq = str(elem[1][0])
     append_value = self.run_bowtie(sRNAseq)
@@ -82,114 +82,18 @@ class prog_bowtie ():
     
     return elem
 
-class prog_RNAfold ():
-  
-  def __init__(self, vals_sep, kv_sep):
-    self.values_sep = vals_sep
-    self.keyval_sep = kv_sep
-    
-    # The object has to be initialized in the driver program 
-    # to permit the capture of its env variables and pass them 
-    # to the subprocess in the worker nodes
-    self.env = os.environ
-
-
-  def run_RNAfold(self, kv_arg):
-    #keyvalue = kv_arg.split(self.keyval_sep)
-    #key = keyvalue[0]
-    #value = keyvalue[1]
-    #longRNAseq = value.split(self.values_sep)[0] # this is not ready
-    PME = pre_miRNA_example = 'GUGGAGCUCCUAUCAUUCCAAUGAAGGGUCUACCGGAAGGGUUUGUGCAGCUGCUCGUUCAUGGUUCCCACUAUCCUAUCUCCAUAGAAAACGAGGAGAGAGGCCUGUGGUUUGCAUGACCGAGGAGCCGCUUCGAUCCCUCGCUGACCGCUGUUUGGAUUGAAGGGAGCUCUGCAU'
-    longRNAseq = PME
-    line1 = ['echo', longRNAseq]
-    line2 = ['RNAfold']
-    
-    p1 = sbp.Popen(line1, stdout=sbp.PIPE)#, env=self.env)
-    p2 = sbp.Popen(line2, stdin=p1.stdout, stdout=sbp.PIPE) #, env=self.env)
-    p1.stdout.close()  # Allow p1 to receive a SIGPIPE if p2 exits.
-    
-    output = p2.communicate()[0].rstrip('\n').split('\n')
-    RNAfold_results = output[1].split(' (')
-    folding = RNAfold_results[0] # ...(((....)))......
-    MFE = float(RNAfold_results[1][:-1]) # minimun free energy
-    
-    print output
-    print folding
-    print MFE
-
-
-'''
-#=== partition ========================================================================
-def portable_hash(x):
-    """
-    This function returns consistent hash code for builtin types, especially
-    for None and tuple with None.
-
-    The algorithm is similar to that one used by CPython 2.7
-
-    >>> portable_hash(None)
-    0
-    >>> portable_hash((None, 1)) & 0xffffffff
-    219750521
-    """
-    if sys.version >= '3.3' and 'PYTHONHASHSEED' not in os.environ:
-        raise Exception("Randomness of hash of string should be disabled via PYTHONHASHSEED")
-
-    if x is None:
-        return 0
-    if isinstance(x, tuple):
-        h = 0x345678
-        for i in x:
-            h ^= portable_hash(i)
-            h *= 1000003
-            h &= sys.maxsize
-        h ^= len(x)
-        if h == -1:
-            h = -2
-        return int(h)
-    return hash(x)
-
-def partitionBy(numPartitions, partitionFunc=portable_hash):
-    """
-    Return a copy of the RDD partitioned using the specified partitioner.
-
-    >>> pairs = sc.parallelize([1, 2, 3, 4, 2, 4, 1]).map(lambda x: (x, x))
-    >>> sets = pairs.partitionBy(2).glom().collect()
-    >>> len(set(sets[0]).intersection(set(sets[1])))
-    0
-    """
-    #if numPartitions is None:
-    #    numPartitions = self._defaultReducePartitions()
-    #partitioner = Partitioner(numPartitions, partitionFunc)
-    #if self.partitioner == partitioner:
-    #    return self
-
-    # Transferring O(n) objects to Java is too expensive.
-    # Instead, we'll form the hash buckets in Python,
-    # transferring O(numPartitions) objects to Java.
-    # Each object is a (splitNumber, [objects]) pair.
-    # In order to avoid too huge objects, the objects are
-    # grouped into chunks.
-    outputSerializer = self.ctx._unbatched_serializer
-
-    limit = (_parse_memory(self.ctx._conf.get(
-        "spark.python.worker.memory", "512m")) / 2)
-#======================================================================
-'''
 
 class extract_precurosrs ():
-  
-  def __init__(self, genome_path, ext_left, ext_right):
+
+  def __init__(self, genome_path, ext_left, ext_right, pre_flank):
     self.genome_path = genome_path
     self.ext_left = ext_left
     self.ext_right = ext_right
+    self.pre_flank = pre_flank
     #
-    self.genome = getGenome()
-    
-  def getGenome ():
-    return 0
-    
-  def extract_precursor (self, contig, strand, start_srna, len_srna):
+    self.genome = ut.getGenome(genome_path, ".fas")
+
+  def extract_precursors (self, contig, strand, start_srna, len_srna):
     ext_left = self.ext_left
     ext_right = self.ext_right
     
@@ -222,24 +126,131 @@ class extract_precurosrs ():
       seq_3p = ut.getRevComp(seq_3p);
       pos_3p = len(seq_3p) - pos_3p - len_srna
     
-    seq_5p = ut.tr_T_U(seq_5p)
-    seq_3p = ut.tr_T_U(seq_3p)
+    # seq_5p = ut.tr_T_U(seq_5p)
+    # seq_3p = ut.tr_T_U(seq_3p)
     
     return [[seq_5p, pos_5p], [seq_3p, pos_3p]]
-    
-  def extract_prec_rule(self, elem):
-    # (u'000000001', [u'GAGGTTGGACAAGGCTTT', u'549', [[u'+', u'Chr2', u'1647574']]])
+
+  def extract_prim_rule(self, elem):
     primirnas = []
     len_srna = len(elem[1][0])
     
     for mapping in elem[1][2]:
       contig = self.genome[mapping[1]]
-      primirnas.append(extract_precursor(contig, mapping[0], mapping[2], len_srna))
+      primirnas.append(self.extract_precursors(contig, mapping[0], int(mapping[2]), len_srna))
     
     elem[1].append(primirnas)
     return elem
-  
-  
+
+  def extract_sub_seq(self, contig, posMir, fback_start, fback_stop):
+    
+    fold_len = fback_stop - fback_start + 1
+    pos = posMir - fback_start + self.pre_flank          # 0-based
+    deb = fback_start - self.pre_flank; 
+    
+    if deb < 0 :
+      deb = 0
+      pos = posMir
+    
+    fin = fback_stop + self.pre_flank + 1
+    newSeq = contig[deb:fin]
+
+    return [newSeq, pos]
+
+  def extract_prem_rule(self, elem):
+    premirnas = []
+    
+    for primirnas in elem[1][3]:
+      premirna = []
+      for primirna in primirnas:
+        if any(primirna):
+          priSeq = primirna[0]
+          posMir = int(primirna[1])
+          fback_start = int(primirna[4])
+          fback_stop = int(primirna[5])
+          
+          premirna.append(self.extract_sub_seq(priSeq, posMir, fback_start, fback_stop))
+      premirnas.append(premirna)
+    
+    elem[1].append(premirnas)
+    return elem
+
+
+class prog_RNAfold ():
+
+  def __init__(self):
+    self.env = os.environ
+
+  def run_RNAfold(self, seq):
+    '''
+    example line = echo GUGGAGCUCCUAUCAUUCC| RNAfold
+    task: echo and pipe the sequence to RNAfold
+    this requires two subprocesses
+    '''
+    line1 = ['echo', seq]
+    line2 = ['RNAfold']
+    
+    p1 = sbp.Popen(line1, stdout=sbp.PIPE, env=self.env)
+    p2 = sbp.Popen(line2, stdin=p1.stdout, stdout=sbp.PIPE, env=self.env)
+    p1.stdout.close()  # Allow p1 to receive a SIGPIPE if p2 exits.
+    
+    output = p2.communicate()[0].rstrip('\n').split('\n')
+    
+    RNAfold_results = output[1].split(' (')
+    folding = RNAfold_results[0]               # ...(((....)))......
+    # MFE = float(RNAfold_results[1][:-1])       # minimun free energy
+    
+    return folding
+
+  def RNAfold_map_rule(self, elem, field):
+    for primirnas in elem[1][field]:
+      for primirna in primirnas:
+        fold = self.run_RNAfold(primirna[0])
+        primirna.append(fold)
+    
+    return elem
+
+class prog_mirCheck ():
+
+  def __init__(self, param):
+    self.param = param
+    self.env = os.environ
+
+  def run_mirCheck(self, folding, miRNA_start, miRNA_stop):
+    '''
+    example line = perl eval_mircheck.pl "((((((.((((((....).))))).)))))).........." 46 64 def
+    '''
+    cmd = ['perl', 'eval_mircheck.pl', folding, str(miRNA_start), str(miRNA_stop), self.param]
+    FNULL = open(os.devnull, 'w')
+    sproc = sbp.Popen(cmd, stdout=sbp.PIPE, shell=False, stderr=FNULL, env=self.env)
+    mirCheck_results = sproc.communicate()[0].rstrip('\n').split('\t') #= ['3prime', '1', '173']
+    FNULL.close()
+    return mirCheck_results
+
+  def mirCheck_map_rule(self, elem, field):
+    '''
+    elem = (id, [seq, frq, [bowtie], [pri_miRNA]])
+    '''
+    len_miRNAseq = len(elem[1][0]) ###############
+    
+    for primirnas in elem[1][field]:
+      for primirna in primirnas:
+        pos_miRNA_start = int(primirna[1])
+        pos_miRNA_stop  = pos_miRNA_start + len_miRNAseq - 1
+        folding = primirna[2]
+        
+        mirCheck_results = self.run_mirCheck(folding, pos_miRNA_start, pos_miRNA_stop)
+        
+        if 'prime' in mirCheck_results[0]:
+          primirna.extend(mirCheck_results)
+        else :
+          del primirna[:]
+      
+      if not any(primirnas) : del primirnas[:]
+      
+    return elem
+
+
 if __name__ == '__main__' :
    
    values_sep = "<>"

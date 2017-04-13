@@ -6,6 +6,7 @@ date: 2017-03-25
 version: 0.00.01
 '''
 
+import os
 
 # Configure a spark context
 def pyspark_configuration(appMaster, appName, appMemory):
@@ -18,7 +19,6 @@ def pyspark_configuration(appMaster, appName, appMemory):
 
 # Convert a file to hadoop file
 def convertTOhadoop(rfile, hdfsFile):
-  import os
   print('if pre-existing in hdfs, the file would be deleted before the re-distribution of a new file with the same name.\n')
   os.system('hadoop fs -rm ' + hdfsFile) # force delete any pre-existing file in hdfs with the same name.
   os.system('hadoop fs -copyFromLocal ' + rfile + ' ' + hdfsFile)
@@ -37,7 +37,6 @@ def covert_fasta_to_KeyValue(infile, outfile):
   for k, v in dict_sRNA.items():
       print >>fh_out, k + ':' + v
   fh_out.close()
-
 
 # Convert a seq abundance file into a key value file
 def convert_seq_freq_file_to_KeyValue(infile, outfile, v_sep):
@@ -61,21 +60,55 @@ def convert_seq_freq_file_to_KeyValue(infile, outfile, v_sep):
   fh.close()
   fh_out.close()
   
-  def getRevComp (seq):
-    from string import maketrans
+def getRevComp (seq):
+  from string import maketrans
+  
+  intab = "ACGT"
+  outab = "TGCA"
+  trantab = maketrans(intab, outab)
+  n_seq = seq.translate(trantab)
+  return n_seq[::-1];
+
+def tr_T_U (seq):
+  from string import maketrans
+  trantab = maketrans("T", "U")
+  return seq.translate(trantab)
+
+def tr_U_T (seq):
+  from string import maketrans
+  trantab = maketrans("U", "T")
+  return seq.translate(trantab)
+
+#
+def getChromosomeName (file):
+  desc = ""
+  with open(file, "r") as fh:
+    for line in fh :
+      if line.startswith(">"):
+        desc = line
+        break
+  fh.close()
+
+  return desc.split()[0][1:]
+
+def getFastaSeq (file):
+  seq = ""
+  with open(file, "r") as fh:
+    for line in fh :
+      if not line.startswith(">"):
+        seq = seq + line.rstrip("\n")
+  
+  fh.close()
+  return seq
+
+def getGenome (genome_path, file_ext):
+  genome = dict()
+  
+  files = [each for each in os.listdir(genome_path) if each.endswith(file_ext)]
+  for namefile in files :
+    file = genome_path+namefile
+    chr = getChromosomeName(file)
+    sequence = getFastaSeq(file)
+    genome[chr] = sequence
     
-    intab = "ACGT"
-    outab = "TGCA"
-    trantab = maketrans(intab, outab)
-    n_seq = seq.translate(trantab)
-    return n_seq[::-1];
-  
-  def tr_T_U (seq):
-    from string import maketrans
-    trantab = maketrans("T", "U")
-    return seq.translate(trantab)
-  
-  def tr_U_T (seq):
-    from string import maketrans
-    trantab = maketrans("U", "T")
-    return seq.translate(trantab)
+  return genome
