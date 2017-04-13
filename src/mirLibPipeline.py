@@ -47,33 +47,31 @@ if __name__ == '__main__' :
   infile = sys.argv[2]
  
   paramDict = ut.readparam (paramfile)
-  print paramDict
+  
   # Parameters and cutoffs
-  # Separators
-  my_sep = paramDict['my_sep']
-  # tmp file folder
-  rep_tmp = paramDict['rep_tmp']
+  
+  my_sep = paramDict['my_sep']                # Separator
+  rep_tmp = paramDict['rep_tmp']              # tmp file folder
 
   # spark parameter
-  master = paramDict['master'] #"local" 
-  appname = paramDict['appname'] #"mirLibHadoop"
-  memory = paramDict['memory'] #"2g"
+  master = paramDict['master']                #"local" 
+  appname = paramDict['appname']              #"mirLibHadoop"
+  memory = paramDict['memory']                #"2g"
   # genome
-  genome_path = paramDict['genome_path'] #"../input/ATH/TAIR/Genome/"
+  genome_path = paramDict['genome_path']      #"../input/ATH/TAIR/Genome/"
   # cutoffs
-  limit_freq = int(paramDict['limit_freq']) #200            # exclude RNA freq < limit_freq
-  limit_len = int(paramDict['limit_len']) #18              # exclude RNA length < limit_len
-  limit_nbLoc = int(paramDict['limit_nbLoc']) #2             # exculde nbLoc mapped with bowtie  > limit_nbLoc
+  limit_freq = int(paramDict['limit_freq'])   #200      # exclude RNA freq < limit_freq
+  limit_len = int(paramDict['limit_len'])     #18       # exclude RNA length < limit_len
+  limit_nbLoc = int(paramDict['limit_nbLoc']) #2        # exculde nbLoc mapped with bowtie  > limit_nbLoc
   # bowtie
   b_index = paramDict['b_index']
   # pri-mirna
   pri_l_flank = int(paramDict['pri_l_flank']) #120
   pri_r_flank = int(paramDict['pri_r_flank']) #60
-  pre_flank = int(paramDict['pre_flank']) #30
+  pre_flank = int(paramDict['pre_flank'])     #30
   # mircheck parameter
-  mcheck_param = paramDict['mcheck_param'] #'def'        # def : default parameters / mey : meyers parameters
+  mcheck_param = paramDict['mcheck_param']    #'def'     # def : default parameters / mey : meyers parameters
 
-  
   inBasename = os.path.splitext(os.path.basename(infile))[0]
   
   inKvfile = rep_tmp + inBasename + '.kv.txt'
