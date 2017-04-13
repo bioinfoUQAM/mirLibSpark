@@ -57,7 +57,7 @@ class prog_bowtie ():
     mappings = []
     FNULL = open(os.devnull, 'w')
     
-    # self.cmd = 'bowtie --mm -a -v 0 --suppress 1,5,6,7,8 -c ' + self.bowtie_index + ' '+ seq  # shell=True
+    # cmd = 'bowtie --mm -a -v 0 --suppress 1,5,6,7,8 -c ' + self.bowtie_index + ' '+ seq  # shell=True
 
     cmd = ['bowtie', '--mm', '-a', '-v', '0', '--suppress', '1,5,6,7,8', '-c', self.bowtie_index, seq] # shell=False
     
@@ -79,7 +79,6 @@ class prog_bowtie ():
     sRNAseq = str(elem[1][0])
     append_value = self.run_bowtie(sRNAseq)
     elem[1].append(append_value)
-    
     return elem
 
 
@@ -257,8 +256,12 @@ if __name__ == '__main__' :
    keyval_sep = "::"
    b_index = "a_thaliana_t10"
    
-   bowtie = prog_bowtie(values_sep, keyval_sep, b_index)
-   print(bowtie.run_bowtie('CAAAGACTCATATGGACTTTGG'))
+   #bowtie = prog_bowtie(values_sep, keyval_sep, b_index)
+   #print(bowtie.run_bowtie('ATACGATCCAAGACGAGTCTCAAT'))
+   mirCheck = prog_mirCheck(values_sep, keyval_sep)
+   #print mirCheck.run_mirCheck('test')
+   mirCheck.mirCheck_map_rule('test')
+   print mirCheck.mirCheck_filter_rule('test')
 
 '''
 http://stackoverflow.com/questions/30010939/python-subprocess-popen-error-no-such-file-or-directory

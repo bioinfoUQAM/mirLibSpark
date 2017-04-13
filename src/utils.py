@@ -112,3 +112,14 @@ def getGenome (genome_path, file_ext):
     genome[chr] = sequence
     
   return genome
+
+def readparam (paramfile, sep = '='):
+  fh = open (paramfile, 'r')
+  DATA = fh.readlines()
+  fh.close()
+  paramDict = {}
+  for line in DATA:
+    data = line.rstrip('\r\n').split(sep)
+    paramDict[data[0]] = data[1]
+  return paramDict
+    
