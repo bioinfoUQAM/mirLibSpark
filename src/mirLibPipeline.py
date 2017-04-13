@@ -47,7 +47,7 @@ if __name__ == '__main__' :
   infile = sys.argv[2]
  
   paramDict = ut.readparam (paramfile)
-  print paramDict
+
   # Parameters and cutoffs
   # Separators
   my_sep = paramDict['my_sep']
@@ -78,8 +78,7 @@ if __name__ == '__main__' :
   
   inKvfile = rep_tmp + inBasename + '.kv.txt'
   hdfsFile = inBasename + '.hkv.txt'
-  print inKvfile
-  print hdfsFile
+
 
   # Spark context
   sc = ut.pyspark_configuration(master, appname, memory) # yarn-client
@@ -112,9 +111,16 @@ if __name__ == '__main__' :
 
   # # Filtering with DustMasker
   dmask_rdd = rm_short_rdd.filter(dmask_obj.dmask_filter_rule)
-  print dmask_rdd.collect()
+  
   # Mapping with Bowtie
-  bowtie_rdd = dmask_rdd.map(bowtie_obj.Bowtie_map_rule)
+  bowtie_rdd = dmask_rdd.map(bowtie_obj.Bowtie_map_rule).persist()
+  print bowtie_rdd.collect()
+  
+  #elem = (id, [seq, frq, [bowtie], [pri_miRNA]])
+  strand = '-'
+  chromo = 'Chr3'
+  totalfrq = bowtie_rdd.filter(lambda elem: strand in elem[1][2][0] and chromo in elem[1][2][0] and int(elem[1][2][0][2]) > 3366300)
+  print totalfrq.collect()
   
 
   # Filtering high nbLocations and zero location
@@ -138,5 +144,5 @@ if __name__ == '__main__' :
   # Validating pri-mirna with mircheck
   pre_vld_rdd = pre_fold_rdd.map(lambda elem: mircheck_obj.mirCheck_map_rule(elem, 4)).filter(lambda elem: any(elem[1][4]))
   
-  print pre_vld_rdd.collect()
+  #print pre_vld_rdd.collect()
 
