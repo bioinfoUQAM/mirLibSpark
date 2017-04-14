@@ -76,8 +76,6 @@ if __name__ == '__main__' :
   
   inKvfile = rep_tmp + inBasename + '.kv.txt'
   hdfsFile = inBasename + '.hkv.txt'
-  print inKvfile
-  print hdfsFile
 
   # Spark context
   sc = ut.pyspark_configuration(master, appname, memory) # yarn-client
@@ -108,33 +106,30 @@ if __name__ == '__main__' :
   # Filtering short length 
   rm_short_rdd = rm_low_rdd.filter(lambda elem: len(str(elem[1][0])) > limit_len)
 
-  # # Filtering with DustMasker
+  # Filtering with DustMasker
   dmask_rdd = rm_short_rdd.filter(dmask_obj.dmask_filter_rule)
-  print dmask_rdd.collect()
+  
   # Mapping with Bowtie
   bowtie_rdd = dmask_rdd.map(bowtie_obj.Bowtie_map_rule)
   
-
   # Filtering high nbLocations and zero location
-  nbLoc_rdd = bowtie_rdd.filter(lambda elem: len(elem[1][2]) > 0 and len(elem[1][2]) < limit_nbLoc)
+  nbLoc_rdd = bowtie_rdd.filter(lambda elem: elem[1][2] > 0 and elem[1][2] < limit_nbLoc)
   
   # Extraction of the pri-miRNA
-  primir_rdd = nbLoc_rdd.map(prec_obj.extract_prim_rule)
-  
+  primir_rdd = nbLoc_rdd.flatMap(prec_obj.extract_prim_rule)
+   
   # pri-miRNA folding
-  pri_fold_rdd = primir_rdd.map(lambda elem: rnafold_obj.RNAfold_map_rule(elem, 3))
+  pri_fold_rdd = primir_rdd.map(lambda elem: rnafold_obj.RNAfold_map_rule(elem, 4))
   
   # Validating pri-mirna with mircheck
-  pri_vld_rdd = pri_fold_rdd.map(lambda elem: mircheck_obj.mirCheck_map_rule(elem, 3)).filter(lambda elem: any(elem[1][3]))
+  pri_vld_rdd = pri_fold_rdd.map(lambda elem: mircheck_obj.mirCheck_map_rule(elem, 4)).filter(lambda elem: any(elem[1][4]))
   
   # Extraction of the pre-miRNA
   premir_rdd = pri_vld_rdd.map(prec_obj.extract_prem_rule)
-  
-  # pre-miRNA folding
-  pre_fold_rdd = premir_rdd.map(lambda elem: rnafold_obj.RNAfold_map_rule(elem, 4))
-  
-  # Validating pri-mirna with mircheck
-  pre_vld_rdd = pre_fold_rdd.map(lambda elem: mircheck_obj.mirCheck_map_rule(elem, 4)).filter(lambda elem: any(elem[1][4]))
-  
-  print pre_vld_rdd.collect()
 
+  # pre-miRNA folding
+  pre_fold_rdd = premir_rdd.map(lambda elem: rnafold_obj.RNAfold_map_rule(elem, 5))
+  
+  # Validating pre-mirna with mircheck
+  pre_vld_rdd = pre_fold_rdd.map(lambda elem: mircheck_obj.mirCheck_map_rule(elem, 5)).filter(lambda elem: any(elem[1][5]))
+  print pre_vld_rdd.collect()

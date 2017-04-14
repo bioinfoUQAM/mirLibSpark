@@ -16,7 +16,7 @@ import utils as ut
 
 def rearrange_rule(kv_arg, kv_sep):
   tab = kv_arg.split(kv_sep)
-  return (tab[0],[tab[1],tab[2]])
+  return (str(tab[0]),[str(tab[1]),int(tab[2])])
 
 
 class prog_dustmasker ():
@@ -63,7 +63,7 @@ class prog_bowtie ():
     
     sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
     bsout = sproc.communicate()[0]
-    bwout = bsout.decode("ascii").rstrip('\n')
+    bwout = bsout.rstrip('\n')
     
     FNULL.close()
     
@@ -71,6 +71,9 @@ class prog_bowtie ():
       bwList = bwout.split('\n')
       for line in bwList:
         map_value = line.rstrip('\n').split('\t')
+        map_value[0] = str(map_value[0])
+        map_value[1] = str(map_value[1])
+        map_value[2] = int(map_value[2])
         mappings += [map_value]
       
     return mappings
@@ -78,6 +81,7 @@ class prog_bowtie ():
   def Bowtie_map_rule(self, elem):
     sRNAseq = str(elem[1][0])
     append_value = self.run_bowtie(sRNAseq)
+    elem[1].append(len(append_value))
     elem[1].append(append_value)
     return elem
 
@@ -93,6 +97,7 @@ class extract_precurosrs ():
     self.genome = ut.getGenome(genome_path, ".fas")
 
   def extract_precursors (self, contig, strand, start_srna, len_srna):
+    prims = []
     ext_left = self.ext_left
     ext_right = self.ext_right
     
@@ -128,18 +133,30 @@ class extract_precurosrs ():
     # seq_5p = ut.tr_T_U(seq_5p)
     # seq_3p = ut.tr_T_U(seq_3p)
     
-    return [[seq_5p, pos_5p], [seq_3p, pos_3p]]
+    if seq_5p == seq_3p :
+      prims = [[seq_5p, pos_5p]]
+    else :
+      prims = [[seq_5p, pos_5p], [seq_3p, pos_3p]]
+      
+    return prims
 
   def extract_prim_rule(self, elem):
+    '''
+    elem = (id, [seq, frq, nbloc, [bowties]])
+    '''
+    newElems = []
     primirnas = []
     len_srna = len(elem[1][0])
     
-    for mapping in elem[1][2]:
+    for mapping in elem[1][3]:
       contig = self.genome[mapping[1]]
-      primirnas.append(self.extract_precursors(contig, mapping[0], int(mapping[2]), len_srna))
+      prims = self.extract_precursors(contig, mapping[0], int(mapping[2]), len_srna)
+      
+      for prim in prims :
+        newElem = (elem[0], [elem[1][0], elem[1][1], elem[1][2], mapping, prim])
+        newElems.append(newElem)
     
-    elem[1].append(primirnas)
-    return elem
+    return newElems
 
   def extract_sub_seq(self, contig, posMir, fback_start, fback_stop):
     
@@ -157,21 +174,16 @@ class extract_precurosrs ():
     return [newSeq, pos]
 
   def extract_prem_rule(self, elem):
-    premirnas = []
+    '''
+    elem = (id, [seq, frq, nbloc, [bowtie], [pri_miRNA, posMirPrim, Struct, mircheck, fbstart, fbstop]])
+    '''
     
-    for primirnas in elem[1][3]:
-      premirna = []
-      for primirna in primirnas:
-        if any(primirna):
-          priSeq = primirna[0]
-          posMir = int(primirna[1])
-          fback_start = int(primirna[4])
-          fback_stop = int(primirna[5])
-          
-          premirna.append(self.extract_sub_seq(priSeq, posMir, fback_start, fback_stop))
-      premirnas.append(premirna)
+    priSeq = elem[1][4][0]
+    posMir = int(elem[1][4][1])
+    fback_start = int(elem[1][4][4])
+    fback_stop = int(elem[1][4][5])
     
-    elem[1].append(premirnas)
+    elem[1].append(self.extract_sub_seq(priSeq, posMir, fback_start, fback_stop))
     return elem
 
 
@@ -202,11 +214,10 @@ class prog_RNAfold ():
     return folding
 
   def RNAfold_map_rule(self, elem, field):
-    for primirnas in elem[1][field]:
-      for primirna in primirnas:
-        fold = self.run_RNAfold(primirna[0])
-        primirna.append(fold)
-    
+    '''
+    elem = (id, [seq, frq, nbloc, [bowtie], [pri_miRNA]])
+    '''
+    elem[1][field].append(self.run_RNAfold(elem[1][field][0]))
     return elem
 
 class prog_mirCheck ():
@@ -228,28 +239,26 @@ class prog_mirCheck ():
 
   def mirCheck_map_rule(self, elem, field):
     '''
-    elem = (id, [seq, frq, [bowtie], [pri_miRNA]])
+    elem = (id, [seq, frq, nbloc, [bowtie], [pri_miRNA, posMirPrim, Struct]])
+    elem[1][field][0]
     '''
-    len_miRNAseq = len(elem[1][0]) ###############
+    len_miRNAseq = len(elem[1][0])
     
-    for primirnas in elem[1][field]:
-      for primirna in primirnas:
-        pos_miRNA_start = int(primirna[1])
-        pos_miRNA_stop  = pos_miRNA_start + len_miRNAseq - 1
-        folding = primirna[2]
-        
-        mirCheck_results = self.run_mirCheck(folding, pos_miRNA_start, pos_miRNA_stop)
-        
-        if 'prime' in mirCheck_results[0]:
-          primirna.extend(mirCheck_results)
-        else :
-          del primirna[:]
+    pos_miRNA_start = int(elem[1][field][1])
+    pos_miRNA_stop  = pos_miRNA_start + len_miRNAseq - 1
+    folding = elem[1][field][2]
+    
+    mirCheck_results = self.run_mirCheck(folding, pos_miRNA_start, pos_miRNA_stop)
+    
+    if 'prime' in mirCheck_results[0]:
+      elem[1][field].extend(mirCheck_results)
+    else :
+      del elem[1][field][:]
       
-      if not any(primirnas) : del primirnas[:]
+    # if not any(primirnas) : del primirnas[:]
       
     return elem
-
-
+  
 if __name__ == '__main__' :
    
    values_sep = "<>"
