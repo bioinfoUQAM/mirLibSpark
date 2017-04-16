@@ -257,8 +257,9 @@ class prog_mirCheck ():
       
     # if not any(primirnas) : del primirnas[:]
       
+
     return elem
-  
+
 if __name__ == '__main__' :
    
    values_sep = "<>"

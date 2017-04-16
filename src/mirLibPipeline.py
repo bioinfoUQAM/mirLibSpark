@@ -47,7 +47,7 @@ if __name__ == '__main__' :
   infile = sys.argv[2]
  
   paramDict = ut.readparam (paramfile)
-  
+
   # Parameters and cutoffs
   
   my_sep = paramDict['my_sep']                # Separator
@@ -110,7 +110,25 @@ if __name__ == '__main__' :
   dmask_rdd = rm_short_rdd.filter(dmask_obj.dmask_filter_rule)
   
   # Mapping with Bowtie
-  bowtie_rdd = dmask_rdd.map(bowtie_obj.Bowtie_map_rule)
+  bowtie_rdd = dmask_rdd.map(bowtie_obj.Bowtie_map_rule).persist()
+  print bowtie_rdd.collect()
+  
+  #elem = (id, [seq, frq, [bowtie], [pri_miRNA]])
+  def sum_rule (elem_a, elem_b):
+    frq_a = int(elem_a[1][1])
+    frq_b = int(elem_b[1][1])
+    elem_a[1][1] = frq_a + frq_b
+    return elem_a
+    
+  
+  strand = '-'
+  chromo = 'Chr3'
+  x = 3366340
+  y = 3366440
+  sRNAprofile = bowtie_rdd.filter(lambda elem: strand in elem[1][2][0] and chromo in elem[1][2][0] and x < int(elem[1][2][0][2]) < y)
+  print sRNAprofile.collect() #= save it in a file later
+  totalfrq = sRNAprofile.reduce(sum_rule)[1][1]
+  print totalfrq
   
   # Filtering high nbLocations and zero location
   nbLoc_rdd = bowtie_rdd.filter(lambda elem: elem[1][2] > 0 and elem[1][2] < limit_nbLoc)
@@ -130,6 +148,8 @@ if __name__ == '__main__' :
   # pre-miRNA folding
   pre_fold_rdd = premir_rdd.map(lambda elem: rnafold_obj.RNAfold_map_rule(elem, 5))
   
+
   # Validating pre-mirna with mircheck
   pre_vld_rdd = pre_fold_rdd.map(lambda elem: mircheck_obj.mirCheck_map_rule(elem, 5)).filter(lambda elem: any(elem[1][5]))
   print pre_vld_rdd.collect()
+

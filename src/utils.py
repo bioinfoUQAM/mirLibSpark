@@ -7,6 +7,7 @@ version: 0.00.01
 '''
 
 import os
+import re
 
 # Configure a spark context
 def pyspark_configuration(appMaster, appName, appMemory):
@@ -122,4 +123,27 @@ def readparam (paramfile, sep = '='):
     data = line.rstrip('\r\n').split(sep)
     paramDict[data[0]] = data[1]
   return paramDict
-    
+
+def containsOnly1loop (folding):
+    '''
+    Return True if the folding structure contains only one loop.
+    A loop is definded as follows:
+    When n > 0:
+        loop = '(' * n1 + '.' * n2 + ')' * n3
+    n1, n2, n3 don't need to be the same,
+    loop1, loop2 don't need to be the same
+    loop1 and loop2 are separated by a few residues composed of '.' and/or '(' and/or ')'
+
+    @param      folding     RNAfold structure
+                            ) or (  : mismatch
+                            .       : pairing
+    @return     True or False
+    @post       folding1 = '((((((........))))))....)))'                    #True
+                folding2 = '...((((((...........(((((....)))))).....))))))' #True
+                folding3 = '...((.....)).....)))))..((((((...((......'      #True
+                folding4 = '....((((...)))...((((......))))).....'          #False
+                folding5 = '...((.....)).....))))).....((...))...'          #False
+    '''
+    m = re.search(r'[(]+[.]+[)]+[.()]+[(]+[.]+[)]+', folding)
+    if m: return False
+    return True
