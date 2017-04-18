@@ -157,21 +157,17 @@ if __name__ == '__main__' :
 
   '''  
   #================================================================================================
-  #elem = (id, [seq, frq, nbloc, [bowtie], [pri_miRNA]])
-  def sum_rule (elem_a, elem_b):
-    frq_a = int(elem_a[1][1])
-    frq_b = int(elem_b[1][1])
-    elem_a[1][1] = frq_a + frq_b
-    return elem_a
-    
-  
+  #elem = (id, [seq, frq, nbloc, [bowtie], [pri_miRNA]])  
   strand = '-'
   chromo = 'Chr3'
   x = 3366340
   y = 3366440
   sRNAprofile = bowtie_rdd.filter(lambda elem: strand in elem[1][3][0] and chromo in elem[1][3][0] )#and x < int(elem[1][2][0][2]) < y)
-  print sRNAprofile.collect() #= save it in a file later
-  totalfrq = sRNAprofile.reduce(sum_rule)[1][1]
+  #print sRNAprofile.collect() #= save it in a file later
+  #totalfrq = sRNAprofile.reduce(profile_obj.sum_rule)[1][1]
+  #print totalfrq
+
+  totalfrq = profile_obj.functionX(bowtie_rdd) 
   print totalfrq
 
 

@@ -9,6 +9,7 @@ version: 0.00.01
 import os
 import re
 
+
 # Configure a spark context
 def pyspark_configuration(appMaster, appName, appMemory):
   from pyspark import SparkConf, SparkContext
@@ -164,7 +165,8 @@ def profile_range (elem):
     else:
       y = posgen + len(mirseq) + mirpos_on_pre -1
       x = y-len(preseq) + 1
-    return x-1, y+1	# exclusive
+    return x-1, y+1	# exclusive  x < a < y
+
 
 
 

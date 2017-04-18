@@ -85,7 +85,6 @@ class prog_bowtie ():
     elem[1].append(append_value)
     return elem
 
-
 class extract_precurosrs ():
 
   def __init__(self, genome_path, ext_left, ext_right, pre_flank):
@@ -259,6 +258,52 @@ class prog_mirCheck ():
       
 
     return elem
+
+class prog_dominant_profile ():
+
+  def __init__(self):
+    self.env = os.environ
+
+  def sum_rule (self, elem_a, elem_b):
+    frq_a = int(elem_a[1][1])
+    frq_b = int(elem_b[1][1])
+    elem_a[1][1] = frq_a + frq_b
+    return elem_a
+
+  def filter_profile_position_rule (self, elem, x, y, strand, chromo):
+    nbloc = elem[1][2]
+    for i in range(nbloc):
+      if x < int(elem[1][3][i][2]) < y and strand in elem[1][3][i][0] and chromo in elem[1][3][i][1]:
+        return True
+    return False  #discard this elem
+
+  def functionX (self, bowtie_rdd):
+    strand = '-'
+    chromo = 'Chr3'
+    x = 3366340
+    y = 3366440
+    sRNAprofile = bowtie_rdd.filter(lambda elem : self.filter_profile_position_rule(elem, x, y, strand, chromo) )
+    #print sRNAprofile.collect() #= save it in a file later
+    totalfrq = sRNAprofile.reduce(self.sum_rule)[1][1]
+    return totalfrq
+
+
+
+
+  '''
+  def filter_low_percent_total_frq (elem):
+    miRNAfrq = elem[1][1]
+    totalfrq = 
+    return True
+  '''
+    
+    
+
+
+
+
+
+
 
 if __name__ == '__main__' :
    
