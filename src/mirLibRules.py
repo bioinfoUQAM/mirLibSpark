@@ -283,7 +283,7 @@ class prog_dominant_profile ():
     x = 3366340
     y = 3366440
     sRNAprofile = bowtie_rdd.filter(lambda elem : self.filter_profile_position_rule(elem, x, y, strand, chromo) )
-    #print sRNAprofile.collect() #= save it in a file later
+    #print sRNAprofile.collect() #= need to write a function to print this to a file
     totalfrq = sRNAprofile.reduce(self.sum_rule)[1][1]
     return totalfrq
 
