@@ -167,7 +167,8 @@ if __name__ == '__main__' :
   #totalfrq = sRNAprofile.reduce(profile_obj.sum_rule)[1][1]
   #print totalfrq
 
-  totalfrq = profile_obj.functionX(bowtie_rdd) 
+  #totalfrq = profile_obj.functionX(bowtie_rdd) 
+  totalfrq = profile_obj.functionX(bowtie_rdd, elem) 
   print totalfrq
 
 
