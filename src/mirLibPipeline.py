@@ -111,7 +111,7 @@ if __name__ == '__main__' :
   
   # Mapping with Bowtie
   bowtie_rdd = dmask_rdd.map(bowtie_obj.Bowtie_map_rule).persist()
-  #print bowtie_rdd.collect()
+  print bowtie_rdd.collect()
   
   '''
   #elem = (id, [seq, frq, [bowtie], [pri_miRNA]])
@@ -144,7 +144,7 @@ if __name__ == '__main__' :
   # Validating pri-mirna with mircheck
   pri_vld_rdd = pri_fold_rdd.map(lambda elem: mircheck_obj.mirCheck_map_rule(elem, 4)).filter(lambda elem: any(elem[1][4]))
 
-  # Filtering structure with branched loop  ####################################################
+  # Filtering structure with branched loop
   one_loop_rdd = pri_vld_rdd.filter(lambda elem: ut.containsOnly1loop (  elem[1][4][2][ int(elem[1][4][4]) : int(elem[1][4][5])+1 ] ))
 
   # Extraction of the pre-miRNA

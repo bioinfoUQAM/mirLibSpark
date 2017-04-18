@@ -147,3 +147,29 @@ def containsOnly1loop (folding):
     m = re.search(r'[(]+[.]+[)]+[.()]+[(]+[.]+[)]+', folding)
     if m: return False
     return True
+
+def profile_filter():
+    '''
+    pre_vld_rdd
+    elem = (id, [seq, frq, nbloc, [bowtie], [prim], [pre]])
+
+
+    posgen = elem[1][3][2] 		# already int
+    mirseq = elem[1][0]
+    mirpos_on_pre = elem[1][5][1] 	# already int
+    preseq = elem[1][5][0]
+
+
+
+    #### if on positive strand ####
+    x = posgen - mirpos_on_pre	# inclusive
+    y = x + len(preseq) - 1	# inclusive
+
+
+
+    #### if on negative strand ####
+    y = posgen + len(mirseq) + mirpos_on_pre -1
+    x = y-len(preseq) + 1
+
+    '''
+
