@@ -47,12 +47,9 @@ if __name__ == '__main__' :
   infile = sys.argv[2]
  
   paramDict = ut.readparam (paramfile)
-
   # Parameters and cutoffs
-  
   my_sep = paramDict['my_sep']                # Separator
   rep_tmp = paramDict['rep_tmp']              # tmp file folder
-
   # spark parameter
   master = paramDict['master']                #"local" 
   appname = paramDict['appname']              #"mirLibHadoop"
@@ -110,6 +107,7 @@ if __name__ == '__main__' :
   dmask_rdd = rm_short_rdd.filter(dmask_obj.dmask_filter_rule)
   
   # Mapping with Bowtie
+  bowtie_rdd = -1
   bowtie_rdd = dmask_rdd.map(bowtie_obj.Bowtie_map_rule).persist()
     
   # Filtering high nbLocations and zero location
@@ -137,13 +135,13 @@ if __name__ == '__main__' :
 
 #==============================================================
   #print bowtie_rdd.collect()
-  #coor = '-', 'Chr3', 3366340, 3366440 #strand, chromo, x, y = '-', 'Chr3', 3366340, 3366440
+  coor = '-', 'Chr3', 3366340, 3366440 #strand, chromo, x, y = '-', 'Chr3', 3366340, 3366440
   profile_obj = mru.prog_dominant_profile()
-  #totalfrq = profile_obj.calculateTotalfrq (bowtie_rdd, coor)
-  #print totalfrq
+  totalfrq = profile_obj.calculateTotalfrq (bowtie_rdd, coor)
+  print totalfrq
 
-  miRNA_rdd = pre_vld_rdd.filter(profile_obj.functionX(elem, bowtie_rdd))
-  print miRNA_rdd.collect()
+  #miRNA_sRNAprofile = pre_vld_rdd.map(profile_obj.functionX)
+  #print miRNA_rdd.collect()
 
   #sRNAprofile = bowtie_rdd.filter(profile_obj.filter_profile_position_rule)
   #print sRNAprofile.collect() #= save it in a file later
