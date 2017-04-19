@@ -92,6 +92,7 @@ if __name__ == '__main__' :
   prec_obj = mru.extract_precurosrs(genome_path, pri_l_flank, pri_r_flank, pre_flank)
   rnafold_obj = mru.prog_RNAfold()
   mircheck_obj = mru.prog_mirCheck(mcheck_param)
+  profile_obj = mru.prog_dominant_profile()
   
   # Convert the text file to RDD object
   distFile = sc.textFile(hdfsFile)
@@ -120,27 +121,23 @@ if __name__ == '__main__' :
   
   # Validating pri-mirna with mircheck
   pri_vld_rdd = pri_fold_rdd.map(lambda elem: mircheck_obj.mirCheck_map_rule(elem, 4)).filter(lambda elem: any(elem[1][4]))
-  
+
+  # Filtering structure with branched loop  ####################################################
+  one_loop_rdd = pri_vld_rdd.filter(lambda elem: ut.containsOnly1loop (  elem[1][4][2][ int(elem[1][4][4]) : int(elem[1][4][5])+1 ] ))
+
   # Extraction of the pre-miRNA
-  premir_rdd = pri_vld_rdd.map(prec_obj.extract_prem_rule)
+  premir_rdd = one_loop_rdd.map(prec_obj.extract_prem_rule)
 
   # pre-miRNA folding
   pre_fold_rdd = premir_rdd.map(lambda elem: rnafold_obj.RNAfold_map_rule(elem, 5))
   
-
   # Validating pre-mirna with mircheck
   pre_vld_rdd = pre_fold_rdd.map(lambda elem: mircheck_obj.mirCheck_map_rule(elem, 5)).filter(lambda elem: any(elem[1][5]))
-  #print pre_vld_rdd.collect()
 
-#==============================================================
-#  print bowtie_rdd.collect()
   # you can use chromo_strand as key to search bowtie blocs in the following dict
   dict_bowtie_chromo_strand = ut.return_Bowtie_strandchromo_dict (bowtie_rdd.collect())
 
-  profile_obj = mru.prog_dominant_profile() 
-
-
-
+  # results of miRNA prediction
   miRNA_rdd = pre_vld_rdd.filter(lambda elem: profile_obj.functionX(elem, dict_bowtie_chromo_strand) )
   results = miRNA_rdd.collect()
   print results
