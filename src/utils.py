@@ -136,8 +136,8 @@ def containsOnly1loop (folding):
     loop1 and loop2 are separated by a few residues composed of '.' and/or '(' and/or ')'
 
     @param      folding     RNAfold structure
-                            ) or (  : pairing
-                            .       : mismatch
+                            ) or (  : mismatch
+                            .       : pairing
     @return     True or False
     @post       folding1 = '((((((........))))))....)))'                    #True
                 folding2 = '...((((((...........(((((....)))))).....))))))' #True
