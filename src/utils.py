@@ -147,3 +147,23 @@ def containsOnly1loop (folding):
     m = re.search(r'[(]+[.]+[)]+[.()]+[(]+[.]+[)]+', folding)
     if m: return False
     return True
+
+def return_Bowtie_strandchromo_dict (bowtie_rdd_collect):
+    dict_bowtie_chromo_strand = {}
+    for i in bowtie_rdd_collect:
+      #ID 	= i[0]
+      #sRNAseq 	= i[1][0]
+      #frq 	= i[1][1]
+      #nbloc	= i[1][2]
+      bowties	= i[1][3]
+      for j in bowties:
+        #strand = j[0]
+        #chromo = j[1]
+        #posgen = j[2]
+        chromo_strand = j[1] + j[0]
+        if chromo_strand not in dict_bowtie_chromo_strand.keys():
+          dict_bowtie_chromo_strand[chromo_strand] = []
+        dict_bowtie_chromo_strand[chromo_strand].append(i)
+    return dict_bowtie_chromo_strand
+    
+      

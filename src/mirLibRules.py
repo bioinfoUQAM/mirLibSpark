@@ -256,9 +256,60 @@ class prog_mirCheck ():
       del elem[1][field][:]
       
     # if not any(primirnas) : del primirnas[:]
-      
-
     return elem
+
+class prog_dominant_profile :#(dict_bowtie_chromo_strand):
+
+  def __init__(self):
+    self.env = os.environ
+    #self.dict_bowtie_chromo_strand = dict_bowtie_chromo_strand
+
+  def calculateTotalfrq (self, bowbloc, x, y):
+    sRNAprofile = []
+    totalfrq = 0
+    for i in bowbloc:
+      bowties = i[1][3]
+      frq = i[1][1]
+      for j in bowties:
+        posgen = j[2]
+        if (x < posgen < y):
+          sRNAprofile.append(i)
+          totalfrq += frq
+          #break #in case rare case, is there?
+    return totalfrq, sRNAprofile
+
+  def profile_range (self, elem):
+    ''' define x, y with pre_vld_rdd'''
+    posgen = elem[1][3][2] 		# already int
+    mirseq = elem[1][0]
+    mirpos_on_pre = elem[1][5][1] 	# already int
+    preseq = elem[1][5][0]
+    strand = elem[1][3][0]
+    if strand == '+':
+      x = posgen - mirpos_on_pre	# inclusive
+      y = x + len(preseq) - 1		# inclusive
+    else:
+      y = posgen + len(mirseq) + mirpos_on_pre -1
+      x = y-len(preseq) + 1
+    return x-1, y+1	# exclusive  x < a < y
+
+  def functionX (self, elem, dict_bowtie_chromo_strand):
+    x, y = self.profile_range (elem)
+    bowtie_bloc_key = elem[1][3][1] + elem[1][3][0]  #chrom+strand
+    bowbloc = dict_bowtie_chromo_strand[bowtie_bloc_key]
+    totalfrq, sRNAprofile = self.calculateTotalfrq (bowbloc, x, y)
+    miRNAfrq = elem[1][1]
+    ratio = miRNAfrq / totalfrq
+    if ratio > 0.2 :
+        return True
+    return False
+
+
+    
+
+
+
+
 
 if __name__ == '__main__' :
    
