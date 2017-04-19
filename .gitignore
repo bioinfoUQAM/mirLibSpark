@@ -7,3 +7,5 @@ ATH/
 
 .DS_Store
 src/*.swp
+src/*.*~
+*.*~
