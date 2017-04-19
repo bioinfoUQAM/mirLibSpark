@@ -107,9 +107,8 @@ if __name__ == '__main__' :
   dmask_rdd = rm_short_rdd.filter(dmask_obj.dmask_filter_rule)
   
   # Mapping with Bowtie
-  bowtie_rdd = -1
   bowtie_rdd = dmask_rdd.map(bowtie_obj.Bowtie_map_rule).persist()
-    
+
   # Filtering high nbLocations and zero location
   nbLoc_rdd = bowtie_rdd.filter(lambda elem: elem[1][2] > 0 and elem[1][2] < limit_nbLoc)
   
@@ -134,14 +133,24 @@ if __name__ == '__main__' :
   #print pre_vld_rdd.collect()
 
 #==============================================================
-  #print bowtie_rdd.collect()
-  coor = '-', 'Chr3', 3366340, 3366440 #strand, chromo, x, y = '-', 'Chr3', 3366340, 3366440
-  profile_obj = mru.prog_dominant_profile()
-  totalfrq = profile_obj.calculateTotalfrq (bowtie_rdd, coor)
-  print totalfrq
+#  print bowtie_rdd.collect()
+  # you can use chromo_strand as key to search bowtie blocs in the following dict
+  dict_bowtie_chromo_strand = ut.return_Bowtie_strandchromo_dict (bowtie_rdd.collect())
 
-  #miRNA_sRNAprofile = pre_vld_rdd.map(profile_obj.functionX)
-  #print miRNA_rdd.collect()
+
+  coor = '-', 'Chr3', 3366340, 3366440 #strand, chromo, x, y = '-', 'Chr3', 3366340, 3366440
+  bowtie_bloc_key = coor[1] + coor[0]
+
+
+  profile_obj = mru.prog_dominant_profile() 
+  #totalfrq , sRNAprofile= profile_obj.calculateTotalfrq (dict_bowtie_chromo_strand[bowtie_bloc_key], coor)
+  #print totalfrq
+
+
+  miRNA_rdd = pre_vld_rdd.filter(lambda elem: profile_obj.functionX(elem, dict_bowtie_chromo_strand) )
+  results = miRNA_rdd.collect()
+  print results
+  print len(results)
 
   #sRNAprofile = bowtie_rdd.filter(profile_obj.filter_profile_position_rule)
   #print sRNAprofile.collect() #= save it in a file later

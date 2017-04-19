@@ -258,37 +258,27 @@ class prog_mirCheck ():
     # if not any(primirnas) : del primirnas[:]
     return elem
 
-class prog_dominant_profile ():
+class prog_dominant_profile :#(dict_bowtie_chromo_strand):
 
   def __init__(self):
     self.env = os.environ
+    #self.dict_bowtie_chromo_strand = dict_bowtie_chromo_strand
 
-  def frq_sum_rule (self, bowelem_a, bowelem_b):
-    frq_a = int(bowelem_a[1][1])
-    frq_b = int(bowelem_b[1][1])
-    bowelem_a[1][1] = frq_a + frq_b
-    return bowelem_a #= Only the frq is useful, all other fields are meaningless.
+  def calculateTotalfrq (self, bowbloc, x, y):
+    sRNAprofile = []
+    totalfrq = 0
+    for i in bowbloc:
+      bowties = i[1][3]
+      frq = i[1][1]
+      for j in bowties:
+        posgen = j[2]
+        if (x < posgen < y):
+          sRNAprofile.append(i)
+          totalfrq += frq
+          #break #in case rare case, is there?
+    return totalfrq, sRNAprofile
 
-  def filter_profile_position_rule (self, bowelem, coor):
-    ''' process short RNAs with bowtie_rdd '''
-    #= genome location of pre-miRNA
-    #strand, chromo, x, y = '-', 'Chr3', 3366340, 3366440
-    strand, chromo, x, y = coor[0],coor[1],coor[2],coor[3]
-    #= return True if the genome location this short RNA is within the pre-miRNA
-    nbloc = bowelem[1][2]
-    for i in range(nbloc):
-      if x < int(bowelem[1][3][i][2]) < y and chromo == bowelem[1][3][i][1] and strand == bowelem[1][3][i][0]:
-        return True
-    return False  #discard this elem
-
-  def calculateTotalfrq (self, bowtie_rdd, coor):
-    sRNAprofile = bowtie_rdd.filter(lambda bowelem: self.filter_profile_position_rule(bowelem, coor))
-    totalfrq = sRNAprofile.reduce(self.frq_sum_rule)[1][1]
-    return totalfrq
-
-
- 
-  def profile_range (elem):
+  def profile_range (self, elem):
     ''' define x, y with pre_vld_rdd'''
     posgen = elem[1][3][2] 		# already int
     mirseq = elem[1][0]
@@ -303,16 +293,17 @@ class prog_dominant_profile ():
       x = y-len(preseq) + 1
     return x-1, y+1	# exclusive  x < a < y
 
-
-  def functionX (self, elem, bowtie_rdd):
-    x, y = profile_range (elem)
-    totalfrq = calculateTotalfrq (bowtie_rdd, coor)
+  def functionX (self, elem, dict_bowtie_chromo_strand):
+    x, y = self.profile_range (elem)
+    bowtie_bloc_key = elem[1][3][1] + elem[1][3][0]  #chrom+strand
+    bowbloc = dict_bowtie_chromo_strand[bowtie_bloc_key]
+    totalfrq, sRNAprofile = self.calculateTotalfrq (bowbloc, x, y)
     miRNAfrq = elem[1][1]
     ratio = miRNAfrq / totalfrq
-    if ratio == 1:
+    if ratio > 0.2 :
         return True
-    
-    return True # if miRNAfrq_percentage > 0.2
+    return False
+
 
     
 
