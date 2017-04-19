@@ -95,8 +95,6 @@ if __name__ == '__main__' :
   prec_obj = mru.extract_precurosrs(genome_path, pri_l_flank, pri_r_flank, pre_flank)
   rnafold_obj = mru.prog_RNAfold()
   mircheck_obj = mru.prog_mirCheck(mcheck_param)
-
-  profile_obj = mru.prog_dominant_profile()
   
   # Convert the text file to RDD object
   distFile = sc.textFile(hdfsFile)
@@ -113,8 +111,24 @@ if __name__ == '__main__' :
   
   # Mapping with Bowtie
   bowtie_rdd = dmask_rdd.map(bowtie_obj.Bowtie_map_rule).persist()
-  #print bowtie_rdd.collect()
-
+  print bowtie_rdd.collect()
+  
+  #elem = (id, [seq, frq, [bowtie], [pri_miRNA]])
+  def sum_rule (elem_a, elem_b):
+    frq_a = int(elem_a[1][1])
+    frq_b = int(elem_b[1][1])
+    elem_a[1][1] = frq_a + frq_b
+    return elem_a
+    
+  
+  strand = '-'
+  chromo = 'Chr3'
+  x = 3366340
+  y = 3366440
+  sRNAprofile = bowtie_rdd.filter(lambda elem: strand in elem[1][2][0] and chromo in elem[1][2][0] and x < int(elem[1][2][0][2]) < y)
+  print sRNAprofile.collect() #= save it in a file later
+  totalfrq = sRNAprofile.reduce(sum_rule)[1][1]
+  print totalfrq
   
   # Filtering high nbLocations and zero location
   nbLoc_rdd = bowtie_rdd.filter(lambda elem: elem[1][2] > 0 and elem[1][2] < limit_nbLoc)
@@ -127,28 +141,15 @@ if __name__ == '__main__' :
   
   # Validating pri-mirna with mircheck
   pri_vld_rdd = pri_fold_rdd.map(lambda elem: mircheck_obj.mirCheck_map_rule(elem, 4)).filter(lambda elem: any(elem[1][4]))
-
-  # Filtering structure with branched loop
-  one_loop_rdd = pri_vld_rdd.filter(lambda elem: ut.containsOnly1loop (  elem[1][4][2][ int(elem[1][4][4]) : int(elem[1][4][5])+1 ] ))
-
+  
   # Extraction of the pre-miRNA
-  premir_rdd = one_loop_rdd.map(prec_obj.extract_prem_rule)
+  premir_rdd = pri_vld_rdd.map(prec_obj.extract_prem_rule)
 
   # pre-miRNA folding
   pre_fold_rdd = premir_rdd.map(lambda elem: rnafold_obj.RNAfold_map_rule(elem, 5))
   
+
   # Validating pre-mirna with mircheck
   pre_vld_rdd = pre_fold_rdd.map(lambda elem: mircheck_obj.mirCheck_map_rule(elem, 5)).filter(lambda elem: any(elem[1][5]))
-  #print pre_vld_rdd.collect()
-
-  #===================================================================================================
-  
-  # Consider expression profile
-
-  #dominant_profile_rdd = pre_vld_rdd.filter(lambda elem: profile_obj.functionX(bowtie_rdd, elem) )
-
-
-  totalfrq = profile_obj.functionX(bowtie_rdd, elem) 
-  print totalfrq
-  
+  print pre_vld_rdd.collect()
 

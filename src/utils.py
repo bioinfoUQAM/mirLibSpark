@@ -9,7 +9,6 @@ version: 0.00.01
 import os
 import re
 
-
 # Configure a spark context
 def pyspark_configuration(appMaster, appName, appMemory):
   from pyspark import SparkConf, SparkContext
@@ -136,8 +135,8 @@ def containsOnly1loop (folding):
     loop1 and loop2 are separated by a few residues composed of '.' and/or '(' and/or ')'
 
     @param      folding     RNAfold structure
-                            ) or (  : mismatch
-                            .       : pairing
+                            ) or (  : pairing
+                            .       : mismatch
     @return     True or False
     @post       folding1 = '((((((........))))))....)))'                    #True
                 folding2 = '...((((((...........(((((....)))))).....))))))' #True
@@ -148,25 +147,3 @@ def containsOnly1loop (folding):
     m = re.search(r'[(]+[.]+[)]+[.()]+[(]+[.]+[)]+', folding)
     if m: return False
     return True
-
-def profile_range (elem):
-    '''
-    pre_vld_rdd
-    elem = (id, [seq, frq, nbloc, [bowtie], [prim], [pre]])
-    '''
-    posgen = elem[1][3][2] 		# already int
-    mirseq = elem[1][0]
-    mirpos_on_pre = elem[1][5][1] 	# already int
-    preseq = elem[1][5][0]
-    strand = elem[1][3][0]
-    if strand == '+':
-      x = posgen - mirpos_on_pre	# inclusive
-      y = x + len(preseq) - 1		# inclusive
-    else:
-      y = posgen + len(mirseq) + mirpos_on_pre -1
-      x = y-len(preseq) + 1
-    return x-1, y+1	# exclusive  x < a < y
-
-
-
-
