@@ -256,9 +256,20 @@ class prog_mirCheck ():
       del elem[1][field][:]
       
     # if not any(primirnas) : del primirnas[:]
-      
-
     return elem
+
+class prog_dominant_profile ():
+
+  def __init__(self):
+    self.env = os.environ
+
+  def frq_sum_rule (self, bowelem_a, bowelem_b):
+    frq_a = int(bowelem_a[1][1])
+    frq_b = int(bowelem_b[1][1])
+    bowelem_a[1][1] = frq_a + frq_b
+    return bowelem_a #= Only the frq is useful, all other fields are meaningless.
+
+
 
 if __name__ == '__main__' :
    
