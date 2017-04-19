@@ -269,6 +269,20 @@ class prog_dominant_profile ():
     bowelem_a[1][1] = frq_a + frq_b
     return bowelem_a #= Only the frq is useful, all other fields are meaningless.
 
+  ### process short RNAs with bowtie_rdd
+  def filter_profile_position_rule (self, bowelem):
+    #= genome location of pre-miRNA
+    strand, chromo, x, y = '-', 'Chr3', 3366340, 3366440
+    
+    #= return True if the genome location this short RNA is within the pre-miRNA
+    nbloc = bowelem[1][2]
+    for i in range(nbloc):
+      if x < int(bowelem[1][3][i][2]) < y and chromo == bowelem[1][3][i][1] and strand == bowelem[1][3][i][0]:
+        return True
+    return False  #discard this elem
+
+
+
 
 
 if __name__ == '__main__' :
