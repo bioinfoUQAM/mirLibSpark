@@ -137,14 +137,8 @@ if __name__ == '__main__' :
   # you can use chromo_strand as key to search bowtie blocs in the following dict
   dict_bowtie_chromo_strand = ut.return_Bowtie_strandchromo_dict (bowtie_rdd.collect())
 
-
-  coor = '-', 'Chr3', 3366340, 3366440 #strand, chromo, x, y = '-', 'Chr3', 3366340, 3366440
-  bowtie_bloc_key = coor[1] + coor[0]
-
-
   profile_obj = mru.prog_dominant_profile() 
-  #totalfrq , sRNAprofile= profile_obj.calculateTotalfrq (dict_bowtie_chromo_strand[bowtie_bloc_key], coor)
-  #print totalfrq
+
 
 
   miRNA_rdd = pre_vld_rdd.filter(lambda elem: profile_obj.functionX(elem, dict_bowtie_chromo_strand) )
@@ -152,8 +146,5 @@ if __name__ == '__main__' :
   print results
   print len(results)
 
-  #sRNAprofile = bowtie_rdd.filter(profile_obj.filter_profile_position_rule)
-  #print sRNAprofile.collect() #= save it in a file later
-  #totalfrq = sRNAprofile.reduce(profile_obj.frq_sum_rule)[1][1]
-  #print totalfrq
+
 
