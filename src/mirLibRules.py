@@ -85,7 +85,6 @@ class prog_bowtie ():
     elem[1].append(append_value)
     return elem
 
-
 class extract_precurosrs ():
 
   def __init__(self, genome_path, ext_left, ext_right, pre_flank):
@@ -260,6 +259,67 @@ class prog_mirCheck ():
 
     return elem
 
+class prog_dominant_profile ():
+
+  def __init__(self):
+    self.env = os.environ
+
+  ### process miRNA candidate with pre_vld_rdd 
+  def profile_range (elem):
+    '''
+    pre_vld_rdd: elem = (id, [seq, frq, nbloc, [bowtie], [prim], [pre]])
+    '''
+    posgen = elem[1][3][2] 		# already int
+    mirseq = elem[1][0]
+    mirpos_on_pre = elem[1][5][1] 	# already int
+    preseq = elem[1][5][0]
+    strand = elem[1][3][0]
+    if strand == '+':
+      x = posgen - mirpos_on_pre	# inclusive
+      y = x + len(preseq) - 1		# inclusive
+    else:
+      y = posgen + len(mirseq) + mirpos_on_pre -1
+      x = y-len(preseq) + 1
+    return x-1, y+1	# exclusive  x < a < y
+
+  ### process short RNAs with bowtie_rdd
+  def filter_profile_position_rule (self, bowelem, elem):
+    #= genome location of pre-miRNA
+    x, y = profile_range (elem)     #x, y = 3366340, 3366440
+    strand = elem[1][3][0]          #= '-'
+    chromo = elem[1][3][0]          #= 'Chr3'
+    
+    #= return True if the genome location this short RNA is within the pre-miRNA
+    nbloc = bowelem[1][2]
+    for i in range(nbloc):
+      #if x < int(elem[1][3][i][2]) < y and strand in elem[1][3][i][0] and chromo in elem[1][3][i][1]:
+      if chromo == bowelem[1][3][i][1] and strand == bowelem[1][3][i][0] and x < int(bowelem[1][3][i][2]) < y:
+        return True
+    return False  #discard this elem
+
+  def frq_sum_rule (self, bowelem_a, bowelem_b):
+    frq_a = int(bowelem_a[1][1])
+    frq_b = int(bowelem_b[1][1])
+    bowelem_a[1][1] = frq_a + frq_b
+    return bowelem_a #= Only the frq is useful, all other fields are meaningless.
+
+  def functionX (self, bowtie_rdd, elem):
+    sRNAprofile = bowtie_rdd.filter(lambda bowelem : self.filter_profile_position_rule(bowelem, elem)
+    #print sRNAprofile.collect()
+    #########################################################
+    #= need to write a function to print this to a file.
+    #= id = elem[0], profile = sRNAprofile.collect()
+    ########################################################
+    totalfrq = sRNAprofile.reduce(self.frq_sum_rule)[1][1]
+    elem[1].append(totalfrq)
+    return totalfrq
+    miRNAfrq = elem[1][1]
+    return (miRNAfrq / totalfrq) > 0.2
+
+
+
+
+    
 if __name__ == '__main__' :
    
    values_sep = "<>"
