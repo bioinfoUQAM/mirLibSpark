@@ -137,10 +137,13 @@ if __name__ == '__main__' :
 
 #==============================================================
   #print bowtie_rdd.collect()
-  coor = '-', 'Chr3', 3366340, 3366440 #strand, chromo, x, y = '-', 'Chr3', 3366340, 3366440
+  #coor = '-', 'Chr3', 3366340, 3366440 #strand, chromo, x, y = '-', 'Chr3', 3366340, 3366440
   profile_obj = mru.prog_dominant_profile()
-  totalfrq = profile_obj.totalfrq (bowtie_rdd, coor)
-  print totalfrq
+  #totalfrq = profile_obj.calculateTotalfrq (bowtie_rdd, coor)
+  #print totalfrq
+
+  miRNA_rdd = pre_vld_rdd.filter(profile_obj.functionX(elem, bowtie_rdd))
+  print miRNA_rdd.collect()
 
   #sRNAprofile = bowtie_rdd.filter(profile_obj.filter_profile_position_rule)
   #print sRNAprofile.collect() #= save it in a file later

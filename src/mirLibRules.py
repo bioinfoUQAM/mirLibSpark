@@ -281,10 +281,38 @@ class prog_dominant_profile ():
         return True
     return False  #discard this elem
 
-  def totalfrq (self, bowtie_rdd, coor):
+  def calculateTotalfrq (self, bowtie_rdd, coor):
     sRNAprofile = bowtie_rdd.filter(lambda bowelem: self.filter_profile_position_rule(bowelem, coor))
     totalfrq = sRNAprofile.reduce(self.frq_sum_rule)[1][1]
     return totalfrq
+
+
+ 
+  def profile_range (elem):
+    ''' define x, y with pre_vld_rdd'''
+    posgen = elem[1][3][2] 		# already int
+    mirseq = elem[1][0]
+    mirpos_on_pre = elem[1][5][1] 	# already int
+    preseq = elem[1][5][0]
+    strand = elem[1][3][0]
+    if strand == '+':
+      x = posgen - mirpos_on_pre	# inclusive
+      y = x + len(preseq) - 1		# inclusive
+    else:
+      y = posgen + len(mirseq) + mirpos_on_pre -1
+      x = y-len(preseq) + 1
+    return x-1, y+1	# exclusive  x < a < y
+
+
+  def functionX (self, elem, bowtie_rdd):
+    x, y = profile_range (elem)
+    totalfrq = calculateTotalfrq (bowtie_rdd, coor)
+    miRNAfrq = elem[1][1]
+    ratio = miRNAfrq / totalfrq
+    if ratio == 1:
+        return True
+    
+    return True # if miRNAfrq_percentage > 0.2
 
     
 
