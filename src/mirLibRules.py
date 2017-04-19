@@ -305,11 +305,16 @@ class prog_dominant_profile ():
 
   def functionX (self, bowtie_rdd, elem):
     sRNAprofile = bowtie_rdd.filter(lambda bowelem : self.filter_profile_position_rule(bowelem, elem)
-    #print sRNAprofile.collect() #= need to write a function to print this to a file
+    #print sRNAprofile.collect()
+    #########################################################
+    #= need to write a function to print this to a file.
+    #= id = elem[0], profile = sRNAprofile.collect()
+    ########################################################
     totalfrq = sRNAprofile.reduce(self.frq_sum_rule)[1][1]
+    elem[1].append(totalfrq)
     return totalfrq
-
-
+    miRNAfrq = elem[1][1]
+    return (miRNAfrq / totalfrq) > 0.2
 
 
 

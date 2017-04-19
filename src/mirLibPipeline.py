@@ -141,35 +141,13 @@ if __name__ == '__main__' :
   #print pre_vld_rdd.collect()
 
   #===================================================================================================
-  '''
+  
   # Consider expression profile
-  #x, y = ut.profile_range (elem)
+
+  #dominant_profile_rdd = pre_vld_rdd.filter(lambda elem: profile_obj.functionX(bowtie_rdd, elem) )
 
 
-  #sRNAprofile = bowtie_rdd.filter(lambda elem: strand in elem[1][2][0] and chromo in elem[1][2][0] and x < int(elem[1][2][0][2]) < y)
-  sRNAprofile = bowtie_rdd.filter(lambda elem: strand in elem[1][3][0] and chromo in elem[1][3][0] )#and x < int(elem[1][2][0][2]) < y)
-  #print sRNAprofile.collect() #= save it in a file later
-  #totalfrq = sRNAprofile.reduce(profile_obj.sum_rule)[1][1]
-  #print totalfrq
-
-  #dominant_profile_rdd = pre_vld_rdd.filter(lambda elem: x, y = ut.profile_range (elem), percent_frq(elem, bowtie_rdd) < 0.2)
-
-
-  '''  
-  #================================================================================================
-  #elem = (id, [seq, frq, nbloc, [bowtie], [pri_miRNA]])  
-  strand = '-'
-  chromo = 'Chr3'
-  x = 3366340
-  y = 3366440
-  sRNAprofile = bowtie_rdd.filter(lambda elem: strand in elem[1][3][0] and chromo in elem[1][3][0] )#and x < int(elem[1][2][0][2]) < y)
-  #print sRNAprofile.collect() #= save it in a file later
-  #totalfrq = sRNAprofile.reduce(profile_obj.sum_rule)[1][1]
-  #print totalfrq
-
-  #totalfrq = profile_obj.functionX(bowtie_rdd) 
   totalfrq = profile_obj.functionX(bowtie_rdd, elem) 
   print totalfrq
-
-
+  
 
