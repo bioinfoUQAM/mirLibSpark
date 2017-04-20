@@ -28,6 +28,9 @@ $ time spark-submit mirLibPipeline.py a_thaliana /home/cloudera/workspace/miRNA_
 
 ##########################
 spark-submit mirLibPipeline.py ../paramfile_julie.txt /home/cloudera/workspace/miRNA_predictor/sudoData/a_th_3.txt 2>/dev/null
+######
+batch
+time spark-submit mirLibPipeline.py ../paramfile_julie_batch.txt /home/cloudera/workspace/miRNA_predictor/sudoData2/ 2>/dev/null
 '''
 
 import sys

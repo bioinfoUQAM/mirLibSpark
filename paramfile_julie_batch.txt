@@ -1,6 +1,7 @@
 batch=true
 b_index=a_thaliana_t10
 rep_tmp=../tmp/
+rep_data=../data/
 my_sep=,
 genome_path=/home/cloudera/workspace/wheathub/ATH/Genome/
 limit_freq=200

@@ -14,6 +14,7 @@ def SparkTask(paramDict, infile):
   # Parameters and cutoffs
   my_sep = paramDict['my_sep']                # Separator
   rep_tmp = paramDict['rep_tmp']              # tmp file folder
+  rep_data = paramDict['rep_data'] 
   # spark parameter
   master = paramDict['master']                #"local" 
   appname = paramDict['appname']              #"mirLibHadoop"
@@ -103,9 +104,12 @@ def SparkTask(paramDict, infile):
   # results of miRNA prediction
   miRNA_rdd = pre_vld_rdd.filter(lambda elem: profile_obj.functionX(elem, dict_bowtie_chromo_strand) )
   results = miRNA_rdd.collect()
-  print results
-  print len(results)
+  #print results
+  #print len(results)
   sc.stop() #allow to run multiple SparkContexts
+
+  outfile = rep_data + inBasename + '_miRNAprediction.txt'
+  ut.writeToFile (results, outfile)
 
 
 

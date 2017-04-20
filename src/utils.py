@@ -166,4 +166,27 @@ def return_Bowtie_strandchromo_dict (bowtie_rdd_collect):
         dict_bowtie_chromo_strand[chromo_strand].append(i)
     return dict_bowtie_chromo_strand
     
-      
+def writeToFile (results, outfile):
+    fh_out = open (outfile, 'w')
+    for i in results:
+      ID = i[0]#
+      values = i[1]
+      miRNAseq = values[0]#
+      frq = values[1]#
+      bowtie = values[3]
+      strand = bowtie[0]#
+      chromo = bowtie[1]#
+      posgen = bowtie[2]#
+      pre_miRNA_records = values[5]
+      pre_miRNA_seq = pre_miRNA_records[0]#
+      struc = pre_miRNA_records[2]#
+      mirCheck = pre_miRNA_records[3]#
+      fbstart = pre_miRNA_records[4]#
+      fbstop = pre_miRNA_records[5]#
+      data = [ID, miRNAseq, frq, strand, chromo, posgen, pre_miRNA_seq, struc, mirCheck, fbstart, fbstop]
+      line = ''
+      for d in data:
+        line += str(d) + '\t'
+      line.rstrip('\t')
+      print >>fh_out, line
+    fh_out.close()
