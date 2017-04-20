@@ -1,0 +1,2 @@
+time spark-submit mirLibPipeline.py ../paramfile_julie_batch.txt /home/cloudera/workspace/libraries/srna1/ 2>/dev/null
+
