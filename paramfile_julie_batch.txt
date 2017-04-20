@@ -11,6 +11,6 @@ pri_l_flank=120
 pri_r_flank=60
 pre_flank=30
 mcheck_param=def
-master=local
+master=local[*]
 appname=mirLibHadoop
 memory=2g
