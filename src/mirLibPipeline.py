@@ -19,6 +19,7 @@ La version actuelle accepte un seul argument qui est le fichier contenant les se
 import sys
 import os.path
 from os import listdir
+import time
 #
 import utils as ut
 import mirLibRules as mru
@@ -33,7 +34,7 @@ if __name__ == '__main__' :
   paramfile = sys.argv[1]
   mypath = sys.argv[2] 
 
-  paramDict = ut.readparam (paramfile)
+  paramDict = ut.readParam (paramfile)
 
   # Parameters and cutoffs
   my_sep = paramDict['my_sep']                # Separator
@@ -74,8 +75,11 @@ if __name__ == '__main__' :
 
   # fetch library files in mypath
   infiles = [f for f in listdir(mypath) if os.path.isfile(os.path.join(mypath, f))]
-
-  for infile in infiles:
+  
+  # time processing of libraries
+  timeDict = {}
+  
+  for infile in infiles :
     infile = mypath+infile
     inBasename = os.path.splitext(os.path.basename(infile))[0]
     inKvfile = rep_tmp + inBasename + '.kv.txt'
@@ -86,7 +90,9 @@ if __name__ == '__main__' :
   
     # Save a local file to HDFS system
     ut.convertTOhadoop(inKvfile, hdfsFile)
-  
+    
+    #
+    startLib = time.time()
     # Convert the text file to RDD object
     distFile = sc.textFile(hdfsFile)
     input_rdd = distFile.map(lambda line: mru.rearrange_rule(line, my_sep))
@@ -133,13 +139,17 @@ if __name__ == '__main__' :
     # results of miRNA prediction
     miRNA_rdd = pre_vld_rdd.filter(lambda elem: profile_obj.functionX(elem, dict_bowtie_chromo_strand) )
     results = miRNA_rdd.collect()
-
+    #
+    endLib = time.time()
+    
     # write results to a file
-    outfile = rep_output + inBasename + '_miRNAprediction.txt'
-    ut.writeToFile (results, outfile)
-   
-
+    outFile = rep_output + inBasename + '_miRNAprediction.txt'
+    ut.writeToFile (results, outFile)
+    
+    timeDict[inBasename] = endLib - startLib
+    
   sc.stop() #allow to run multiple SparkContexts
-
-
-
+  
+  # print time executions to a file
+  outTime = rep_output + 'time_exec.txt'
+  ut.writeTimeLibToFile (timeDict, outTime)

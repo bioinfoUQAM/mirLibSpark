@@ -27,3 +27,10 @@ time spark-submit mirLibPipeline.py ../paramfile_julie_batch.txt /home/cloudera/
 
 # run 4 cpu, local[*], 4G of total 100 libs
 { time spark-submit mirLibPipeline.py ../paramfile_julie_batch.txt /home/cloudera/workspace/libraries/srna1/ 2>/dev/null 2> sleep.stderr ; } 2> time.txt &
+
+##=========================================================================================================
+Amine misc
+##=========================================================================================================
+
+time spark-submit mirLibPipeline.py ../paramfile.txt ../input/ATH/sRNA_libs/ 2>/dev/null
+

@@ -114,14 +114,18 @@ def getGenome (genome_path, file_ext):
     
   return genome
 
-def readparam (paramfile, sep = '='):
+def readParam (paramfile, sep = '='):
+  paramDict = {}
+  
   fh = open (paramfile, 'r')
   DATA = fh.readlines()
   fh.close()
-  paramDict = {}
+  
   for line in DATA:
-    data = line.rstrip('\r\n').split(sep)
-    paramDict[data[0]] = data[1]
+    if not line.startswith("#"):
+      data = line.rstrip('\r\n').split(sep)
+      paramDict[data[0]] = data[1]
+  
   return paramDict
 
 def containsOnlyOneLoop (folding):
@@ -150,12 +154,12 @@ def containsOnlyOneLoop (folding):
 
 def return_Bowtie_strandchromo_dict (bowtie_rdd_collect):
     dict_bowtie_chromo_strand = {}
-    for i in bowtie_rdd_collect:
-      #ID 	= i[0]
-      #sRNAseq 	= i[1][0]
-      #frq 	= i[1][1]
-      #nbloc	= i[1][2]
-      bowties	= i[1][3]
+    for i in bowtie_rdd_collect :
+      #ID = i[0]
+      #sRNAseq = i[1][0]
+      #frq = i[1][1]
+      #nbloc= i[1][2]
+      bowties = i[1][3]
       for j in bowties:
         #strand = j[0]
         #chromo = j[1]
@@ -168,7 +172,8 @@ def return_Bowtie_strandchromo_dict (bowtie_rdd_collect):
     
 def writeToFile (results, outfile):
     fh_out = open (outfile, 'w')
-    for i in results:
+    
+    for i in results :
       ID = i[0]#
       values = i[1]
       miRNAseq = values[0]#
@@ -183,10 +188,33 @@ def writeToFile (results, outfile):
       mirCheck = pre_miRNA_records[3]#
       fbstart = pre_miRNA_records[4]#
       fbstop = pre_miRNA_records[5]#
+      
       data = [ID, miRNAseq, frq, strand, chromo, posgen, pre_miRNA_seq, struc, mirCheck, fbstart, fbstop]
       line = ''
+      
       for d in data:
         line += str(d) + '\t'
       line.rstrip('\t')
-      print >>fh_out, line
+      
+      print >> fh_out, line
+    
     fh_out.close()
+
+def writeTimeLibToFile (timeDict, outfile):
+  import datetime
+  
+  totalTime = reduce((lambda x,y : x + y), timeDict.values() )
+  totalTime = str(datetime.timedelta(seconds=totalTime))
+  
+  fh_out = open (outfile, 'w')
+  
+  print >> fh_out, "Total time execution of all the libraries: "+totalTime+ "\n"
+  
+  for lib in timeDict :
+    timeLibSec = timeDict[lib]
+    timeLibHMS = str(datetime.timedelta(seconds=timeLibSec))
+    timeLibSec = format(timeLibSec, '.3f')
+    
+    print >> fh_out, "Lib "+lib+": "+timeLibHMS+"\t"+timeLibSec+"\n"
+  
+  fh_out.close()
