@@ -124,7 +124,7 @@ def readparam (paramfile, sep = '='):
     paramDict[data[0]] = data[1]
   return paramDict
 
-def containsOnly1loop (folding):
+def containsOnlyOneLoop (folding):
     '''
     Return True if the folding structure contains only one loop.
     A loop is definded as follows:

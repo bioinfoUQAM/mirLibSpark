@@ -116,7 +116,7 @@ if __name__ == '__main__' :
     pri_vld_rdd = pri_fold_rdd.map(lambda elem: mircheck_obj.mirCheck_map_rule(elem, 4)).filter(lambda elem: any(elem[1][4]))
 
     # Filtering structure with branched loop
-    one_loop_rdd = pri_vld_rdd.filter(lambda elem: ut.containsOnly1loop (  elem[1][4][2][ int(elem[1][4][4]) : int(elem[1][4][5])+1 ] ))
+    one_loop_rdd = pri_vld_rdd.filter(lambda elem: ut.containsOnlyOneLoop (  elem[1][4][2][ int(elem[1][4][4]) : int(elem[1][4][5])+1 ] ))
 
     # Extraction of the pre-miRNA
     premir_rdd = one_loop_rdd.map(prec_obj.extract_prem_rule)  
