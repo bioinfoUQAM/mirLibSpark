@@ -1,5 +1,6 @@
 b_index=a_thaliana_t10
 rep_tmp=../tmp/
+rep_output=../data/
 my_sep=,
 genome_path=../input/ATH/TAIR/Genome/
 limit_freq=200
