@@ -32,5 +32,7 @@ time spark-submit mirLibPipeline.py ../paramfile_julie_batch.txt /home/cloudera/
 Amine misc
 ##=========================================================================================================
 
-time spark-submit mirLibPipeline.py ../paramfile.txt ../input/ATH/sRNA_libs/ 2>/dev/null
+time spark-submit --files eval_mircheck.pl mirLibPipeline.py ../paramfile.txt ../input/ATH/sRNA_libs/libs/ 2>/dev/null
+time spark-submit --files eval_mircheck.pl mirLibPipeline.py ../paramfile.txt ../input/ATH/sRNA_libs/srna2/
 
+time spark-submit --files eval_mircheck.pl mirLibPipeline.py ../paramfile.txt ../input/ATH/sRNA_libs/srna2/ ../output/srna2/ 2> ../output/srna2/srna2_err.txt

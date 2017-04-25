@@ -1,6 +1,5 @@
 b_index=a_thaliana_t10
 rep_tmp=../tmp/
-rep_output=../output/
 my_sep=,
 genome_path=../input/ATH/TAIR/Genome/
 limit_freq=200
@@ -10,7 +9,11 @@ pri_l_flank=120
 pri_r_flank=60
 pre_flank=30
 mcheck_param=def
-#master=yarn-client
-master=local[*]
-appname=mirLibHadoop
-memory=2g
+# Spark configuration
+sc_master=yarn-client
+#sc_master=local[*]
+sc_appname=mirLibHadoop
+sc_mstrmemory=3g
+sc_execmemory=3g
+sc_execnb=5
+sc_execcores=4

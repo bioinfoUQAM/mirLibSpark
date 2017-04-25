@@ -16,10 +16,11 @@ Le programme implemente le pipeline d'analyse des sRAN et prediction des miRNAs.
 La version actuelle accepte un seul argument qui est le fichier contenant les sequences reads a traiter.
 '''
 
+from __future__ import print_function
 import sys
 import os.path
-from os import listdir
 import time
+from os import listdir
 #
 import utils as ut
 import mirLibRules as mru
@@ -27,23 +28,26 @@ import mirLibRules as mru
 
 if __name__ == '__main__' :
 
-  if not len(sys.argv) == 3:
-    sys.stderr.write('Two arguments required\nUsage: spark-submit mirLibPipeline.py <path to paramfile> <path to your input> 2>/dev/null\n')
+  if not len(sys.argv) == 4:
+    sys.stderr.write('Three arguments required\nUsage: spark-submit mirLibPipeline.py <path to paramfile> <path to the input directory> <path to the output directory>2>/dev/null\n')
     sys.exit()
 
   paramfile = sys.argv[1]
-  mypath = sys.argv[2] 
-
+  mypath = sys.argv[2]
+  rep_output = sys.argv[3]
+  
   paramDict = ut.readParam (paramfile)
 
   # Parameters and cutoffs
   my_sep = paramDict['my_sep']                # Separator
   rep_tmp = paramDict['rep_tmp']              # tmp file folder
-  rep_output = paramDict['rep_output'] 
-  # spark parameter
-  master = paramDict['master']                #"local" 
-  appname = paramDict['appname']              #"mirLibHadoop"
-  memory = paramDict['memory']                #"2g"
+  # spark configuration
+  appMaster = paramDict['sc_master']             #"local" 
+  appName = paramDict['sc_appname']              #"mirLibHadoop"
+  mstrMemory = paramDict['sc_mstrmemory']        #"4g"
+  execMemory = paramDict['sc_execmemory']        #"4g"
+  execNb = paramDict['sc_execnb']                #4
+  execCores = paramDict['sc_execcores']          #2
   # genome
   genome_path = paramDict['genome_path']      #"../input/ATH/TAIR/Genome/"
   # cutoffs
@@ -60,10 +64,13 @@ if __name__ == '__main__' :
   mcheck_param = paramDict['mcheck_param']    #'def'     # def : default parameters / mey : meyers parameters
 
   # Spark context
-  sc = ut.pyspark_configuration(master, appname, memory) # yarn-client
+  # (appMaster, appName, masterMemory, execMemory, execNb, execCores):
+  sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, execNb, execCores)
   sc.addPyFile('utils.py')
   sc.addPyFile('mirLibRules.py')
-
+  
+  appId = str(sc.applicationId)
+  
   # Object for rule functions
 
   dmask_obj = mru.prog_dustmasker()
@@ -80,6 +87,8 @@ if __name__ == '__main__' :
   timeDict = {}
   
   for infile in infiles :
+    print ("--Processing of the library: ", infile)
+    
     infile = mypath+infile
     inBasename = os.path.splitext(os.path.basename(infile))[0]
     inKvfile = rep_tmp + inBasename + '.kv.txt'
@@ -92,6 +101,7 @@ if __name__ == '__main__' :
     ut.convertTOhadoop(inKvfile, hdfsFile)
     
     #
+    print ("  Start of the processing...", end="\r")
     startLib = time.time()
     # Convert the text file to RDD object
     distFile = sc.textFile(hdfsFile)
@@ -139,8 +149,10 @@ if __name__ == '__main__' :
     # results of miRNA prediction
     miRNA_rdd = pre_vld_rdd.filter(lambda elem: profile_obj.functionX(elem, dict_bowtie_chromo_strand) )
     results = miRNA_rdd.collect()
+
     #
     endLib = time.time()
+    print ("  End of the processing     ", end="\r")
     
     # write results to a file
     outFile = rep_output + inBasename + '_miRNAprediction.txt'
@@ -150,6 +162,6 @@ if __name__ == '__main__' :
     
   sc.stop() #allow to run multiple SparkContexts
   
-  # print time executions to a file
-  outTime = rep_output + 'time_exec.txt'
-  ut.writeTimeLibToFile (timeDict, outTime)
+  # print executions time  to a file
+  outTime = rep_output + appId + '_time.txt'
+  ut.writeTimeLibToFile (timeDict, outTime, appId, paramDict)

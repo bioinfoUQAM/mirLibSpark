@@ -10,18 +10,21 @@ import os
 import re
 
 # Configure a spark context
-def pyspark_configuration(appMaster, appName, appMemory):
+def pyspark_configuration(appMaster, appName, masterMemory, execMemory, execNb, execCores):
   from pyspark import SparkConf, SparkContext
   conf = SparkConf()
   conf.setMaster(appMaster)
   conf.setAppName(appName)
-  conf.set("spark.executor.memory", appMemory)
+  conf.set("spark.yarn.am.memory", masterMemory)
+  conf.set("spark.executor.memory", execMemory)
+  conf.set("spark.executor.instances", execNb)
+  conf.set("spark.yarn.am.cores", execCores)
   return SparkContext(conf = conf)
 
 # Convert a file to hadoop file
 def convertTOhadoop(rfile, hdfsFile):
   #print('if pre-existing in hdfs, the file would be deleted before the re-distribution of a new file with the same name.\n')
-  #os.system('hadoop fs -rm ' + hdfsFile) # force delete any pre-existing file in hdfs with the same name.
+  # os.system('hadoop fs -rm ' + hdfsFile) # force delete any pre-existing file in hdfs with the same name.
   os.system('hadoop fs -copyFromLocal ' + rfile + ' ' + hdfsFile)
 
 # Convert a fasta file into a key value file
@@ -200,21 +203,28 @@ def writeToFile (results, outfile):
     
     fh_out.close()
 
-def writeTimeLibToFile (timeDict, outfile):
+def writeTimeLibToFile (timeDict, outfile, appId, paramDict):
   import datetime
   
-  totalTime = reduce((lambda x,y : x + y), timeDict.values() )
-  totalTime = str(datetime.timedelta(seconds=totalTime))
+  totalTimeSec = reduce((lambda x,y : x + y), timeDict.values() )
+  totalTimeHMS = str(datetime.timedelta(seconds=totalTimeSec))
   
   fh_out = open (outfile, 'w')
   
-  print >> fh_out, "Total time execution of all the libraries: "+totalTime+ "\n"
+  print >> fh_out, "# Application ID " + appId +"\n"
+  print >> fh_out, "Total \t"+totalTimeHMS+ "\t" + totalTimeSec
   
   for lib in timeDict :
     timeLibSec = timeDict[lib]
     timeLibHMS = str(datetime.timedelta(seconds=timeLibSec))
     timeLibSec = format(timeLibSec, '.3f')
     
-    print >> fh_out, "Lib "+lib+": "+timeLibHMS+"\t"+timeLibSec+"\n"
+    print >> fh_out, "Lib "+lib+"\t"+timeLibHMS+"\t"+timeLibSec
+  
+  print >> fh_out, "# SPARK configuration"
+  
+  for key in paramDict :
+    if key.startswith("sc_"):
+      print >> fh_out, "# " + key + ": " + paramDict[key]
   
   fh_out.close()
