@@ -206,8 +206,9 @@ def writeToFile (results, outfile):
 def writeTimeLibToFile (timeDict, outfile, appId, paramDict):
   import datetime
   
-  totalTimeSec = reduce((lambda x,y : x + y), timeDict.values() )
+  totalTimeSec = reduce((lambda x,y : x + y), timeDict.values())
   totalTimeHMS = str(datetime.timedelta(seconds=totalTimeSec))
+  totalTimeSec = format(totalTimeSec, '.3f')
   
   fh_out = open (outfile, 'w')
   
@@ -221,7 +222,7 @@ def writeTimeLibToFile (timeDict, outfile, appId, paramDict):
     
     print >> fh_out, "Lib "+lib+"\t"+timeLibHMS+"\t"+timeLibSec
   
-  print >> fh_out, "# SPARK configuration"
+  print >> fh_out, "\n# SPARK configuration:"
   
   for key in paramDict :
     if key.startswith("sc_"):
