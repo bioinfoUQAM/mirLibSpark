@@ -16,7 +16,7 @@ import utils as ut
 
 def rearrange_rule(kv_arg, kv_sep):
   tab = kv_arg.split(kv_sep)
-  return (str(tab[0]), int(tab[1]))
+  return (str(tab[1]), int(tab[2]))
 
 class prog_dustmasker ():
 
