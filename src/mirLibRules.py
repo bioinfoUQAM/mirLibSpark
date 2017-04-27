@@ -16,7 +16,7 @@ import utils as ut
 
 def rearrange_rule(kv_arg, kv_sep):
   tab = kv_arg.split(kv_sep)
-  return (str(tab[0]), int(tab[1]))
+  return (str(tab[1]), int(tab[2]))
 
 class prog_dustmasker ():
 
@@ -337,20 +337,15 @@ class prog_dominant_profile :
       x = y-len(preseq) + 1
     return x-1, y+1                  # exclusive  x < a < y
 
-  def exp_profile_filter (self, elem, dict_bowtie_chromo_strand):
-    ''' old : elem = (id, [seq, frq, nbloc, [bowtie], [pri_miRNA], [pre_miRNA]])
-        new : elem = (seq, [frq, nbloc, [bowtie], [pri_miRNA], [pre_miRNA]])
-    '''
+  def totalfrq_map_rule (self, elem, dict_bowtie_chromo_strand):
     x, y = self.profile_range (elem)
-    bowtie_bloc_key = elem[1][2][1] + elem[1][2][0]  #chrom+strand
+    bowtie_bloc_key = elem[1][2][1] + elem[1][2][0]
     bowbloc = dict_bowtie_chromo_strand[bowtie_bloc_key]
-    totalfrq = self.calculateTotalfrq (bowbloc, x, y)
-    miRNAfrq = elem[1][0]
-    ratio = miRNAfrq / float(totalfrq)
-    
-    if ratio > 0.2 :
-        return True
-    return False
+    totalfrq, sRNAprofile = self.calculateTotalfrq (bowbloc, x, y)
+
+    # will print sRNAprofile to a file
+    elem[1].append(totalfrq)
+    return elem
 
 
 if __name__ == '__main__' :
@@ -369,3 +364,5 @@ if __name__ == '__main__' :
 '''
 http://stackoverflow.com/questions/30010939/python-subprocess-popen-error-no-such-file-or-directory
 '''
+
+
