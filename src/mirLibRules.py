@@ -16,8 +16,7 @@ import utils as ut
 
 def rearrange_rule(kv_arg, kv_sep):
   tab = kv_arg.split(kv_sep)
-  return (str(tab[0]),[str(tab[1]),int(tab[2])])
-
+  return (str(tab[0]), int(tab[1]))
 
 class prog_dustmasker ():
 
@@ -28,7 +27,7 @@ class prog_dustmasker ():
     self.env = os.environ
 
   def dmask_filter_rule(self, elem):
-    sRNAseq = str(elem[1][0])
+    sRNAseq = str(elem[0])
     line1 = ['echo', '>seqMir\n' + sRNAseq]
     line2 = ['dustmasker']
     
@@ -42,6 +41,8 @@ class prog_dustmasker ():
         return True
     return False  ## false data will be automatically excluded in the new RDD
 
+  def dmask_pipe_cmd(self):
+    return 'dustmasker -outfmt fasta', self.env
 
 class prog_bowtie ():
 
@@ -58,7 +59,6 @@ class prog_bowtie ():
     FNULL = open(os.devnull, 'w')
     
     # cmd = 'bowtie --mm -a -v 0 --suppress 1,5,6,7,8 -c ' + self.bowtie_index + ' '+ seq  # shell=True
-
     cmd = ['bowtie', '--mm', '-a', '-v', '0', '--suppress', '1,5,6,7,8', '-c', self.bowtie_index, seq] # shell=False
     
     sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
@@ -84,7 +84,25 @@ class prog_bowtie ():
     elem[1].append(len(append_value))
     elem[1].append(append_value)
     return elem
-
+  
+  def Bowtie_pipe_cmd (self):
+    cmd = "bowtie --mm -a -v 0 --suppress 1,6,7,8 -r " + self.bowtie_index + " -"
+    
+    return cmd, self.env
+  
+  def bowtie_rearrange_map (self, elem):
+    # u'+\tChr3\t7922370\tAAATGTAAACATCTGATCGTTTGA'
+    elemTab = map(str, elem.split("\t"))
+    
+    # if negative strand, get the reverse complement
+    if elemTab[0] == "-" :
+      elemTab[3] = ut.getRevComp(elemTab[3])
+      
+    return (elemTab[3], [elemTab[0], elemTab[1], int(elemTab[2])])
+    
+  def bowtie_freq_rearrange_rule(self, elem):
+    # (seq, [freq, nbloc, [mappings] ] )
+    return (elem[0], [elem[1][1], elem[1][0][0], elem[1][0][1]])
 
 class extract_precurosrs ():
 
@@ -130,9 +148,6 @@ class extract_precurosrs ():
       seq_3p = ut.getRevComp(seq_3p);
       pos_3p = len(seq_3p) - pos_3p - len_srna
     
-    # seq_5p = ut.tr_T_U(seq_5p)
-    # seq_3p = ut.tr_T_U(seq_3p)
-    
     if seq_5p == seq_3p :
       prims = [[seq_5p, pos_5p]]
     else :
@@ -146,14 +161,14 @@ class extract_precurosrs ():
     '''
     newElems = []
     primirnas = []
-    len_srna = len(elem[1][0])
+    len_srna = len(elem[0])
     
-    for mapping in elem[1][3]:
+    for mapping in elem[1][2]:
       contig = self.genome[mapping[1]]
-      prims = self.extract_precursors(contig, mapping[0], int(mapping[2]), len_srna)
+      prims = self.extract_precursors(contig, mapping[0], mapping[2], len_srna)
       
       for prim in prims :
-        newElem = (elem[0], [elem[1][0], elem[1][1], elem[1][2], mapping, prim])
+        newElem = (elem[0], [elem[1][0], elem[1][1], mapping, prim])
         newElems.append(newElem)
     
     return newElems
@@ -173,15 +188,16 @@ class extract_precurosrs ():
 
     return [newSeq, pos]
 
-  def extract_prem_rule(self, elem):
+  def extract_prem_rule(self, elem, field):
     '''
-    elem = (id, [seq, frq, nbloc, [bowtie], [pri_miRNA, posMirPrim, Struct, mircheck, fbstart, fbstop]])
+    olde : elem = (id, [seq, frq, nbloc, [bowtie], [pri_miRNA, posMirPrim, Struct, mircheck, fbstart, fbstop]])
+    new : elem = (seq, [frq, nbloc, [bowtie], [pri_miRNA, posMirPrim, Struct, mircheck, fbstart, fbstop]])
     '''
     
-    priSeq = elem[1][4][0]
-    posMir = int(elem[1][4][1])
-    fback_start = int(elem[1][4][4])
-    fback_stop = int(elem[1][4][5])
+    priSeq = elem[1][field][0]
+    posMir = int(elem[1][field][1])
+    fback_start = int(elem[1][field][4])
+    fback_stop = int(elem[1][field][5])
     
     elem[1].append(self.extract_sub_seq(priSeq, posMir, fback_start, fback_stop))
     return elem
@@ -215,7 +231,8 @@ class prog_RNAfold ():
 
   def RNAfold_map_rule(self, elem, field):
     '''
-    elem = (id, [seq, frq, nbloc, [bowtie], [pri_miRNA]])
+    old : elem = (id, [seq, frq, nbloc, [bowtie], [pri_miRNA]])
+    new : elem = (seq, [frq, nbloc, [bowtie], [pri_miRNA]])
     '''
     elem[1][field].append(self.run_RNAfold(elem[1][field][0]))
     return elem
@@ -241,10 +258,12 @@ class prog_mirCheck ():
     '''
     elem = (id, [seq, frq, nbloc, [bowtie], [pri_miRNA, posMirPrim, Struct]])
     elem[1][field][0]
-    '''
-    len_miRNAseq = len(elem[1][0])
+    elem = (seq, [frq, nbloc, [bowtie], [pri_miRNA, posMirPrim, Struct]])
     
-    pos_miRNA_start = int(elem[1][field][1])
+    '''
+    len_miRNAseq = len(elem[0])
+    
+    pos_miRNA_start = elem[1][field][1]
     pos_miRNA_stop  = pos_miRNA_start + len_miRNAseq - 1
     folding = elem[1][field][2]
     
@@ -255,60 +274,83 @@ class prog_mirCheck ():
     else :
       del elem[1][field][:]
       
-    # if not any(primirnas) : del primirnas[:]
     return elem
 
-class prog_dominant_profile :#(dict_bowtie_chromo_strand):
+class prog_dominant_profile :
 
   def __init__(self):
     self.env = os.environ
-    #self.dict_bowtie_chromo_strand = dict_bowtie_chromo_strand
-
+  
+  def get_bowtie_strandchromo_dict (self, bowtie_rdd_collect):
+    '''elem : (seq, [frq, nbloc, [bowties]])
+    '''
+    dict_bowtie_chromo_strand = {}
+    
+    for elem in bowtie_rdd_collect :
+      bowties = elem[1][2]
+      
+      for bowtie in bowties :
+        # concatenate chromosome (bowtie[1]) and strand (bowtie[0])
+        chromo_strand = bowtie[1] + bowtie[0]
+        
+        if chromo_strand not in dict_bowtie_chromo_strand.keys():
+          dict_bowtie_chromo_strand[chromo_strand] = []
+        
+        dict_bowtie_chromo_strand[chromo_strand].append(elem)
+    
+    return dict_bowtie_chromo_strand
+  
   def calculateTotalfrq (self, bowbloc, x, y):
-    sRNAprofile = []
+    ''' old elem in bowbloc = (id, [seq, frq, nbloc, [bowties]])
+        new elem in bowbloc = (seq, [frq, nbloc, [bowties]])
+    '''
+    # sRNAprofile = []
     totalfrq = 0
-    for i in bowbloc:
-      bowties = i[1][3]
-      frq = i[1][1]
-      for j in bowties:
-        posgen = j[2]
-        if (x < posgen < y):
-          sRNAprofile.append(i)
+    for elem in bowbloc :
+      bowties = elem[1][2]
+      frq = elem[1][0]
+      for bowtie in bowties :
+        posgen = bowtie[2]
+        if (x < posgen < y) :
+          # sRNAprofile.append(elem)
           totalfrq += frq
           #break #in case rare case, is there?
-    return totalfrq, sRNAprofile
+    return totalfrq
 
   def profile_range (self, elem):
-    ''' define x, y with pre_vld_rdd'''
-    posgen = elem[1][3][2] 		# already int
-    mirseq = elem[1][0]
-    mirpos_on_pre = elem[1][5][1] 	# already int
-    preseq = elem[1][5][0]
-    strand = elem[1][3][0]
+    ''' define x, y with pre_vld_rdd
+        old : elem = (id, [seq, frq, nbloc, [bowtie], [pri_miRNA], [pre_miRNA]])
+        new : elem = (seq, [frq, nbloc, [bowtie], [pri_miRNA], [pre_miRNA]])
+    '''
+    
+    posgen = elem[1][2][2]
+    mirseq = elem[0]
+    mirpos_on_pre = elem[1][4][1]
+    preseq = elem[1][4][0]
+    strand = elem[1][2][0]
+    
     if strand == '+':
-      x = posgen - mirpos_on_pre	# inclusive
-      y = x + len(preseq) - 1		# inclusive
+      x = posgen - mirpos_on_pre    # inclusive
+      y = x + len(preseq) - 1       # inclusive
     else:
       y = posgen + len(mirseq) + mirpos_on_pre -1
       x = y-len(preseq) + 1
-    return x-1, y+1	# exclusive  x < a < y
+    return x-1, y+1                  # exclusive  x < a < y
 
-  def functionX (self, elem, dict_bowtie_chromo_strand):
+  def exp_profile_filter (self, elem, dict_bowtie_chromo_strand):
+    ''' old : elem = (id, [seq, frq, nbloc, [bowtie], [pri_miRNA], [pre_miRNA]])
+        new : elem = (seq, [frq, nbloc, [bowtie], [pri_miRNA], [pre_miRNA]])
+    '''
     x, y = self.profile_range (elem)
-    bowtie_bloc_key = elem[1][3][1] + elem[1][3][0]  #chrom+strand
+    bowtie_bloc_key = elem[1][2][1] + elem[1][2][0]  #chrom+strand
     bowbloc = dict_bowtie_chromo_strand[bowtie_bloc_key]
-    totalfrq, sRNAprofile = self.calculateTotalfrq (bowbloc, x, y)
-    miRNAfrq = elem[1][1]
-    ratio = miRNAfrq / totalfrq
+    totalfrq = self.calculateTotalfrq (bowbloc, x, y)
+    miRNAfrq = elem[1][0]
+    ratio = miRNAfrq / float(totalfrq)
+    
     if ratio > 0.2 :
         return True
     return False
-
-
-    
-
-
-
 
 
 if __name__ == '__main__' :
