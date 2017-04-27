@@ -23,8 +23,8 @@ def pyspark_configuration(appMaster, appName, masterMemory, execMemory, execNb, 
 
 # Convert a file to hadoop file
 def convertTOhadoop(rfile, hdfsFile):
-  #print('if pre-existing in hdfs, the file would be deleted before the re-distribution of a new file with the same name.\n')
-  # os.system('hadoop fs -rm ' + hdfsFile) # force delete any pre-existing file in hdfs with the same name.
+  print('if pre-existing in hdfs, the file would be deleted before the re-distribution of a new file with the same name.\n')
+  os.system('hadoop fs -rm ' + hdfsFile) # force delete any pre-existing file in hdfs with the same name.
   os.system('hadoop fs -copyFromLocal ' + rfile + ' ' + hdfsFile)
 
 # Convert a fasta file into a key value file
