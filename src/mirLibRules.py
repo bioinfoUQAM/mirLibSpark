@@ -339,13 +339,7 @@ class prog_dominant_profile :
 
   def totalfrq_map_rule (self, elem, dict_bowtie_chromo_strand):
     x, y = self.profile_range (elem)
-    bowtie_bloc_key = elem[1][3][1] + elem[1][3][0] + str(elem[1][3][2]%1000) + 'K' #chrom+strand+12K
-    #blowbloc_key_minusone = elem[1][3][1] + elem[1][3][0] + str(elem[1][3][2]%1000 - 1) + 'K'
-    #blowbloc_key_plusone = elem[1][3][1] + elem[1][3][0] + str(elem[1][3][2]%1000 + 1) + 'K'
-    #if blowbloc_key_minusone in dict_bowtie_chromo_strand
-
-    #bowbloc = dict_bowtie_chromo_strand[bowtie_bloc_key] + dict_bowtie_chromo_strand[blowbloc_key_minusone] + dict_bowtie_chromo_strand[blowbloc_key_plusone]
-    #bowbloc = dict_bowtie_chromo_strand[blowbloc_key_plusone]
+    bowtie_bloc_key = elem[1][2][1] + elem[1][2][0]
     bowbloc = dict_bowtie_chromo_strand[bowtie_bloc_key]
     totalfrq, sRNAprofile = self.calculateTotalfrq (bowbloc, x, y)
 
