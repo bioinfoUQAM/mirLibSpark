@@ -166,8 +166,13 @@ if __name__ == '__main__' :
     dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(bowFrq_rdd.collect())
     
     # Results of miRNA prediction
-    miRNA_rdd = pre_vld_rdd.filter(lambda e: profile_obj.exp_profile_filter(e, dict_bowtie_chromo_strand))
+    #miRNA_rdd = pre_vld_rdd.filter(lambda e: profile_obj.exp_profile_filter(e, dict_bowtie_chromo_strand))
+    #results = miRNA_rdd.collect()
+
+    totalfrq_rdd = pre_vld_rdd.map(lambda e: profile_obj.totalfrq_map_rule (e, dict_bowtie_chromo_strand) )
+    miRNA_rdd = totalfrq_rdd.filter(lambda e: e[1][1] / float(e[1][6]) > 0.2)
     results = miRNA_rdd.collect()
+    
     
     #
     endLib = time.time()
