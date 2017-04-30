@@ -358,7 +358,7 @@ class prog_dominant_profile :
     bowbloc = dict_bowtie_chromo_strand[bowtie_bloc_key]
     totalfrq = self.calculateTotalfrq (bowbloc, x, y)
 
-    e[1].append(totalfrq)
+    elem[1].append(totalfrq)
     return elem
 
 
