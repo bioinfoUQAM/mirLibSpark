@@ -171,6 +171,8 @@ if __name__ == '__main__' :
                            #.filter(lambda e: e[1][0] / float(totalfrq) > 0.2)
 
     print(pre_vld_rdd.collect())
+    sudo = pre_vld_rdd.map(lambda e: e[1].append('test'))
+    print(sudo.collect())
     '''
     results = miRNA_rdd.collect()
     
