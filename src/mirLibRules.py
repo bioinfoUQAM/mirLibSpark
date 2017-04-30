@@ -352,9 +352,14 @@ class prog_dominant_profile :
         return True
     return False
 
-  def sudo(self, e):
-    e[1].append('test')
-    return e
+  def sudo(self, elem, dict_bowtie_chromo_strand):
+    x, y = self.profile_range (elem)
+    bowtie_bloc_key = elem[1][2][1] + elem[1][2][0]  #chrom+strand
+    bowbloc = dict_bowtie_chromo_strand[bowtie_bloc_key]
+    totalfrq = self.calculateTotalfrq (bowbloc, x, y)
+
+    e[1].append(totalfrq)
+    return elem
 
 
 if __name__ == '__main__' :

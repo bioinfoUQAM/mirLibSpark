@@ -171,7 +171,7 @@ if __name__ == '__main__' :
                            #.filter(lambda e: e[1][0] / float(totalfrq) > 0.2)
 
     print(pre_vld_rdd.collect())
-    sudo = pre_vld_rdd.map(profile_obj.sudo)
+    sudo = pre_vld_rdd.map(lambda e: profile_obj.sudo(e, dict_bowtie_chromo_strand))
     print(sudo.collect())
     '''
     results = miRNA_rdd.collect()
