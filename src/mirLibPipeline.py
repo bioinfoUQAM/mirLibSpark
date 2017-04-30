@@ -166,7 +166,12 @@ if __name__ == '__main__' :
     dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(bowFrq_rdd.collect())
     
     # Results of miRNA prediction
-    miRNA_rdd = pre_vld_rdd.filter(lambda e: profile_obj.exp_profile_filter(e, dict_bowtie_chromo_strand))
+    #miRNA_rdd = pre_vld_rdd.filter(lambda e: profile_obj.exp_profile_filter(e, dict_bowtie_chromo_strand))
+    #miRNA_rdd = pre_vld_rdd.map()#\
+                           #.filter(lambda e: e[1][0] / float(totalfrq) > 0.2)
+
+    print(pre_vld_rdd.collect())
+    '''
     results = miRNA_rdd.collect()
     
     #
@@ -176,6 +181,7 @@ if __name__ == '__main__' :
     # write results to a file
     outFile = rep_output + inBasename + '_miRNAprediction.txt'
     ut.writeToFile (results, outFile)
+    '''
     
     timeDict[inBasename] = endLib - startLib
     
