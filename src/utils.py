@@ -177,8 +177,9 @@ def writeToFile (results, outfile):
       mirCheck = pre_miRNA_records[3]#
       fbstart = pre_miRNA_records[4]#
       fbstop = pre_miRNA_records[5]#
+      totalfrq = values[5]#
       
-      data = [miRNAseq, frq, strand, chromo, posgen, pre_miRNA_seq, struc, mirCheck, fbstart, fbstop]
+      data = [miRNAseq, frq, strand, chromo, posgen, pre_miRNA_seq, struc, mirCheck, fbstart, fbstop, totalfrq]
       line = ''
       
       for d in data:
