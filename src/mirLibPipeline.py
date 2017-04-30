@@ -167,15 +167,11 @@ if __name__ == '__main__' :
     
     # Results of miRNA prediction
     #miRNA_rdd = pre_vld_rdd.filter(lambda e: profile_obj.exp_profile_filter(e, dict_bowtie_chromo_strand))
-    #miRNA_rdd = pre_vld_rdd.map()#\
-                           #.filter(lambda e: e[1][0] / float(totalfrq) > 0.2)
 
-    print(pre_vld_rdd.collect())
-    sudo = pre_vld_rdd.map(lambda e: profile_obj.sudo(e, dict_bowtie_chromo_strand))\
+    miRNA_rdd = pre_vld_rdd.map(lambda e: profile_obj.sudo(e, dict_bowtie_chromo_strand))\
                       .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)
 
-    print(sudo.collect())
-    '''
+    #'''
     results = miRNA_rdd.collect()
     
     #
@@ -185,7 +181,7 @@ if __name__ == '__main__' :
     # write results to a file
     outFile = rep_output + inBasename + '_miRNAprediction.txt'
     ut.writeToFile (results, outFile)
-    '''
+    #'''
     
     timeDict[inBasename] = endLib - startLib
     
