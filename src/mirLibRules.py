@@ -352,6 +352,10 @@ class prog_dominant_profile :
         return True
     return False
 
+  def sudo(self, e):
+    e[1].append('test')
+    return e
+
 
 if __name__ == '__main__' :
    
