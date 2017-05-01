@@ -23,8 +23,8 @@ def pyspark_configuration(appMaster, appName, masterMemory, execMemory, execNb, 
 
 # Convert a file to hadoop file
 def convertTOhadoop(rfile, hdfsFile):
-  #print('if pre-existing in hdfs, the file would be deleted before the re-distribution of a new file with the same name.\n')
-  # os.system('hadoop fs -rm ' + hdfsFile) # force delete any pre-existing file in hdfs with the same name.
+  print('if pre-existing in hdfs, the file would be deleted before the re-distribution of a new file with the same name.\n')
+  os.system('hadoop fs -rm ' + hdfsFile) # force delete any pre-existing file in hdfs with the same name.
   os.system('hadoop fs -copyFromLocal ' + rfile + ' ' + hdfsFile)
 
 # Convert a fasta file into a key value file
@@ -56,10 +56,11 @@ def convert_seq_freq_file_to_KeyValue(infile, outfile, v_sep):
     
     # check if the read was treated before (redundancy)
     if data[0] not in dict_sRNA:
-      key = str(i).zfill(9)
-      i+= 1
+      # key = str(i).zfill(9)
+      # i+= 1
       dict_sRNA[data[0]] = 1
-      print >>fh_out, key + v_sep + value
+      # print >>fh_out, key + v_sep + value
+      print >>fh_out, value
       
   fh.close()
   fh_out.close()
@@ -155,44 +156,30 @@ def containsOnlyOneLoop (folding):
     if m: return False
     return True
 
-def return_Bowtie_strandchromo_dict (bowtie_rdd_collect):
-    dict_bowtie_chromo_strand = {}
-    for i in bowtie_rdd_collect :
-      #ID = i[0]
-      #sRNAseq = i[1][0]
-      #frq = i[1][1]
-      #nbloc= i[1][2]
-      bowties = i[1][3]
-      for j in bowties:
-        #strand = j[0]
-        #chromo = j[1]
-        #posgen = j[2]
-        chromo_strand = j[1] + j[0]
-        if chromo_strand not in dict_bowtie_chromo_strand.keys():
-          dict_bowtie_chromo_strand[chromo_strand] = []
-        dict_bowtie_chromo_strand[chromo_strand].append(i)
-    return dict_bowtie_chromo_strand
-    
 def writeToFile (results, outfile):
+    ''' old : elem = (id, [seq, frq, nbloc, [bowtie], [pri_miRNA], [pre_miRNA]])
+        new : elem = (seq, [frq, nbloc, [bowtie], [pri_miRNA], [pre_miRNA]])
+    '''
     fh_out = open (outfile, 'w')
     
-    for i in results :
-      ID = i[0]#
-      values = i[1]
-      miRNAseq = values[0]#
-      frq = values[1]#
-      bowtie = values[3]
+    for elem in results :
+      # ID = elem[0]#
+      values = elem[1]
+      miRNAseq = elem[0]
+      frq = values[0]
+      bowtie = values[2]
       strand = bowtie[0]#
       chromo = bowtie[1]#
       posgen = bowtie[2]#
-      pre_miRNA_records = values[5]
+      pre_miRNA_records = values[4]
       pre_miRNA_seq = pre_miRNA_records[0]#
       struc = pre_miRNA_records[2]#
       mirCheck = pre_miRNA_records[3]#
       fbstart = pre_miRNA_records[4]#
       fbstop = pre_miRNA_records[5]#
+      totalfrq = values[5]#
       
-      data = [ID, miRNAseq, frq, strand, chromo, posgen, pre_miRNA_seq, struc, mirCheck, fbstart, fbstop]
+      data = [miRNAseq, frq, strand, chromo, posgen, pre_miRNA_seq, struc, mirCheck, fbstart, fbstop, totalfrq]
       line = ''
       
       for d in data:

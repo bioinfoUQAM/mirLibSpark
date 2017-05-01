@@ -1,0 +1,37 @@
+#One machine Mode in Clouderea, entry data: 100.txt, which comtains 1838879 sequences (1.8 million)
+
+
+Lib 100	0:02:02.787982	122.788 # first launch for the same file takes more time? ==> machine needs to warm up several times before it runs efficiently, Amine quoated Guy Trembley
+# sc_master: local[*]
+
+Lib 100	0:03:43.402396	223.402
+# sc_master: local[1]
+
+Lib 100	0:03:41.607813	221.608
+# sc_master: local[1]
+
+Lib 100	0:02:15.138526	135.139
+# sc_master: local[2]
+
+Lib 100	0:02:10.473789	130.474
+# sc_master: local[3]
+
+Lib 100	0:01:28.119152	88.119
+# sc_master: local[4]
+
+Lib 100	0:01:26.800447	86.800
+# sc_master: local[*]
+
+Lib 100	0:01:31.802541	91.803
+# sc_master: local[20] # nonesense number, because I set virtual CPU to 4, is it truly nonsense?
+
+Lib 100	0:01:27.978682	87.979 # conclusion: local threads more than virtual cpu (I set 4) will not increase or decrease the speed, simply there is not as many processors available.
+# sc_master: local[100]
+
+
+# other SPARK configuration:
+# sc_execcores: 4
+# sc_appname: mirLibHadoop
+# sc_execnb: 5
+# sc_execmemory: 3g
+# sc_mstrmemory: 3g

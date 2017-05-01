@@ -1,0 +1,12 @@
+# Application ID application_1493258133583_0026
+
+Total 	0:01:26.577052	86.577
+Lib 100	0:01:26.577052	86.577
+
+# SPARK configuration:
+# sc_master: yarn-client
+# sc_execcores: 2
+# sc_appname: mirLibHadoop
+# sc_execnb: 4
+# sc_execmemory: 5g
+# sc_mstrmemory: 5g

@@ -39,51 +39,52 @@ if __name__ == '__main__' :
   paramDict = ut.readParam (paramfile)
 
   # Parameters and cutoffs
-  my_sep = paramDict['my_sep']                # Separator
-  rep_tmp = paramDict['rep_tmp']              # tmp file folder
+  my_sep = paramDict['my_sep']                      # Separator
+  rep_tmp = paramDict['rep_tmp']                    # tmp file folder
   # spark configuration
-  appMaster = paramDict['sc_master']             #"local" 
-  appName = paramDict['sc_appname']              #"mirLibHadoop"
-  mstrMemory = paramDict['sc_mstrmemory']        #"4g"
-  execMemory = paramDict['sc_execmemory']        #"4g"
-  execNb = paramDict['sc_execnb']                #4
-  execCores = paramDict['sc_execcores']          #2
+  appMaster = paramDict['sc_master']                #"local" 
+  appName = paramDict['sc_appname']                 #"mirLibHadoop"
+  mstrMemory = paramDict['sc_mstrmemory']           #"4g"
+  execMemory = paramDict['sc_execmemory']           #"4g"
+  execNb = paramDict['sc_execnb']                   #4
+  execCores = paramDict['sc_execcores']             #2
   # genome
-  genome_path = paramDict['genome_path']      #"../input/ATH/TAIR/Genome/"
+  genome_path = paramDict['genome_path']            #"../input/ATH/TAIR/Genome/"
   # cutoffs
-  limit_freq = int(paramDict['limit_freq'])   #200      # exclude RNA freq < limit_freq
-  limit_len = int(paramDict['limit_len'])     #18       # exclude RNA length < limit_len
-  limit_nbLoc = int(paramDict['limit_nbLoc']) #2        # exculde nbLoc mapped with bowtie  > limit_nbLoc
+  limit_srna_freq = int(paramDict['limit_s_freq'])  #10       # exclude sRNA freq < limit_srna_freq
+  limit_mrna_freq = int(paramDict['limit_m_freq'])  #200      # exclude miRNA freq < limit_mrna_freq
+  limit_len = int(paramDict['limit_len'])           #18       # exclude RNA length < limit_len
+  limit_nbLoc = int(paramDict['limit_nbLoc'])       #3        # exculde nbLoc mapped with bowtie  > limit_nbLoc
   # bowtie
   b_index = paramDict['b_index']
   # pri-mirna
-  pri_l_flank = int(paramDict['pri_l_flank']) #120
-  pri_r_flank = int(paramDict['pri_r_flank']) #60
-  pre_flank = int(paramDict['pre_flank'])     #30
+  pri_l_flank = int(paramDict['pri_l_flank'])       #120
+  pri_r_flank = int(paramDict['pri_r_flank'])       #60
+  pre_flank = int(paramDict['pre_flank'])           #30
   # mircheck parameter
-  mcheck_param = paramDict['mcheck_param']    #'def'     # def : default parameters / mey : meyers parameters
+  mcheck_param = paramDict['mcheck_param']          #'def'    # def : default parameters / mey : meyers parameters
 
   # Spark context
-  # (appMaster, appName, masterMemory, execMemory, execNb, execCores):
   sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, execNb, execCores)
   sc.addPyFile('utils.py')
   sc.addPyFile('mirLibRules.py')
-  
+  # Spark application ID
   appId = str(sc.applicationId)
   
-  # Object for rule functions
-
+  # Objects for rule functions
   dmask_obj = mru.prog_dustmasker()
+  dmask_cmd, dmask_env = dmask_obj.dmask_pipe_cmd()
   bowtie_obj = mru.prog_bowtie(b_index)
+  bowtie_cmd, bowtie_env = bowtie_obj.Bowtie_pipe_cmd()
   prec_obj = mru.extract_precurosrs(genome_path, pri_l_flank, pri_r_flank, pre_flank)
   rnafold_obj = mru.prog_RNAfold()
   mircheck_obj = mru.prog_mirCheck(mcheck_param)
   profile_obj = mru.prog_dominant_profile()
 
-  # fetch library files in mypath
+  # Fetch library files in mypath
   infiles = [f for f in listdir(mypath) if os.path.isfile(os.path.join(mypath, f))]
   
-  # time processing of libraries
+  # Time processing of libraries
   timeDict = {}
   
   for infile in infiles :
@@ -101,62 +102,86 @@ if __name__ == '__main__' :
     ut.convertTOhadoop(inKvfile, hdfsFile)
     
     #
-    print ("  Start of the processing...", end="\r")
+    print ("  Start of the processing...", end="\n")
     startLib = time.time()
     # Convert the text file to RDD object
     distFile = sc.textFile(hdfsFile)
-    input_rdd = distFile.map(lambda line: mru.rearrange_rule(line, my_sep))
+    input_rdd = distFile.map(lambda line: mru.rearrange_rule(line, my_sep)) # (seq, freq)
   
-    # Filtering low frequency
-    rm_low_rdd = input_rdd.filter(lambda elem: int(elem[1][1]) > limit_freq)
+    # Filtering sRNA low frequency
+    sr_low_rdd = input_rdd.filter(lambda e: int(e[1]) > limit_srna_freq)
 
-    # Filtering short length 
-    rm_short_rdd = rm_low_rdd.filter(lambda elem: len(str(elem[1][0])) > limit_len)
+    # Filtering short length
+    sr_short_rdd = sr_low_rdd.filter(lambda e: len(e[0]) > limit_len).persist()
 
     # Filtering with DustMasker
-    dmask_rdd = rm_short_rdd.filter(dmask_obj.dmask_filter_rule)
-  
+    dmask_rdd = sr_short_rdd.map(lambda e: '>s\n'+e[0])\
+                            .pipe(dmask_cmd, dmask_env)\
+                            .filter(lambda e: e.isupper() and not e.startswith('>'))\
+                            .map(lambda e: str(e.rstrip()))\
+                            .persist()
+    
     # Mapping with Bowtie
-    bowtie_rdd = dmask_rdd.map(bowtie_obj.Bowtie_map_rule).persist()
-
+    bowtie_rdd = dmask_rdd.pipe(bowtie_cmd, bowtie_env)\
+                          .map(bowtie_obj.bowtie_rearrange_map)\
+                          .groupByKey()\
+                          .map(lambda e: (e[0], [len(list(e[1])), list(e[1])]))\
+                          .persist()
+    
+    # Get the expression value for each reads
+    bowFrq_rdd = bowtie_rdd.join(sr_short_rdd)\
+                           .map(bowtie_obj.bowtie_freq_rearrange_rule)\
+                           .persist()
+    
+    # Filtering miRNA low frequency
+    mr_low_rdd = bowFrq_rdd.filter(lambda e: e[1][0] > limit_mrna_freq)
+    
     # Filtering high nbLocations and zero location
-    nbLoc_rdd = bowtie_rdd.filter(lambda elem: elem[1][2] > 0 and elem[1][2] < limit_nbLoc)
-  
+    nbLoc_rdd = mr_low_rdd.filter(lambda e: e[1][1] > 0 and e[1][1] < limit_nbLoc)
+    
     # Extraction of the pri-miRNA
     primir_rdd = nbLoc_rdd.flatMap(prec_obj.extract_prim_rule)
-   
+    
     # pri-miRNA folding
-    pri_fold_rdd = primir_rdd.map(lambda elem: rnafold_obj.RNAfold_map_rule(elem, 4))
-  
-    # Validating pri-mirna with mircheck  
-    pri_vld_rdd = pri_fold_rdd.map(lambda elem: mircheck_obj.mirCheck_map_rule(elem, 4)).filter(lambda elem: any(elem[1][4]))
-
+    pri_fold_rdd = primir_rdd.map(lambda e: rnafold_obj.RNAfold_map_rule(e, 3))
+    
+    # Validating pri-mirna with mircheck
+    pri_vld_rdd = pri_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 3))\
+                              .filter(lambda e: any(e[1][3]))
+    
     # Filtering structure with branched loop
-    one_loop_rdd = pri_vld_rdd.filter(lambda elem: ut.containsOnlyOneLoop (  elem[1][4][2][ int(elem[1][4][4]) : int(elem[1][4][5])+1 ] ))
-
+    one_loop_rdd = pri_vld_rdd.filter(lambda e: ut.containsOnlyOneLoop (e[1][3][2][int(e[1][3][4]) : int(e[1][3][5])+1]))
+    
     # Extraction of the pre-miRNA
-    premir_rdd = one_loop_rdd.map(prec_obj.extract_prem_rule)  
+    premir_rdd = one_loop_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3))
 
     # pre-miRNA folding
-    pre_fold_rdd = premir_rdd.map(lambda elem: rnafold_obj.RNAfold_map_rule(elem, 5))
-  
+    pre_fold_rdd = premir_rdd.map(lambda e: rnafold_obj.RNAfold_map_rule(e, 4))
+    
     # Validating pre-mirna with mircheck
-    pre_vld_rdd = pre_fold_rdd.map(lambda elem: mircheck_obj.mirCheck_map_rule(elem, 5)).filter(lambda elem: any(elem[1][5]))
-
+    pre_vld_rdd = pre_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 4))\
+                              .filter(lambda e: any(e[1][4]))
+    
     # you can use chromo_strand as key to search bowtie blocs in the following dict
-    dict_bowtie_chromo_strand = ut.return_Bowtie_strandchromo_dict (bowtie_rdd.collect())
+    dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(bowFrq_rdd.collect())
+    
+    # Results of miRNA prediction
+    #miRNA_rdd = pre_vld_rdd.filter(lambda e: profile_obj.exp_profile_filter(e, dict_bowtie_chromo_strand))
 
-    # results of miRNA prediction
-    miRNA_rdd = pre_vld_rdd.filter(lambda elem: profile_obj.functionX(elem, dict_bowtie_chromo_strand) )
+    miRNA_rdd = pre_vld_rdd.map(lambda e: profile_obj.sudo(e, dict_bowtie_chromo_strand))\
+                      .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)
+
+    #'''
     results = miRNA_rdd.collect()
-
+    
     #
     endLib = time.time()
-    print ("  End of the processing     ", end="\r")
+    print ("  End of the processing     ", end="\n")
     
     # write results to a file
     outFile = rep_output + inBasename + '_miRNAprediction.txt'
     ut.writeToFile (results, outFile)
+    #'''
     
     timeDict[inBasename] = endLib - startLib
     
