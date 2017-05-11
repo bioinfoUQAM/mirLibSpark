@@ -1,0 +1,48 @@
+# TargetScan	MIT 
+# download 
+http://www.targetscan.org/cgi-bin/targetscan/data_download.vert71.cgi
+
+perl, 3 scripts of different purpose
+
+#############################################################
+# miRanda	microRNA.org
+
+miRanda is an algorithm for finding genomic targets for microRNAs. This algorithm has been written in C and is available as an open-source method under the GPL. MiRanda was developed at the Computational Biology Center of Memorial Sloan-Kettering Cancer Center.
+
+C
+
+# download
+http://www.microrna.org/microrna/getDownloads.do
+
+dependency: RNAlib in ViennaRNA
+#############################################################
+# RNAhybrid	university of Bielefeld
+# download
+https://bibiserv.cebitec.uni-bielefeld.de/rnahybrid?id=rnahybrid_view_download
+
+options of source code or pre-compiled binaries
+
+###########################################################
+psRobot
+
+china
+http://omicslab.genetics.ac.cn/psRobot/downloads.php
+perl
+dependency: Mfold-3.5
+
+############################################################
+WMD3
+
+http://wmd3.weigelworld.org/cgi-bin/webapp.cgi?page=Downloads;project=stdwmd
+
+perl
+dependency: SQLite or MySQL
+##########################################################
+TAPIR
+
+# dowlnload
+http://bioinformatics.psb.ugent.be/webtools/tapir/
+
+We provide here a standalone version of the TAPIR software for Linux systems. The tool is released under the terms of the GNU GPL version 2 and is free of charge for academics and nonprofit organizations. See the file readme.txt for details.
+
+
