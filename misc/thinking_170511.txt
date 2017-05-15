@@ -4,6 +4,15 @@ http://www.targetscan.org/cgi-bin/targetscan/data_download.vert71.cgi
 
 perl, 3 scripts of different purpose
 
+## targetscan_70.zip #########
+ To identify conserved miRNA targets and nonconserved sites using a custom set of data, download the Perl script.
+
+targetscan_70_BL_PCT.zip
+ To calculate conserved branch length and PCT for each predicted target in a custom set of data, download the Perl script.
+
+TargetScan7_context_scores.zip
+ To calculate context++ scores for a set of predicted miRNA sites in a custom set of data, download the Perl script.
+
 #############################################################
 # miRanda	microRNA.org
 
@@ -15,6 +24,40 @@ C
 http://www.microrna.org/microrna/getDownloads.do
 
 dependency: RNAlib in ViennaRNA
+
+# install in Cloudera steps
+My current location is:
+[cloudera@quickstart miRanda-3.3a]$
+
+To Compile do:
+$./configure --prefix=/place/to/install
+
+(install folder is /usr/bin/install)
+
+then:
+go to root by 
+$su 
+pw = cloudera
+
+$make install
+
+$cp src/miranda /usr/local/bin/
+$exit
+
+$miranda --help
+if this command display help message, then the installation is done.
+
+
+Usage:	miranda file1 file2 [options..]
+Where:
+	'file1' is a FASTA file with a microRNA query
+	'file2' is a FASTA file containing the sequence(s)
+	to be scanned.
+
+
+# example command line
+$miranda examples/bantam_stRNA.fasta examples/hid_UTR.fasta
+
 #############################################################
 # RNAhybrid	university of Bielefeld
 # download
