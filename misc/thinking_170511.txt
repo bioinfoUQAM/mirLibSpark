@@ -75,6 +75,8 @@ pw: cloudera
 $make install
 $exit
 
+make sure that RNAhybrid, RNAcalibrate and RNAeffective are in your PATH (/usr/local/bin)
+
 # example command line 
 # file1 = genes
 # file2 = miRNAs
@@ -107,6 +109,21 @@ ATTTATAAAAACTCCAATAAAAAAGCATCTTGAAGCATCTTGTTTTACCACATATATCAAAACTTCAAAGTACACAATTA
 ATCGGATCATCAGAAAAA ugagguaguagguuguauaguu
 
 
+# options
+-s 
+tells RNAhybrid to quickly estimate statistical
+parameters from "minimal duplex energies" under the assumption that
+the target sequences are worm (C. elegans, to be precise) 3'UTR
+sequences. You can also use 3utr_fly and 3utr_human
+
+-t
+target seqs are in fasta file
+without this option, one target seq is command line
+
+-q
+miRNA seqs are in fasta file
+without this option, one miRNA seq is command line
+
 
 ###########################################################
 psRobot
@@ -131,4 +148,17 @@ http://bioinformatics.psb.ugent.be/webtools/tapir/
 
 We provide here a standalone version of the TAPIR software for Linux systems. The tool is released under the terms of the GNU GPL version 2 and is free of charge for academics and nonprofit organizations. See the file readme.txt for details.
 
+dependency: bioperl, Vienna Perl modules
+
+# install
+
+$su
+cloudera
+$ cp tapir* /usr/local/bin/
+$exit
+$tapir_fasta --mir_file 163.fa --target_file AT1G66720.fa
+##### fail, because I dont have bioperl
+
+# using RNAhybrind as a precise option
+$tapir_hybrid <mir_file> <target_file>
 
