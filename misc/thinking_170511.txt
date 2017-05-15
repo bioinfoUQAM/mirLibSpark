@@ -117,12 +117,16 @@ the target sequences are worm (C. elegans, to be precise) 3'UTR
 sequences. You can also use 3utr_fly and 3utr_human
 
 -t
-target seqs are in fasta file
+target seqs are in fasta files
 without this option, one target seq is command line
 
 -q
-miRNA seqs are in fasta file
+miRNA seqs are in fasta files
 without this option, one miRNA seq is command line
+
+target files (-t option) and query (miRNA) files (-q
+option) can be multiple fasta files. The searches are performed in all
+combinations (all queries vs. all targets).
 
 
 ###########################################################
