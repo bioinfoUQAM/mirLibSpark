@@ -361,6 +361,37 @@ class prog_dominant_profile :
     elem[1].append(totalfrq)
     return elem
 
+class prog_RNAhybrid ():
+
+  def __init__(self):
+    self.env = os.environ
+    self.list_miRNA_candidates = []
+
+  def dostuff (self, elem, infile_name):
+    '''
+    RNAhybrid -s 3utr_worm -t /home/cloudera/workspace/cDNA/TAIR10_cdna_20101214_updated.fasta ATACGATCCAAGACGAGTCTCA
+    RNAhybrid -s 3utr_worm -t examples/cel-hbl-1.fasta ugagguaguagguuguauaguu
+    '''
+    if elem[0] in self.list_miRNA_candidates:
+      return elem
+    else:
+      self.list_miRNA_candidates.append(elem[0])
+
+    FNULL = open(os.devnull, 'w')
+    
+    file_target_database = '/home/cloudera/workspace/cDNA/TAIR10_cdna_20101214_updated.fasta'
+    #file_target_database = '/home/cloudera/workspace/cDNA/TAIR10_cdna_20101214_updated_1cdna.fasta'
+    cmd = [ 'RNAhybrid', '-s', '3utr_worm', '-t', file_target_database, elem[0] ]
+    
+    sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
+    hybridout = sproc.communicate()[0]
+    outfile = 'test__170516___' + infile_name + '_' + elem[0] + '.txt'
+    fh_out = open (outfile, 'w')
+    print >>fh_out, hybridout
+    fh_out.close()
+    return elem
+
+
 
 if __name__ == '__main__' :
    

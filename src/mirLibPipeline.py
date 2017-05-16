@@ -80,6 +80,7 @@ if __name__ == '__main__' :
   rnafold_obj = mru.prog_RNAfold()
   mircheck_obj = mru.prog_mirCheck(mcheck_param)
   profile_obj = mru.prog_dominant_profile()
+  rnahybrid_obj = mru.prog_RNAhybrid()
 
   # Fetch library files in mypath
   infiles = [f for f in listdir(mypath) if os.path.isfile(os.path.join(mypath, f))]
@@ -87,10 +88,10 @@ if __name__ == '__main__' :
   # Time processing of libraries
   timeDict = {}
   
-  for infile in infiles :
-    print ("--Processing of the library: ", infile)
+  for infile_name in infiles :
+    print ("--Processing of the library: ", infile_name)
     
-    infile = mypath+infile
+    infile = mypath+infile_name
     inBasename = os.path.splitext(os.path.basename(infile))[0]
     inKvfile = rep_tmp + inBasename + '.kv.txt'
     hdfsFile = inBasename + '.hkv.txt'
@@ -171,7 +172,15 @@ if __name__ == '__main__' :
     miRNA_rdd = pre_vld_rdd.map(lambda e: profile_obj.sudo(e, dict_bowtie_chromo_strand))\
                       .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)
 
-    #'''
+    ## 170515 RNAhybrid ## RNAhybrid -s 3utr_worm -t examples/cel-hbl-1.fasta ugagguaguagguuguauaguu
+    ###################################################
+    some_rdd = miRNA_rdd.map(lambda e: rnahybrid_obj.dostuff(e, infile_name))
+    newdata = some_rdd.collect()
+    print(newdata)
+    ###################################################
+
+    
+  '''
     results = miRNA_rdd.collect()
     
     #
@@ -181,7 +190,7 @@ if __name__ == '__main__' :
     # write results to a file
     outFile = rep_output + inBasename + '_miRNAprediction.txt'
     ut.writeToFile (results, outFile)
-    #'''
+
     
     timeDict[inBasename] = endLib - startLib
     
@@ -190,3 +199,4 @@ if __name__ == '__main__' :
   # print executions time  to a file
   outTime = rep_output + appId + '_time.txt'
   ut.writeTimeLibToFile (timeDict, outTime, appId, paramDict)
+  '''
