@@ -10,6 +10,8 @@ pri_l_flank=120
 pri_r_flank=60
 pre_flank=30
 mcheck_param=def
+max_targetlength=2000
+file_target_database=../Arabidopsis/TAIR/Genome/TAIR10_blastsets/TAIR10_cdna_20101214_updated.fasta
 # Spark configuration
 #sc_master=yarn-client
 sc_master=local[*]

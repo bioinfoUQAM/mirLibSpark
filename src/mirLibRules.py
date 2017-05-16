@@ -363,7 +363,12 @@ class prog_dominant_profile :
 
 class prog_RNAhybrid ():
 
-  def __init__(self):
+  def __init__(self, max_targetlength, file_target_database):
+  #def __init__(self):
+    self.max_targetlength = max_targetlength
+    #self.file_target_database = '/home/cloudera/workspace/mirLibHadoop/Arabidopsis/TAIR/Genome/TAIR10_blastsets/TAIR10_cdna_20101214_updated_1cdna.fasta'
+    self.file_target_database = file_target_database
+
     self.env = os.environ
     self.list_miRNA_candidates = []
 
@@ -372,20 +377,13 @@ class prog_RNAhybrid ():
     RNAhybrid -s 3utr_worm -t /home/cloudera/workspace/cDNA/TAIR10_cdna_20101214_updated.fasta ATACGATCCAAGACGAGTCTCA
     RNAhybrid -s 3utr_worm -t examples/cel-hbl-1.fasta ugagguaguagguuguauaguu
     '''
-    #== variable ==
-    max_targetlength = '2000'
-    #file_target_database = '/home/cloudera/workspace/mirLibHadoop/Arabidopsis/TAIR/Genome/TAIR10_blastsets/TAIR10_cdna_20101214_updated_1cdna.fasta'
-    file_target_database = '/home/cloudera/workspace/mirLibHadoop/Arabidopsis/TAIR/Genome/TAIR10_blastsets/TAIR10_cdna_20101214_updated.fasta'
-
-
-    #outfile = 'test__170516_1___' + infile_name + '_' + elem[0] + '.txt'
-    outfile = '../output/' + elem[0] + '.txt'
+    outfile = '../output2/' + elem[0] + '.txt'
 
     #= if this miRNA seq has not been mapped for target genes, do RNAhybrid. Else, only read from target prediction file
     if elem[0] not in self.list_miRNA_candidates:
       self.list_miRNA_candidates.append(elem[0])
 
-      cmd = [ 'RNAhybrid', '-c', '-s', '3utr_worm', '-m', max_targetlength, '-t', file_target_database, elem[0] ]
+      cmd = [ 'RNAhybrid', '-c', '-s', '3utr_worm', '-m', self.max_targetlength, '-t', self.file_target_database, elem[0] ]
       #-c option == Each line is a colon (:) separated list of the following fields: 
       #fields = 'target name, target length, query name, query length, minimum free energy, p_value, position in target, alignment line 1, line 2, line 3, line 4'.split(', ')
       #AT1G51370.2:1118:command_line:21:-21.0:0.810465:331:G    U   A UACGCG        A: AUGC GCG C      UAGGAUUC : UACG CGU G      GUUCUAAG :     U   A UA            A

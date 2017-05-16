@@ -63,6 +63,9 @@ if __name__ == '__main__' :
   pre_flank = int(paramDict['pre_flank'])           #30
   # mircheck parameter
   mcheck_param = paramDict['mcheck_param']          #'def'    # def : default parameters / mey : meyers parameters
+  # RNAhybrid parameter
+  max_targetlength = paramDict['max_targetlength']
+  file_target_database = paramDict['file_target_database']
 
   # Spark context
   sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, execNb, execCores)
@@ -80,7 +83,7 @@ if __name__ == '__main__' :
   rnafold_obj = mru.prog_RNAfold()
   mircheck_obj = mru.prog_mirCheck(mcheck_param)
   profile_obj = mru.prog_dominant_profile()
-  rnahybrid_obj = mru.prog_RNAhybrid()
+  rnahybrid_obj = mru.prog_RNAhybrid(max_targetlength, file_target_database)
 
   # Fetch library files in mypath
   infiles = [f for f in listdir(mypath) if os.path.isfile(os.path.join(mypath, f))]
