@@ -381,6 +381,7 @@ class prog_RNAhybrid ():
     #outfile = 'test__170516_1___' + infile_name + '_' + elem[0] + '.txt'
     outfile = '../output/' + elem[0] + '.txt'
 
+    #= if this miRNA seq has not been mapped for target genes, do RNAhybrid. Else, only read from target prediction file
     if elem[0] not in self.list_miRNA_candidates:
       self.list_miRNA_candidates.append(elem[0])
 
@@ -395,9 +396,6 @@ class prog_RNAhybrid ():
 
       with open(outfile, "w", 0) as fh_out:
         print >>fh_out, hybridout
-    
-    #else:
-      #continue
 
     target_results = self.dostuff2 (outfile)
     elem[1].append(target_results)
