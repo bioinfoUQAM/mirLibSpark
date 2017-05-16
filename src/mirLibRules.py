@@ -361,6 +361,67 @@ class prog_dominant_profile :
     elem[1].append(totalfrq)
     return elem
 
+class prog_RNAhybrid ():
+
+  def __init__(self, max_targetlength, file_target_database):
+  #def __init__(self):
+    self.max_targetlength = max_targetlength
+    #self.file_target_database = '/home/cloudera/workspace/mirLibHadoop/Arabidopsis/TAIR/Genome/TAIR10_blastsets/TAIR10_cdna_20101214_updated_1cdna.fasta'
+    self.file_target_database = file_target_database
+
+    self.env = os.environ
+    self.list_miRNA_candidates = []
+
+  def dostuff (self, elem, infile_name):
+    '''
+    RNAhybrid -s 3utr_worm -t /home/cloudera/workspace/cDNA/TAIR10_cdna_20101214_updated.fasta ATACGATCCAAGACGAGTCTCA
+    RNAhybrid -s 3utr_worm -t examples/cel-hbl-1.fasta ugagguaguagguuguauaguu
+    '''
+    outfile = '../output2/' + elem[0] + '.txt'
+
+    #= if this miRNA seq has not been mapped for target genes, do RNAhybrid. Else, only read from target prediction file
+    if elem[0] not in self.list_miRNA_candidates:
+      self.list_miRNA_candidates.append(elem[0])
+
+      cmd = [ 'RNAhybrid', '-c', '-s', '3utr_worm', '-m', self.max_targetlength, '-t', self.file_target_database, elem[0] ]
+      #-c option == Each line is a colon (:) separated list of the following fields: 
+      #fields = 'target name, target length, query name, query length, minimum free energy, p_value, position in target, alignment line 1, line 2, line 3, line 4'.split(', ')
+      #AT1G51370.2:1118:command_line:21:-21.0:0.810465:331:G    U   A UACGCG        A: AUGC GCG C      UAGGAUUC : UACG CGU G      GUUCUAAG :     U   A UA            A
+    
+      FNULL = open(os.devnull, 'w')
+      sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
+      hybridout = sproc.communicate()[0]
+
+      with open(outfile, "w", 0) as fh_out:
+        print >>fh_out, hybridout
+
+    target_results = self.dostuff2 (outfile)
+    elem[1].append(target_results)
+    return elem
+
+  def dostuff2 (self, outfile):
+    with open (outfile, 'r') as fh:
+      DATA = fh.readlines()
+
+    target_results = []
+
+    for i in DATA:
+      items = i.rstrip('\n').split(':')
+      if len(items) == 11:
+        target_name = items[0]#
+        target_length = items[1]#
+        ##query_name = items[2]
+        ##query_length = items[3]
+        mfe = items[4]#
+        p_value = items[5]
+        pos_in_target = items[6]#
+        alignment = items[7:11]#
+        target_result = [target_name, target_length, mfe, p_value, pos_in_target, alignment]
+        target_results.append(target_result)
+    return target_results
+
+
+
 
 if __name__ == '__main__' :
    

@@ -32,6 +32,8 @@ time spark-submit mirLibPipeline.py ../paramfile_julie_batch.txt /home/cloudera/
 spark-submit mirLibPipeline.py ../paramfile_julie.txt /home/cloudera/workspace/miRNA_predictor/sudoData2/ ../data/ 2>/dev/null #8.852s 8.832s
 spark-submit mirLibPipeline.py ../paramfile_julie.txt /home/cloudera/workspace/libraries/srna2/ ../data/ 2>/dev/null
 
+170516
+spark-submit mirLibPipeline.py ../paramfile_julie.txt /home/cloudera/workspace/miRNA_predictor/sudoData2/ ../data/ 2>/dev/null #16m16s
 
 ##=========================================================================================================
 Amine misc
