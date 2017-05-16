@@ -80,6 +80,7 @@ if __name__ == '__main__' :
   rnafold_obj = mru.prog_RNAfold()
   mircheck_obj = mru.prog_mirCheck(mcheck_param)
   profile_obj = mru.prog_dominant_profile()
+  miranda_obj = mru.prog_miRanda()
 
   # Fetch library files in mypath
   infiles = [f for f in listdir(mypath) if os.path.isfile(os.path.join(mypath, f))]
@@ -171,7 +172,13 @@ if __name__ == '__main__' :
     miRNA_rdd = pre_vld_rdd.map(lambda e: profile_obj.sudo(e, dict_bowtie_chromo_strand))\
                       .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)
 
-    #'''
+    ###################################################
+    miranda_rdd = miRNA_rdd.map(miranda_obj.dostuff)
+    newdata = miranda_rdd.collect()
+    print(newdata)
+    ###################################################
+
+    '''
     results = miRNA_rdd.collect()
     
     #
@@ -181,7 +188,7 @@ if __name__ == '__main__' :
     # write results to a file
     outFile = rep_output + inBasename + '_miRNAprediction.txt'
     ut.writeToFile (results, outFile)
-    #'''
+    
     
     timeDict[inBasename] = endLib - startLib
     
@@ -190,3 +197,4 @@ if __name__ == '__main__' :
   # print executions time  to a file
   outTime = rep_output + appId + '_time.txt'
   ut.writeTimeLibToFile (timeDict, outTime, appId, paramDict)
+  '''

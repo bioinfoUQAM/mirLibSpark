@@ -361,6 +361,36 @@ class prog_dominant_profile :
     elem[1].append(totalfrq)
     return elem
 
+class prog_miRanda ():
+  def __init__ (self):
+    self.env = os.environ
+  
+  def dostuff (self, e):
+    '''
+    $miranda examples/bantam_stRNA.fasta examples/hid_UTR.fasta
+    '''
+    #target_file = '/home/cloudera/workspace/mirLibHadoop/Arabidopsis/TAIR/Genome/TAIR10_blastsets/TAIR10_cdna_20101214_updated_1cdna.fasta'
+    target_file = '/home/cloudera/workspace/mirLibHadoop/Arabidopsis/TAIR/Genome/TAIR10_blastsets/TAIR10_cdna_20101214_updated.fasta'
+    tmp_file = '../tmp/tmp_mirna_seq.txt'
+    with open (tmp_file, 'w') as fh_tmp:
+      print >> fh_tmp, '>x\n' + e[0]
+    FNULL = open(os.devnull, 'w')
+    cmd = ['miranda', tmp_file, target_file]
+    # miranda ../tmp/tmp_mirna_seq.txt /home/cloudera/workspace/mirLibHadoop/Arabidopsis/TAIR/Genome/TAIR10_blastsets/TAIR10_cdna_20101214_updated_1cdna.fasta
+    sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
+    mirandaout = sproc.communicate()[0].split('\n')
+    # isTargteet == '>>x\tAT1G51370.2\t306.00\t-36.41\t153.00\t-20.70\t1\t23\t1118\t 20 698'
+    # notTarget == 'No Hits Found above Threshold'
+    target_results = []
+    for i in mirandaout:
+      if i[:3] == '>>x':
+        target_result = i.split('\t')
+        target_results.append(target_result[1:])
+    FNULL.close()
+    e[1].append(target_results)
+    return e
+  
+
 
 if __name__ == '__main__' :
    
