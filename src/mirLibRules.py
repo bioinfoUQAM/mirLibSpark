@@ -386,7 +386,7 @@ class prog_RNAhybrid ():
 
       cmd = [ 'RNAhybrid', '-c', '-s', '3utr_worm', '-m', max_targetlength, '-t', file_target_database, elem[0] ]
       #-c option == Each line is a colon (:) separated list of the following fields: 
-      #fields = 'target name, query name, minimum free energy, position in target, alignment line 1, line 2, line 3, line 4'.split(', ')
+      #fields = 'target name, target length, query name, query length, minimum free energy, p_value, position in target, alignment line 1, line 2, line 3, line 4'.split(', ')
       #AT1G51370.2:1118:command_line:21:-21.0:0.810465:331:G    U   A UACGCG        A: AUGC GCG C      UAGGAUUC : UACG CGU G      GUUCUAAG :     U   A UA            A
     
       FNULL = open(os.devnull, 'w')
@@ -417,9 +417,10 @@ class prog_RNAhybrid ():
         ##query_name = items[2]
         ##query_length = items[3]
         mfe = items[4]#
-        pos_in_target = items[5]#
-        alignment = items[6:10]#
-        target_result = [target_name, target_name, mfe, pos_in_target, alignment]
+        p_value = items[5]
+        pos_in_target = items[6]#
+        alignment = items[7:11]#
+        target_result = [target_name, target_length, mfe, p_value, pos_in_target, alignment]
         target_results.append(target_result)
     return target_results
 
