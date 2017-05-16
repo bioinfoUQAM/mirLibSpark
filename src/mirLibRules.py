@@ -363,11 +363,12 @@ class prog_dominant_profile :
 
 class prog_RNAhybrid ():
 
-  def __init__(self, max_targetlength, file_target_database):
+  def __init__(self, max_targetlength, file_target_database, rep_output):
   #def __init__(self):
     self.max_targetlength = max_targetlength
-    #self.file_target_database = '/home/cloudera/workspace/mirLibHadoop/Arabidopsis/TAIR/Genome/TAIR10_blastsets/TAIR10_cdna_20101214_updated_1cdna.fasta'
-    self.file_target_database = file_target_database
+    self.file_target_database = '/home/cloudera/workspace/mirLibHadoop/Arabidopsis/TAIR/Genome/TAIR10_blastsets/TAIR10_cdna_20101214_updated_1cdna.fasta'
+    #self.file_target_database = file_target_database
+    self.rep_output = rep_output
 
     self.env = os.environ
     self.list_miRNA_candidates = []
@@ -377,7 +378,8 @@ class prog_RNAhybrid ():
     RNAhybrid -s 3utr_worm -t /home/cloudera/workspace/cDNA/TAIR10_cdna_20101214_updated.fasta ATACGATCCAAGACGAGTCTCA
     RNAhybrid -s 3utr_worm -t examples/cel-hbl-1.fasta ugagguaguagguuguauaguu
     '''
-    outfile = '../output2/' + elem[0] + '.txt'
+    #outfile = '../output2/' + elem[0] + '.txt'
+    outfile = self.rep_output + elem[0] + '.txt'
 
     #= if this miRNA seq has not been mapped for target genes, do RNAhybrid. Else, only read from target prediction file
     if elem[0] not in self.list_miRNA_candidates:

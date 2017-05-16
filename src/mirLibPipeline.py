@@ -83,7 +83,7 @@ if __name__ == '__main__' :
   rnafold_obj = mru.prog_RNAfold()
   mircheck_obj = mru.prog_mirCheck(mcheck_param)
   profile_obj = mru.prog_dominant_profile()
-  rnahybrid_obj = mru.prog_RNAhybrid(max_targetlength, file_target_database)
+  rnahybrid_obj = mru.prog_RNAhybrid(max_targetlength, file_target_database, rep_output)
 
   # Fetch library files in mypath
   infiles = [f for f in listdir(mypath) if os.path.isfile(os.path.join(mypath, f))]
@@ -177,14 +177,14 @@ if __name__ == '__main__' :
 
     ## 170515 RNAhybrid ## RNAhybrid -s 3utr_worm -t examples/cel-hbl-1.fasta ugagguaguagguuguauaguu
     ###################################################
-    some_rdd = miRNA_rdd.map(lambda e: rnahybrid_obj.dostuff(e, infile_name))
-    newdata = some_rdd.collect()
-    print(newdata)
+    rnahybrid_rdd = miRNA_rdd.map(lambda e: rnahybrid_obj.dostuff(e, infile_name))
+    #newdata = some_rdd.collect()
+    #print(newdata)
     ###################################################
 
     
-  '''
-    results = miRNA_rdd.collect()
+  #'''
+    results = rnahybrid_rdd.collect()
     
     #
     endLib = time.time()
@@ -202,4 +202,4 @@ if __name__ == '__main__' :
   # print executions time  to a file
   outTime = rep_output + appId + '_time.txt'
   ut.writeTimeLibToFile (timeDict, outTime, appId, paramDict)
-  '''
+  #'''
