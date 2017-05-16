@@ -372,24 +372,57 @@ class prog_RNAhybrid ():
     RNAhybrid -s 3utr_worm -t /home/cloudera/workspace/cDNA/TAIR10_cdna_20101214_updated.fasta ATACGATCCAAGACGAGTCTCA
     RNAhybrid -s 3utr_worm -t examples/cel-hbl-1.fasta ugagguaguagguuguauaguu
     '''
-    if elem[0] in self.list_miRNA_candidates:
-      return elem
-    else:
+    #== variable ==
+    max_targetlength = '2000'
+    #file_target_database = '/home/cloudera/workspace/mirLibHadoop/Arabidopsis/TAIR/Genome/TAIR10_blastsets/TAIR10_cdna_20101214_updated_1cdna.fasta'
+    file_target_database = '/home/cloudera/workspace/mirLibHadoop/Arabidopsis/TAIR/Genome/TAIR10_blastsets/TAIR10_cdna_20101214_updated.fasta'
+
+
+    #outfile = 'test__170516_1___' + infile_name + '_' + elem[0] + '.txt'
+    outfile = '../output/' + elem[0] + '.txt'
+
+    if elem[0] not in self.list_miRNA_candidates:
       self.list_miRNA_candidates.append(elem[0])
 
-    FNULL = open(os.devnull, 'w')
+      cmd = [ 'RNAhybrid', '-c', '-s', '3utr_worm', '-m', max_targetlength, '-t', file_target_database, elem[0] ]
+      #-c option == Each line is a colon (:) separated list of the following fields: 
+      #fields = 'target name, query name, minimum free energy, position in target, alignment line 1, line 2, line 3, line 4'.split(', ')
+      #AT1G51370.2:1118:command_line:21:-21.0:0.810465:331:G    U   A UACGCG        A: AUGC GCG C      UAGGAUUC : UACG CGU G      GUUCUAAG :     U   A UA            A
     
-    file_target_database = '/home/cloudera/workspace/cDNA/TAIR10_cdna_20101214_updated.fasta'
-    #file_target_database = '/home/cloudera/workspace/cDNA/TAIR10_cdna_20101214_updated_1cdna.fasta'
-    cmd = [ 'RNAhybrid', '-s', '3utr_worm', '-t', file_target_database, elem[0] ]
+      FNULL = open(os.devnull, 'w')
+      sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
+      hybridout = sproc.communicate()[0]
+
+      with open(outfile, "w", 0) as fh_out:
+        print >>fh_out, hybridout
     
-    sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
-    hybridout = sproc.communicate()[0]
-    outfile = 'test__170516___' + infile_name + '_' + elem[0] + '.txt'
-    fh_out = open (outfile, 'w')
-    print >>fh_out, hybridout
-    fh_out.close()
+    #else:
+      #continue
+
+    target_results = self.dostuff2 (outfile)
+    elem[1].append(target_results)
     return elem
+
+  def dostuff2 (self, outfile):
+    with open (outfile, 'r') as fh:
+      DATA = fh.readlines()
+
+    target_results = []
+
+    for i in DATA:
+      items = i.rstrip('\n').split(':')
+      if len(items) == 11:
+        target_name = items[0]#
+        target_length = items[1]#
+        ##query_name = items[2]
+        ##query_length = items[3]
+        mfe = items[4]#
+        pos_in_target = items[5]#
+        alignment = items[6:10]#
+        target_result = [target_name, target_name, mfe, pos_in_target, alignment]
+        target_results.append(target_result)
+    return target_results
+
 
 
 
