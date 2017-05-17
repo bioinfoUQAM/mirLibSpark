@@ -364,48 +364,60 @@ class prog_dominant_profile :
 class prog_miRanda ():
   def __init__ (self):
     self.env = os.environ
+
+    #== variables ==
+    self.Max_Score_cutoff = 100
+    self.query_motif_match_cutoff = 50
+    self.gene_motif_match_cutoff = 50
+    self.Max_Energy_cutoff = -10
+
+    self.target_file = '../Arabidopsis/TAIR/Genome/TAIR10_blastsets/TAIR10_cdna_20101214_updated_1cdna.fasta'
+    #self.target_file = '../Arabidopsis/TAIR/Genome/TAIR10_blastsets/TAIR10_cdna_20101214_updated.fasta'
+    self.tmp_file = '../tmp/tmp_mirna_seq.txt'
+
   
   def dostuff (self, e):
     '''
     $miranda examples/bantam_stRNA.fasta examples/hid_UTR.fasta
     '''
-
-    #== variables ==
-    Max_Score_cutoff = 170
-    query_motif_match_cutoff, gene_motif_match_cutoff = 85, 85
-
-    target_file = '/home/cloudera/workspace/mirLibHadoop/Arabidopsis/TAIR/Genome/TAIR10_blastsets/TAIR10_cdna_20101214_updated_1cdna.fasta'
-    #target_file = '/home/cloudera/workspace/mirLibHadoop/Arabidopsis/TAIR/Genome/TAIR10_blastsets/TAIR10_cdna_20101214_updated.fasta'
-    tmp_file = '../tmp/tmp_mirna_seq.txt'
-    with open (tmp_file, 'w') as fh_tmp:
+    with open (self.tmp_file, 'w') as fh_tmp:
       print >> fh_tmp, '>x\n' + e[0]
     FNULL = open(os.devnull, 'w')
-    cmd = ['miranda', tmp_file, target_file]
-    # miranda ../tmp/tmp_mirna_seq.txt /home/cloudera/workspace/mirLibHadoop/Arabidopsis/TAIR/Genome/TAIR10_blastsets/TAIR10_cdna_20101214_updated_1cdna.fasta
+    cmd = ['miranda', self.tmp_file, self.target_file]
+    #= miranda ../tmp/tmp_mirna_seq.txt /home/cloudera/workspace/mirLibHadoop/Arabidopsis/TAIR/Genome/TAIR10_blastsets/TAIR10_cdna_20101214_updated_1cdna.fasta
     sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
     mirandaout = sproc.communicate()[0].split('\n')
-    # isTargteet == '>>x\tAT1G51370.2\t306.00\t-36.41\t153.00\t-20.70\t1\t23\t1118\t 20 698' #==Seq1,Seq2,Tot Score,Tot Energy,Max Score,Max Energy,Strand,Len1,Len2,Positions
-    # notTarget == 'No Hits Found above Threshold'
     target_results = []
     query_motif_match_max, gene_motif_match_max = 0, 0
 
-    for i in mirandaout:
+    for i in mirandaout[30:]: 
+    #= because the first 30ish lines contain only program description
+      if i == 'No Hits Found above Threshold': 
+        #= notTarget
+        break
       if i[:2] == '>x':
-        hit_result = i.split('\t') #=['>x', 'AT1G51370.2', '153.00', '-15.71', '2 21', '698 722', '22', '68.18%', '77.27%']
-        query_motif_match_current = int(hit_result[7][:-4]) #int(hit_result[6][:-4]) #100.00% ==> 100
-        gene_motif_match_current = int(hit_result[8][:-4]) #int(hit_result[7][:-4])
-        if query_motif_match_current > query_motif_match_max:
+        #= isTargteet_hits == ['>x', 'AT1G51370.2', '153.00', '-15.71', '2 21', '698 722', '22', '68.18%', '77.27%']
+        hit_result = i.split('\t') 
+        query_motif_match_current = hit_result[7][:-1] #68.18% ==> 68.18
+        gene_motif_match_current = hit_result[8][:-1]
+        if float(query_motif_match_current) > float(query_motif_match_max):
           query_motif_match_max = query_motif_match_current
-        if gene_motif_match_current > gene_motif_match_max:
+        if float(gene_motif_match_current) > float(gene_motif_match_max):
           gene_motif_match_max = gene_motif_match_current
-      if i[:3] == '>>x':
-        target_result = i.split('\t')
-        Max_Score = target_result[4]
-        if Max_Score > Max_Score_cutoff and query_motif_match_max > query_motif_match_cutoff and gene_motif_match_max > gene_motif_match_cutoff:
-          target_result.append(query_motif_match_max)
-          target_result.append(gene_motif_match_max)
+      if i[:3] == '>>x': 
+        #= isTargteet == [Seq1, Seq2, Tot_Score, Tot_Energy, Max_Score, Max_Energy, Strand, Len1, Len2, Positions]
+        target_result = i.split('\t') 
+        Max_Score = float(target_result[4])
+        Max_Energy = float(target_result[5])
+        if Max_Score > self.Max_Score_cutoff and Max_Energy < self.Max_Energy_cutoff and query_motif_match_max > self.query_motif_match_cutoff and gene_motif_match_max > self.gene_motif_match_cutoff:
+          target_result.append(query_motif_match_max+'%')
+          target_result.append(gene_motif_match_max+'%')
           target_results.append(target_result[1:])
+          break
     FNULL.close()
+    #= target_results == [[target1], [target2], ...]
+    #= [['AT1G51370.2', '306.00', '-36.41', '153.00', '-20.70', '1', '23', '1118', ' 20 698', '84.21%', '89.47%']]
+    #= [gene, total_score, total_energy, max_score, max_energy, strand, len_miRNA, len_gene, postions, query_motif_match, gene_motif_match]
     e[1].append(target_results)
     return e
   

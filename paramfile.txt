@@ -10,6 +10,12 @@ pri_l_flank=120
 pri_r_flank=60
 pre_flank=30
 mcheck_param=def
+Max_Score_cutoff=170
+query_motif_match_cutoff=85
+gene_motif_match_cutoff=85
+Max_Energy_cutoff=-10
+#target_file=../Arabidopsis/TAIR/Genome/TAIR10_blastsets/TAIR10_cdna_20101214_updated.fasta
+tmp_file=tmp_mirna_seq.txt
 # Spark configuration
 #sc_master=yarn-client
 sc_master=local[*]
