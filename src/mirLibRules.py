@@ -362,18 +362,17 @@ class prog_dominant_profile :
     return elem
 
 class prog_miRanda ():
-  def __init__ (self):
+  def __init__ (self, Max_Score_cutoff, query_motif_match_cutoff, gene_motif_match_cutoff, Max_Energy_cutoff, target_file, tmp_file):
     self.env = os.environ
 
     #== variables ==
-    self.Max_Score_cutoff = 100
-    self.query_motif_match_cutoff = 50
-    self.gene_motif_match_cutoff = 50
-    self.Max_Energy_cutoff = -10
+    self.Max_Score_cutoff = Max_Score_cutoff
+    self.query_motif_match_cutoff = query_motif_match_cutoff
+    self.gene_motif_match_cutoff = gene_motif_match_cutoff
+    self.Max_Energy_cutoff = Max_Energy_cutoff
 
-    self.target_file = '../Arabidopsis/TAIR/Genome/TAIR10_blastsets/TAIR10_cdna_20101214_updated_1cdna.fasta'
-    #self.target_file = '../Arabidopsis/TAIR/Genome/TAIR10_blastsets/TAIR10_cdna_20101214_updated.fasta'
-    self.tmp_file = '../tmp/tmp_mirna_seq.txt'
+    self.target_file = target_file
+    self.tmp_file = tmp_file
 
   
   def dostuff (self, e):
