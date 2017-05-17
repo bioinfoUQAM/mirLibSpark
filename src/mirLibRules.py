@@ -391,9 +391,9 @@ class prog_miRanda ():
 
     for i in mirandaout:
       if i[:2] == '>x':
-        hit_result = i.split('\t') #=['AT1G51370.2', '153.00', '-15.71', '2 21', '698 722', '22', '68.18%', '77.27%']
-        query_motif_match_current = int(hit_result[6][:-4]) #100.00% ==> 100
-        gene_motif_match_current = int(hit_result[7][:-4])
+        hit_result = i.split('\t') #=['>x', 'AT1G51370.2', '153.00', '-15.71', '2 21', '698 722', '22', '68.18%', '77.27%']
+        query_motif_match_current = int(hit_result[7][:-4]) #int(hit_result[6][:-4]) #100.00% ==> 100
+        gene_motif_match_current = int(hit_result[8][:-4]) #int(hit_result[7][:-4])
         if query_motif_match_current > query_motif_match_max:
           query_motif_match_max = query_motif_match_current
         if gene_motif_match_current > gene_motif_match_max:
@@ -401,11 +401,10 @@ class prog_miRanda ():
       if i[:3] == '>>x':
         target_result = i.split('\t')
         Max_Score = target_result[4]
-        if Max_Score > Max_Score_cutoff:# and query_motif_match_max > query_motif_match_cutoff and gene_motif_match_max > gene_motif_match_cutoff:
+        if Max_Score > Max_Score_cutoff and query_motif_match_max > query_motif_match_cutoff and gene_motif_match_max > gene_motif_match_cutoff:
           target_result.append(query_motif_match_max)
           target_result.append(gene_motif_match_max)
           target_results.append(target_result[1:])
-          #target_results.append(hit_result[1:])
     FNULL.close()
     e[1].append(target_results)
     return e
