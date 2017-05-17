@@ -379,7 +379,7 @@ class prog_miRanda ():
     # miranda ../tmp/tmp_mirna_seq.txt /home/cloudera/workspace/mirLibHadoop/Arabidopsis/TAIR/Genome/TAIR10_blastsets/TAIR10_cdna_20101214_updated_1cdna.fasta
     sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
     mirandaout = sproc.communicate()[0].split('\n')
-    # isTargteet == '>>x\tAT1G51370.2\t306.00\t-36.41\t153.00\t-20.70\t1\t23\t1118\t 20 698'
+    # isTargteet == '>>x\tAT1G51370.2\t306.00\t-36.41\t153.00\t-20.70\t1\t23\t1118\t 20 698' #==Seq1,Seq2,Tot Score,Tot Energy,Max Score,Max Energy,Strand,Len1,Len2,Positions
     # notTarget == 'No Hits Found above Threshold'
     target_results = []
     for i in mirandaout:
