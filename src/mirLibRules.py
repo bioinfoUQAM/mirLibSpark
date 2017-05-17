@@ -369,8 +369,13 @@ class prog_miRanda ():
     '''
     $miranda examples/bantam_stRNA.fasta examples/hid_UTR.fasta
     '''
-    #target_file = '/home/cloudera/workspace/mirLibHadoop/Arabidopsis/TAIR/Genome/TAIR10_blastsets/TAIR10_cdna_20101214_updated_1cdna.fasta'
-    target_file = '/home/cloudera/workspace/mirLibHadoop/Arabidopsis/TAIR/Genome/TAIR10_blastsets/TAIR10_cdna_20101214_updated.fasta'
+
+    #== variables ==
+    Max_Score_cutoff = 170
+    query_motif_match_cutoff, gene_motif_match_cutoff = 85, 85
+
+    target_file = '/home/cloudera/workspace/mirLibHadoop/Arabidopsis/TAIR/Genome/TAIR10_blastsets/TAIR10_cdna_20101214_updated_1cdna.fasta'
+    #target_file = '/home/cloudera/workspace/mirLibHadoop/Arabidopsis/TAIR/Genome/TAIR10_blastsets/TAIR10_cdna_20101214_updated.fasta'
     tmp_file = '../tmp/tmp_mirna_seq.txt'
     with open (tmp_file, 'w') as fh_tmp:
       print >> fh_tmp, '>x\n' + e[0]
@@ -382,10 +387,25 @@ class prog_miRanda ():
     # isTargteet == '>>x\tAT1G51370.2\t306.00\t-36.41\t153.00\t-20.70\t1\t23\t1118\t 20 698' #==Seq1,Seq2,Tot Score,Tot Energy,Max Score,Max Energy,Strand,Len1,Len2,Positions
     # notTarget == 'No Hits Found above Threshold'
     target_results = []
+    query_motif_match_max, gene_motif_match_max = 0, 0
+
     for i in mirandaout:
+      if i[:2] == '>x':
+        hit_result = i.split('\t') #=['AT1G51370.2', '153.00', '-15.71', '2 21', '698 722', '22', '68.18%', '77.27%']
+        query_motif_match_current = int(hit_result[6][:-4]) #100.00% ==> 100
+        gene_motif_match_current = int(hit_result[7][:-4])
+        if query_motif_match_current > query_motif_match_max:
+          query_motif_match_max = query_motif_match_current
+        if gene_motif_match_current > gene_motif_match_max:
+          gene_motif_match_max = gene_motif_match_current
       if i[:3] == '>>x':
         target_result = i.split('\t')
-        target_results.append(target_result[1:])
+        Max_Score = target_result[4]
+        if Max_Score > Max_Score_cutoff:# and query_motif_match_max > query_motif_match_cutoff and gene_motif_match_max > gene_motif_match_cutoff:
+          target_result.append(query_motif_match_max)
+          target_result.append(gene_motif_match_max)
+          target_results.append(target_result[1:])
+          #target_results.append(hit_result[1:])
     FNULL.close()
     e[1].append(target_results)
     return e

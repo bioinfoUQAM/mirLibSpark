@@ -174,12 +174,12 @@ if __name__ == '__main__' :
 
     ###################################################
     miranda_rdd = miRNA_rdd.map(miranda_obj.dostuff)
-    newdata = miranda_rdd.collect()
-    print(newdata)
+    #newdata = miranda_rdd.collect()
+    #print(newdata)
     ###################################################
 
-    '''
-    results = miRNA_rdd.collect()
+    #'''
+    results = miranda_rdd.collect()
     
     #
     endLib = time.time()
@@ -197,4 +197,4 @@ if __name__ == '__main__' :
   # print executions time  to a file
   outTime = rep_output + appId + '_time.txt'
   ut.writeTimeLibToFile (timeDict, outTime, appId, paramDict)
-  '''
+  #'''
