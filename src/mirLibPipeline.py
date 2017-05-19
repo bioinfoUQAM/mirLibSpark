@@ -64,10 +64,10 @@ if __name__ == '__main__' :
   # mircheck parameter
   mcheck_param = paramDict['mcheck_param']          #'def'    # def : default parameters / mey : meyers parameters
   # miRanda parameter
-  Max_Score_cutoff = paramDict['Max_Score_cutoff']
-  query_motif_match_cutoff = paramDict['query_motif_match_cutoff']
-  gene_motif_match_cutoff = paramDict['gene_motif_match_cutoff']
-  Max_Energy_cutoff = paramDict['Max_Energy_cutoff']
+  Max_Score_cutoff = float(paramDict['Max_Score_cutoff'])
+  query_motif_match_cutoff = float(paramDict['query_motif_match_cutoff'])
+  gene_motif_match_cutoff = float(paramDict['gene_motif_match_cutoff'])
+  Max_Energy_cutoff = float(paramDict['Max_Energy_cutoff'])
   target_file = paramDict['target_file']
   tmp_file = rep_tmp + 'tmp_mirna_seq.txt'
 
