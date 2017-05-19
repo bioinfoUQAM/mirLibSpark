@@ -176,8 +176,8 @@ if __name__ == '__main__' :
 
     # Validating pre-mirna with miRdup
     pre_vld_rdd = pre_fold_rdd.filter(mirdup_obj.run_miRdup)
-    #newdata = pre_vld_rdd.collect()
-    #print(newdata)
+    newdata = pre_vld_rdd.collect()
+    print(newdata)
     ###################################################
     
     # you can use chromo_strand as key to search bowtie blocs in the following dict
@@ -190,7 +190,7 @@ if __name__ == '__main__' :
     # target prediction
     miranda_rdd = miRNA_rdd.map(miranda_obj.dostuff)
 
-    #'''
+    '''
     results = miranda_rdd.collect()
     print(results)
     #
@@ -198,8 +198,8 @@ if __name__ == '__main__' :
     print ("  End of the processing     ", end="\n")
     
     # write results to a file
-    outFile = rep_output + inBasename + '_miRNAprediction.txt'
-    ut.writeToFile (results, outFile)
+    ##outFile = rep_output + inBasename + '_miRNAprediction.txt'
+    ##ut.writeToFile (results, outFile)
     
     
     timeDict[inBasename] = endLib - startLib
@@ -209,4 +209,4 @@ if __name__ == '__main__' :
   # print executions time  to a file
   outTime = rep_output + appId + '_time.txt'
   ut.writeTimeLibToFile (timeDict, outTime, appId, paramDict)
-  #'''
+  '''
