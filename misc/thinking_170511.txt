@@ -192,3 +192,17 @@ mirDup
 
 cp '/home/cloudera/workspace/miRNA_predictor/RNAfold_precompiled/usr (2)/bin/RNAduplex' /usr/local/bin
 
+step1: train on all plants
+$java -jar miRdup_1.4/miRdup.jar -k Viridiplantae -r /usr/local/bin/
+
+step2: validation
+$java -jar miRdup_1.4/miRdup.jar -v miRdup_1.4/testFiles/julie_sequencesToValidate2.txt -c Viridiplantae.model -r /usr/local/bin/
+
+note that although miRdup radme say we can provide RNAfold result as 4th field, but it actually has a bug and we can only provide file without RNAfold result. And RNAfold has to recalculate the folding. ==> we need to notify the author to correct this bug
+
+after organizing folder:
+$java -jar miRdup_1.4/miRdup.jar -v miRdup_1.4/testFiles/julie_sequencesToValidate2.txt -c miRdup_1.4//model/Viridiplantae.model -r /usr/local/bin/
+
+#= launching from src
+java -jar ../lib/miRdup_1.4/miRdup.jar -v ../lib/miRdup_1.4/testFiles/julie_sequencesToValidate2.txt -c ../lib/miRdup_1.4//model/Viridiplantae.model -r /usr/local/bin/
+

@@ -161,7 +161,11 @@ def writeToFile (results, outfile):
         new : elem = (seq, [frq, nbloc, [bowtie], [pri_miRNA], [pre_miRNA]])
     '''
     fh_out = open (outfile, 'w')
-    
+    if len(results) == 0:
+      print >> fh_out, 'No validate miRNA'
+      fh_out.close()
+      return      
+
     for elem in results :
       # ID = elem[0]#
       values = elem[1]

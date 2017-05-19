@@ -15,8 +15,8 @@ Max_Score_cutoff=100
 query_motif_match_cutoff=30
 gene_motif_match_cutoff=30
 Max_Energy_cutoff=-10
-#target_file=../Arabidopsis/TAIR/Genome/TAIR10_blastsets/TAIR10_cdna_20101214_updated_1cdna.fasta
-target_file=../Arabidopsis/TAIR/Genome/TAIR10_blastsets/TAIR10_cdna_20101214_updated.fasta
+target_file=../Arabidopsis/TAIR/Genome/TAIR10_blastsets/TAIR10_cdna_20101214_updated_1cdna.fasta
+#target_file=../Arabidopsis/TAIR/Genome/TAIR10_blastsets/TAIR10_cdna_20101214_updated.fasta
 ###tmp_file=tmp_mirna_seq.txt
 # Spark configuration
 #sc_master=yarn-client
