@@ -187,3 +187,8 @@ $tapir_fasta --mir_file 163.fa --target_file AT1G66720.fa
 # using RNAhybrind as a precise option
 $tapir_hybrid <mir_file> <target_file>
 
+###########################################################################################
+mirDup
+
+cp '/home/cloudera/workspace/miRNA_predictor/RNAfold_precompiled/usr (2)/bin/RNAduplex' /usr/local/bin
+
