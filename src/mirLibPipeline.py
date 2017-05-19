@@ -69,7 +69,7 @@ if __name__ == '__main__' :
   gene_motif_match_cutoff = paramDict['gene_motif_match_cutoff']
   Max_Energy_cutoff = paramDict['Max_Energy_cutoff']
   target_file = paramDict['target_file']
-  tmp_file = rep_tmp + paramDict['tmp_file']
+  tmp_file = rep_tmp + 'tmp_mirna_seq.txt'
 
   # Spark context
   sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, execNb, execCores)

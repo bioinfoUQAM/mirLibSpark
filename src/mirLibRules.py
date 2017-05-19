@@ -364,6 +364,7 @@ class prog_dominant_profile :
 class prog_miRanda ():
   def __init__ (self, Max_Score_cutoff, query_motif_match_cutoff, gene_motif_match_cutoff, Max_Energy_cutoff, target_file, tmp_file):
     self.env = os.environ
+    self.dict_seq_target = {}###########
 
     #== variables ==
     self.Max_Score_cutoff = Max_Score_cutoff
@@ -379,11 +380,15 @@ class prog_miRanda ():
     '''
     $miranda examples/bantam_stRNA.fasta examples/hid_UTR.fasta
     '''
+    if e[0] in self.dict_seq_target.keys():
+      e[1].append(self.dict_seq_target[e[0]])
+      return e
+
     with open (self.tmp_file, 'w') as fh_tmp:
       print >> fh_tmp, '>x\n' + e[0]
     FNULL = open(os.devnull, 'w')
     cmd = ['miranda', self.tmp_file, self.target_file]
-    #= miranda ../tmp/tmp_mirna_seq.txt /home/cloudera/workspace/mirLibHadoop/Arabidopsis/TAIR/Genome/TAIR10_blastsets/TAIR10_cdna_20101214_updated_1cdna.fasta
+    #= example cmd == miranda ../tmp/tmp_mirna_seq.txt ../Arabidopsis/TAIR/Genome/TAIR10_blastsets/TAIR10_cdna_20101214_updated_1cdna.fasta
     sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
     mirandaout = sproc.communicate()[0].split('\n')
     target_results = []
@@ -397,7 +402,7 @@ class prog_miRanda ():
       if i[:2] == '>x':
         #= isTargteet_hits == ['>x', 'AT1G51370.2', '153.00', '-15.71', '2 21', '698 722', '22', '68.18%', '77.27%']
         hit_result = i.split('\t') 
-        query_motif_match_current = hit_result[7][:-1] #68.18% ==> 68.18
+        query_motif_match_current = hit_result[7][:-1]
         gene_motif_match_current = hit_result[8][:-1]
         if float(query_motif_match_current) > float(query_motif_match_max):
           query_motif_match_max = query_motif_match_current
@@ -408,7 +413,7 @@ class prog_miRanda ():
         target_result = i.split('\t') 
         Max_Score = float(target_result[4])
         Max_Energy = float(target_result[5])
-        if Max_Score > self.Max_Score_cutoff and Max_Energy < self.Max_Energy_cutoff and query_motif_match_max > self.query_motif_match_cutoff and gene_motif_match_max > self.gene_motif_match_cutoff:
+        if Max_Score > self.Max_Score_cutoff and Max_Energy < self.Max_Energy_cutoff and float(query_motif_match_max) > self.query_motif_match_cutoff and float(gene_motif_match_max) > self.gene_motif_match_cutoff:
           target_result.append(query_motif_match_max+'%')
           target_result.append(gene_motif_match_max+'%')
           target_results.append(target_result[1:])
@@ -417,6 +422,7 @@ class prog_miRanda ():
     #= target_results == [[target1], [target2], ...]
     #= [['AT1G51370.2', '306.00', '-36.41', '153.00', '-20.70', '1', '23', '1118', ' 20 698', '84.21%', '89.47%']]
     #= [gene, total_score, total_energy, max_score, max_energy, strand, len_miRNA, len_gene, postions, query_motif_match, gene_motif_match]
+    self.dict_seq_target[e[0]] = target_results ###############
     e[1].append(target_results)
     return e
   
