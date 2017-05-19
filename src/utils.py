@@ -178,13 +178,14 @@ def writeToFile (results, outfile):
       fbstart = pre_miRNA_records[4]#
       fbstop = pre_miRNA_records[5]#
       totalfrq = values[5]#
+      miRanda = values[6]#
       
-      data = [miRNAseq, frq, strand, chromo, posgen, pre_miRNA_seq, struc, mirCheck, fbstart, fbstop, totalfrq]
+      data = [miRNAseq, frq, strand, chromo, posgen, pre_miRNA_seq, struc, mirCheck, fbstart, fbstop, totalfrq, miRanda]
       line = ''
       
       for d in data:
         line += str(d) + '\t'
-      line.rstrip('\t')
+      line = line.rstrip('\t')
       
       print >> fh_out, line
     

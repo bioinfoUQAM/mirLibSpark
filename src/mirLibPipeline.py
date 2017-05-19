@@ -63,6 +63,13 @@ if __name__ == '__main__' :
   pre_flank = int(paramDict['pre_flank'])           #30
   # mircheck parameter
   mcheck_param = paramDict['mcheck_param']          #'def'    # def : default parameters / mey : meyers parameters
+  # miRanda parameter
+  Max_Score_cutoff = paramDict['Max_Score_cutoff']
+  query_motif_match_cutoff = paramDict['query_motif_match_cutoff']
+  gene_motif_match_cutoff = paramDict['gene_motif_match_cutoff']
+  Max_Energy_cutoff = paramDict['Max_Energy_cutoff']
+  target_file = paramDict['target_file']
+  tmp_file = rep_tmp + paramDict['tmp_file']
 
   # Spark context
   sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, execNb, execCores)
@@ -80,6 +87,7 @@ if __name__ == '__main__' :
   rnafold_obj = mru.prog_RNAfold()
   mircheck_obj = mru.prog_mirCheck(mcheck_param)
   profile_obj = mru.prog_dominant_profile()
+  miranda_obj = mru.prog_miRanda(Max_Score_cutoff, query_motif_match_cutoff, gene_motif_match_cutoff, Max_Energy_cutoff, target_file, tmp_file)
 
   # Fetch library files in mypath
   infiles = [f for f in listdir(mypath) if os.path.isfile(os.path.join(mypath, f))]
@@ -171,8 +179,14 @@ if __name__ == '__main__' :
     miRNA_rdd = pre_vld_rdd.map(lambda e: profile_obj.sudo(e, dict_bowtie_chromo_strand))\
                       .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)
 
+    ###################################################
+    miranda_rdd = miRNA_rdd.map(miranda_obj.dostuff)
+    #newdata = miranda_rdd.collect()
+    #print(newdata)
+    ###################################################
+
     #'''
-    results = miRNA_rdd.collect()
+    results = miranda_rdd.collect()
     
     #
     endLib = time.time()
@@ -181,7 +195,7 @@ if __name__ == '__main__' :
     # write results to a file
     outFile = rep_output + inBasename + '_miRNAprediction.txt'
     ut.writeToFile (results, outFile)
-    #'''
+    
     
     timeDict[inBasename] = endLib - startLib
     
@@ -190,3 +204,4 @@ if __name__ == '__main__' :
   # print executions time  to a file
   outTime = rep_output + appId + '_time.txt'
   ut.writeTimeLibToFile (timeDict, outTime, appId, paramDict)
+  #'''
