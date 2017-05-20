@@ -1,1 +1,0 @@
-ath_3_2	CTTTGTCTACAATTTTGGAAA	GAAGAAGAGTAACACGTCATCTCTGTGCTTCTTTGTCTACAATTTTGGAAAAAGTGATGACGCCATTGCTCTTTCCCAAATGTAGACAAAGCAATACCGTGATGATGTCGTGGAGATTTTG	..((((.....((((((((((.(.(((...(((((((((((.(((.(((((.(((((((....))))))).))))).))))))))))))))...))).).)))))))).)).....)))).	false	1
