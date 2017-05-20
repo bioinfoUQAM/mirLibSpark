@@ -1,0 +1,44 @@
+
+--------
+#ID	chr9_14772_c
+#WE	ID0,22,-24.40,36,21,95,-1,21,true,2,true,2,true,2,22,40,36,0,0,18,4,0,4,9,22,0,18,9,9,0,0,0,0,0,15,20,false,0,6.94,4.94,2.95,true,false,false,false,false,false,false,false,false,true,false,true,false,true,false,true,1,1,4,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,4.55,0.0,22.73,0.0,31.82,31.82,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,57.14,23.81,19.05,U,A,G,U,U,U,true
+#PR	Prediction	true
+#SC	Score	0.9999998145483289
+#PM	AUGUUCUCUUCACUGUGGGAUGAGGUAGUAGGUUGUAUAGUUUUAGGGUCACACCCACCACUGGGAGAUAACUAUACAAUCUACUGUCUUUCCUAACGUGAUAGAAAA
+#SS	...((((..((((..(((((.(((((((((((((((((((((.....(((...((((....)))).)))))))))))))))))))))))))))))..)))).))))..
+#MM	                    UGAGGUAGUAGGUUGUAUAGUU
+
+
+
+--------
+#ID	chr22_8101_c
+#WE	ID1,22,-13.40,36,6,27,-1,14,false,-1,false,-1,true,4,22,40,36,0,0,18,4,0,4,9,22,0,18,9,9,0,0,0,0,0,9,16,false,0,4.5,3.17,1.9,true,true,false,true,true,true,false,true,false,false,false,false,false,false,true,false,4,5,22,4.55,0.0,0.0,9.09,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,7.14,21.43,14.29,U,G,G,U,U,U,true
+#PR	Prediction	false
+#SC	Score	0.9999999955389027
+#PM	CCGCGUCCCCAGGAGGUGCCUCUGGAAGCCACGGAGUCCCAUCGGCACCAAGACCGACUGCCCUUUGGGGUGAGGUAGUAGGUUGUAUAGUUUGGGGCUCUGCCCUGC
+#SS	..((.(((..(((.....)))..))).))..((((((((((..(((.....((((.(((((((........).)))))).)))).....)))))))))))))......
+#MM	                                                                      UGAGGUAGUAGGUUGUAUAGUU
+
+
+
+--------
+#ID	chr22_8102_c
+#WE	ID2,22,-24.40,36,21,95,-1,21,true,2,true,2,true,2,22,40,36,0,0,18,4,0,4,9,22,0,18,9,9,0,0,0,0,0,6,20,false,0,6.94,4.94,2.95,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,1,1,4,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,4.55,0.0,22.73,0.0,31.82,31.82,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,57.14,23.81,19.05,U,G,G,U,U,U,true
+#PR	Prediction	true
+#SC	Score	0.9999997060693679
+#PM	AGACCGACUGCCCUUUGGGGUGAGGUAGUAGGUUGUAUAGUUUGGGGCUCUGCCCUGCUAUGGGAUAACUAUACAAUCUACUGUCUUUCCUGAAGUGGCUGUAAUAUC
+#SS	......((.(((((((((((.(((((((((((((((((((((((((((...)))))).........))))))))))))))))))))))))))))).))).))......
+#MM	                    UGAGGUAGUAGGUUGUAUAGUU
+
+
+
+--------
+#ID	chr11_1369_c
+#WE	ID3,22,-24.10,36,13,59,-1,19,false,-1,true,10,true,10,22,40,36,0,0,18,4,0,4,9,22,0,18,9,9,0,0,0,0,0,12,20,false,0,6.19,4.39,2.65,true,true,false,false,false,false,false,false,false,true,false,true,false,true,false,true,3,1,4,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,9.09,0.0,4.55,0.0,4.55,4.55,18.18,0.0,18.18,22.73,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,4.55,4.55,52.63,31.58,15.79,U,U,G,U,U,U,true
+#PR	Prediction	true
+#SC	Score	0.999991774078886
+#PM	GUGACUGCAUGCUCCCAGGUUGAGGUAGUAGGUUGUAUAGUUUAGAAUUACAUCAAGGGAGAUAACUGUACAGCCUCCUAGCUUUCCUUGGGUCUUGCACUAAACAACAUGG
+#SS	((...((((....((((((..(((.(((.(((((((((((((.........(((......)))))))))))))))).))).)))..))))))...))))....)).......
+#MM	                    UGAGGUAGUAGGUUGUAUAGUU
+
+

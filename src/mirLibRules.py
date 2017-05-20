@@ -453,6 +453,9 @@ class prog_miRdup ():
     if mirdup_verdict == '0':
       return False
     return True
+    #aa = mirdupout[8].split()
+    #e[1].append(aa)
+    #return e
 
 
 if __name__ == '__main__' :

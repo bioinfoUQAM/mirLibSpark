@@ -1,0 +1,10 @@
+File miRdup_1.4/testFiles/sequencesToValidate.txt adapted in miRdup_1.4/testFiles/sequencesToValidate.txt.arff submitted to model Viridiplantae.model
+
+Summary results of predictions
+======
+Correctly Classified Instances           3               75      %
+Incorrectly Classified Instances         1               25      %
+Kappa statistic                          0     
+Mean absolute error                      0.25  
+Total Number of Instances                4     
+

@@ -1,0 +1,10 @@
+File ../lib/miRdup_1.4/testFiles/julie_sequencesToValidate2.txt adapted in ../lib/miRdup_1.4/testFiles/julie_sequencesToValidate2.txt.arff submitted to model ../lib/miRdup_1.4//model/Viridiplantae.model
+
+Summary results of predictions
+======
+Correctly Classified Instances           0                0      %
+Incorrectly Classified Instances         1              100      %
+Kappa statistic                          0     
+Mean absolute error                      1     
+Total Number of Instances                1     
+
