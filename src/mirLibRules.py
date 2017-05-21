@@ -418,7 +418,7 @@ class prog_miRanda ():
           target_result.append(query_motif_match_max+'%')
           target_result.append(gene_motif_match_max+'%')
           target_results.append(target_result[1:])
-          break
+          #break
 
     #= target_results == [[target1], [target2], ...]
     #= [['AT1G51370.2', '306.00', '-36.41', '153.00', '-20.70', '1', '23', '1118', ' 20 698', '84.21%', '89.47%']]
@@ -449,7 +449,15 @@ class prog_miRdup ():
     FNULL.close()
 
     #= mirdupout[8].split() = ['Correctly', 'Classified', 'Instances', '1', '100', '%']
-    mirdup_verdict = mirdupout[8].split()[3] #= '1' = true, or '0' = false
+    #mirdup_verdict = mirdupout[8].split()[3] #= '1' = true, or '0' = false
+    for i in mirdupout:
+      data = i.split()
+      if len(data) == 6 and data[0] == 'Correctly':
+        mirdup_verdict = data[3]
+        if mirdup_verdict == '1':
+          return True
+    return False
+
     if mirdup_verdict == '0':
       return False
     return True

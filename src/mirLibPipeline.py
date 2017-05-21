@@ -176,6 +176,7 @@ if __name__ == '__main__' :
 
     # Validating pre-mirna with miRdup
     pre_vld_rdd = pre_fold_rdd.filter(mirdup_obj.run_miRdup)
+    #pre_vld_rdd = pre_fold_rdd.map(mirdup_obj.run_miRdup)
     #newdata = pre_vld_rdd.collect()
     #print(newdata)
     ###################################################
