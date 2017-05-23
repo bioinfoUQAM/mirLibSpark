@@ -362,14 +362,14 @@ class prog_dominant_profile :
     return elem
 
 class prog_miRanda ():
-  def __init__ (self, Max_Score_cutoff, query_motif_match_cutoff, gene_motif_match_cutoff, Max_Energy_cutoff, target_file, tmp_file):
+  def __init__ (self, Max_Score_cutoff, lower_motif_match_cutoff, upper_motif_match_cutoff, Max_Energy_cutoff, target_file, tmp_file):
     self.env = os.environ
     self.dict_seq_target = {}###########
 
     #== variables ==
     self.Max_Score_cutoff = Max_Score_cutoff
-    self.query_motif_match_cutoff = query_motif_match_cutoff
-    self.gene_motif_match_cutoff = gene_motif_match_cutoff
+    self.lower_motif_match_cutoff = lower_motif_match_cutoff
+    self.upper_motif_match_cutoff = upper_motif_match_cutoff
     self.Max_Energy_cutoff = Max_Energy_cutoff
 
     self.target_file = target_file
@@ -393,7 +393,7 @@ class prog_miRanda ():
     mirandaout = sproc.communicate()[0].split('\n')
     FNULL.close()
     target_results = []
-    query_motif_match_max, gene_motif_match_max = 0, 0
+    lower_motif_match_associ, upper_motif_match_max = 0, 0
 
     for i in mirandaout[30:]: 
     #= because the first 30ish lines contain only program description
@@ -403,26 +403,26 @@ class prog_miRanda ():
       if i[:2] == '>x':
         #= isTargteet_hits == ['>x', 'AT1G51370.2', '153.00', '-15.71', '2 21', '698 722', '22', '68.18%', '77.27%']
         hit_result = i.split('\t') 
-        query_motif_match_current = hit_result[7][:-1]
-        gene_motif_match_current = hit_result[8][:-1]
-        if float(query_motif_match_current) > float(query_motif_match_max):
-          query_motif_match_max = query_motif_match_current
-        if float(gene_motif_match_current) > float(gene_motif_match_max):
-          gene_motif_match_max = gene_motif_match_current
+        lower_motif_match_current = hit_result[7][:-1]
+        upper_motif_match_current = hit_result[8][:-1]
+        #if float(lower_motif_match_current) > float(lower_motif_match_associ):
+        #  lower_motif_match_associ = lower_motif_match_current
+        if float(upper_motif_match_current) > float(upper_motif_match_max):
+          upper_motif_match_max = upper_motif_match_current
+          lower_motif_match_associ = lower_motif_match_current
       if i[:3] == '>>x': 
         #= isTargteet == [Seq1, Seq2, Tot_Score, Tot_Energy, Max_Score, Max_Energy, Strand, Len1, Len2, Positions]
         target_result = i.split('\t') 
         Max_Score = float(target_result[4])
         Max_Energy = float(target_result[5])
-        if Max_Score > self.Max_Score_cutoff and Max_Energy < self.Max_Energy_cutoff and float(query_motif_match_max) > self.query_motif_match_cutoff and float(gene_motif_match_max) > self.gene_motif_match_cutoff:
-          target_result.append(query_motif_match_max+'%')
-          target_result.append(gene_motif_match_max+'%')
+        if Max_Score > self.Max_Score_cutoff and Max_Energy < self.Max_Energy_cutoff and float(upper_motif_match_max) > self.upper_motif_match_cutoff: #and float(lower_motif_match_associ) > self.lower_motif_match_cutoff:
+          target_result.append(lower_motif_match_associ+'%')
+          target_result.append(upper_motif_match_max+'%')
           target_results.append(target_result[1:])
-          #break
 
     #= target_results == [[target1], [target2], ...]
     #= [['AT1G51370.2', '306.00', '-36.41', '153.00', '-20.70', '1', '23', '1118', ' 20 698', '84.21%', '89.47%']]
-    #= [gene, total_score, total_energy, max_score, max_energy, strand, len_miRNA, len_gene, postions, query_motif_match, gene_motif_match]
+    #= [gene, total_score, total_energy, max_score, max_energy, strand, len_miRNA, len_gene, postions, lower_motif_match, upper_motif_match]
     self.dict_seq_target[e[0]] = target_results ###############
     e[1].append(target_results)
     return e
