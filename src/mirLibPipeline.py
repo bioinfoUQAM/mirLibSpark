@@ -63,13 +63,15 @@ if __name__ == '__main__' :
   pre_flank = int(paramDict['pre_flank'])           #30
   # mircheck parameter
   mcheck_param = paramDict['mcheck_param']          #'def'    # def : default parameters / mey : meyers parameters
+  # miRdup parameter
+  mirdup_tmp_file = rep_tmp + 'sequencesToValidate_bymirdup.txt'
   # miRanda parameter
   Max_Score_cutoff = float(paramDict['Max_Score_cutoff'])
   query_motif_match_cutoff = float(paramDict['query_motif_match_cutoff'])
   gene_motif_match_cutoff = float(paramDict['gene_motif_match_cutoff'])
   Max_Energy_cutoff = float(paramDict['Max_Energy_cutoff'])
   target_file = paramDict['target_file']
-  tmp_file = rep_tmp + 'tmp_mirna_seq.txt'
+  miranda_tmp_file = rep_tmp + 'tmp_mirna_seq.txt'
 
   # Spark context
   sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, execNb, execCores)
@@ -87,7 +89,8 @@ if __name__ == '__main__' :
   rnafold_obj = mru.prog_RNAfold()
   mircheck_obj = mru.prog_mirCheck(mcheck_param)
   profile_obj = mru.prog_dominant_profile()
-  miranda_obj = mru.prog_miRanda(Max_Score_cutoff, query_motif_match_cutoff, gene_motif_match_cutoff, Max_Energy_cutoff, target_file, tmp_file)
+  miranda_obj = mru.prog_miRanda(Max_Score_cutoff, query_motif_match_cutoff, gene_motif_match_cutoff, Max_Energy_cutoff, target_file, miranda_tmp_file)
+  mirdup_obj = mru.prog_miRdup (mirdup_tmp_file)
 
   # Fetch library files in mypath
   infiles = [f for f in listdir(mypath) if os.path.isfile(os.path.join(mypath, f))]
@@ -166,28 +169,31 @@ if __name__ == '__main__' :
     # pre-miRNA folding
     pre_fold_rdd = premir_rdd.map(lambda e: rnafold_obj.RNAfold_map_rule(e, 4))
     
+    ###################################################   
     # Validating pre-mirna with mircheck
-    pre_vld_rdd = pre_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 4))\
-                              .filter(lambda e: any(e[1][4]))
+    #pre_vld_rdd = pre_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 4))\
+    #                          .filter(lambda e: any(e[1][4]))
+
+    # Validating pre-mirna with miRdup
+    pre_vld_rdd = pre_fold_rdd.filter(mirdup_obj.run_miRdup)
+    #pre_vld_rdd = pre_fold_rdd.map(mirdup_obj.run_miRdup)
+    #newdata = pre_vld_rdd.collect()
+    #print(newdata)
+    ###################################################
     
     # you can use chromo_strand as key to search bowtie blocs in the following dict
     dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(bowFrq_rdd.collect())
     
     # Results of miRNA prediction
-    #miRNA_rdd = pre_vld_rdd.filter(lambda e: profile_obj.exp_profile_filter(e, dict_bowtie_chromo_strand))
-
     miRNA_rdd = pre_vld_rdd.map(lambda e: profile_obj.sudo(e, dict_bowtie_chromo_strand))\
                       .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)
 
-    ###################################################
+    # target prediction
     miranda_rdd = miRNA_rdd.map(miranda_obj.dostuff)
-    #newdata = miranda_rdd.collect()
-    #print(newdata)
-    ###################################################
 
     #'''
     results = miranda_rdd.collect()
-    
+    #print(results)
     #
     endLib = time.time()
     print ("  End of the processing     ", end="\n")

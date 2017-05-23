@@ -160,8 +160,8 @@ def writeToFile (results, outfile):
     ''' old : elem = (id, [seq, frq, nbloc, [bowtie], [pri_miRNA], [pre_miRNA]])
         new : elem = (seq, [frq, nbloc, [bowtie], [pri_miRNA], [pre_miRNA]])
     '''
-    fh_out = open (outfile, 'w')
-    
+    fh_out = open (outfile, 'w')    
+
     for elem in results :
       # ID = elem[0]#
       values = elem[1]
@@ -174,13 +174,14 @@ def writeToFile (results, outfile):
       pre_miRNA_records = values[4]
       pre_miRNA_seq = pre_miRNA_records[0]#
       struc = pre_miRNA_records[2]#
-      mirCheck = pre_miRNA_records[3]#
-      fbstart = pre_miRNA_records[4]#
-      fbstop = pre_miRNA_records[5]#
+      #mirCheck = pre_miRNA_records[3]#
+      #fbstart = pre_miRNA_records[4]#
+      #fbstop = pre_miRNA_records[5]#
       totalfrq = values[5]#
       miRanda = values[6]#
       
-      data = [miRNAseq, frq, strand, chromo, posgen, pre_miRNA_seq, struc, mirCheck, fbstart, fbstop, totalfrq, miRanda]
+      #data = [miRNAseq, frq, strand, chromo, posgen, pre_miRNA_seq, struc, mirCheck, fbstart, fbstop, totalfrq, miRanda]
+      data = [miRNAseq, frq, strand, chromo, posgen, pre_miRNA_seq, struc, totalfrq, miRanda]
       line = ''
       
       for d in data:

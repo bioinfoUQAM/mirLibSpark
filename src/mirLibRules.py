@@ -379,6 +379,7 @@ class prog_miRanda ():
   def dostuff (self, e):
     '''
     $miranda examples/bantam_stRNA.fasta examples/hid_UTR.fasta
+    $miranda ../tmp/tmp_mirna_seq.txt ../Arabidopsis/TAIR/Genome/TAIR10_blastsets/TAIR10_cdna_20101214_updated_1cdna.fasta
     '''
     if e[0] in self.dict_seq_target.keys():
       e[1].append(self.dict_seq_target[e[0]])
@@ -388,9 +389,9 @@ class prog_miRanda ():
       print >> fh_tmp, '>x\n' + e[0]
     FNULL = open(os.devnull, 'w')
     cmd = ['miranda', self.tmp_file, self.target_file]
-    #= example cmd == miranda ../tmp/tmp_mirna_seq.txt ../Arabidopsis/TAIR/Genome/TAIR10_blastsets/TAIR10_cdna_20101214_updated_1cdna.fasta
     sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
     mirandaout = sproc.communicate()[0].split('\n')
+    FNULL.close()
     target_results = []
     query_motif_match_max, gene_motif_match_max = 0, 0
 
@@ -417,8 +418,8 @@ class prog_miRanda ():
           target_result.append(query_motif_match_max+'%')
           target_result.append(gene_motif_match_max+'%')
           target_results.append(target_result[1:])
-          break
-    FNULL.close()
+          #break
+
     #= target_results == [[target1], [target2], ...]
     #= [['AT1G51370.2', '306.00', '-36.41', '153.00', '-20.70', '1', '23', '1118', ' 20 698', '84.21%', '89.47%']]
     #= [gene, total_score, total_energy, max_score, max_energy, strand, len_miRNA, len_gene, postions, query_motif_match, gene_motif_match]
@@ -426,6 +427,43 @@ class prog_miRanda ():
     e[1].append(target_results)
     return e
   
+
+class prog_miRdup ():
+  def __init__ (self, tmp_file):
+    self.env = os.environ
+    
+    #= variable ==
+    self.tmp_file = tmp_file
+
+  def run_miRdup (self, e):
+    '''
+    java -jar ../lib/miRdup_1.4/miRdup.jar -v ../lib/miRdup_1.4/testFiles/julie_sequencesToValidate2.txt -c ../lib/miRdup_1.4//model/Viridiplantae.model -r /usr/local/bin/
+    '''
+    with open (self.tmp_file, 'w') as fh_tmp:
+      print >> fh_tmp, 'seqx\t' + e[0] + '\t' + e[1][4][0] # + e[1][4][2] #folding, but miRdup has a bug, can not pass this result
+    
+    FNULL = open(os.devnull, 'w')
+    cmd = ['java', '-jar', '../lib/miRdup_1.4/miRdup.jar', '-v', self.tmp_file, '-c', '../lib/miRdup_1.4//model/Viridiplantae.model', '-r', '/usr/local/bin/']
+    sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
+    mirdupout = sproc.communicate()[0].split('\n')
+    FNULL.close()
+
+    #= mirdupout[8].split() = ['Correctly', 'Classified', 'Instances', '1', '100', '%']
+    #mirdup_verdict = mirdupout[8].split()[3] #= '1' = true, or '0' = false
+    for i in mirdupout:
+      data = i.split()
+      if len(data) == 6 and data[0] == 'Correctly':
+        mirdup_verdict = data[3]
+        if mirdup_verdict == '1':
+          return True
+    return False
+
+    if mirdup_verdict == '0':
+      return False
+    return True
+    #aa = mirdupout[8].split()
+    #e[1].append(aa)
+    #return e
 
 
 if __name__ == '__main__' :
