@@ -13,7 +13,7 @@ import re
 def pyspark_configuration(appMaster, appName, masterMemory, execMemory, execNb, execCores):
   from pyspark import SparkConf, SparkContext
   conf = SparkConf()
-  conf.setMaster(appMaster)
+  # conf.setMaster(appMaster)
   conf.setAppName(appName)
   conf.set("spark.yarn.am.memory", masterMemory)
   conf.set("spark.executor.memory", execMemory)
@@ -178,7 +178,8 @@ def writeToFile (results, outfile):
       #fbstart = pre_miRNA_records[4]#
       #fbstop = pre_miRNA_records[5]#
       totalfrq = values[5]#
-      miRanda = values[6]#
+      # miRanda = values[6]#
+      miRanda = "miranda"
       
       #data = [miRNAseq, frq, strand, chromo, posgen, pre_miRNA_seq, struc, mirCheck, fbstart, fbstop, totalfrq, miRanda]
       data = [miRNAseq, frq, strand, chromo, posgen, pre_miRNA_seq, struc, totalfrq, miRanda]

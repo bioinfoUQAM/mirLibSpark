@@ -63,20 +63,21 @@ if __name__ == '__main__' :
   pre_flank = int(paramDict['pre_flank'])           #30
   # mircheck parameter
   mcheck_param = paramDict['mcheck_param']          #'def'    # def : default parameters / mey : meyers parameters
-  # # miRdup parameter
-  # mirdup_tmp_file = rep_tmp + 'sequencesToValidate_bymirdup.txt'
-  # # # miRanda parameter
-  # Max_Score_cutoff = float(paramDict['Max_Score_cutoff'])
-  # query_motif_match_cutoff = float(paramDict['query_motif_match_cutoff'])
-  # gene_motif_match_cutoff = float(paramDict['gene_motif_match_cutoff'])
-  # Max_Energy_cutoff = float(paramDict['Max_Energy_cutoff'])
-  # target_file = paramDict['target_file']
-  # miranda_tmp_file = rep_tmp + 'tmp_mirna_seq.txt'
-
+  # miRdup parameter
+  mirdup_tmp_file = rep_tmp + 'sequencesToValidate_bymirdup.txt'
+  mirdup_model = paramDict['mirdup_model']
+  
+  
   # Spark context
   sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, execNb, execCores)
-  sc.addPyFile('utils.py')
-  sc.addPyFile('mirLibRules.py')
+  #
+  sc.addPyFile('/home/mremita/Projects/mirLibHadoop/src/utils.py')
+  sc.addPyFile('/home/mremita/Projects/mirLibHadoop/src/mirLibRules.py')
+  sc.addFile('/home/mremita/Projects/mirLibHadoop/src/eval_mircheck.pl')
+  sc.addFile('/home/mremita/Projects/mirLibHadoop/lib/miRcheck.pm')
+  sc.addFile('/home/mremita/Projects/mirLibHadoop/lib/miRdup_1.4/miRdup.jar')
+  sc.addFile('/home/mremita/Projects/mirLibHadoop/lib/miRdup_1.4/lib/weka.jar')
+  
   # Spark application ID
   appId = str(sc.applicationId)
   
@@ -89,9 +90,8 @@ if __name__ == '__main__' :
   rnafold_obj = mru.prog_RNAfold()
   mircheck_obj = mru.prog_mirCheck(mcheck_param)
   profile_obj = mru.prog_dominant_profile()
-  # miranda_obj = mru.prog_miRanda(Max_Score_cutoff, query_motif_match_cutoff, gene_motif_match_cutoff, Max_Energy_cutoff, target_file, miranda_tmp_file)
-  # mirdup_obj = mru.prog_miRdup (mirdup_tmp_file)
-
+  mirdup_obj = mru.prog_miRdup (mirdup_tmp_file, mirdup_model)
+  
   # Fetch library files in mypath
   infiles = [f for f in listdir(mypath) if os.path.isfile(os.path.join(mypath, f))]
   
@@ -103,21 +103,18 @@ if __name__ == '__main__' :
     
     infile = mypath+infile
     inBasename = os.path.splitext(os.path.basename(infile))[0]
-    inKvfile = "file://" + rep_tmp + inBasename + '.kv.txt'
+    inKvfile = rep_tmp + inBasename + '.kv.txt'
     # hdfsFile = inBasename + '.hkv.txt'
 
     # Convert the input file to a Key value file
     ut.convert_seq_freq_file_to_KeyValue(infile, inKvfile, my_sep)
-  
-    # Save a local file to HDFS system
-    # ut.convertTOhadoop(inKvfile, hdfsFile)
     
     #
     print ("  Start of the processing...", end="\n")
     startLib = time.time()
     # Convert the text file to RDD object
     # distFile = sc.textFile(hdfsFile)
-    distFile = sc.textFile(inKvfile)
+    distFile = sc.textFile("file://" + inKvfile)
     input_rdd = distFile.map(lambda line: mru.rearrange_rule(line, my_sep)) # (seq, freq)
   
     # Filtering sRNA low frequency
@@ -172,11 +169,11 @@ if __name__ == '__main__' :
     
     ###################################################   
     # Validating pre-mirna with mircheck
-    pre_vld_rdd = pre_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 4))\
-                             .filter(lambda e: any(e[1][4]))
+    # pre_vld_rdd = pre_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 4))\
+                             # .filter(lambda e: any(e[1][4]))
 
-    # # Validating pre-mirna with miRdup
-    # pre_vld_rdd = pre_fold_rdd.filter(mirdup_obj.run_miRdup)
+    # Validating pre-mirna with miRdup
+    pre_vld_rdd = pre_fold_rdd.filter(mirdup_obj.run_miRdup)
     # #pre_vld_rdd = pre_fold_rdd.map(mirdup_obj.run_miRdup)
     # #newdata = pre_vld_rdd.collect()
     # #print(newdata)
@@ -189,19 +186,18 @@ if __name__ == '__main__' :
     miRNA_rdd = pre_vld_rdd.map(lambda e: profile_obj.sudo(e, dict_bowtie_chromo_strand))\
                       .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)
 
-    # # target prediction
-    # miranda_rdd = miRNA_rdd.map(miranda_obj.dostuff)
 
     #'''
     results = miRNA_rdd.collect()
-    # print(results)
+    print("NB results: "+ str(len(results)))
+    print(results)
     #
     endLib = time.time()
     print ("  End of the processing     ", end="\n")
     
     # write results to a file
     outFile = rep_output + inBasename + '_miRNAprediction.txt'
-    ut.writeToFile (results, outFile)
+    # ut.writeToFile (results, outFile)
     
     timeDict[inBasename] = endLib - startLib
     

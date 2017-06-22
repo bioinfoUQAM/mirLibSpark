@@ -429,12 +429,13 @@ class prog_miRanda ():
   
 
 class prog_miRdup ():
-  def __init__ (self, tmp_file):
+  def __init__ (self, tmp_file, model):
     self.env = os.environ
     
     #= variable ==
     self.tmp_file = tmp_file
-
+    self.model = model
+    
   def run_miRdup (self, e):
     '''
     java -jar ../lib/miRdup_1.4/miRdup.jar -v ../lib/miRdup_1.4/testFiles/julie_sequencesToValidate2.txt -c ../lib/miRdup_1.4//model/Viridiplantae.model -r /usr/local/bin/
@@ -443,7 +444,7 @@ class prog_miRdup ():
       print >> fh_tmp, 'seqx\t' + e[0] + '\t' + e[1][4][0] # + e[1][4][2] #folding, but miRdup has a bug, can not pass this result
     
     FNULL = open(os.devnull, 'w')
-    cmd = ['java', '-jar', '../lib/miRdup_1.4/miRdup.jar', '-v', self.tmp_file, '-c', '../lib/miRdup_1.4//model/Viridiplantae.model', '-r', '/usr/local/bin/']
+    cmd = ['java', '-jar', 'miRdup.jar', '-v', self.tmp_file, '-c', self.model, '-r', '/usr/local/bin/']
     sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
     mirdupout = sproc.communicate()[0].split('\n')
     FNULL.close()
