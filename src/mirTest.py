@@ -71,12 +71,12 @@ if __name__ == '__main__' :
   # Spark context
   sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, execNb, execCores)
   #
-  sc.addPyFile('/home/mremita/Projects/mirLibHadoop/src/utils.py')
-  sc.addPyFile('/home/mremita/Projects/mirLibHadoop/src/mirLibRules.py')
-  sc.addFile('/home/mremita/Projects/mirLibHadoop/src/eval_mircheck.pl')
-  sc.addFile('/home/mremita/Projects/mirLibHadoop/lib/miRcheck.pm')
-  sc.addFile('/home/mremita/Projects/mirLibHadoop/lib/miRdup_1.4/miRdup.jar')
-  sc.addFile('/home/mremita/Projects/mirLibHadoop/lib/miRdup_1.4/lib/weka.jar')
+  sc.addPyFile('../src/utils.py')
+  sc.addPyFile('../src/mirLibRules.py')
+  sc.addFile('../src/eval_mircheck.pl')
+  sc.addFile('../lib/miRcheck.pm')
+  sc.addFile('../lib/miRdup_1.4/miRdup.jar')
+  sc.addFile('../lib/miRdup_1.4/lib/weka.jar')
   
   # Spark application ID
   appId = str(sc.applicationId)
