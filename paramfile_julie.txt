@@ -1,8 +1,7 @@
 b_index=a_thaliana_t10
 rep_tmp=../tmp/
 my_sep=,
-#genome_path=../input/ATH/TAIR/Genome/
-genome_path=/home/cloudera/workspace/miRNA_predictor/ATH/Genome/
+genome_path=../input/ATH/TAIR/Genome/
 limit_s_freq=10
 limit_m_freq=100
 limit_len=18
