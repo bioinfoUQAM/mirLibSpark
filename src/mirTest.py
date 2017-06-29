@@ -112,14 +112,14 @@ if __name__ == '__main__' :
     #
     print ("  Start of the processing...", end="\n")
     startLib = time.time()
+    
     # Convert the text file to RDD object
-    # distFile = sc.textFile(hdfsFile)
-    distFile = sc.textFile("file://" + inKvfile)
+    #distFile = sc.textFile(hdfsFile)
+    distFile = sc.textFile("file:///" + inKvfile)
     input_rdd = distFile.map(lambda line: mru.rearrange_rule(line, my_sep)) # (seq, freq)
-  
     # Filtering sRNA low frequency
     sr_low_rdd = input_rdd.filter(lambda e: int(e[1]) > limit_srna_freq)
-
+    
     # Filtering short length
     sr_short_rdd = sr_low_rdd.filter(lambda e: len(e[0]) > limit_len).persist()
 
@@ -129,7 +129,7 @@ if __name__ == '__main__' :
                             .filter(lambda e: e.isupper() and not e.startswith('>'))\
                             .map(lambda e: str(e.rstrip()))\
                             .persist()
-    
+  
     # Mapping with Bowtie
     bowtie_rdd = dmask_rdd.pipe(bowtie_cmd, bowtie_env)\
                           .map(bowtie_obj.bowtie_rearrange_map)\
@@ -166,7 +166,8 @@ if __name__ == '__main__' :
 
     # pre-miRNA folding
     pre_fold_rdd = premir_rdd.map(lambda e: rnafold_obj.RNAfold_map_rule(e, 4))
-    
+    miRNA_rdd = pre_fold_rdd
+    '''
     ###################################################   
     # Validating pre-mirna with mircheck
     # pre_vld_rdd = pre_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 4))\
@@ -185,19 +186,19 @@ if __name__ == '__main__' :
     # Results of miRNA prediction
     miRNA_rdd = pre_vld_rdd.map(lambda e: profile_obj.sudo(e, dict_bowtie_chromo_strand))\
                       .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)
+    '''
 
-
-    #'''
     results = miRNA_rdd.collect()
     print("NB results: "+ str(len(results)))
     print(results)
     #
+
     endLib = time.time()
     print ("  End of the processing     ", end="\n")
     
     # write results to a file
-    outFile = rep_output + inBasename + '_miRNAprediction.txt'
-    # ut.writeToFile (results, outFile)
+    #outFile = rep_output + inBasename + '_miRNAprediction.txt'
+    #ut.writeToFile (results, outFile)
     
     timeDict[inBasename] = endLib - startLib
     

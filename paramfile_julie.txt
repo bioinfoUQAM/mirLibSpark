@@ -1,5 +1,6 @@
 b_index=a_thaliana_t10
-rep_tmp=../tmp/
+#rep_tmp=../tmp/
+rep_tmp=/home/cjwu/gitproject/mirLibHadoop/tmp/
 my_sep=,
 genome_path=/scratch/hvg-164-aa/mirlibhadoop/ATH/Genome/
 limit_s_freq=10
