@@ -9,6 +9,7 @@ limit_nbLoc=3
 pri_l_flank=120
 pri_r_flank=60
 pre_flank=30
+mirdup_model=../lib/miRdup_1.4/model/Viridiplantae.model
 mcheck_param=def
 Max_Score_cutoff=100
 query_motif_match_cutoff=30
