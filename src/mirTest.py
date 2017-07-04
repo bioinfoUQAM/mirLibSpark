@@ -115,7 +115,8 @@ if __name__ == '__main__' :
     
     # Convert the text file to RDD object
     #distFile = sc.textFile(hdfsFile)
-    distFile = sc.textFile("file:///" + inKvfile)
+    #distFile = sc.textFile("file:///" + inKvfile)
+    distFile = sc.textFile(inKvfile)
     input_rdd = distFile.map(lambda line: mru.rearrange_rule(line, my_sep)) # (seq, freq)
     # Filtering sRNA low frequency
     sr_low_rdd = input_rdd.filter(lambda e: int(e[1]) > limit_srna_freq)
@@ -129,14 +130,17 @@ if __name__ == '__main__' :
                             .filter(lambda e: e.isupper() and not e.startswith('>'))\
                             .map(lambda e: str(e.rstrip()))\
                             .persist()
-  
+    miRNA_rdd = dmask_rdd
+    '''
+
     # Mapping with Bowtie
     bowtie_rdd = dmask_rdd.pipe(bowtie_cmd, bowtie_env)\
                           .map(bowtie_obj.bowtie_rearrange_map)\
                           .groupByKey()\
                           .map(lambda e: (e[0], [len(list(e[1])), list(e[1])]))\
                           .persist()
-    
+    #miRNA_rdd = bowtie_rdd
+
     # Get the expression value for each reads
     bowFrq_rdd = bowtie_rdd.join(sr_short_rdd)\
                            .map(bowtie_obj.bowtie_freq_rearrange_rule)\
@@ -147,10 +151,10 @@ if __name__ == '__main__' :
     
     # Filtering high nbLocations and zero location
     nbLoc_rdd = mr_low_rdd.filter(lambda e: e[1][1] > 0 and e[1][1] < limit_nbLoc)
-    
+     
     # Extraction of the pri-miRNA
     primir_rdd = nbLoc_rdd.flatMap(prec_obj.extract_prim_rule)
-    
+
     # pri-miRNA folding
     pri_fold_rdd = primir_rdd.map(lambda e: rnafold_obj.RNAfold_map_rule(e, 3))
     
@@ -163,7 +167,7 @@ if __name__ == '__main__' :
     
     # Extraction of the pre-miRNA
     premir_rdd = one_loop_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3))
-
+    
     # pre-miRNA folding
     pre_fold_rdd = premir_rdd.map(lambda e: rnafold_obj.RNAfold_map_rule(e, 4))
     miRNA_rdd = pre_fold_rdd
@@ -187,7 +191,7 @@ if __name__ == '__main__' :
     # Results of miRNA prediction
     miRNA_rdd = pre_vld_rdd.map(lambda e: profile_obj.sudo(e, dict_bowtie_chromo_strand))\
                       .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)
-
+    '''
     results = miRNA_rdd.collect()
     print("NB results: "+ str(len(results)))
     print(results)
