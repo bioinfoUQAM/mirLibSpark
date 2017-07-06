@@ -42,7 +42,7 @@ if __name__ == '__main__' :
   project_path = paramDict['project_path']
   rep_msub_jobsOut = project_path + 'workdir/jobsOut'
   my_sep = paramDict['my_sep']                      # Separator
-  rep_tmp = project_path + 'tmp/'                   # tmp file folder
+  rep_tmp = project_path + '/tmp/'                   # tmp file folder
   # spark configuration
   appMaster = paramDict['sc_master']                #"local" 
   appName = paramDict['sc_appname']                 #"mirLibHadoop"
