@@ -201,9 +201,10 @@ if __name__ == '__main__' :
     pre_vld_rdd = pre_fold_rdd.filter(mirdup_obj.run_miRdup)
     
 
-    #pre_vld_rdd = pre_fold_rdd.map(mirdup_obj.run_miRdup)
-    #newdata = pre_vld_rdd.collect()
-    #print(newdata)
+    pre_vld_rdd2 = pre_fold_rdd.map(mirdup_obj.run_miRdup)
+    newdata = pre_vld_rdd2.collect()
+    print(newdata)
+    print("NB newdata: "+ str(len(newdata)))
     ###################################################
     #'''
     # you can use chromo_strand as key to search bowtie blocs in the following dict
