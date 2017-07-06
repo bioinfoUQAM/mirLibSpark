@@ -189,7 +189,7 @@ if __name__ == '__main__' :
     
     # pre-miRNA folding
     pre_fold_rdd = premir_rdd.map(lambda e: rnafold_obj.RNAfold_map_rule(e, 4))\
-					  .persist()
+					  .persist()###test###
     #miRNA_rdd = pre_fold_rdd
 
     #'''
@@ -202,10 +202,9 @@ if __name__ == '__main__' :
     pre_vld_rdd = pre_fold_rdd.filter(mirdup_obj.run_miRdup)
     
 
-    pre_vld_rdd2 = pre_fold_rdd.map(mirdup_obj.run_miRdup)
-    newdata = pre_vld_rdd2.collect()
-    print(newdata)
-    print("NB newdata: "+ str(len(newdata)))
+    pre_vld_rdd2 = pre_fold_rdd.map(mirdup_obj.run_miRdup)###test###
+    newdata = pre_vld_rdd2.collect()###test###
+    print("NB newdata: "+ str(len(newdata)))###test###
     ###################################################
     #'''
     # you can use chromo_strand as key to search bowtie blocs in the following dict
@@ -214,10 +213,10 @@ if __name__ == '__main__' :
     # Results of miRNA prediction
     miRNA_rdd = pre_vld_rdd.map(lambda e: profile_obj.sudo(e, dict_bowtie_chromo_strand))\
                       .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)\
-					  .persist()
+					  .persist()###test###
 					  
-    profiledata = miRNA_rdd.collect()
-    print("NB profiledata: "+ str(len(profiledata)))
+    profiledata = miRNA_rdd.collect()###test###
+    print("NB profiledata: "+ str(len(profiledata)))###test###
 	
     # target prediction
     miranda_rdd = miRNA_rdd.map(miranda_obj.dostuff)
