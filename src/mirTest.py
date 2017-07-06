@@ -95,7 +95,6 @@ if __name__ == '__main__' :
   sc.addFile('../lib/bowtie_index/a_thaliana_t10.2.ebwt')
   sc.addFile('../lib/bowtie_index/a_thaliana_t10.3.ebwt')
   sc.addFile('../lib/bowtie_index/a_thaliana_t10.4.ebwt')
-  sc.addFile('../lib/bowtie_index/a_thaliana_t10.1.ebwt')
   sc.addFile('../lib/bowtie_index/a_thaliana_t10.rev.1.ebwt')
   sc.addFile('../lib/bowtie_index/a_thaliana_t10.rev.2.ebwt')
   
