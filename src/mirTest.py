@@ -58,8 +58,8 @@ if __name__ == '__main__' :
   limit_len = int(paramDict['limit_len'])           #18       # exclude RNA length < limit_len
   limit_nbLoc = int(paramDict['limit_nbLoc'])       #3        # exculde nbLoc mapped with bowtie  > limit_nbLoc
   # bowtie
-  rep_bowtie_index = project_path + '/lib/bowtie_index/'
-  b_index_suffix = rep_bowtie_index + paramDict['b_index']
+  b_index = paramDict['b_index']
+  b_index_path = project_path + '/lib/bowtie_index/' + b_index
   # pri-mirna
   pri_l_flank = int(paramDict['pri_l_flank'])       #120
   pri_r_flank = int(paramDict['pri_r_flank'])       #60
@@ -92,20 +92,20 @@ if __name__ == '__main__' :
   sc.addFile('../lib/miRdup_1.4/model/Viridiplantae.model')  
   sc.addFile('../lib/TAIR10_cdna_20101214_updated_1cdna.fasta')
   sc.addFile('../lib/miranda')
-  sc.addFile('../lib/bowtie_index/a_thaliana_t10.1.ebwt')
-  sc.addFile('../lib/bowtie_index/a_thaliana_t10.2.ebwt')
-  sc.addFile('../lib/bowtie_index/a_thaliana_t10.3.ebwt')
-  sc.addFile('../lib/bowtie_index/a_thaliana_t10.4.ebwt')
-  sc.addFile('../lib/bowtie_index/a_thaliana_t10.rev.1.ebwt')
-  sc.addFile('../lib/bowtie_index/a_thaliana_t10.rev.2.ebwt')
-  
+  sc.addFile('../lib/bowtie_index/' + b_index + '.1.ebwt')
+  sc.addFile('../lib/bowtie_index/' + b_index + '.2.ebwt')
+  sc.addFile('../lib/bowtie_index/' + b_index + '.3.ebwt')
+  sc.addFile('../lib/bowtie_index/' + b_index + '.4.ebwt')
+  sc.addFile('../lib/bowtie_index/' + b_index + '.rev.1.ebwt')
+  sc.addFile('../lib/bowtie_index/' + b_index + '.rev.2.ebwt')
+
   # Spark application ID
   appId = str(sc.applicationId)
   
   # Objects for rule functions
   dmask_obj = mru.prog_dustmasker()
   dmask_cmd, dmask_env = dmask_obj.dmask_pipe_cmd()
-  bowtie_obj = mru.prog_bowtie(b_index_suffix )
+  bowtie_obj = mru.prog_bowtie(b_index_path )
   bowtie_cmd, bowtie_env = bowtie_obj.Bowtie_pipe_cmd()
   prec_obj = mru.extract_precurosrs(genome_path, pri_l_flank, pri_r_flank, pre_flank)
   rnafold_obj = mru.prog_RNAfold()
