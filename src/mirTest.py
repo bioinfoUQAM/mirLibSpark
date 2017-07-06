@@ -66,7 +66,13 @@ if __name__ == '__main__' :
   # miRdup parameter
   mirdup_tmp_file = rep_tmp + 'sequencesToValidate_bymirdup.txt'
   mirdup_model = paramDict['mirdup_model']
-  
+  # miRanda parameter
+  Max_Score_cutoff = float(paramDict['Max_Score_cutoff'])
+  query_motif_match_cutoff = float(paramDict['query_motif_match_cutoff'])
+  gene_motif_match_cutoff = float(paramDict['gene_motif_match_cutoff'])
+  Max_Energy_cutoff = float(paramDict['Max_Energy_cutoff'])
+  target_file = paramDict['target_file']
+  miranda_tmp_file = rep_tmp + 'tmp_mirna_seq.txt'
   
   # Spark context
   sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, execNb, execCores)
@@ -91,7 +97,8 @@ if __name__ == '__main__' :
   mircheck_obj = mru.prog_mirCheck(mcheck_param)
   profile_obj = mru.prog_dominant_profile()
   mirdup_obj = mru.prog_miRdup (mirdup_tmp_file, mirdup_model)
-  
+  miranda_obj = mru.prog_miRanda(Max_Score_cutoff, query_motif_match_cutoff, gene_motif_match_cutoff, Max_Energy_cutoff, target_file, miranda_tmp_file)
+
   # Fetch library files in mypath
   infiles = [f for f in listdir(mypath) if os.path.isfile(os.path.join(mypath, f))]
   
@@ -191,7 +198,10 @@ if __name__ == '__main__' :
     miRNA_rdd = pre_vld_rdd.map(lambda e: profile_obj.sudo(e, dict_bowtie_chromo_strand))\
                       .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)
     
-    results = miRNA_rdd.collect()
+    # target prediction
+    miranda_rdd = miRNA_rdd.map(miranda_obj.dostuff)
+
+    results = miranda_rdd.collect()
     print("NB results: "+ str(len(results)))
     print(results)
     #
