@@ -91,9 +91,7 @@ if __name__ == '__main__' :
   sc.addFile('../lib/miRdup_1.4/lib/weka.jar')
   sc.addFile('../lib/TAIR10_cdna_20101214_updated_1cdna.fasta')
   sc.addFile('../lib/miranda')
-  
-  b_index_files = [f for f in listdir('../lib/bowtie_index/') if os.path.isfile(os.path.join('../lib/bowtie_index/', f))]
-  for f in b_index_files: sc.addFile(f)
+  sc.addFile('../lib/bowtie_index/*')
   
   # Spark application ID
   appId = str(sc.applicationId)
