@@ -388,7 +388,8 @@ class prog_miRanda ():
     with open (self.tmp_file, 'w') as fh_tmp:
       print >> fh_tmp, '>x\n' + e[0]
     FNULL = open(os.devnull, 'w')
-    cmd = ['miranda', self.tmp_file, self.target_file]
+    #cmd = ['miranda', self.tmp_file, self.target_file]
+    cmd = ['/home/cjwu/gitproject/mirLibHadoop/lib/miranda', self.tmp_file, self.target_file]
     sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
     mirandaout = sproc.communicate()[0].split('\n')
     FNULL.close()
