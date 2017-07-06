@@ -39,8 +39,10 @@ if __name__ == '__main__' :
   paramDict = ut.readParam (paramfile)
 
   # Parameters and cutoffs
+  project_path = paramDict['project_path']
+  rep_msub_jobsOut = project_path + 'workdir/jobsOut'
   my_sep = paramDict['my_sep']                      # Separator
-  rep_tmp = paramDict['rep_tmp']                    # tmp file folder
+  rep_tmp = project_path + 'tmp/'                   # tmp file folder
   # spark configuration
   appMaster = paramDict['sc_master']                #"local" 
   appName = paramDict['sc_appname']                 #"mirLibHadoop"
@@ -49,14 +51,14 @@ if __name__ == '__main__' :
   execNb = paramDict['sc_execnb']                   #4
   execCores = paramDict['sc_execcores']             #2
   # genome
-  genome_path = paramDict['genome_path']            #"../input/ATH/TAIR/Genome/"
+  genome_path = '/scratch/hvg-164-aa/mirlibhadoop/ATH/Genome/'           
   # cutoffs
   limit_srna_freq = int(paramDict['limit_s_freq'])  #10       # exclude sRNA freq < limit_srna_freq
   limit_mrna_freq = int(paramDict['limit_m_freq'])  #200      # exclude miRNA freq < limit_mrna_freq
   limit_len = int(paramDict['limit_len'])           #18       # exclude RNA length < limit_len
   limit_nbLoc = int(paramDict['limit_nbLoc'])       #3        # exculde nbLoc mapped with bowtie  > limit_nbLoc
   # bowtie
-  b_index = paramDict['b_index']
+  b_index = project_path + '/lib/bowtie_index/' + paramDict['b_index']
   # pri-mirna
   pri_l_flank = int(paramDict['pri_l_flank'])       #120
   pri_r_flank = int(paramDict['pri_r_flank'])       #60
@@ -65,14 +67,17 @@ if __name__ == '__main__' :
   mcheck_param = paramDict['mcheck_param']          #'def'    # def : default parameters / mey : meyers parameters
   # miRdup parameter
   mirdup_tmp_file = rep_tmp + 'sequencesToValidate_bymirdup.txt'
-  mirdup_model = paramDict['mirdup_model']
+  mirdup_model = project_path + 'lib/miRdup_1.4/model/' + paramDict['mirdup_model']
   # miRanda parameter
   Max_Score_cutoff = float(paramDict['Max_Score_cutoff'])
   query_motif_match_cutoff = float(paramDict['query_motif_match_cutoff'])
   gene_motif_match_cutoff = float(paramDict['gene_motif_match_cutoff'])
   Max_Energy_cutoff = float(paramDict['Max_Energy_cutoff'])
-  target_file = paramDict['target_file']
+  target_file = project_path + '/lib/' + paramDict['target_file']
   miranda_tmp_file = rep_tmp + 'tmp_mirna_seq.txt'
+  
+  reps = [rep_output, rep_tmp, rep_msub_jobsOut]
+  makedirs_reps (reps)
   
   # Spark context
   sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, execNb, execCores)

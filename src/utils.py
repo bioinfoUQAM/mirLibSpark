@@ -9,6 +9,11 @@ version: 0.00.01
 import os
 import re
 
+def makedirs_reps (reps):
+  for rep in reps:
+    if not os.path.exists(rep):
+      os.makedirs(rep)
+	  
 # Configure a spark context
 def pyspark_configuration(appMaster, appName, masterMemory, execMemory, execNb, execCores):
   from pyspark import SparkConf, SparkContext
