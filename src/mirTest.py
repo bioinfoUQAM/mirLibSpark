@@ -77,7 +77,7 @@ if __name__ == '__main__' :
   miranda_tmp_file = rep_tmp + 'tmp_mirna_seq.txt'
   
   reps = [rep_output, rep_tmp, rep_msub_jobsOut]
-  makedirs_reps (reps)
+  ut.makedirs_reps (reps)
   
   # Spark context
   sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, execNb, execCores)
