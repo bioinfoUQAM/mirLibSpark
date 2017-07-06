@@ -1,4 +1,5 @@
-b_index=a_thaliana_t10
+b_index=/home/cjwu/gitproject/mirLibHadoop/lib/bowtie_index/a_thaliana_t10
+#b_index=../lib/bowtie_index/a_thaliana_t10
 #rep_tmp=/home/cjwu/gitproject/mirLibHadoop/tmp/
 rep_tmp=../tmp/
 my_sep=,

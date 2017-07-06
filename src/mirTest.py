@@ -130,8 +130,6 @@ if __name__ == '__main__' :
                             .filter(lambda e: e.isupper() and not e.startswith('>'))\
                             .map(lambda e: str(e.rstrip()))\
                             .persist()
-    miRNA_rdd = dmask_rdd
-    '''
 
     # Mapping with Bowtie
     bowtie_rdd = dmask_rdd.pipe(bowtie_cmd, bowtie_env)\
@@ -139,8 +137,8 @@ if __name__ == '__main__' :
                           .groupByKey()\
                           .map(lambda e: (e[0], [len(list(e[1])), list(e[1])]))\
                           .persist()
-    #miRNA_rdd = bowtie_rdd
-
+    miRNA_rdd = bowtie_rdd
+    '''
     # Get the expression value for each reads
     bowFrq_rdd = bowtie_rdd.join(sr_short_rdd)\
                            .map(bowtie_obj.bowtie_freq_rearrange_rule)\
