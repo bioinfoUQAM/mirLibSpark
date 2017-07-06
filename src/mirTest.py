@@ -58,7 +58,7 @@ if __name__ == '__main__' :
   limit_len = int(paramDict['limit_len'])           #18       # exclude RNA length < limit_len
   limit_nbLoc = int(paramDict['limit_nbLoc'])       #3        # exculde nbLoc mapped with bowtie  > limit_nbLoc
   # bowtie
-  b_index = project_path + '/lib/bowtie_index/' + paramDict['b_index']
+  b_index_suffix = rep_bowtie_index + paramDict['b_index']
   # pri-mirna
   pri_l_flank = int(paramDict['pri_l_flank'])       #120
   pri_r_flank = int(paramDict['pri_r_flank'])       #60
@@ -88,6 +88,11 @@ if __name__ == '__main__' :
   sc.addFile('../lib/miRcheck.pm')
   sc.addFile('../lib/miRdup_1.4/miRdup.jar')
   sc.addFile('../lib/miRdup_1.4/lib/weka.jar')
+  sc.addFile('../lib/TAIR10_cdna_20101214_updated_1cdna.fasta')
+  sc.addFile('../lib/miranda')
+  
+  b_index_files = [f for f in listdir('../lib/bowtie_index/') if os.path.isfile(os.path.join('../lib/bowtie_index/', f))]
+  for f in b_index_files: sc.addFile(f)
   
   # Spark application ID
   appId = str(sc.applicationId)
@@ -95,7 +100,7 @@ if __name__ == '__main__' :
   # Objects for rule functions
   dmask_obj = mru.prog_dustmasker()
   dmask_cmd, dmask_env = dmask_obj.dmask_pipe_cmd()
-  bowtie_obj = mru.prog_bowtie(b_index)
+  bowtie_obj = mru.prog_bowtie(b_index_suffix )
   bowtie_cmd, bowtie_env = bowtie_obj.Bowtie_pipe_cmd()
   prec_obj = mru.extract_precurosrs(genome_path, pri_l_flank, pri_r_flank, pre_flank)
   rnafold_obj = mru.prog_RNAfold()
