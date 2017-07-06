@@ -89,6 +89,7 @@ if __name__ == '__main__' :
   sc.addFile('../lib/miRcheck.pm')
   sc.addFile('../lib/miRdup_1.4/miRdup.jar')
   sc.addFile('../lib/miRdup_1.4/lib/weka.jar')
+  sc.addFile('../lib/miRdup_1.4/model/Viridiplantae.model')  
   sc.addFile('../lib/TAIR10_cdna_20101214_updated_1cdna.fasta')
   sc.addFile('../lib/miranda')
   sc.addFile('../lib/bowtie_index/a_thaliana_t10.1.ebwt')
