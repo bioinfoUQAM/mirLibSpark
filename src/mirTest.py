@@ -58,6 +58,7 @@ if __name__ == '__main__' :
   limit_len = int(paramDict['limit_len'])           #18       # exclude RNA length < limit_len
   limit_nbLoc = int(paramDict['limit_nbLoc'])       #3        # exculde nbLoc mapped with bowtie  > limit_nbLoc
   # bowtie
+  rep_bowtie_index = project_path + '/lib/bowtie_index/'
   b_index_suffix = rep_bowtie_index + paramDict['b_index']
   # pri-mirna
   pri_l_flank = int(paramDict['pri_l_flank'])       #120
