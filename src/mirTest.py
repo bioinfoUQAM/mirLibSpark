@@ -40,7 +40,7 @@ if __name__ == '__main__' :
 
   # Parameters and cutoffs
   project_path = paramDict['project_path']
-  rep_msub_jobsOut = project_path + 'workdir/jobsOut'
+  rep_msub_jobsOut = project_path + '/workdir/jobsOut'
   my_sep = paramDict['my_sep']                      # Separator
   rep_tmp = project_path + '/tmp/'                   # tmp file folder
   # spark configuration
@@ -67,7 +67,7 @@ if __name__ == '__main__' :
   mcheck_param = paramDict['mcheck_param']          #'def'    # def : default parameters / mey : meyers parameters
   # miRdup parameter
   mirdup_tmp_file = rep_tmp + 'sequencesToValidate_bymirdup.txt'
-  mirdup_model = project_path + 'lib/miRdup_1.4/model/' + paramDict['mirdup_model']
+  mirdup_model = project_path + '/lib/miRdup_1.4/model/' + paramDict['mirdup_model']
   # miRanda parameter
   Max_Score_cutoff = float(paramDict['Max_Score_cutoff'])
   query_motif_match_cutoff = float(paramDict['query_motif_match_cutoff'])
