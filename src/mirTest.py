@@ -213,7 +213,7 @@ if __name__ == '__main__' :
     #pre_vld_rdd = pre_fold_rdd.filter(mirdup_obj.run_miRdup)
     
 
-    pre_vld_rdd2 = pre_fold_rdd.map(mirdup_obj.run_miRdup)###test###
+    pre_vld_rdd2 = pre_fold_rdd.map(mirdup_obj.run_miRdup).persist()###test###
     newdata = pre_vld_rdd2.collect()###test###
     print("NB newdata: "+ str(len(newdata)))###test###
     ###################################################
@@ -222,7 +222,7 @@ if __name__ == '__main__' :
     dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(bowFrq_rdd.collect())
     
     # Results of miRNA prediction
-    miRNA_rdd = pre_vld_rdd.map(lambda e: profile_obj.sudo(e, dict_bowtie_chromo_strand))\
+    miRNA_rdd = pre_vld_rdd2.map(lambda e: profile_obj.sudo(e, dict_bowtie_chromo_strand))\
                       .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)\
 					  .persist()###test###
 					  
