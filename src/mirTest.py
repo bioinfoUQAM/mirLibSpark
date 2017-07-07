@@ -92,7 +92,7 @@ if __name__ == '__main__' :
 
   sc.addFile('../lib/miRdup_1.4/miRdup.jar')
   sc.addFile('../lib/miRdup_1.4/lib/weka.jar')
-  sc.addFile('../lib/miRdup_1.4/model/Viridiplantae.model')
+  sc.addFile('../lib/miRdup_1.4/model/' + paramDict['mirdup_model'])
   #sc.addFile(mirdup_jar)
   #sc.addFile(project_path  + '/lib/miRdup_1.4/lib/weka.jar')
   #sc.addFile(mirdup_model)
