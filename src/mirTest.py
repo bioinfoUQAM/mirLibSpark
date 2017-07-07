@@ -196,11 +196,12 @@ if __name__ == '__main__' :
     #'''
     ###################################################   
     # Validating pre-mirna with mircheck
-    #pre_vld_rdd = pre_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 4))\
-     #                         .filter(lambda e: any(e[1][4]))
-
+    pre_vld_rdd = pre_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 4))\
+                              .filter(lambda e: any(e[1][4])).persist()
+    newdata0 = pre_vld_rdd.collect()
+    print('NB newdata0', len(newdata0))
     # Validating pre-mirna with miRdup
-    pre_vld_rdd = pre_fold_rdd.filter(mirdup_obj.run_miRdup)
+    #pre_vld_rdd = pre_fold_rdd.filter(mirdup_obj.run_miRdup)
     
 
     #pre_vld_rdd = pre_fold_rdd.map(mirdup_obj.run_miRdup)
