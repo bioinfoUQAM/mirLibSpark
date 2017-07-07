@@ -78,7 +78,7 @@ if __name__ == '__main__' :
   target_file = project_path + '/lib/' + paramDict['target_file']
   miranda_tmp_file = rep_tmp + 'tmp_mirna_seq.txt'
   miranda_exe = project_path + '/lib/miranda'
-  
+  #make required folders if not exist
   reps = [rep_output, rep_tmp, rep_msub_jobsOut]
   ut.makedirs_reps (reps)
   
@@ -99,8 +99,8 @@ if __name__ == '__main__' :
 
   sc.addFile('../lib/' + paramDict['target_file'])
   sc.addFile('../lib/miranda')
-  #sc.addFile(miranda_exe)
   #sc.addFile(target_file)
+  #sc.addFile(miranda_exe)
 
   sc.addFile('../lib/bowtie_index/' + b_index + '.1.ebwt')
   sc.addFile('../lib/bowtie_index/' + b_index + '.2.ebwt')
