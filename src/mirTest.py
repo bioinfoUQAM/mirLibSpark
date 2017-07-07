@@ -205,24 +205,26 @@ if __name__ == '__main__' :
     #'''
     ###################################################   
     # Validating pre-mirna with mircheck
-    pre_vld_rdd = pre_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 4))\
-                              .filter(lambda e: any(e[1][4])).persist()
-    newdata0 = pre_vld_rdd.collect()
-    print('NB newdata0', len(newdata0))
+    #pre_vld_rdd = pre_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 4))\
+     #                         .filter(lambda e: any(e[1][4])).persist()
+    #newdata0 = pre_vld_rdd.collect()
+    #print('NB newdata0', len(newdata0))
     # Validating pre-mirna with miRdup
-    #pre_vld_rdd = pre_fold_rdd.filter(mirdup_obj.run_miRdup)
+    pre_vld_rdd = pre_fold_rdd.filter(mirdup_obj.run_miRdup).persist()
     
+    newdata_f = pre_vld_rdd.collect()###test###
+    print("NB newdata_f: ", len(newdata))###test###
 
-    pre_vld_rdd2 = pre_fold_rdd.map(mirdup_obj.run_miRdup).persist()###test###
-    newdata = pre_vld_rdd2.collect()###test###
-    print("NB newdata: "+ str(len(newdata)))###test###
+    #pre_vld_rdd2 = pre_fold_rdd.map(mirdup_obj.run_miRdup)###test###
+    #newdata = pre_vld_rdd2.collect()###test###
+    #print("NB newdata: "+ str(len(newdata)))###test###
     ###################################################
     #'''
     # you can use chromo_strand as key to search bowtie blocs in the following dict
     dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(bowFrq_rdd.collect())
     
     # Results of miRNA prediction
-    miRNA_rdd = pre_vld_rdd2.map(lambda e: profile_obj.sudo(e, dict_bowtie_chromo_strand))\
+    miRNA_rdd = pre_vld_rdd.map(lambda e: profile_obj.sudo(e, dict_bowtie_chromo_strand))\
                       .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)\
 					  .persist()###test###
 					  
