@@ -213,7 +213,7 @@ if __name__ == '__main__' :
     pre_vld_rdd = pre_fold_rdd.filter(mirdup_obj.run_miRdup).persist()
     
     newdata_f = pre_vld_rdd.collect()###test###
-    print("NB newdata_f: ", len(newdata))###test###
+    print("NB newdata_f: ", len(newdata_f))###test###
 
     #pre_vld_rdd2 = pre_fold_rdd.map(mirdup_obj.run_miRdup)###test###
     #newdata = pre_vld_rdd2.collect()###test###
