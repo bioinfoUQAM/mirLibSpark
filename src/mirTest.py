@@ -69,8 +69,8 @@ if __name__ == '__main__' :
   # miRdup parameter
   mirdup_tmp_file = rep_tmp + 'sequencesToValidate_bymirdup.txt'
   mirdup_model = project_path + '/lib/miRdup_1.4/model/' + paramDict['mirdup_model']
-  # miRanda parameter
   mirdup_jar = project_path + '/lib/miRdup_1.4/miRdup.jar'
+  # miRanda parameter
   Max_Score_cutoff = float(paramDict['Max_Score_cutoff'])
   query_motif_match_cutoff = float(paramDict['query_motif_match_cutoff'])
   gene_motif_match_cutoff = float(paramDict['gene_motif_match_cutoff'])
@@ -89,11 +89,16 @@ if __name__ == '__main__' :
   sc.addPyFile('../src/mirLibRules.py')
   sc.addFile('../src/eval_mircheck.pl')
   sc.addFile('../lib/miRcheck.pm')
-  sc.addFile('../lib/miRdup_1.4/miRdup.jar')
-  sc.addFile('../lib/miRdup_1.4/lib/weka.jar')
-  sc.addFile('../lib/miRdup_1.4/model/Viridiplantae.model')  
-  sc.addFile('../lib/TAIR10_cdna_20101214_updated_1cdna.fasta')
-  sc.addFile('../lib/miranda')
+  #sc.addFile('../lib/miRdup_1.4/miRdup.jar')
+  #sc.addFile('../lib/miRdup_1.4/lib/weka.jar')
+  #sc.addFile('../lib/miRdup_1.4/model/Viridiplantae.model')
+  sc.addFile(mirdup_jar)
+  sc.addFile(project_path  + '/lib/miRdup_1.4/lib/weka.jar')
+  sc.addFile(mirdup_model)  
+  sc.addFile(target_file)  
+  #sc.addFile('../lib/TAIR10_cdna_20101214_updated_1cdna.fasta')
+  #sc.addFile('../lib/miranda')
+  sc.addFile(miranda_exe)
   sc.addFile('../lib/bowtie_index/' + b_index + '.1.ebwt')
   sc.addFile('../lib/bowtie_index/' + b_index + '.2.ebwt')
   sc.addFile('../lib/bowtie_index/' + b_index + '.3.ebwt')
