@@ -69,6 +69,7 @@ if __name__ == '__main__' :
   # miRdup parameter
   mirdup_tmp_file = rep_tmp + 'sequencesToValidate_bymirdup.txt'
   mirdup_model = project_path + '/lib/miRdup_1.4/model/' + paramDict['mirdup_model']
+  mirdup_jar = project_path + '/lib/miRdup_1.4/miRdup.jar'
   # miRanda parameter
   Max_Score_cutoff = float(paramDict['Max_Score_cutoff'])
   query_motif_match_cutoff = float(paramDict['query_motif_match_cutoff'])
@@ -76,6 +77,7 @@ if __name__ == '__main__' :
   Max_Energy_cutoff = float(paramDict['Max_Energy_cutoff'])
   target_file = project_path + '/lib/' + paramDict['target_file']
   miranda_tmp_file = rep_tmp + 'tmp_mirna_seq.txt'
+  miranda_exe = project_path + '/lib/miranda'
   
   reps = [rep_output, rep_tmp, rep_msub_jobsOut]
   ut.makedirs_reps (reps)
@@ -111,8 +113,8 @@ if __name__ == '__main__' :
   rnafold_obj = mru.prog_RNAfold()
   mircheck_obj = mru.prog_mirCheck(mcheck_param)
   profile_obj = mru.prog_dominant_profile()
-  mirdup_obj = mru.prog_miRdup (mirdup_tmp_file, mirdup_model)
-  miranda_obj = mru.prog_miRanda(Max_Score_cutoff, query_motif_match_cutoff, gene_motif_match_cutoff, Max_Energy_cutoff, target_file, miranda_tmp_file)
+  mirdup_obj = mru.prog_miRdup (mirdup_tmp_file, mirdup_model, mirdup_jar)
+  miranda_obj = mru.prog_miRanda(Max_Score_cutoff, query_motif_match_cutoff, gene_motif_match_cutoff, Max_Energy_cutoff, target_file, miranda_tmp_file, miranda_exe)
 
   # Fetch library files in mypath
   infiles = [f for f in listdir(mypath) if os.path.isfile(os.path.join(mypath, f))]
