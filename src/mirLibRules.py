@@ -390,6 +390,7 @@ class prog_miRanda ():
       print >> fh_tmp, '>x\n' + e[0]
     FNULL = open(os.devnull, 'w')
     #cmd = ['miranda', self.tmp_file, self.target_file]
+    #cmd = ['/home/cjwu/gitproject/mirLibHadoop/lib/miranda', self.tmp_file, self.target_file]
     cmd = [self.miranda_exe, self.tmp_file, self.target_file]
     sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
     mirandaout = sproc.communicate()[0].split('\n')
@@ -447,6 +448,8 @@ class prog_miRdup ():
       print >> fh_tmp, 'seqx\t' + e[0] + '\t' + e[1][4][0] # + e[1][4][2] #folding, but miRdup has a bug, can not pass this result
     
     FNULL = open(os.devnull, 'w')
+    
+    #cmd = ['java', '-jar', '/home/cjwu/gitproject/mirLibHadoop/lib/miRdup_1.4/miRdup.jar', '-v', self.tmp_file, '-c', self.model, '-r', '/software6/bioinfo/apps/mugqic_space/software/ViennaRNA/ViennaRNA-2.1.8/bin/']
     cmd = ['java', '-jar', self.mirdup_jar, '-v', self.tmp_file, '-c', self.model, '-r', '/software6/bioinfo/apps/mugqic_space/software/ViennaRNA/ViennaRNA-2.1.8/bin/']
     #cmd = ['java', '-jar', 'miRdup.jar', '-v', self.tmp_file, '-c', self.model, '-r', '/usr/local/bin/']
     sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
@@ -487,3 +490,5 @@ if __name__ == '__main__' :
 '''
 http://stackoverflow.com/questions/30010939/python-subprocess-popen-error-no-such-file-or-directory
 '''
+
+

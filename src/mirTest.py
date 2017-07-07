@@ -89,11 +89,19 @@ if __name__ == '__main__' :
   sc.addPyFile('../src/mirLibRules.py')
   sc.addFile('../src/eval_mircheck.pl')
   sc.addFile('../lib/miRcheck.pm')
+
   sc.addFile('../lib/miRdup_1.4/miRdup.jar')
   sc.addFile('../lib/miRdup_1.4/lib/weka.jar')
-  sc.addFile('../lib/miRdup_1.4/model/Viridiplantae.model')  
-  sc.addFile('../lib/TAIR10_cdna_20101214_updated_1cdna.fasta')
+  sc.addFile('../lib/miRdup_1.4/model/' + paramDict['mirdup_model'])
+  #sc.addFile(mirdup_jar)
+  #sc.addFile(project_path  + '/lib/miRdup_1.4/lib/weka.jar')
+  #sc.addFile(mirdup_model)
+
+  sc.addFile('../lib/' + paramDict['target_file'])
   sc.addFile('../lib/miranda')
+  #sc.addFile(miranda_exe)
+  #sc.addFile(target_file)
+
   sc.addFile('../lib/bowtie_index/' + b_index + '.1.ebwt')
   sc.addFile('../lib/bowtie_index/' + b_index + '.2.ebwt')
   sc.addFile('../lib/bowtie_index/' + b_index + '.3.ebwt')
@@ -197,11 +205,12 @@ if __name__ == '__main__' :
     #'''
     ###################################################   
     # Validating pre-mirna with mircheck
-    #pre_vld_rdd = pre_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 4))\
-     #                         .filter(lambda e: any(e[1][4]))
-
+    pre_vld_rdd = pre_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 4))\
+                              .filter(lambda e: any(e[1][4])).persist()
+    newdata0 = pre_vld_rdd.collect()
+    print('NB newdata0', len(newdata0))
     # Validating pre-mirna with miRdup
-    pre_vld_rdd = pre_fold_rdd.filter(mirdup_obj.run_miRdup)
+    #pre_vld_rdd = pre_fold_rdd.filter(mirdup_obj.run_miRdup)
     
 
     pre_vld_rdd2 = pre_fold_rdd.map(mirdup_obj.run_miRdup)###test###
@@ -243,3 +252,5 @@ if __name__ == '__main__' :
   outTime = rep_output + appId + '_time.txt'
   ut.writeTimeLibToFile (timeDict, outTime, appId, paramDict)
   #'''
+
+
