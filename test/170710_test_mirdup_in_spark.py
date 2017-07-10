@@ -39,12 +39,14 @@ def test_mirdup ():
     cloudera [~/workspace/miRNA_predictor/src]
     $ spark-submit 170710_test_mirdup_in_spark.py 2>/dev/null
     '''
-    infile = 'file:///home/cloudera/workspace/mirLibHadoop/test/julie_sequencesToValidate_2T2F.txt'
+    infile = 'file:///home/cloudera/workspace/mirLibHadoop/test/julie_sequencesToValidate_7_mimic_ath_3.txt'
     sc = SparkContext("local", "App Name")
     rdd1 = sc.textFile(infile)
     #rdd2 = rdd1.map(mirdup_rule)
     rdd2 = rdd1.filter(mirdup_rule)
-    print(rdd2.collect())
+    print(len(rdd2.collect()))
     print('test_mirdup () ends')
- 
-test_mirdup ()
+    sc.stop()
+
+for i in range(30): 
+    test_mirdup ()
