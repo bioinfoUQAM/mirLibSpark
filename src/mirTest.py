@@ -67,7 +67,7 @@ if __name__ == '__main__' :
   # mircheck parameter
   mcheck_param = paramDict['mcheck_param']          #'def'    # def : default parameters / mey : meyers parameters
   # miRdup parameter
-  mirdup_tmp_file = rep_tmp + 'sequencesToValidate_bymirdup.txt'
+  ####mirdup_tmp_file = rep_tmp + 'sequencesToValidate_bymirdup.txt'
   mirdup_model = project_path + '/lib/miRdup_1.4/model/' + paramDict['mirdup_model']
   mirdup_jar = project_path + '/lib/miRdup_1.4/miRdup.jar'
   # miRanda parameter
@@ -76,7 +76,7 @@ if __name__ == '__main__' :
   gene_motif_match_cutoff = float(paramDict['gene_motif_match_cutoff'])
   Max_Energy_cutoff = float(paramDict['Max_Energy_cutoff'])
   target_file = project_path + '/lib/' + paramDict['target_file']
-  miranda_tmp_file = rep_tmp + 'tmp_mirna_seq.txt'
+  ####miranda_tmp_file = rep_tmp + 'tmp_mirna_seq.txt'
   miranda_exe = project_path + '/lib/miranda'
   #make required folders if not exist
   reps = [rep_output, rep_tmp, rep_msub_jobsOut]
@@ -102,12 +102,12 @@ if __name__ == '__main__' :
   #sc.addFile(target_file)
   #sc.addFile(miranda_exe)
 
-  sc.addFile('../lib/bowtie_index/' + b_index + '.1.ebwt')
-  sc.addFile('../lib/bowtie_index/' + b_index + '.2.ebwt')
-  sc.addFile('../lib/bowtie_index/' + b_index + '.3.ebwt')
-  sc.addFile('../lib/bowtie_index/' + b_index + '.4.ebwt')
-  sc.addFile('../lib/bowtie_index/' + b_index + '.rev.1.ebwt')
-  sc.addFile('../lib/bowtie_index/' + b_index + '.rev.2.ebwt')
+  # sc.addFile('../lib/bowtie_index/' + b_index + '.1.ebwt')
+  # sc.addFile('../lib/bowtie_index/' + b_index + '.2.ebwt')
+  # sc.addFile('../lib/bowtie_index/' + b_index + '.3.ebwt')
+  # sc.addFile('../lib/bowtie_index/' + b_index + '.4.ebwt')
+  # sc.addFile('../lib/bowtie_index/' + b_index + '.rev.1.ebwt')
+  # sc.addFile('../lib/bowtie_index/' + b_index + '.rev.2.ebwt')
 
   # Spark application ID
   appId = str(sc.applicationId)
@@ -121,8 +121,8 @@ if __name__ == '__main__' :
   rnafold_obj = mru.prog_RNAfold()
   mircheck_obj = mru.prog_mirCheck(mcheck_param)
   profile_obj = mru.prog_dominant_profile()
-  mirdup_obj = mru.prog_miRdup (mirdup_tmp_file, mirdup_model, mirdup_jar)
-  miranda_obj = mru.prog_miRanda(Max_Score_cutoff, query_motif_match_cutoff, gene_motif_match_cutoff, Max_Energy_cutoff, target_file, miranda_tmp_file, miranda_exe)
+  mirdup_obj = mru.prog_miRdup (rep_tmp, mirdup_model, mirdup_jar)
+  miranda_obj = mru.prog_miRanda(Max_Score_cutoff, query_motif_match_cutoff, gene_motif_match_cutoff, Max_Energy_cutoff, target_file, rep_tmp, miranda_exe)
 
   # Fetch library files in mypath
   infiles = [f for f in listdir(mypath) if os.path.isfile(os.path.join(mypath, f))]

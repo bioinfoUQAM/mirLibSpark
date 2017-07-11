@@ -362,7 +362,7 @@ class prog_dominant_profile :
     return elem
 
 class prog_miRanda ():
-  def __init__ (self, Max_Score_cutoff, lower_motif_match_cutoff, upper_motif_match_cutoff, Max_Energy_cutoff, target_file, tmp_file, miranda_exe):
+  def __init__ (self, Max_Score_cutoff, lower_motif_match_cutoff, upper_motif_match_cutoff, Max_Energy_cutoff, target_file, rep_tmp, miranda_exe):
     self.env = os.environ
     self.dict_seq_target = {}###########
 
@@ -373,7 +373,8 @@ class prog_miRanda ():
     self.Max_Energy_cutoff = Max_Energy_cutoff
 
     self.target_file = target_file
-    self.tmp_file = tmp_file
+    self.rep_tmp = rep_tmp
+    self.__m = 0
     self.miranda_exe = miranda_exe
 
   
@@ -385,13 +386,14 @@ class prog_miRanda ():
     if e[0] in self.dict_seq_target.keys():
       e[1].append(self.dict_seq_target[e[0]])
       return e
-
-    with open (self.tmp_file, 'w') as fh_tmp:
+    self.__m += 1
+    tmp_file = self.rep_tmp + str(self.__m) + 'tmp_mirna_seq.txt' 
+    with open (tmp_file, 'w') as fh_tmp:
       print >> fh_tmp, '>x\n' + e[0]
     FNULL = open(os.devnull, 'w')
     #cmd = ['miranda', self.tmp_file, self.target_file]
     #cmd = ['/home/cjwu/gitproject/mirLibHadoop/lib/miranda', self.tmp_file, self.target_file]
-    cmd = [self.miranda_exe, self.tmp_file, self.target_file]
+    cmd = [self.miranda_exe, tmp_file, self.target_file]
     sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
     mirandaout = sproc.communicate()[0].split('\n')
     FNULL.close()
@@ -432,11 +434,12 @@ class prog_miRanda ():
   
 
 class prog_miRdup ():
-  def __init__ (self, tmp_file, model, mirdup_jar):
+  def __init__ (self, rep_tmp, model, mirdup_jar):
     self.env = os.environ
     
     #= variable ==
-    self.tmp_file = tmp_file
+    self.rep_tmp = rep_tmp
+    self.__n = 0
     self.model = model
     self.mirdup_jar = mirdup_jar
     
@@ -444,13 +447,15 @@ class prog_miRdup ():
     '''
     java -jar ../lib/miRdup_1.4/miRdup.jar -v ../lib/miRdup_1.4/testFiles/julie_sequencesToValidate2.txt -c ../lib/miRdup_1.4//model/Viridiplantae.model -r /usr/local/bin/
     '''
-    with open (self.tmp_file, 'w') as fh_tmp:
+    self.__n += 1 
+    tmp_file = self.rep_tmp + str(self.__n) + 'sequencesToValidate_bymirdup.txt'
+    with open (tmp_file, 'w') as fh_tmp:
       print >> fh_tmp, 'seqx\t' + e[0] + '\t' + e[1][4][0] # + e[1][4][2] #folding, but miRdup has a bug, can not pass this result
     
     FNULL = open(os.devnull, 'w')
     
     #cmd = ['java', '-jar', '/home/cjwu/gitproject/mirLibHadoop/lib/miRdup_1.4/miRdup.jar', '-v', self.tmp_file, '-c', self.model, '-r', '/software6/bioinfo/apps/mugqic_space/software/ViennaRNA/ViennaRNA-2.1.8/bin/']
-    cmd = ['java', '-jar', self.mirdup_jar, '-v', self.tmp_file, '-c', self.model, '-r', '/software6/bioinfo/apps/mugqic_space/software/ViennaRNA/ViennaRNA-2.1.8/bin/']
+    cmd = ['java', '-jar', self.mirdup_jar, '-v', tmp_file, '-c', self.model, '-r', '/software6/bioinfo/apps/mugqic_space/software/ViennaRNA/ViennaRNA-2.1.8/bin/']
     #cmd = ['java', '-jar', 'miRdup.jar', '-v', self.tmp_file, '-c', self.model, '-r', '/usr/local/bin/']
     sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
     mirdupout = sproc.communicate()[0].split('\n')
