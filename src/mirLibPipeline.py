@@ -64,14 +64,14 @@ if __name__ == '__main__' :
   # mircheck parameter
   mcheck_param = paramDict['mcheck_param']          #'def'    # def : default parameters / mey : meyers parameters
   # miRdup parameter
-  mirdup_tmp_file = rep_tmp + 'sequencesToValidate_bymirdup.txt'
+  ####mirdup_tmp_file = rep_tmp + 'sequencesToValidate_bymirdup.txt'
   # miRanda parameter
   Max_Score_cutoff = float(paramDict['Max_Score_cutoff'])
   query_motif_match_cutoff = float(paramDict['query_motif_match_cutoff'])
   gene_motif_match_cutoff = float(paramDict['gene_motif_match_cutoff'])
   Max_Energy_cutoff = float(paramDict['Max_Energy_cutoff'])
   target_file = paramDict['target_file']
-  miranda_tmp_file = rep_tmp + 'tmp_mirna_seq.txt'
+  ####miranda_tmp_file = rep_tmp + 'tmp_mirna_seq.txt'
 
   # Spark context
   sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, execNb, execCores)
@@ -89,8 +89,8 @@ if __name__ == '__main__' :
   rnafold_obj = mru.prog_RNAfold()
   mircheck_obj = mru.prog_mirCheck(mcheck_param)
   profile_obj = mru.prog_dominant_profile()
-  miranda_obj = mru.prog_miRanda(Max_Score_cutoff, query_motif_match_cutoff, gene_motif_match_cutoff, Max_Energy_cutoff, target_file, miranda_tmp_file)
-  mirdup_obj = mru.prog_miRdup (mirdup_tmp_file)
+  miranda_obj = mru.prog_miRanda(Max_Score_cutoff, query_motif_match_cutoff, gene_motif_match_cutoff, Max_Energy_cutoff, target_file, rep_tmp)
+  mirdup_obj = mru.prog_miRdup (rep_tmp)
 
   # Fetch library files in mypath
   infiles = [f for f in listdir(mypath) if os.path.isfile(os.path.join(mypath, f))]
@@ -167,7 +167,8 @@ if __name__ == '__main__' :
     premir_rdd = one_loop_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3))
 
     # pre-miRNA folding
-    pre_fold_rdd = premir_rdd.map(lambda e: rnafold_obj.RNAfold_map_rule(e, 4))
+    pre_fold_rdd = premir_rdd.map(lambda e: rnafold_obj.RNAfold_map_rule(e, 4))#.persist()
+    #print(pre_fold_rdd.collect())
     
     ###################################################   
     # Validating pre-mirna with mircheck
@@ -193,7 +194,7 @@ if __name__ == '__main__' :
 
     #'''
     results = miranda_rdd.collect()
-    #print(results)
+    print('NB ressults: ', len(results))
     #
     endLib = time.time()
     print ("  End of the processing     ", end="\n")
