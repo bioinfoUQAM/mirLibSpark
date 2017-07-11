@@ -176,8 +176,8 @@ if __name__ == '__main__' :
                            .persist()
     
     # Filtering miRNA low frequency
-    mr_low_rdd = bowFrq_rdd.filter(lambda e: e[1][0] > limit_mrna_freq)
-    
+    mr_low_rdd = bowFrq_rdd.filter(lambda e: e[1][0] > limit_mrna_freq).persist()####
+    print('NB mr_low_rdd: ', len(mr_low_rdd.collect()))#### 444444444444444444
     # Filtering high nbLocations and zero location
     nbLoc_rdd = mr_low_rdd.filter(lambda e: e[1][1] > 0 and e[1][1] < limit_nbLoc)
      
@@ -185,12 +185,13 @@ if __name__ == '__main__' :
     primir_rdd = nbLoc_rdd.flatMap(prec_obj.extract_prim_rule)
 
     # pri-miRNA folding
-    pri_fold_rdd = primir_rdd.map(lambda e: rnafold_obj.RNAfold_map_rule(e, 3))
+    pri_fold_rdd = primir_rdd.map(lambda e: rnafold_obj.RNAfold_map_rule(e, 3)).persist()####
+    print('NB pri_fold_rdd: ', len(pri_fold_rdd.collect()))#### 10 10 10 10 10 
     
     # Validating pri-mirna with mircheck
     pri_vld_rdd = pri_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 3))\
-                              .filter(lambda e: any(e[1][3]))
-    
+                              .filter(lambda e: any(e[1][3])).persist()####
+    print('NB pri_vld_rdd: ', len(pri_vld_rdd.collect()))#### 00000000000000
     # Filtering structure with branched loop
     one_loop_rdd = pri_vld_rdd.filter(lambda e: ut.containsOnlyOneLoop(e[1][3][2][int(e[1][3][4]) : int(e[1][3][5])+1]))
     
@@ -199,27 +200,25 @@ if __name__ == '__main__' :
     
     # pre-miRNA folding
     pre_fold_rdd = premir_rdd.map(lambda e: rnafold_obj.RNAfold_map_rule(e, 4))\
-					  .persist()###test###
-    #miRNA_rdd = pre_fold_rdd
+					  .persist()####
+    print('NB pre_fold_rdd: ', len(pre_fold_rdd.collect()))####
 
-    #'''
+
     ###################################################   
     # Validating pre-mirna with mircheck
     #pre_vld_rdd = pre_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 4))\
-     #                         .filter(lambda e: any(e[1][4])).persist()
-    #newdata0 = pre_vld_rdd.collect()
-    #print('NB newdata0', len(newdata0))
+     #                         .filter(lambda e: any(e[1][4]))####.persist()
+
     # Validating pre-mirna with miRdup
     pre_vld_rdd = pre_fold_rdd.filter(mirdup_obj.run_miRdup).persist()
     
-    newdata_f = pre_vld_rdd.collect()###test###
-    print("NB newdata_f: ", len(newdata_f))###test###
+    print('pre_vld_rdd: ', len(pre_vld_rdd.collect()))###test###
 
     #pre_vld_rdd2 = pre_fold_rdd.map(mirdup_obj.run_miRdup)###test###
     #newdata = pre_vld_rdd2.collect()###test###
     #print("NB newdata: "+ str(len(newdata)))###test###
     ###################################################
-    #'''
+
     # you can use chromo_strand as key to search bowtie blocs in the following dict
     dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(bowFrq_rdd.collect())
     

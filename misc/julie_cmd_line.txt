@@ -33,6 +33,9 @@ spark-submit mirLibPipeline.py ../paramfile_julie.txt /home/cloudera/workspace/m
 spark-submit mirLibPipeline.py ../paramfile_julie.txt /home/cloudera/workspace/libraries/srna2/ ../data/ 2>/dev/null
 
 
+spark-submit mirTest.py ../paramfile_julie.txt ../input/ ../data/ 2>/dev/null
+
+
 ##=========================================================================================================
 Amine misc
 ##=========================================================================================================
