@@ -147,8 +147,8 @@ if __name__ == '__main__' :
     
     # Convert the text file to RDD object
     #distFile = sc.textFile(hdfsFile)
-    #distFile = sc.textFile("file:///" + inKvfile)
-    distFile = sc.textFile(inKvfile)
+    distFile = sc.textFile("file:///" + inKvfile)
+    #distFile = sc.textFile(inKvfile)
     input_rdd = distFile.map(lambda line: mru.rearrange_rule(line, my_sep)) # (seq, freq)
     # Filtering sRNA low frequency
     sr_low_rdd = input_rdd.filter(lambda e: int(e[1]) > limit_srna_freq)
