@@ -187,6 +187,7 @@ if __name__ == '__main__' :
     # pri-miRNA folding
     pri_fold_rdd = primir_rdd.map(lambda e: rnafold_obj.RNAfold_map_rule(e, 3)).persist()####
     print('NB pri_fold_rdd: ', len(pri_fold_rdd.collect()))#### 10 10 10 10 10 
+    ####print(pri_fold_rdd.collect())
     
     # Validating pri-mirna with mircheck
     pri_vld_rdd = pri_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 3))\
