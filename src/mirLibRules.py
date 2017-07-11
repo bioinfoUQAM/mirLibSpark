@@ -442,7 +442,7 @@ class prog_miRdup ():
     '''
     self.__n += 1 
     ####tmp_file = self.rep_tmp + str(self.__n) + 'sequencesToValidate_bymirdup.txt'
-	tmp_file = self.rep_tmp + e[0] + '_' + e[1][4][0] +'sequencesToValidate_bymirdup.txt'
+    tmp_file = self.rep_tmp + e[0] + '_' + e[1][4][0] +'sequencesToValidate_bymirdup.txt'
     with open (tmp_file, 'w') as fh_tmp:
       print >> fh_tmp, 'seqx\t' + e[0] + '\t' + e[1][4][0] # + e[1][4][2] #folding, but miRdup has a bug, can not pass this result
     
