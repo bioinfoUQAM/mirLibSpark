@@ -51,7 +51,8 @@ if __name__ == '__main__' :
   execNb = paramDict['sc_execnb']                   #4
   execCores = paramDict['sc_execcores']             #2
   # genome
-  genome_path = '/scratch/hvg-164-aa/mirlibhadoop/ATH/Genome/'           
+  ####genome_path = '/scratch/hvg-164-aa/mirlibhadoop/ATH/Genome/' 
+  genome_path = paramDict['genome_path']  
   # cutoffs
   limit_srna_freq = int(paramDict['limit_s_freq'])  #10       # exclude sRNA freq < limit_srna_freq
   limit_mrna_freq = int(paramDict['limit_m_freq'])  #200      # exclude miRNA freq < limit_mrna_freq
@@ -67,7 +68,7 @@ if __name__ == '__main__' :
   # mircheck parameter
   mcheck_param = paramDict['mcheck_param']          #'def'    # def : default parameters / mey : meyers parameters
   # miRdup parameter
-  ####mirdup_tmp_file = rep_tmp + 'sequencesToValidate_bymirdup.txt'
+  path_RNAfold = ut.find_RNAfold_path ()
   mirdup_model = project_path + '/lib/miRdup_1.4/model/' + paramDict['mirdup_model']
   mirdup_jar = project_path + '/lib/miRdup_1.4/miRdup.jar'
   # miRanda parameter
@@ -76,7 +77,6 @@ if __name__ == '__main__' :
   gene_motif_match_cutoff = float(paramDict['gene_motif_match_cutoff'])
   Max_Energy_cutoff = float(paramDict['Max_Energy_cutoff'])
   target_file = project_path + '/lib/' + paramDict['target_file']
-  ####miranda_tmp_file = rep_tmp + 'tmp_mirna_seq.txt'
   miranda_exe = project_path + '/lib/miranda'
   #make required folders if not exist
   reps = [rep_output, rep_tmp, rep_msub_jobsOut]
@@ -115,13 +115,13 @@ if __name__ == '__main__' :
   # Objects for rule functions
   dmask_obj = mru.prog_dustmasker()
   dmask_cmd, dmask_env = dmask_obj.dmask_pipe_cmd()
-  bowtie_obj = mru.prog_bowtie(b_index_path )
+  bowtie_obj = mru.prog_bowtie(b_index_path)
   bowtie_cmd, bowtie_env = bowtie_obj.Bowtie_pipe_cmd()
   prec_obj = mru.extract_precurosrs(genome_path, pri_l_flank, pri_r_flank, pre_flank)
   rnafold_obj = mru.prog_RNAfold()
   mircheck_obj = mru.prog_mirCheck(mcheck_param)
   profile_obj = mru.prog_dominant_profile()
-  mirdup_obj = mru.prog_miRdup (rep_tmp, mirdup_model, mirdup_jar)
+  mirdup_obj = mru.prog_miRdup (rep_tmp, mirdup_model, mirdup_jar, path_RNAfold)
   miranda_obj = mru.prog_miRanda(Max_Score_cutoff, query_motif_match_cutoff, gene_motif_match_cutoff, Max_Energy_cutoff, target_file, rep_tmp, miranda_exe)
 
   # Fetch library files in mypath

@@ -8,11 +8,18 @@ version: 0.00.01
 
 import os
 import re
+import subprocess
 
 def makedirs_reps (reps):
   for rep in reps:
     if not os.path.exists(rep):
       os.makedirs(rep)
+
+def find_RNAfold_path ():
+  proc = subprocess.Popen(['which RNAfold'], stdout=subprocess.PIPE, shell=True)
+  (out, err) = proc.communicate()
+  path_RNAfold = out[:-8]
+  return path_RNAfold
 	  
 # Configure a spark context
 def pyspark_configuration(appMaster, appName, masterMemory, execMemory, execNb, execCores):

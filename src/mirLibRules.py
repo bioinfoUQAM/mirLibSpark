@@ -374,7 +374,6 @@ class prog_miRanda ():
 
     self.target_file = target_file
     self.rep_tmp = rep_tmp
-    self.__m = 0
     self.miranda_exe = miranda_exe
 
   
@@ -386,13 +385,10 @@ class prog_miRanda ():
     if e[0] in self.dict_seq_target.keys():
       e[1].append(self.dict_seq_target[e[0]])
       return e
-    self.__m += 1
-    tmp_file = self.rep_tmp + str(self.__m) + 'tmp_mirna_seq_forMiranda.txt' 
+    tmp_file = self.rep_tmp + e[0] + 'tmp_mirna_seq_forMiranda.txt' 
     with open (tmp_file, 'w') as fh_tmp:
       print >> fh_tmp, '>x\n' + e[0]
     FNULL = open(os.devnull, 'w')
-    #cmd = ['miranda', self.tmp_file, self.target_file]
-    #cmd = ['/home/cjwu/gitproject/mirLibHadoop/lib/miranda', self.tmp_file, self.target_file]
     cmd = [self.miranda_exe, tmp_file, self.target_file]
     sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
     mirandaout = sproc.communicate()[0].split('\n')
@@ -434,12 +430,11 @@ class prog_miRanda ():
   
 
 class prog_miRdup ():
-  def __init__ (self, rep_tmp, model, mirdup_jar):
+  def __init__ (self, rep_tmp, model, mirdup_jar, path_RNAfold):
     self.env = os.environ
     
     #= variable ==
     self.rep_tmp = rep_tmp
-    self.__n = 0
     self.model = model
     self.mirdup_jar = mirdup_jar
     
@@ -447,16 +442,14 @@ class prog_miRdup ():
     '''
     java -jar ../lib/miRdup_1.4/miRdup.jar -v ../lib/miRdup_1.4/testFiles/julie_sequencesToValidate2.txt -c ../lib/miRdup_1.4//model/Viridiplantae.model -r /usr/local/bin/
     '''
-    self.__n += 1 
-    tmp_file = self.rep_tmp + str(self.__n) + 'sequencesToValidate_bymirdup.txt'
+    tmp_file = self.rep_tmp + e[0] + '_' + e[1][4][0] + 'sequencesToValidate_bymirdup.txt'
     with open (tmp_file, 'w') as fh_tmp:
       print >> fh_tmp, 'seqx\t' + e[0] + '\t' + e[1][4][0] # + e[1][4][2] #folding, but miRdup has a bug, can not pass this result
     
     FNULL = open(os.devnull, 'w')
     
     #cmd = ['java', '-jar', '/home/cjwu/gitproject/mirLibHadoop/lib/miRdup_1.4/miRdup.jar', '-v', self.tmp_file, '-c', self.model, '-r', '/software6/bioinfo/apps/mugqic_space/software/ViennaRNA/ViennaRNA-2.1.8/bin/']
-    cmd = ['java', '-jar', self.mirdup_jar, '-v', tmp_file, '-c', self.model, '-r', '/software6/bioinfo/apps/mugqic_space/software/ViennaRNA/ViennaRNA-2.1.8/bin/']
-    #cmd = ['java', '-jar', 'miRdup.jar', '-v', self.tmp_file, '-c', self.model, '-r', '/usr/local/bin/']
+    cmd = ['java', '-jar', self.mirdup_jar, '-v', tmp_file, '-c', self.model, '-r', path_RNAfold]
     sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
     mirdupout = sproc.communicate()[0].split('\n')
     FNULL.close()
