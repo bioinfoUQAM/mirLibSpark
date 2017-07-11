@@ -190,8 +190,8 @@ def writeToFile (results, outfile):
       #fbstart = pre_miRNA_records[4]#
       #fbstop = pre_miRNA_records[5]#
       totalfrq = values[5]#
-      # miRanda = values[6]#
-      miRanda = "miranda"
+      miRanda = values[6]#
+      #miRanda = "miranda"
       
       #data = [miRNAseq, frq, strand, chromo, posgen, pre_miRNA_seq, struc, mirCheck, fbstart, fbstop, totalfrq, miRanda]
       data = [miRNAseq, frq, strand, chromo, posgen, pre_miRNA_seq, struc, totalfrq, miRanda]

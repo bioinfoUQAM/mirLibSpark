@@ -17,7 +17,7 @@
 use strict;
 use warnings;
 use lib '../lib/';
-use lib '/home/shared_dir/lib/';
+#use lib '/home/shared_dir/lib/';
 use miRcheck;
 
 my $usage = 'perl eval_mircheck.pl "((((((.((((((....).))))).)))))).........." 46 64 def\n';

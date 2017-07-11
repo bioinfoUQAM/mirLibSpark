@@ -34,6 +34,7 @@ spark-submit mirLibPipeline.py ../paramfile_julie.txt /home/cloudera/workspace/l
 
 
 spark-submit mirTest.py ../paramfile_julie.txt ../input/ ../data/ 2>/dev/null
+spark-submit mirTest.py ../paramfile_julie.txt /home/cloudera/workspace/miRNA_predictor/sudoData2/ ../data/ 2>/dev/null
 
 
 ##=========================================================================================================

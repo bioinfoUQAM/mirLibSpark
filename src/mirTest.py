@@ -236,15 +236,14 @@ if __name__ == '__main__' :
 
     results = miranda_rdd.collect()
     print("NB results: "+ str(len(results)))
-    print(results)
-    #
-    #'''
+    #print(results)
+
     endLib = time.time()
     print ("  End of the processing     ", end="\n")
     
-    # write results to a file
-    #outFile = rep_output + inBasename + '_miRNAprediction.txt'
-    #ut.writeToFile (results, outFile)
+    #= write results to a file
+    outFile = rep_output + inBasename + '_miRNAprediction.txt'
+    ut.writeToFile (results, outFile)
     
     timeDict[inBasename] = endLib - startLib
     
@@ -253,6 +252,3 @@ if __name__ == '__main__' :
   # print executions time  to a file
   outTime = rep_output + appId + '_time.txt'
   ut.writeTimeLibToFile (timeDict, outTime, appId, paramDict)
-  #'''
-
-
