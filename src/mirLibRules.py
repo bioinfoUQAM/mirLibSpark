@@ -387,7 +387,7 @@ class prog_miRanda ():
       e[1].append(self.dict_seq_target[e[0]])
       return e
     self.__m += 1
-    tmp_file = self.rep_tmp + str(self.__m) + 'tmp_mirna_seq.txt' 
+    tmp_file = self.rep_tmp + str(self.__m) + 'tmp_mirna_seq_forMiranda.txt' 
     with open (tmp_file, 'w') as fh_tmp:
       print >> fh_tmp, '>x\n' + e[0]
     FNULL = open(os.devnull, 'w')
