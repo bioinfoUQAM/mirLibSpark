@@ -434,14 +434,15 @@ class prog_miRdup ():
     
     #= variable ==
     self.rep_tmp = rep_tmp
-    self.__n = 0
+    ####self.__n = 0
 
   def run_miRdup (self, e):
     '''
     java -jar ../lib/miRdup_1.4/miRdup.jar -v ../lib/miRdup_1.4/testFiles/julie_sequencesToValidate2.txt -c ../lib/miRdup_1.4//model/Viridiplantae.model -r /usr/local/bin/
     '''
     self.__n += 1 
-    tmp_file = self.rep_tmp + str(self.__n) + 'sequencesToValidate_bymirdup.txt'
+    ####tmp_file = self.rep_tmp + str(self.__n) + 'sequencesToValidate_bymirdup.txt'
+	tmp_file = self.rep_tmp + e[0] + '_' + e[1][4][0] +'sequencesToValidate_bymirdup.txt'
     with open (tmp_file, 'w') as fh_tmp:
       print >> fh_tmp, 'seqx\t' + e[0] + '\t' + e[1][4][0] # + e[1][4][2] #folding, but miRdup has a bug, can not pass this result
     
