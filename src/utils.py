@@ -231,3 +231,8 @@ def writeTimeLibToFile (timeDict, outfile, appId, paramDict):
       print >> fh_out, "# " + key + ": " + paramDict[key]
   
   fh_out.close()
+
+def deleteDir(rep):
+  import shutil
+  shutil.rmtree(rep) 
+
