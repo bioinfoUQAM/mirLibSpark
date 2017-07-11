@@ -314,7 +314,6 @@ class prog_dominant_profile :
         if (x < posgen < y) :
           # sRNAprofile.append(elem)
           totalfrq += frq
-          #break #in case rare case, is there?
     return totalfrq
 
   def profile_range (self, elem):
@@ -364,7 +363,7 @@ class prog_dominant_profile :
 class prog_miRanda ():
   def __init__ (self, Max_Score_cutoff, lower_motif_match_cutoff, upper_motif_match_cutoff, Max_Energy_cutoff, target_file, rep_tmp):
     self.env = os.environ
-    self.dict_seq_target = {}###########
+    self.dict_seq_target = {}
 
     #== variables ==
     self.Max_Score_cutoff = Max_Score_cutoff
@@ -375,7 +374,6 @@ class prog_miRanda ():
     self.target_file = target_file
     self.rep_tmp = rep_tmp
     self.__m = 0
-    ####miranda_tmp_file = rep_tmp + 'tmp_mirna_seq.txt'
   
   def dostuff (self, e):
     '''
@@ -425,7 +423,7 @@ class prog_miRanda ():
     #= target_results == [[target1], [target2], ...]
     #= [['AT1G51370.2', '306.00', '-36.41', '153.00', '-20.70', '1', '23', '1118', ' 20 698', '84.21%', '89.47%']]
     #= [gene, total_score, total_energy, max_score, max_energy, strand, len_miRNA, len_gene, postions, lower_motif_match, upper_motif_match]
-    self.dict_seq_target[e[0]] = target_results ###############
+    self.dict_seq_target[e[0]] = target_results 
     e[1].append(target_results)
     return e
   
@@ -437,7 +435,6 @@ class prog_miRdup ():
     #= variable ==
     self.rep_tmp = rep_tmp
     self.__n = 0
-    #mirdup_tmp_file = rep_tmp + 'sequencesToValidate_bymirdup.txt'
 
   def run_miRdup (self, e):
     '''
