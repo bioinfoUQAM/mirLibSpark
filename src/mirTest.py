@@ -33,7 +33,7 @@ if __name__ == '__main__' :
     sys.exit()
 
   paramfile = sys.argv[1]
-  mypath = sys.argv[2]
+  rep_input = sys.argv[2]
   rep_output = sys.argv[3]
   
   paramDict = ut.readParam (paramfile)
@@ -41,7 +41,7 @@ if __name__ == '__main__' :
   # Parameters and cutoffs
   #project_name = paramDict['project_name']
   #project_path = ut.get_project_path(project_name)
-  project_path = paramDict['project_path']
+  project_path = paramDict['project_path'][:-1]
   rep_msub_jobsOut = project_path + '/workdir/jobsOut'
   my_sep = paramDict['my_sep']                      # Separator
   rep_tmp = project_path + '/tmp/'                   # tmp file folder
@@ -126,8 +126,8 @@ if __name__ == '__main__' :
   mirdup_obj = mru.prog_miRdup (rep_tmp, mirdup_model, mirdup_jar, path_RNAfold)
   miranda_obj = mru.prog_miRanda(Max_Score_cutoff, query_motif_match_cutoff, gene_motif_match_cutoff, Max_Energy_cutoff, target_file, rep_tmp, miranda_exe)
 
-  # Fetch library files in mypath
-  infiles = [f for f in listdir(mypath) if os.path.isfile(os.path.join(mypath, f))]
+  # Fetch library files in rep_input
+  infiles = [f for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
   
   # Time processing of libraries
   timeDict = {}
@@ -135,7 +135,7 @@ if __name__ == '__main__' :
   for infile in infiles :
     print ("--Processing of the library: ", infile)
     
-    infile = mypath+infile
+    infile = rep_input+infile
     inBasename = os.path.splitext(os.path.basename(infile))[0]
     inKvfile = rep_tmp + inBasename + '.kv.txt'
     # hdfsFile = inBasename + '.hkv.txt'
