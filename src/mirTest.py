@@ -28,13 +28,11 @@ import mirLibRules as mru
 
 if __name__ == '__main__' :
 
-  if not len(sys.argv) == 4:
-    sys.stderr.write('Three arguments required\nUsage: spark-submit mirLibPipeline.py <path to paramfile> <path to the input directory> <path to the output directory>2>/dev/null\n')
+  if not len(sys.argv) == 2:
+    sys.stderr.write('Three arguments required\nUsage: spark-submit mirLibPipeline.py <path to paramfile> 2>/dev/null\n')
     sys.exit()
 
   paramfile = sys.argv[1]
-  rep_input = sys.argv[2]
-  rep_output = sys.argv[3]
   
   paramDict = ut.readParam (paramfile)
 
@@ -42,6 +40,8 @@ if __name__ == '__main__' :
   #project_name = paramDict['project_name']
   #project_path = ut.get_project_path(project_name)
   project_path = paramDict['project_path'][:-1]
+  rep_input = paramDict['input_path']
+  rep_output = paramDict['output_path']
   rep_msub_jobsOut = project_path + '/workdir/jobsOut'
   my_sep = paramDict['my_sep']                      # Separator
   rep_tmp = project_path + '/tmp/'                   # tmp file folder
