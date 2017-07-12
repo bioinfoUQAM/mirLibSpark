@@ -61,8 +61,7 @@ if __name__ == '__main__' :
   limit_len = int(paramDict['limit_len'])           #18       # exclude RNA length < limit_len
   limit_nbLoc = int(paramDict['limit_nbLoc'])       #3        # exculde nbLoc mapped with bowtie  > limit_nbLoc
   # bowtie
-  b_index = paramDict['b_index']
-  b_index_path = project_path + '/lib/bowtie_index/' + b_index
+  b_index_path = paramDict['b_index_path']
   # pri-mirna
   pri_l_flank = int(paramDict['pri_l_flank'])       #120
   pri_r_flank = int(paramDict['pri_r_flank'])       #60
@@ -103,13 +102,6 @@ if __name__ == '__main__' :
   sc.addFile(project_path + '/lib/miranda')
   #sc.addFile(target_file)
   #sc.addFile(miranda_exe)
-
-  # sc.addFile(project_path + '/lib/bowtie_index/' + b_index + '.1.ebwt')
-  # sc.addFile(project_path + '/lib/bowtie_index/' + b_index + '.2.ebwt')
-  # sc.addFile(project_path + '/lib/bowtie_index/' + b_index + '.3.ebwt')
-  # sc.addFile(project_path + '/lib/bowtie_index/' + b_index + '.4.ebwt')
-  # sc.addFile(project_path + '/lib/bowtie_index/' + b_index + '.rev.1.ebwt')
-  # sc.addFile(project_path + '/lib/bowtie_index/' + b_index + '.rev.2.ebwt')
 
   # Spark application ID
   appId = str(sc.applicationId)
