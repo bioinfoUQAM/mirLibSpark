@@ -39,8 +39,9 @@ if __name__ == '__main__' :
   paramDict = ut.readParam (paramfile)
 
   # Parameters and cutoffs
-  project_name = paramDict['project_name']
-  project_path = ut.get_project_path(project_name)
+  #project_name = paramDict['project_name']
+  #project_path = ut.get_project_path(project_name)
+  project_path = paramDict['project_path']
   rep_msub_jobsOut = project_path + '/workdir/jobsOut'
   my_sep = paramDict['my_sep']                      # Separator
   rep_tmp = project_path + '/tmp/'                   # tmp file folder
