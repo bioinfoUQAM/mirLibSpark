@@ -39,7 +39,8 @@ if __name__ == '__main__' :
   paramDict = ut.readParam (paramfile)
 
   # Parameters and cutoffs
-  project_path = paramDict['project_path']
+  project_name = paramDict['project_name']
+  project_path = ut.get_project_path(project_name)
   rep_msub_jobsOut = project_path + '/workdir/jobsOut'
   my_sep = paramDict['my_sep']                      # Separator
   rep_tmp = project_path + '/tmp/'                   # tmp file folder
@@ -85,29 +86,29 @@ if __name__ == '__main__' :
   # Spark context
   sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, execNb, execCores)
   #
-  sc.addPyFile('../src/utils.py')
-  sc.addPyFile('../src/mirLibRules.py')
-  sc.addFile('../src/eval_mircheck.pl')
-  sc.addFile('../lib/miRcheck.pm')
+  sc.addPyFile(project_path + '/src/utils.py')
+  sc.addPyFile(project_path + '/src/mirLibRules.py')
+  sc.addFile(project_path + '/src/eval_mircheck.pl')
+  sc.addFile(project_path + '/lib/miRcheck.pm')
 
-  sc.addFile('../lib/miRdup_1.4/miRdup.jar')
-  sc.addFile('../lib/miRdup_1.4/lib/weka.jar')
-  sc.addFile('../lib/miRdup_1.4/model/' + paramDict['mirdup_model'])
+  sc.addFile(project_path + '/lib/miRdup_1.4/miRdup.jar')
+  sc.addFile(project_path + '/lib/miRdup_1.4/lib/weka.jar')
+  sc.addFile(project_path + '/lib/miRdup_1.4/model/' + paramDict['mirdup_model'])
   #sc.addFile(mirdup_jar)
   #sc.addFile(project_path  + '/lib/miRdup_1.4/lib/weka.jar')
   #sc.addFile(mirdup_model)
 
-  sc.addFile('../lib/' + paramDict['target_file'])
-  sc.addFile('../lib/miranda')
+  sc.addFile(project_path + '/lib/' + paramDict['target_file'])
+  sc.addFile(project_path + '/lib/miranda')
   #sc.addFile(target_file)
   #sc.addFile(miranda_exe)
 
-  # sc.addFile('../lib/bowtie_index/' + b_index + '.1.ebwt')
-  # sc.addFile('../lib/bowtie_index/' + b_index + '.2.ebwt')
-  # sc.addFile('../lib/bowtie_index/' + b_index + '.3.ebwt')
-  # sc.addFile('../lib/bowtie_index/' + b_index + '.4.ebwt')
-  # sc.addFile('../lib/bowtie_index/' + b_index + '.rev.1.ebwt')
-  # sc.addFile('../lib/bowtie_index/' + b_index + '.rev.2.ebwt')
+  # sc.addFile(project_path + '/lib/bowtie_index/' + b_index + '.1.ebwt')
+  # sc.addFile(project_path + '/lib/bowtie_index/' + b_index + '.2.ebwt')
+  # sc.addFile(project_path + '/lib/bowtie_index/' + b_index + '.3.ebwt')
+  # sc.addFile(project_path + '/lib/bowtie_index/' + b_index + '.4.ebwt')
+  # sc.addFile(project_path + '/lib/bowtie_index/' + b_index + '.rev.1.ebwt')
+  # sc.addFile(project_path + '/lib/bowtie_index/' + b_index + '.rev.2.ebwt')
 
   # Spark application ID
   appId = str(sc.applicationId)

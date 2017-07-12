@@ -10,6 +10,12 @@ import os
 import re
 import subprocess
 
+def get_project_path(project_name):
+  proc = subprocess.Popen(['pwd'], stdout=subprocess.PIPE, shell=True)
+  (out, err) = proc.communicate()
+  project_path = out.split(project_name)[0] + project_name + '/'
+  return project_path
+
 def makedirs_reps (reps):
   for rep in reps:
     if not os.path.exists(rep):
