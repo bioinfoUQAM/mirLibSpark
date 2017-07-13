@@ -149,9 +149,11 @@ if __name__ == '__main__' :
     
     # Convert the text file to RDD object
     #distFile = sc.textFile(hdfsFile)
-    distFile = sc.textFile("file:///" + inKvfile)
+    distFile = sc.textFile("file:///" + inKvfile).persist()########
+    print('NB distFile: ', len(distFile.collect()))####################################################
     #distFile = sc.textFile(inKvfile)
-    input_rdd = distFile.map(lambda line: mru.rearrange_rule(line, my_sep)) # (seq, freq)
+    input_rdd = distFile.map(lambda line: mru.rearrange_rule(line, my_sep)).persist() # (seq, freq) #############
+    print('NB input_rdd: ', len(input_rdd.collect()))####################################################
     # Filtering sRNA low frequency
     sr_low_rdd = input_rdd.filter(lambda e: int(e[1]) > limit_srna_freq).persist()#########################
     print('NB sr_low_rdd: ', len(sr_low_rdd.collect()))####################################################
@@ -238,7 +240,7 @@ if __name__ == '__main__' :
                       .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)\
 					  .persist()####################
     ##print('NB miRNA_rdd: ', len(miRNA_rdd.collect()))#######################
-    print('NB miRNA_rdd distinct : ', len(miRNA_rdd.groupByKey().collect()))#####################
+    print('NB miRNA_rdd distinct (step before miranda): ', len(miRNA_rdd.groupByKey().collect()))#####################
 
 	
     # target prediction
