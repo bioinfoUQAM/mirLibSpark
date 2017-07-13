@@ -5,14 +5,15 @@ project_path=/home/cloudera/Projects/mirLibHadoop/
 #project_name=mirLibHadoop
 #
 # Input directory
-input_path=/home/cloudera/Projects/mirLibHadoop/input/ATH/sRNA_libs/libs
+input_path=/home/cloudera/Projects/mirLibHadoop/input/ATH/sRNA_libs/libs/
 #
 # Output directory#
 output_path=/home/cloudera/Projects/mirLibHadoop/workdir/outlibs
 #
 # Genome Fasta files
 #genome_path=/scratch/hvg-164-aa/mirlibhadoop/ATH/Genome/
-genome_path=/home/cloudera/workspace/miRNA_predictor/ATH/Genome/
+#genome_path=/home/cloudera/workspace/miRNA_predictor/ATH/Genome/
+genome_path=/home/cloudera/Projects/mirLibHadoop/input/ATH/TAIR/Genome/
 #
 b_index_path=/home/cloudera/Projects/mirLibHadoop/dbs/bowtie_index/a_thaliana_t10
 #
