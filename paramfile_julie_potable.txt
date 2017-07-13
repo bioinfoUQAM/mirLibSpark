@@ -19,7 +19,9 @@ query_motif_match_cutoff=30
 gene_motif_match_cutoff=30
 Max_Energy_cutoff=-10
 #target_file=TAIR10_cdna_20101214_updated_1cdna.fasta
-target_file=TAIR10_cdna_20101214_updated.fasta
+#target_file=TAIR10_cdna_20101214_updated.fasta
+#target_file=TAIR10_3_utr_20101028
+target_file=TAIR10_seq_20101214_updated
 # Spark configuration
 #sc_master=yarn-client
 sc_master=local[*]
