@@ -206,7 +206,7 @@ if __name__ == '__main__' :
     pri_vld_rdd = pri_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 3))\
                               .filter(lambda e: any(e[1][3])).persist()###################
     ##print('NB pri_vld_rdd: ', len(pri_vld_rdd.collect()))#################################
-    print('NB pri_vld_rdd distinct: ', len(pri_vld_rdd.groupByKey().collect()))#################################
+    print('NB pri_vld_rdd distinct (mircheck): ', len(pri_vld_rdd.groupByKey().collect()))#################################
     # Filtering structure with branched loop
     one_loop_rdd = pri_vld_rdd.filter(lambda e: ut.containsOnlyOneLoop(e[1][3][2][int(e[1][3][4]) : int(e[1][3][5])+1])).persist()############
     ##print('NB one_loop_rdd: ', len(one_loop_rdd.collect()))###################
@@ -229,7 +229,7 @@ if __name__ == '__main__' :
     # Validating pre-mirna with miRdup
     pre_vld_rdd = pre_fold_rdd.filter(mirdup_obj.run_miRdup).persist()##################
     ##print('NB pre_vld_rdd: ', len(pre_vld_rdd.collect()))##############################
-    print('NB pre_vld_rdd distinct : ', len(pre_vld_rdd.groupByKey().collect()))################
+    print('NB pre_vld_rdd distinct (mirdup): ', len(pre_vld_rdd.groupByKey().collect()))################
     ###################################################
 
     # you can use chromo_strand as key to search bowtie blocs in the following dict
