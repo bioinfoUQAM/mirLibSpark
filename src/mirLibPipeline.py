@@ -39,7 +39,8 @@ if __name__ == '__main__' :
   paramDict = ut.readParam (paramfile)
 
   #= Parameters and cutoffs
-  project_path = paramDict['project_path'][:-1]
+  platform = paramDict['platform'] 
+  project_path = paramDict['project_path_' + platform][:-1]
   rep_msub_jobsOut = project_path + '/workdir/jobsOut'
   my_sep = paramDict['my_sep']                      # Separator
   rep_tmp = project_path + '/tmp/'                   # tmp file folder
@@ -51,7 +52,7 @@ if __name__ == '__main__' :
   execNb = paramDict['sc_execnb']                   #4
   execCores = paramDict['sc_execcores']             #2
   #= genome
-  genome_path = paramDict['genome_path']  
+  genome_path = paramDict['genome_path_' + platform]  
   #= cutoffs
   limit_srna_freq = int(paramDict['limit_s_freq'])  #10       # exclude sRNA freq < limit_srna_freq
   limit_mrna_freq = int(paramDict['limit_m_freq'])  #200      # exclude miRNA freq < limit_mrna_freq
