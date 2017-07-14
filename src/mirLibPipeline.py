@@ -67,6 +67,7 @@ if __name__ == '__main__' :
   pre_flank = int(paramDict['pre_flank'])           #30
   #= mircheck parameter
   mcheck_param = paramDict['mcheck_param']          #'def'    # def : default parameters / mey : meyers parameters
+
   #= miRdup parameter
   path_RNAfold = ut.find_RNAfold_path ()
   mirdup_model = project_path + '/lib/miRdup_1.4/model/' + paramDict['mirdup_model']
@@ -116,6 +117,7 @@ if __name__ == '__main__' :
   rnafold_obj = mru.prog_RNAfold()
   mircheck_obj = mru.prog_mirCheck(mcheck_param)
   profile_obj = mru.prog_dominant_profile()
+
   mirdup_obj = mru.prog_miRdup (rep_tmp, mirdup_model, mirdup_jar, path_RNAfold)
   #miranda_obj = mru.prog_miRanda(Max_Score_cutoff, query_motif_match_cutoff, gene_motif_match_cutoff, Max_Energy_cutoff, target_file, rep_tmp, miranda_exe)
 
@@ -213,7 +215,6 @@ if __name__ == '__main__' :
     ##.persist()####
     ##print('NB pre_fold_rdd: ', len(pre_fold_rdd.collect()))####
 
-
     ###################################################   
     #= Validating pre-mirna with mircheck
     #pre_vld_rdd = pre_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 4))\
@@ -243,7 +244,6 @@ if __name__ == '__main__' :
 
     ##results = miranda_rdd.collect()
     results = miRNA_rdd.collect()
-
 
     endLib = time.time()
     print ("  End of the processing     ", end="\n")
