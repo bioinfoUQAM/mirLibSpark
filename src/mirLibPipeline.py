@@ -203,7 +203,8 @@ if __name__ == '__main__' :
     premir_rdd = one_loop_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3))
     
     #= pre-miRNA folding
-    pre_fold_rdd = premir_rdd.map(lambda e: rnafold_obj.RNAfold_map_rule(e, 4))
+    pre_fold_rdd = premir_rdd.map(lambda e: rnafold_obj.RNAfold_map_rule(e, 4)).persist()##################
+    print('NB pre_fold_rdd distinct (step before mirdup): ', len(pre_fold_rdd.groupByKey().collect()))################
 
     ###################################################   
     #= Validating pre-mirna with mircheck
