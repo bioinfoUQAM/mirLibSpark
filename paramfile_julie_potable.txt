@@ -1,5 +1,5 @@
-platform=cloudera
-#platform=colosse
+#platform=cloudera
+platform=colosse
 project_path_colosse=/home/cjwu/gitproject/mirLibHadoop/
 genome_path_colosse=/scratch/hvg-164-aa/mirlibhadoop/ATH/Genome/
 project_path_cloudera=/home/cloudera/workspace/mirLibHadoop/

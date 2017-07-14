@@ -201,8 +201,9 @@ if __name__ == '__main__' :
     
     #= Extraction of the pre-miRNA
     premir_rdd = one_loop_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3))
-    ##premir_rdd = pri_vld_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3)).persist()
-    ##print('NB premir_rdd distinct test: ', len(premir_rdd.groupByKey().collect()))########################
+    #premir_rdd = pri_vld_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3))
+    #premir_rdd = pri_vld_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3)).persist()
+    #print('NB premir_rdd distinct test: ', len(premir_rdd.groupByKey().collect()))########################
 
     
     #= pre-miRNA folding
@@ -211,12 +212,13 @@ if __name__ == '__main__' :
 
     ###################################################   
     #= Validating pre-mirna with mircheck
-    #pre_vld_rdd = pre_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 4))\
-     #                         .filter(lambda e: any(e[1][4]))####.persist()
+    pre_vld_rdd = pre_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 4))\
+                              .filter(lambda e: any(e[1][4])).persist()
+    print('NB pre_vld_rdd distinct (mircheck II): ', len(pre_vld_rdd.groupByKey().collect()))################
 
     #= Validating pre-mirna with miRdup
-    pre_vld_rdd = pre_fold_rdd.filter(mirdup_obj.run_miRdup).persist()##################
-    print('NB pre_vld_rdd distinct (mirdup): ', len(pre_vld_rdd.groupByKey().collect()))################
+    #pre_vld_rdd = pre_fold_rdd.filter(mirdup_obj.run_miRdup).persist()##################
+    #print('NB pre_vld_rdd distinct (mirdup): ', len(pre_vld_rdd.groupByKey().collect()))################
     ###################################################
 
     #= Create dict, chromo_strand as key to search bowtie blocs in the following dict
