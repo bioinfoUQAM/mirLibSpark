@@ -3,17 +3,29 @@ program: utils.py
 author: Chao-Jung Wu
 author: M.A.Remita
 date: 2017-03-25
-version: 0.00.01
+version: 1.00.01
 '''
 
 import os
 import re
+import subprocess
 
+def makedirs_reps (reps):
+  for rep in reps:
+    if not os.path.exists(rep):
+      os.makedirs(rep)
+
+def find_RNAfold_path ():
+  proc = subprocess.Popen(['which RNAfold'], stdout=subprocess.PIPE, shell=True)
+  (out, err) = proc.communicate()
+  path_RNAfold = out[:-8]
+  return path_RNAfold
+	  
 # Configure a spark context
 def pyspark_configuration(appMaster, appName, masterMemory, execMemory, execNb, execCores):
   from pyspark import SparkConf, SparkContext
   conf = SparkConf()
-  conf.setMaster(appMaster)
+  # conf.setMaster(appMaster)
   conf.setAppName(appName)
   conf.set("spark.yarn.am.memory", masterMemory)
   conf.set("spark.executor.memory", execMemory)
@@ -42,7 +54,7 @@ def covert_fasta_to_KeyValue(infile, outfile):
       print >>fh_out, k + ':' + v
   fh_out.close()
 
-# Convert a seq abundance file into a key value file
+#= Convert a seq abundance file into a key value file
 def convert_seq_freq_file_to_KeyValue(infile, outfile, v_sep):
   fh = open (infile, 'r')
   fh_out = open (outfile, 'w')
@@ -54,12 +66,9 @@ def convert_seq_freq_file_to_KeyValue(infile, outfile, v_sep):
     data = line.rstrip('\n').split('\t')
     value = data[0] + v_sep + data[1]
     
-    # check if the read was treated before (redundancy)
+    #= check if the read was treated before (redundancy)
     if data[0] not in dict_sRNA:
-      # key = str(i).zfill(9)
-      # i+= 1
       dict_sRNA[data[0]] = 1
-      # print >>fh_out, key + v_sep + value
       print >>fh_out, value
       
   fh.close()
@@ -178,7 +187,8 @@ def writeToFile (results, outfile):
       #fbstart = pre_miRNA_records[4]#
       #fbstop = pre_miRNA_records[5]#
       totalfrq = values[5]#
-      miRanda = values[6]#
+      #miRanda = values[6]#
+      miRanda = "[TO_DO_target_genes]"
       
       #data = [miRNAseq, frq, strand, chromo, posgen, pre_miRNA_seq, struc, mirCheck, fbstart, fbstop, totalfrq, miRanda]
       data = [miRNAseq, frq, strand, chromo, posgen, pre_miRNA_seq, struc, totalfrq, miRanda]

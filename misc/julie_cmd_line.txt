@@ -35,6 +35,10 @@ spark-submit mirLibPipeline.py ../paramfile_julie.txt /home/cloudera/workspace/l
 spark-submit mirLibPipeline.py ../paramfile_julie.txt ../input/ ../input/ 2>/dev/null
 
 
+spark-submit mirTest.py ../paramfile_julie_potable.txt ../input/ ../output/ 2>/dev/null
+spark-submit mirLibPipeline.py ../paramfile_julie_potable.txt /home/cloudera/workspace/miRNA_predictor/sudoData4/ ../output/ 2>/dev/null
+
+
 ##=========================================================================================================
 Amine misc
 ##=========================================================================================================

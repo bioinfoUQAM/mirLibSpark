@@ -3,7 +3,7 @@ program: mirLibRules.py
 author: M.A.Remita
 author: Chao-Jung Wu
 date: 2017-03-28
-version: 0.00.01
+version: 1.00.01
 
 Le programme 
 
@@ -21,9 +21,9 @@ def rearrange_rule(kv_arg, kv_sep):
 class prog_dustmasker ():
 
   def __init__(self):
-    # The object has to be initialized in the driver program 
-    # to permit the capture of its env variables and pass them 
-    # to the subprocess in the worker nodes
+    #= The object has to be initialized in the driver program 
+    #= to permit the capture of its env variables and pass them 
+    #= to the subprocess in the worker nodes
     self.env = os.environ
 
   def dmask_filter_rule(self, elem):
@@ -33,13 +33,13 @@ class prog_dustmasker ():
     
     p1 = sbp.Popen(line1, stdout=sbp.PIPE, env=self.env)
     p2 = sbp.Popen(line2, stdin=p1.stdout, stdout=sbp.PIPE, env=self.env)
-    p1.stdout.close()  # Allow p1 to receive a SIGPIPE if p2 exits.
+    p1.stdout.close()  #= Allow p1 to receive a SIGPIPE if p2 exits.
     
     output = p2.communicate()[0].rstrip('\n')
     nblines = len(output.split('\n'))
     if nblines == 1:
         return True
-    return False  ## false data will be automatically excluded in the new RDD
+    return False  ##= false data will be automatically excluded in the new RDD
 
   def dmask_pipe_cmd(self):
     return 'dustmasker -outfmt fasta', self.env
@@ -49,9 +49,9 @@ class prog_bowtie ():
   def __init__(self, b_index):
     self.bowtie_index = b_index
     
-    # The object has to be initialized in the driver program 
-    # to permit the capture of its env variables and pass them 
-    # to the subprocess in the worker nodes
+    #= The object has to be initialized in the driver program 
+    #= to permit the capture of its env variables and pass them 
+    #= to the subprocess in the worker nodes
     self.env = os.environ
 
   def run_bowtie(self, seq):
@@ -91,17 +91,17 @@ class prog_bowtie ():
     return cmd, self.env
   
   def bowtie_rearrange_map (self, elem):
-    # u'+\tChr3\t7922370\tAAATGTAAACATCTGATCGTTTGA'
+    #= u'+\tChr3\t7922370\tAAATGTAAACATCTGATCGTTTGA'
     elemTab = map(str, elem.split("\t"))
     
-    # if negative strand, get the reverse complement
+    #= if negative strand, get the reverse complement
     if elemTab[0] == "-" :
       elemTab[3] = ut.getRevComp(elemTab[3])
       
     return (elemTab[3], [elemTab[0], elemTab[1], int(elemTab[2])])
     
   def bowtie_freq_rearrange_rule(self, elem):
-    # (seq, [freq, nbloc, [mappings] ] )
+    #= (seq, [freq, nbloc, [mappings] ] )
     return (elem[0], [elem[1][1], elem[1][0][0], elem[1][0][1]])
 
 class extract_precurosrs ():
@@ -119,7 +119,7 @@ class extract_precurosrs ():
     ext_left = self.ext_left
     ext_right = self.ext_right
     
-    # all positions are zero-based
+    #= all positions are zero-based
     s1 = start_srna - ext_left
     pos_5p = ext_left
     if s1 < 0:
@@ -176,7 +176,7 @@ class extract_precurosrs ():
   def extract_sub_seq(self, contig, posMir, fback_start, fback_stop):
     
     fold_len = fback_stop - fback_start + 1
-    pos = posMir - fback_start + self.pre_flank          # 0-based
+    pos = posMir - fback_start + self.pre_flank          #= 0-based
     deb = fback_start - self.pre_flank; 
     
     if deb < 0 :
@@ -193,7 +193,6 @@ class extract_precurosrs ():
     olde : elem = (id, [seq, frq, nbloc, [bowtie], [pri_miRNA, posMirPrim, Struct, mircheck, fbstart, fbstop]])
     new : elem = (seq, [frq, nbloc, [bowtie], [pri_miRNA, posMirPrim, Struct, mircheck, fbstart, fbstop]])
     '''
-    
     priSeq = elem[1][field][0]
     posMir = int(elem[1][field][1])
     fback_start = int(elem[1][field][4])
@@ -219,13 +218,13 @@ class prog_RNAfold ():
     
     p1 = sbp.Popen(line1, stdout=sbp.PIPE, env=self.env)
     p2 = sbp.Popen(line2, stdin=p1.stdout, stdout=sbp.PIPE, env=self.env)
-    p1.stdout.close()  # Allow p1 to receive a SIGPIPE if p2 exits.
+    p1.stdout.close()  #= Allow p1 to receive a SIGPIPE if p2 exits.
     
     output = p2.communicate()[0].rstrip('\n').split('\n')
     
     RNAfold_results = output[1].split(' (')
-    folding = RNAfold_results[0]               # ...(((....)))......
-    # MFE = float(RNAfold_results[1][:-1])       # minimun free energy
+    folding = RNAfold_results[0]               #= ...(((....)))......
+    # MFE = float(RNAfold_results[1][:-1])       #= minimun free energy
     
     return folding
 
@@ -290,7 +289,7 @@ class prog_dominant_profile :
       bowties = elem[1][2]
       
       for bowtie in bowties :
-        # concatenate chromosome (bowtie[1]) and strand (bowtie[0])
+        #= concatenate chromosome (bowtie[1]) and strand (bowtie[0])
         chromo_strand = bowtie[1] + bowtie[0]
         
         if chromo_strand not in dict_bowtie_chromo_strand.keys():
@@ -304,7 +303,6 @@ class prog_dominant_profile :
     ''' old elem in bowbloc = (id, [seq, frq, nbloc, [bowties]])
         new elem in bowbloc = (seq, [frq, nbloc, [bowties]])
     '''
-    # sRNAprofile = []
     totalfrq = 0
     for elem in bowbloc :
       bowties = elem[1][2]
@@ -312,7 +310,6 @@ class prog_dominant_profile :
       for bowtie in bowties :
         posgen = bowtie[2]
         if (x < posgen < y) :
-          # sRNAprofile.append(elem)
           totalfrq += frq
     return totalfrq
 
@@ -329,12 +326,12 @@ class prog_dominant_profile :
     strand = elem[1][2][0]
     
     if strand == '+':
-      x = posgen - mirpos_on_pre    # inclusive
-      y = x + len(preseq) - 1       # inclusive
+      x = posgen - mirpos_on_pre    #= inclusive
+      y = x + len(preseq) - 1       #= inclusive
     else:
       y = posgen + len(mirseq) + mirpos_on_pre -1
       x = y-len(preseq) + 1
-    return x-1, y+1                  # exclusive  x < a < y
+    return x-1, y+1                  #= exclusive  x < a < y
 
   def exp_profile_filter (self, elem, dict_bowtie_chromo_strand):
     ''' old : elem = (id, [seq, frq, nbloc, [bowtie], [pri_miRNA], [pre_miRNA]])
@@ -351,9 +348,9 @@ class prog_dominant_profile :
         return True
     return False
 
-  def sudo(self, elem, dict_bowtie_chromo_strand):
+  def computeProfileFrq(self, elem, dict_bowtie_chromo_strand):
     x, y = self.profile_range (elem)
-    bowtie_bloc_key = elem[1][2][1] + elem[1][2][0]  #chrom+strand
+    bowtie_bloc_key = elem[1][2][1] + elem[1][2][0]  #=chrom+strand
     bowbloc = dict_bowtie_chromo_strand[bowtie_bloc_key]
     totalfrq = self.calculateTotalfrq (bowbloc, x, y)
 
@@ -361,7 +358,7 @@ class prog_dominant_profile :
     return elem
 
 class prog_miRanda ():
-  def __init__ (self, Max_Score_cutoff, lower_motif_match_cutoff, upper_motif_match_cutoff, Max_Energy_cutoff, target_file, rep_tmp):
+  def __init__ (self, Max_Score_cutoff, lower_motif_match_cutoff, upper_motif_match_cutoff, Max_Energy_cutoff, target_file, rep_tmp, miranda_exe):
     self.env = os.environ
     self.dict_seq_target = {}
 
@@ -373,22 +370,25 @@ class prog_miRanda ():
 
     self.target_file = target_file
     self.rep_tmp = rep_tmp
-    self.__m = 0
-  
-  def dostuff (self, e):
+    self.miranda_exe = miranda_exe
+
+  def computeTargetbyMiranda (self, e):
     '''
     $miranda examples/bantam_stRNA.fasta examples/hid_UTR.fasta
     $miranda ../tmp/tmp_mirna_seq.txt ../Arabidopsis/TAIR/Genome/TAIR10_blastsets/TAIR10_cdna_20101214_updated_1cdna.fasta
+
+    ## NOTE before disable miranda (170714): need to modify the code to use options such as -sc, -en, -go, -ge, -quiet
     '''
     if e[0] in self.dict_seq_target.keys():
       e[1].append(self.dict_seq_target[e[0]])
       return e
-    self.__m += 1
-    tmp_file = self.rep_tmp + str(self.__m) + 'tmp_mirna_seq_forMiranda.txt'
+
+    tmp_file = self.rep_tmp + e[0] + 'tmp_mirna_seq_forMiranda.txt' 
     with open (tmp_file, 'w') as fh_tmp:
       print >> fh_tmp, '>x\n' + e[0]
     FNULL = open(os.devnull, 'w')
-    cmd = ['miranda', tmp_file, self.target_file]
+    cmd = [self.miranda_exe, tmp_file, self.target_file]
+
     sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
     mirandaout = sproc.communicate()[0].split('\n')
     FNULL.close()
@@ -398,15 +398,13 @@ class prog_miRanda ():
     for i in mirandaout[30:]: 
     #= because the first 30ish lines contain only program description
       if i == 'No Hits Found above Threshold': 
-        #= notTarget
+        ##= notTarget
         break
       if i[:2] == '>x':
         #= isTargteet_hits == ['>x', 'AT1G51370.2', '153.00', '-15.71', '2 21', '698 722', '22', '68.18%', '77.27%']
         hit_result = i.split('\t') 
         lower_motif_match_current = hit_result[7][:-1]
         upper_motif_match_current = hit_result[8][:-1]
-        #if float(lower_motif_match_current) > float(lower_motif_match_associ):
-        #  lower_motif_match_associ = lower_motif_match_current
         if float(upper_motif_match_current) > float(upper_motif_match_max):
           upper_motif_match_max = upper_motif_match_current
           lower_motif_match_associ = lower_motif_match_current
@@ -423,28 +421,34 @@ class prog_miRanda ():
     #= target_results == [[target1], [target2], ...]
     #= [['AT1G51370.2', '306.00', '-36.41', '153.00', '-20.70', '1', '23', '1118', ' 20 698', '84.21%', '89.47%']]
     #= [gene, total_score, total_energy, max_score, max_energy, strand, len_miRNA, len_gene, postions, lower_motif_match, upper_motif_match]
-    self.dict_seq_target[e[0]] = target_results 
+
+    self.dict_seq_target[e[0]] = target_results
     e[1].append(target_results)
     return e
   
 
 class prog_miRdup ():
-  def __init__ (self, rep_tmp):
+  def __init__ (self, rep_tmp, model, mirdup_jar, path_RNAfold):
     self.env = os.environ
     
     #= variable ==
     self.rep_tmp = rep_tmp
-
+    self.model = model
+    self.mirdup_jar = mirdup_jar
+    self.path_RNAfold = path_RNAfold
+    
   def run_miRdup (self, e):
     '''
     java -jar ../lib/miRdup_1.4/miRdup.jar -v ../lib/miRdup_1.4/testFiles/julie_sequencesToValidate2.txt -c ../lib/miRdup_1.4//model/Viridiplantae.model -r /usr/local/bin/
     '''
-    tmp_file = self.rep_tmp + e[0] + '_' + e[1][4][0] +'sequencesToValidate_bymirdup.txt'
+    tmp_file = self.rep_tmp + e[0] + '_' + e[1][4][0] + 'sequencesToValidate_bymirdup.txt'
     with open (tmp_file, 'w') as fh_tmp:
       print >> fh_tmp, 'seqx\t' + e[0] + '\t' + e[1][4][0] # + e[1][4][2] #folding, but miRdup has a bug, can not pass this result
     
     FNULL = open(os.devnull, 'w')
-    cmd = ['java', '-jar', '../lib/miRdup_1.4/miRdup.jar', '-v', tmp_file, '-c', '../lib/miRdup_1.4//model/Viridiplantae.model', '-r', '/usr/local/bin/']
+
+    #cmd = ['java', '-jar', '/home/cjwu/gitproject/mirLibHadoop/lib/miRdup_1.4/miRdup.jar', '-v', self.tmp_file, '-c', self.model, '-r', '/software6/bioinfo/apps/mugqic_space/software/ViennaRNA/ViennaRNA-2.1.8/bin/']
+    cmd = ['java', '-jar', self.mirdup_jar, '-v', tmp_file, '-c', self.model, '-r', self.path_RNAfold]
     sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
     mirdupout = sproc.communicate()[0].split('\n')
     FNULL.close()
@@ -456,7 +460,7 @@ class prog_miRdup ():
         os.remove(f)'''
 
     #= mirdupout[8].split() = ['Correctly', 'Classified', 'Instances', '1', '100', '%']
-    #mirdup_verdict = mirdupout[8].split()[3] #= '1' = true, or '0' = false
+    #=mirdup_verdict = mirdupout[8].split()[3] #= '1' = true, or '0' = false
     for i in mirdupout:
       data = i.split()
       if len(data) == 6 and data[0] == 'Correctly':
@@ -489,3 +493,5 @@ if __name__ == '__main__' :
 '''
 http://stackoverflow.com/questions/30010939/python-subprocess-popen-error-no-such-file-or-directory
 '''
+
+

@@ -5,9 +5,10 @@ src/*.kv.txt
 *.*~
 */*.*~
 */*/*.*~
-
 ATH/
-
 .DS_Store
 src/*.swp
+workdir/
+dbs/
+tmp/
 
