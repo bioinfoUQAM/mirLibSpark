@@ -201,6 +201,9 @@ if __name__ == '__main__' :
     
     #= Extraction of the pre-miRNA
     premir_rdd = one_loop_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3))
+    ##premir_rdd = pri_vld_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3)).persist()
+    ##print('NB premir_rdd distinct test: ', len(premir_rdd.groupByKey().collect()))########################
+
     
     #= pre-miRNA folding
     pre_fold_rdd = premir_rdd.map(lambda e: rnafold_obj.RNAfold_map_rule(e, 4)).persist()##################
