@@ -198,7 +198,7 @@ if __name__ == '__main__' :
     #= Filtering structure with branched loop
     one_loop_rdd = pri_vld_rdd.filter(lambda e: ut.containsOnlyOneLoop(e[1][3][2][int(e[1][3][4]) : int(e[1][3][5])+1])).persist()############
     print('NB one_loop_rdd distinct : ', len(one_loop_rdd.groupByKey().collect()))#########################
-    print(one_loop_rdd.collect())
+    #print(one_loop_rdd.collect())
     
     #= Extraction of the pre-miRNA
     premir_rdd = one_loop_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3))
