@@ -149,14 +149,14 @@ if __name__ == '__main__' :
     
     # Filtering short length
     sr_short_rdd = sr_low_rdd.filter(lambda e: len(e[0]) > limit_len).persist()
-
+    
     # Filtering with DustMasker
     dmask_rdd = sr_short_rdd.map(lambda e: '>s\n'+e[0])\
                             .pipe(dmask_cmd, dmask_env)\
                             .filter(lambda e: e.isupper() and not e.startswith('>'))\
                             .map(lambda e: str(e.rstrip()))\
                             .persist()
-
+    
     # Mapping with Bowtie
     bowtie_rdd = dmask_rdd.pipe(bowtie_cmd, bowtie_env)\
                           .map(bowtie_obj.bowtie_rearrange_map)\
@@ -174,7 +174,7 @@ if __name__ == '__main__' :
     print('NB mr_low_rdd: ', len(mr_low_rdd.collect()))#### 444444444444444444
     # Filtering high nbLocations and zero location
     nbLoc_rdd = mr_low_rdd.filter(lambda e: e[1][1] > 0 and e[1][1] < limit_nbLoc)
-     
+    
     # Extraction of the pri-miRNA
     primir_rdd = nbLoc_rdd.flatMap(prec_obj.extract_prim_rule)
 
@@ -186,7 +186,7 @@ if __name__ == '__main__' :
     # Validating pri-mirna with mircheck
     pri_vld_rdd = pri_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 3))\
                               .filter(lambda e: any(e[1][3])).persist()####
-    print('NB pri_vld_rdd: ', len(pri_vld_rdd.collect()))#### 00000000000000
+    #print('NB pri_vld_rdd: ', len(pri_vld_rdd.collect()))#### 00000000000000
     # Filtering structure with branched loop
     one_loop_rdd = pri_vld_rdd.filter(lambda e: ut.containsOnlyOneLoop(e[1][3][2][int(e[1][3][4]) : int(e[1][3][5])+1]))
     
@@ -195,23 +195,27 @@ if __name__ == '__main__' :
     
     # pre-miRNA folding
     pre_fold_rdd = premir_rdd.map(lambda e: rnafold_obj.RNAfold_map_rule(e, 4))\
-					  .persist()####
-    print('NB pre_fold_rdd: ', len(pre_fold_rdd.collect()))####
-
+            .persist()####
+    pre_fold_rdd_p = pre_fold_rdd.collect()
+    print('NB pre_fold_rdd: ', len(pre_fold_rdd_p))####
+    # print (pre_fold_rdd_p)
 
     ###################################################   
     # Validating pre-mirna with mircheck
     #pre_vld_rdd = pre_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 4))\
      #                         .filter(lambda e: any(e[1][4]))####.persist()
 
-    # Validating pre-mirna with miRdup
-    pre_vld_rdd = pre_fold_rdd.filter(mirdup_obj.run_miRdup).persist()
+    # Validating pre-mirna with miRdup zipWithUniqueId
+    pre_vld_rdd = pre_fold_rdd.zipWithIndex()\
+                              .map(mirdup_obj.run_miRdup)\
+                              .map(lambda e: e[0])\
+                              .filter(lambda e: e[1][4][3] == "true")\
+                              .persist()
     
-    print('pre_vld_rdd: ', len(pre_vld_rdd.collect()))###test###
-
-    #pre_vld_rdd2 = pre_fold_rdd.map(mirdup_obj.run_miRdup)###test###
-    #newdata = pre_vld_rdd2.collect()###test###
-    #print("NB newdata: "+ str(len(newdata)))###test###
+    pre_vld_rdd_p = pre_vld_rdd.collect()
+    print('pre_vld_rdd: ', len(pre_vld_rdd_p))###test###
+    # print(pre_vld_rdd_p)
+    
     ###################################################
 
     # you can use chromo_strand as key to search bowtie blocs in the following dict
@@ -220,24 +224,24 @@ if __name__ == '__main__' :
     # Results of miRNA prediction
     miRNA_rdd = pre_vld_rdd.map(lambda e: profile_obj.sudo(e, dict_bowtie_chromo_strand))\
                       .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)\
-					  .persist()###test###
-					  
+                      .persist()###test###
+
     profiledata = miRNA_rdd.collect()###test###
     print("NB profiledata: "+ str(len(profiledata)))###test###
-	
-    # target prediction
-    miranda_rdd = miRNA_rdd.map(miranda_obj.dostuff)
 
-    results = miranda_rdd.collect()
-    print("NB results: "+ str(len(results)))
-    #print(results)
+    # # target prediction
+    # miranda_rdd = miRNA_rdd.map(miranda_obj.dostuff)
+
+    # results = miranda_rdd.collect()
+    # print("NB results: "+ str(len(results)))
+    # print(results)
 
     endLib = time.time()
     print ("  End of the processing     ", end="\n")
     
     #= write results to a file
-    outFile = rep_output + inBasename + '_miRNAprediction.txt'
-    ut.writeToFile (results, outFile)
+    # outFile = rep_output + inBasename + '_miRNAprediction.txt'
+    # ut.writeToFile (results, outFile)
     
     timeDict[inBasename] = endLib - startLib
     
@@ -245,4 +249,4 @@ if __name__ == '__main__' :
   
   # print executions time  to a file
   outTime = rep_output + appId + '_time.txt'
-  ut.writeTimeLibToFile (timeDict, outTime, appId, paramDict)
+  # ut.writeTimeLibToFile (timeDict, outTime, appId, paramDict)

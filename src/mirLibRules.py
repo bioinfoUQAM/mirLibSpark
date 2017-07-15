@@ -436,6 +436,7 @@ class prog_miRdup ():
     #= variable ==
     self.rep_tmp = rep_tmp
     self.model = model
+    self.modelName = "".join(os.path.splitext(os.path.basename(model)))
     self.mirdup_jar = mirdup_jar
     self.path_RNAfold = path_RNAfold
     
@@ -443,9 +444,13 @@ class prog_miRdup ():
     '''
     java -jar ../lib/miRdup_1.4/miRdup.jar -v ../lib/miRdup_1.4/testFiles/julie_sequencesToValidate2.txt -c ../lib/miRdup_1.4//model/Viridiplantae.model -r /usr/local/bin/
     '''
-    tmp_file = self.rep_tmp + e[0] + '_' + e[1][4][0] + 'sequencesToValidate_bymirdup.txt'
+
+    tmp_file  = self.rep_tmp + 'mdup_'+ str(e[1]) +'.txt'
+    pred_file = tmp_file+"."+self.modelName+".miRdup.txt"
+    
     with open (tmp_file, 'w') as fh_tmp:
-      print >> fh_tmp, 'seqx\t' + e[0] + '\t' + e[1][4][0] # + e[1][4][2] #folding, but miRdup has a bug, can not pass this result
+      print >> fh_tmp, 'seqx\t' + str(e[0][0]) + '\t' + str(e[0][1][4][0]) + '\t' + str(e[0][1][4][2])
+    fh_tmp.close()
     
     FNULL = open(os.devnull, 'w')
     
@@ -454,23 +459,21 @@ class prog_miRdup ():
     sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
     mirdupout = sproc.communicate()[0].split('\n')
     FNULL.close()
-
-    #= mirdupout[8].split() = ['Correctly', 'Classified', 'Instances', '1', '100', '%']
-    #mirdup_verdict = mirdupout[8].split()[3] #= '1' = true, or '0' = false
-    for i in mirdupout:
-      data = i.split()
-      if len(data) == 6 and data[0] == 'Correctly':
-        mirdup_verdict = data[3]
-        if mirdup_verdict == '1':
-          return True
-    return False
-
-    if mirdup_verdict == '0':
-      return False
-    return True
-    #aa = mirdupout[8].split()
-    #e[1].append(aa)
-    #return e
+    
+    mirdup_pred = ""
+    mirdup_score = 0
+    
+    with open (pred_file, 'r') as fh_tmp :
+      for line in fh_tmp :
+        if line.startswith("#PR") :
+          mirdup_pred = line.rstrip("\n").split("\t")[2]
+        elif line.startswith("#SC") :
+          mirdup_score = '%.2f' % round(float(line.rstrip("\n").split("\t")[2]), 2)
+    fh_tmp.close()
+    
+    e[0][1][4].append(mirdup_pred)
+    e[0][1][4].append(mirdup_score)
+    return e
 
 
 if __name__ == '__main__' :

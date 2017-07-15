@@ -8,7 +8,7 @@ project_path=/home/cloudera/Projects/mirLibHadoop/
 input_path=/home/cloudera/Projects/mirLibHadoop/input/ATH/sRNA_libs/libs/
 #
 # Output directory#
-output_path=/home/cloudera/Projects/mirLibHadoop/workdir/outlibs
+output_path=/home/cloudera/Projects/mirLibHadoop/workdir/outlibs/
 #
 # Genome Fasta files
 #genome_path=/scratch/hvg-164-aa/mirlibhadoop/ATH/Genome/

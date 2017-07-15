@@ -237,3 +237,10 @@ def writeTimeLibToFile (timeDict, outfile, appId, paramDict):
       print >> fh_out, "# " + key + ": " + paramDict[key]
   
   fh_out.close()
+
+# source : https://stackoverflow.com/questions/2257441/random-string-generation-with-upper-case-letters-and-digits-in-python/23728630#23728630
+def randomStrGen (n):
+  import string
+  import random
+  
+  return ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(n))
