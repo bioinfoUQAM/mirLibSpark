@@ -162,8 +162,8 @@ def containsOnlyOneLoop (folding):
                 folding5 = '...((.....)).....))))).....((...))...'          #False
     '''
     m = re.search(r'[(]+[.]+[)]+[.()]+[(]+[.]+[)]+', folding)
-    if m: return False
-    return True
+    if m: return True
+    return False
 
 def writeToFile (results, outfile):
     ''' old : elem = (id, [seq, frq, nbloc, [bowtie], [pri_miRNA], [pre_miRNA]])
