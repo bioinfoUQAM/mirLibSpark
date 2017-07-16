@@ -253,4 +253,4 @@ if __name__ == '__main__' :
   
   #= print executions time  to a file
   outTime = rep_output + appId + '_time.txt'
-  ##ut.writeTimeLibToFile (timeDict, outTime, appId, paramDict)
+  ut.writeTimeLibToFile (timeDict, outTime, appId, paramDict)
