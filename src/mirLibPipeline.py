@@ -221,7 +221,7 @@ if __name__ == '__main__' :
     #pre_vld_rdd = pre_fold_rdd.filter(mirdup_obj.run_miRdup).persist()##################
     
     pre_vld_rdd = pre_fold_rdd.map(mirdup_obj.run_miRdup).filter(lambda e: e[1][4][3] == "true").persist()##################
-    print('pre_vld_rdd distinct (mirdup): ', pre_vld_rdd.collect())################
+    print('NB pre_vld_rdd distinct (mirdup): ', len(pre_vld_rdd.collect()))################
     ###################################################
 
     #= Create dict, chromo_strand as key to search bowtie blocs in the following dict
