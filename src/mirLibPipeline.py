@@ -72,6 +72,7 @@ if __name__ == '__main__' :
   path_RNAfold = ut.find_RNAfold_path ()
   mirdup_model = project_path + '/lib/miRdup_1.4/model/' + paramDict['mirdup_model']
   mirdup_jar = project_path + '/lib/miRdup_1.4/miRdup.jar'
+  mirdup_limit =  float(paramDict['mirdup_limit'])
   #= miRanda parameter
   #target_file = project_path + '/lib/' + paramDict['target_file']
   #miranda_exe = project_path + '/lib/miranda'
@@ -220,7 +221,7 @@ if __name__ == '__main__' :
     #= Validating pre-mirna with miRdup
     #pre_vld_rdd = pre_fold_rdd.filter(mirdup_obj.run_miRdup).persist()##################
     
-    pre_vld_rdd = pre_fold_rdd.map(mirdup_obj.run_miRdup).filter(lambda e: e[1][4][3] == "true").persist()##################
+    pre_vld_rdd = pre_fold_rdd.map(mirdup_obj.run_miRdup).filter(lambda e: float(e[1][4][4]) > mirdup_limit ).persist()##################
     print('NB pre_vld_rdd distinct (mirdup): ', len(pre_vld_rdd.groupByKey().collect()))################
     ###################################################
 
