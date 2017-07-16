@@ -220,8 +220,7 @@ if __name__ == '__main__' :
     #= Validating pre-mirna with miRdup
     #pre_vld_rdd = pre_fold_rdd.filter(mirdup_obj.run_miRdup).persist()##################
     
-    ####pre_vld_rdd = pre_fold_rdd.map(mirdup_obj.run_miRdup).filter(lambda e: e[1][4][3] == "true").persist()##################
-    pre_vld_rdd = pre_fold_rdd.map(mirdup_obj.run_miRdup)
+    pre_vld_rdd = pre_fold_rdd.map(mirdup_obj.run_miRdup).filter(lambda e: e[1][4][3] == "true").persist()##################
     print('pre_vld_rdd distinct (mirdup): ', pre_vld_rdd.collect())################
     ###################################################
 
@@ -231,7 +230,7 @@ if __name__ == '__main__' :
     #= Results of miRNA prediction
     miRNA_rdd = pre_vld_rdd.map(lambda e: profile_obj.computeProfileFrq(e, dict_bowtie_chromo_strand))\
                       .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)\
-					  .persist()####################
+     					  .persist()####################
     print('NB miRNA_rdd distinct (dominant profile): ', len(miRNA_rdd.groupByKey().collect()))#####################
 
     #= target prediction
@@ -239,14 +238,14 @@ if __name__ == '__main__' :
     #print('NB miranda_rdd distinct : ', len(miranda_rdd.groupByKey().collect()))####
     ##results = miranda_rdd.collect()
 
-    results = miRNA_rdd.collect()
+    #results = miRNA_rdd.collect()
 
     endLib = time.time()
     print ("  End of the processing     ", end="\n")
     
     #= write results to a file
     outFile = rep_output + inBasename + '_miRNAprediction.txt'
-    ut.writeToFile (results, outFile)
+    #ut.writeToFile (results, outFile)
     
     timeDict[inBasename] = endLib - startLib
     

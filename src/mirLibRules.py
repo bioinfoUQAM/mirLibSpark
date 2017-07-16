@@ -442,8 +442,8 @@ class prog_miRdup ():
     '''
     java -jar ../lib/miRdup_1.4/miRdup.jar -v ../lib/miRdup_1.4/testFiles/julie_sequencesToValidate2.txt -c ../lib/miRdup_1.4//model/Viridiplantae.model -r /usr/local/bin/
     '''
-    ##tmp_file = self.rep_tmp + e[0] + '_' + e[1][4][0] + 'sequencesToValidate_bymirdup.txt'
-    tmp_file  = self.rep_tmp + 'mdup_'+ str(e[1]) +'.txt'
+    tmp_file = self.rep_tmp + e[1][4][0] + 'sequencesToValidate_bymirdup.txt'
+    ##tmp_file  = self.rep_tmp + 'mdup_'+ str(e[1]) +'.txt'
     pred_file = tmp_file+"."+self.modelName+".miRdup.txt"
 
     with open (tmp_file, 'w') as fh_tmp:
@@ -466,8 +466,9 @@ class prog_miRdup ():
         elif line.startswith("#SC") :
           mirdup_score = '%.2f' % round(float(line.rstrip("\n").split("\t")[2]), 2)
     
-    e[0][1][4].append(mirdup_pred)
-    e[0][1][4].append(mirdup_score)
+    e[1][4].append(mirdup_pred)
+    e[1][4].append(mirdup_score)
+    #e[1].append([mirdup_pred, mirdup_score])
     return e
 
     '''
