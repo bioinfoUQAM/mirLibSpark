@@ -213,13 +213,13 @@ if __name__ == '__main__' :
 
     ###################################################   
     #= Validating pre-mirna with mircheck
-    pre_vld_rdd = pre_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 4))\
-                              .filter(lambda e: any(e[1][4])).persist()
-    print('NB pre_vld_rdd distinct (mircheck II): ', len(pre_vld_rdd.groupByKey().collect()))################
+    #pre_vld_rdd = pre_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 4))\
+    #                          .filter(lambda e: any(e[1][4])).persist()
+    #print('NB pre_vld_rdd distinct (mircheck II): ', len(pre_vld_rdd.groupByKey().collect()))################
 
     #= Validating pre-mirna with miRdup
-    #pre_vld_rdd = pre_fold_rdd.filter(mirdup_obj.run_miRdup).persist()##################
-    #print('NB pre_vld_rdd distinct (mirdup): ', len(pre_vld_rdd.groupByKey().collect()))################
+    pre_vld_rdd = pre_fold_rdd.filter(mirdup_obj.run_miRdup).persist()##################
+    print('NB pre_vld_rdd distinct (mirdup): ', len(pre_vld_rdd.groupByKey().collect()))################
     ###################################################
 
     #= Create dict, chromo_strand as key to search bowtie blocs in the following dict
