@@ -443,7 +443,7 @@ class prog_miRdup ():
     '''
     tmp_file = self.rep_tmp + e[0] + '_' + e[1][4][0] + 'sequencesToValidate_bymirdup.txt'
     with open (tmp_file, 'w') as fh_tmp:
-      print >> fh_tmp, 'seqx\t' + e[0] + '\t' + e[1][4][0] # + e[1][4][2] #folding, but miRdup has a bug, can not pass this result
+      print >> fh_tmp, 'seqx\t' + e[0] + '\t' + e[1][4][0] + '\t' + e[1][4][2] 
     
     FNULL = open(os.devnull, 'w')
 
@@ -452,12 +452,6 @@ class prog_miRdup ():
     sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
     mirdupout = sproc.communicate()[0].split('\n')
     FNULL.close()
-
-    '''
-    outtmpfiles=os.listdir(self.rep_tmp)
-    for f in outtmpfiles:
-      if str(self.__n) + 'sequencesToValidate_bymirdup.txt' in f:
-        os.remove(f)'''
 
     #= mirdupout[8].split() = ['Correctly', 'Classified', 'Instances', '1', '100', '%']
     #=mirdup_verdict = mirdupout[8].split()[3] #= '1' = true, or '0' = false
@@ -468,14 +462,6 @@ class prog_miRdup ():
         if mirdup_verdict == '1':
           return True
     return False
-
-    if mirdup_verdict == '0':
-      return False
-    return True
-    #aa = mirdupout[8].split()
-    #e[1].append(aa)
-    #return e
-
 
 if __name__ == '__main__' :
    
