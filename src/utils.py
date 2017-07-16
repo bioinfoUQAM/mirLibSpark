@@ -220,6 +220,8 @@ def writeTimeLibToFile (timeDict, outfile, appId, paramDict):
     timeLibSec = format(timeLibSec, '.3f')
     
     print >> fh_out, "Lib "+lib+"\t"+timeLibHMS+"\t"+timeLibSec
+    print ("Lib "+lib+"\t"+timeLibHMS+"\t"+timeLibSec)
+
   
   print >> fh_out, "\n# SPARK configuration:"
   
