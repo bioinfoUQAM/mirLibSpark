@@ -129,6 +129,7 @@ if __name__ == '__main__' :
   timeDict = {}
   
   for infile in infiles :
+    if infile[:-1] == '~': continue
     print ("--Processing of the library: ", infile)
     
     infile = rep_input+infile
