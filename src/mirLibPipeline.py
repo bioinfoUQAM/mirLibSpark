@@ -221,7 +221,8 @@ if __name__ == '__main__' :
     #= Validating pre-mirna with miRdup
     #pre_vld_rdd = pre_fold_rdd.filter(mirdup_obj.run_miRdup).persist()##################
     
-    pre_vld_rdd = pre_fold_rdd.map(mirdup_obj.run_miRdup).filter(lambda e: float(e[1][4][4]) > mirdup_limit ).persist()##################
+    #pre_vld_rdd = pre_fold_rdd.map(mirdup_obj.run_miRdup).filter(lambda e: e[1][4][3] == 'true' ).persist()##################
+    pre_vld_rdd = pre_fold_rdd.map(mirdup_obj.run_miRdup).filter(lambda e: e[1][4][3] == 'true' and float(e[1][4][4]) > mirdup_limit ).persist()##################
     print('NB pre_vld_rdd distinct (mirdup): ', len(pre_vld_rdd.groupByKey().collect()))################
     ###################################################
 
