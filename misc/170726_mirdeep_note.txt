@@ -1,4 +1,9 @@
-julie note for intalling mirdeep in cloudera
+julie note for intalling mirdeep2 in cloudera
+
+download from:
+https://www.mdc-berlin.de/45995549/en/research/research_teams/systems_biology_of_gene_regulatory_elements/projects/miRDeep/mirdeep2_0_0_8.zip
+
+## INSTALL ##
 
 $ su
 cloudera
@@ -10,19 +15,41 @@ in the end it showed some errors
 $ perl -MCPAN -e'install "LWP::Simple"'
 say 'yes' many times
 
+$ sudo cpan
+while in cpan:  install  PDF::API2
+say 'yes' many times
+$ exit
+
+## install bioinfomatics dependencies ##
+## RANDFOLD v2 ##
+http://bioinformatics.psb.ugent.be/software/details/Randfold
+click download software to reach this website: http://bioinformatics.psb.ugent.be/supplementary_data/erbon/nov2003/
+click on this line to download: Minimum free energy of folding randomization test software - randfold version 2.0.1 (C version). Download (tar.gz)
+unzip the folder and change the folder name to a shorter one like this: randfold-2.0.1
+RANDFOLD has its own dependency Sean Eddy's SQUID that comes with this download. Go to the folder containing squid.tar.gz
+so go to this dir:  cloudera [~/xxx/xxx/randfold-2.0.1]
+   $ gunzip squid.tar.gz   Uncompresses the archive.
+   $ tar xf squid.tar      Unpacks the archive. 
+   $ cd squid-1.9g         Moves into the distribution toplevel directory. 
+   $ ./configure           Configures the software for your system.
+   $ make                  Builds the binaries. 
+   $ su                    go to root
+   cloudera
+   $ make install              (optional) Installs the software.
+   $ make clean                (optional) Cleans up.
+   $ cd ..			change dir back to here: cloudera [~/xxx/xxx/randfold-2.0.1]
+   $ make
+   $ cp randfold /usr/local/bin
+   $ exit			exit root
+Now randfold is installed.
+test: $ randfold -d let7.tfa 999
+if you get the following then the intall was successful:
+cel-let-7	-42.90	0.001000
+
+go to dir: cloudera [~/xxx/xxx/mirdeep2_0_0_8]
+$ source ~/.bash_profile
 $ perl install.pl
 $ source ~/.bash_profile
-
-$ exit
-
-go to this dir: cloudera [~/xxx/xxx/mirdeep2_0_0_8]
-$ perl install.pl
-
-$ exit
-
-go to this dir: cloudera [~/xxx/xxx/mirdeep2_0_0_8/tutorial_dir]
-#### STEP 1####
-$ bowtie-build cel_cluster.fa cel_cluster
 
 ###############################################
 Downloading Vienna package now
@@ -30,20 +57,28 @@ Downloading Vienna package now
 Vienna package not found at  http://www.tbi.univie.ac.at/RNA/packages/source/ViennaRNA-1.8.4.tar.gz
                 Please try to download the Vienna package from here http://www.tbi.univie.ac.at/RNA/RNAfold.html 
 ###############################################
-because it can not detect in fact RNAfold already installed, so I fake a message file required for miRDeep2
-go to dir: cloudera [~/xxx/xxx/mirdeep2_0_0_8]
+because it can not detect in fact RNAfold already installed, so I fake a message file required by miRDeep2
 $ echo x >install_successful
+$ exit
+
+
+
+## USAGE ##
 
 go to this dir: cloudera [~/xxx/xxx/mirdeep2_0_0_8/tutorial_dir]
+#### STEP 1####
+$ bowtie-build cel_cluster.fa cel_cluster
+
 #### STEP 2 ####
 $ mapper.pl reads.fa -c -j -k TCGTATGCCGTCTTCTGCTTGT  -l 18 -m -p cel_cluster -s reads_collapsed.fa -t reads_collapsed_vs_genome.arf -v
+
 #### STEP 3 ####
 $ quantifier.pl -p precursors_ref_this_species.fa -m mature_ref_this_species.fa -r reads_collapsed.fa -t cel -y 16_19
+
 #### STEP 4 ####
 $ miRDeep2.pl reads_collapsed.fa cel_cluster.fa reads_collapsed_vs_genome.arf mature_ref_this_species.fa mature_ref_other_species.fa precursors_ref_this_species.fa -t C.elegans 2> report.log
-### REPORT.LOG: Error: 	randfold not found ==> NEED TO FIX THIS PATH ISSUE
-#### STEP 5 ####
-because of error, so results.html is not generated
 
+#### STEP 5 ####
+use browser to open the result_xxx(date_time).html
 
 
