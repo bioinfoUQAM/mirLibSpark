@@ -1,0 +1,49 @@
+julie note for intalling mirdeep in cloudera
+
+$ su
+cloudera
+
+$ yum install perl-CPAN
+say 'yes' many times, more than 10 times...crazy
+in the end it showed some errors
+
+$ perl -MCPAN -e'install "LWP::Simple"'
+say 'yes' many times
+
+$ perl install.pl
+$ source ~/.bash_profile
+
+$ exit
+
+go to this dir: cloudera [~/xxx/xxx/mirdeep2_0_0_8]
+$ perl install.pl
+
+$ exit
+
+go to this dir: cloudera [~/xxx/xxx/mirdeep2_0_0_8/tutorial_dir]
+#### STEP 1####
+$ bowtie-build cel_cluster.fa cel_cluster
+
+###############################################
+Downloading Vienna package now
+
+Vienna package not found at  http://www.tbi.univie.ac.at/RNA/packages/source/ViennaRNA-1.8.4.tar.gz
+                Please try to download the Vienna package from here http://www.tbi.univie.ac.at/RNA/RNAfold.html 
+###############################################
+because it can not detect in fact RNAfold already installed, so I fake a message file required for miRDeep2
+go to dir: cloudera [~/xxx/xxx/mirdeep2_0_0_8]
+$ echo x >install_successful
+
+go to this dir: cloudera [~/xxx/xxx/mirdeep2_0_0_8/tutorial_dir]
+#### STEP 2 ####
+$ mapper.pl reads.fa -c -j -k TCGTATGCCGTCTTCTGCTTGT  -l 18 -m -p cel_cluster -s reads_collapsed.fa -t reads_collapsed_vs_genome.arf -v
+#### STEP 3 ####
+$ quantifier.pl -p precursors_ref_this_species.fa -m mature_ref_this_species.fa -r reads_collapsed.fa -t cel -y 16_19
+#### STEP 4 ####
+$ miRDeep2.pl reads_collapsed.fa cel_cluster.fa reads_collapsed_vs_genome.arf mature_ref_this_species.fa mature_ref_other_species.fa precursors_ref_this_species.fa -t C.elegans 2> report.log
+### REPORT.LOG: Error: 	randfold not found ==> NEED TO FIX THIS PATH ISSUE
+#### STEP 5 ####
+because of error, so results.html is not generated
+
+
+
