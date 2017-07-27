@@ -3,13 +3,13 @@ input_path=/home/cloudera/Projects/mirLibHadoop/input/ATH/sRNA_libs/libs/
 # Output directory#
 output_path=/home/cloudera/Projects/mirLibHadoop/workdir/outlibs/
 #
-#platform=cloudera
-platform=colosse
+platform=cloudera
+#platform=colosse
 project_path_colosse=/home/cjwu/gitproject/mirLibHadoop/
 #
 genome_path_colosse=/scratch/hvg-164-aa/mirlibhadoop/ATH/Genome/
-project_path_cloudera=/home/cloudera/workspace/mirLibHadoop/
-genome_path_cloudera=/home/cloudera/workspace/miRNA_predictor/ATH/Genome/
+project_path_cloudera=/home/cloudera/Projects/mirLibHadoop/
+genome_path_cloudera=/home/cloudera/Projects/mirLibHadoop/input/ATH/TAIR/Genome/
 b_index_path=/home/cloudera/Projects/mirLibHadoop/dbs/bowtie_index/a_thaliana_t10
 my_sep=,
 limit_s_freq=10
