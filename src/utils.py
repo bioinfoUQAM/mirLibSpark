@@ -10,6 +10,7 @@ import os
 import re
 import subprocess
 
+
 def makedirs_reps (reps):
   for rep in reps:
     if not os.path.exists(rep):
@@ -187,6 +188,7 @@ def writeToFile (results, outfile):
       #fbstart = pre_miRNA_records[4]#
       #fbstop = pre_miRNA_records[5]#
       totalfrq = values[5]#
+
       #miRanda = values[6]#
       miRanda = "[TO_DO_target_genes]"
       
@@ -229,3 +231,10 @@ def writeTimeLibToFile (timeDict, outfile, appId, paramDict):
       print >> fh_out, "# " + key + ": " + paramDict[key]
   
   fh_out.close()
+
+# source : https://stackoverflow.com/questions/2257441/random-string-generation-with-upper-case-letters-and-digits-in-python/23728630#23728630
+def randomStrGen (n):
+  import string
+  import random
+  
+  return ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(n))

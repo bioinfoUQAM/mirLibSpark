@@ -1,0 +1,37 @@
+# Input directory
+input_path=/home/cloudera/Projects/mirLibHadoop/input/ATH/sRNA_libs/libs/
+# Output directory#
+output_path=/home/cloudera/Projects/mirLibHadoop/workdir/outlibs/
+#
+#platform=cloudera
+platform=colosse
+project_path_colosse=/home/cjwu/gitproject/mirLibHadoop/
+#
+genome_path_colosse=/scratch/hvg-164-aa/mirlibhadoop/ATH/Genome/
+project_path_cloudera=/home/cloudera/workspace/mirLibHadoop/
+genome_path_cloudera=/home/cloudera/workspace/miRNA_predictor/ATH/Genome/
+b_index_path=/home/cloudera/Projects/mirLibHadoop/dbs/bowtie_index/a_thaliana_t10
+my_sep=,
+limit_s_freq=10
+limit_m_freq=100
+limit_len=18
+limit_nbLoc=14
+pri_l_flank=120
+pri_r_flank=60
+pre_flank=30
+mirdup_model=Viridiplantae.model
+mirdup_limit=0.98
+mcheck_param=def
+#Max_Score_cutoff=100
+#query_motif_match_cutoff=30
+#gene_motif_match_cutoff=30
+#Max_Energy_cutoff=-10
+#target_file=TAIR10_cdna_20101214_updated.fasta
+# Spark configuration
+#sc_master=yarn-client
+sc_master=local[*]
+sc_appname=mirLibHadoop
+sc_mstrmemory=3g
+sc_execmemory=3g
+sc_execnb=5
+sc_execcores=8

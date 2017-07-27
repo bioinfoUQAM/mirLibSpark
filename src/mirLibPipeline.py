@@ -28,40 +28,43 @@ import mirLibRules as mru
 
 if __name__ == '__main__' :
 
-  if not len(sys.argv) == 4:
-    sys.stderr.write('Three arguments required\nUsage: spark-submit mirLibPipeline.py <path to paramfile> <path to the input directory> <path to the output directory>2>/dev/null\n')
+  if not len(sys.argv) == 2:
+    sys.stderr.write('Three arguments required\nUsage: spark-submit mirLibPipeline.py <path to paramfile> 2>/dev/null\n')
     sys.exit()
 
   paramfile = sys.argv[1]
-  rep_input = sys.argv[2]
-  rep_output = sys.argv[3]
-  
   paramDict = ut.readParam (paramfile)
 
   #= Parameters and cutoffs
   platform = paramDict['platform'] 
   project_path = paramDict['project_path_' + platform][:-1]
+  rep_input = paramDict['input_path']
+  rep_output = paramDict['output_path']
   rep_msub_jobsOut = project_path + '/workdir/jobsOut'
   my_sep = paramDict['my_sep']                      # Separator
   rep_tmp = project_path + '/tmp/'                   # tmp file folder
   #= spark configuration
+
   appMaster = paramDict['sc_master']                #"local" 
   appName = paramDict['sc_appname']                 #"mirLibHadoop"
   mstrMemory = paramDict['sc_mstrmemory']           #"4g"
   execMemory = paramDict['sc_execmemory']           #"4g"
   execNb = paramDict['sc_execnb']                   #4
   execCores = paramDict['sc_execcores']             #2
+
   #= genome
   genome_path = paramDict['genome_path_' + platform]  
   #= cutoffs
+
   limit_srna_freq = int(paramDict['limit_s_freq'])  #10       # exclude sRNA freq < limit_srna_freq
   limit_mrna_freq = int(paramDict['limit_m_freq'])  #200      # exclude miRNA freq < limit_mrna_freq
   limit_len = int(paramDict['limit_len'])           #18       # exclude RNA length < limit_len
   limit_nbLoc = int(paramDict['limit_nbLoc'])       #3        # exculde nbLoc mapped with bowtie  > limit_nbLoc
-  #= bowtie
-  b_index = paramDict['b_index']
-  b_index_path = project_path + '/lib/bowtie_index/' + b_index
-  #= pri-mirna
+
+  # bowtie
+  b_index_path = paramDict['b_index_path']
+  # pri-mirna
+
   pri_l_flank = int(paramDict['pri_l_flank'])       #120
   pri_r_flank = int(paramDict['pri_r_flank'])       #60
   pre_flank = int(paramDict['pre_flank'])           #30
@@ -85,6 +88,7 @@ if __name__ == '__main__' :
   ut.makedirs_reps (reps)
   
   #= Spark context
+
   sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, execNb, execCores)
   #
   sc.addPyFile(project_path + '/src/utils.py')
@@ -99,14 +103,8 @@ if __name__ == '__main__' :
   #sc.addFile(target_file)
   #sc.addFile(miranda_exe)
 
-  # sc.addFile(project_path + '/lib/bowtie_index/' + b_index + '.1.ebwt')
-  # sc.addFile(project_path + '/lib/bowtie_index/' + b_index + '.2.ebwt')
-  # sc.addFile(project_path + '/lib/bowtie_index/' + b_index + '.3.ebwt')
-  # sc.addFile(project_path + '/lib/bowtie_index/' + b_index + '.4.ebwt')
-  # sc.addFile(project_path + '/lib/bowtie_index/' + b_index + '.rev.1.ebwt')
-  # sc.addFile(project_path + '/lib/bowtie_index/' + b_index + '.rev.2.ebwt')
-
   #= Spark application ID
+
   appId = str(sc.applicationId)
   
   #= Objects for rule functions
@@ -123,6 +121,7 @@ if __name__ == '__main__' :
   #miranda_obj = mru.prog_miRanda(Max_Score_cutoff, query_motif_match_cutoff, gene_motif_match_cutoff, Max_Energy_cutoff, target_file, rep_tmp, miranda_exe)
 
   #= Fetch library files in rep_input
+
   infiles = [f for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
   
   #= Time processing of libraries
@@ -135,6 +134,8 @@ if __name__ == '__main__' :
     infile = rep_input+infile
     inBasename = os.path.splitext(os.path.basename(infile))[0]
     inKvfile = rep_tmp + inBasename + '.kv.txt'
+
+    # hdfsFile = inBasename + '.hkv.txt'
 
     #= Convert the input file to a Key value file
     ut.convert_seq_freq_file_to_KeyValue(infile, inKvfile, my_sep)
@@ -154,10 +155,11 @@ if __name__ == '__main__' :
     print('NB sr_low_rdd: ', len(sr_low_rdd.collect()))####################################################
     
     #= Filtering short length
-    sr_short_rdd = sr_low_rdd.filter(lambda e: len(e[0]) > limit_len).persist()
+    sr_short_rdd = sr_low_rdd.filter(lambda e: len(e[0]) > limit_len).persist()  # TO KEEP IT
     print('NB sr_short_rdd: ', len(sr_short_rdd.collect()))###################################################
 
     #= Filtering with DustMasker
+
     dmask_rdd = sr_short_rdd.map(lambda e: '>s\n'+e[0])\
                             .pipe(dmask_cmd, dmask_env)\
                             .filter(lambda e: e.isupper() and not e.startswith('>'))\
@@ -171,8 +173,9 @@ if __name__ == '__main__' :
                           .groupByKey()\
                           .map(lambda e: (e[0], [len(list(e[1])), list(e[1])]))\
                           .persist()
-   
+    
     #= Get the expression value for each reads
+
     bowFrq_rdd = bowtie_rdd.join(sr_short_rdd)\
                            .map(bowtie_obj.bowtie_freq_rearrange_rule)\
                            .persist()
@@ -191,9 +194,10 @@ if __name__ == '__main__' :
 
     #= pri-miRNA folding
     pri_fold_rdd = primir_rdd.map(lambda e: rnafold_obj.RNAfold_map_rule(e, 3))
-    
+
     #= Validating pri-mirna with mircheck
     pri_vld_rdd = pri_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 3))\
+
                               .filter(lambda e: any(e[1][3])).persist()###################
     print('NB pri_vld_rdd distinct (mircheck): ', len(pri_vld_rdd.groupByKey().collect()))#################################
 
@@ -204,11 +208,7 @@ if __name__ == '__main__' :
     
     #= Extraction of the pre-miRNA
     premir_rdd = one_loop_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3))
-    #premir_rdd = pri_vld_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3))
-    #premir_rdd = pri_vld_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3)).persist()
-    #print('NB premir_rdd distinct test: ', len(premir_rdd.groupByKey().collect()))########################
 
-    
     #= pre-miRNA folding
     pre_fold_rdd = premir_rdd.map(lambda e: rnafold_obj.RNAfold_map_rule(e, 4)).persist()##################
     print('NB pre_fold_rdd distinct (step before mirdup): ', len(pre_fold_rdd.groupByKey().collect()))################
@@ -219,11 +219,14 @@ if __name__ == '__main__' :
                               .filter(lambda e: any(e[1][4])).persist()
     print('NB pre_vld_rdd0 distinct (mircheck II): ', len(pre_vld_rdd0.groupByKey().collect()))################
 
-    #= Validating pre-mirna with miRdup
-    #pre_vld_rdd = pre_fold_rdd.filter(mirdup_obj.run_miRdup).persist()##################
+    #= Validating pre-mirna with miRdup zipWithUniqueId
     
-    #pre_vld_rdd = pre_fold_rdd.map(mirdup_obj.run_miRdup).filter(lambda e: e[1][4][3] == 'true' ).persist()##################
-    pre_vld_rdd = pre_fold_rdd.map(mirdup_obj.run_miRdup).filter(lambda e: e[1][4][3] == 'true' and float(e[1][4][4]) > mirdup_limit ).persist()##################
+    
+    pre_vld_rdd = pre_fold_rdd.zipWithIndex()\
+                              .map(mirdup_obj.run_miRdup)\
+                              .map(lambda e: e[0])\
+                              .filter(lambda e: e[1][4][3] == "true")\
+                              .persist()##################
     print('NB pre_vld_rdd distinct (mirdup): ', len(pre_vld_rdd.groupByKey().collect()))################
     ###################################################
 
@@ -233,7 +236,7 @@ if __name__ == '__main__' :
     #= Results of miRNA prediction
     miRNA_rdd = pre_vld_rdd.map(lambda e: profile_obj.computeProfileFrq(e, dict_bowtie_chromo_strand))\
                       .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)\
-     					  .persist()####################
+                      .persist()####################
     print('NB miRNA_rdd distinct (dominant profile): ', len(miRNA_rdd.groupByKey().collect()))#####################
 
     #= target prediction
@@ -247,8 +250,10 @@ if __name__ == '__main__' :
     print ("  End of the processing     ", end="\n")
     
     #= write results to a file
+
     outFile = rep_output + inBasename + '_miRNAprediction.txt'
     #ut.writeToFile (results, outFile)
+
     
     timeDict[inBasename] = endLib - startLib
     
@@ -257,3 +262,4 @@ if __name__ == '__main__' :
   #= print executions time  to a file
   outTime = rep_output + appId + '_time.txt'
   ut.writeTimeLibToFile (timeDict, outTime, appId, paramDict)
+
