@@ -17,6 +17,7 @@ def makedirs_reps (reps):
       os.makedirs(rep)
 
 def find_RNAfold_path ():
+  #= colosse = /software6/bioinfo/apps/mugqic_space/software/ViennaRNA/ViennaRNA-2.1.8/bin/
   proc = subprocess.Popen(['which RNAfold'], stdout=subprocess.PIPE, shell=True)
   (out, err) = proc.communicate()
   path_RNAfold = out[:-8]
