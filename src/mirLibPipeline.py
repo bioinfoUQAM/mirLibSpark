@@ -3,7 +3,7 @@ program: mirLibPipeline.py
 author: M.A.Remita
 author: Chao-Jung Wu
 date: 2017-03-28
-version: 1.00.01
+version: 1.00.02
 
 Le programme implemente le pipeline d'analyse des sRAN et prediction des miRNAs. Les principales etapes de predictions sont :
   - 1 Filtrage
@@ -36,8 +36,9 @@ if __name__ == '__main__' :
   paramDict = ut.readParam (paramfile)
 
   #= Parameters and cutoffs
-  platform = paramDict['platform'] 
-  project_path = paramDict['project_path_' + platform][:-1]
+  #platform = paramDict['platform'] 
+  #project_path = paramDict['project_path_' + platform][:-1]
+  project_path = paramDict['project_path'][:-1]
   rep_input = paramDict['input_path']
   rep_output = paramDict['output_path']
   rep_msub_jobsOut = project_path + '/workdir/jobsOut'
@@ -53,7 +54,8 @@ if __name__ == '__main__' :
   execCores = paramDict['sc_execcores']             #2
 
   #= genome
-  genome_path = paramDict['genome_path_' + platform]  
+  #genome_path = paramDict['genome_path_' + platform] 
+  genome_path = paramDict['genome_path'] 
   #= cutoffs
 
   limit_srna_freq = int(paramDict['limit_s_freq'])  #10       # exclude sRNA freq < limit_srna_freq

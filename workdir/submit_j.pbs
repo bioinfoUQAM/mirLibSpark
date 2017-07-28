@@ -22,6 +22,6 @@ module load mugqic/ViennaRNA/2.1.8
 start-all.sh
  
 # Submit SparkPi.jar application to the Spark cluster
-spark-submit --master spark://$HOSTNAME:7077 ../src/mirLibPipeline.py ../paramfile_julie_potable.txt ../input/ ../output/
+spark-submit --master spark://$HOSTNAME:7077 ../src/mirLibPipeline.py ../paramfile.txt
 # Stop Spark cluster
 stop-all.sh

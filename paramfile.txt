@@ -1,16 +1,24 @@
-# Input directory
-input_path=/home/cloudera/Projects/mirLibHadoop/input/ATH/sRNA_libs/hiconf/
-# Output directory#
-output_path=/home/cloudera/Projects/mirLibHadoop/workdir/outlibs/
+#==NOTE that project_path and genome_path have to be absolute paths while the input_path, output_path and b_index_path can be relative paths to the project_path.
 #
-platform=cloudera
-#platform=colosse
-project_path_colosse=/home/cjwu/gitproject/mirLibHadoop/
+#==amine-cloudera-paths==
+#project_path=/home/cloudera/Projects/mirLibHadoop/
+#genome_path=/home/cloudera/Projects/mirLibHadoop/input/ATH/TAIR/Genome/
+#input_path=/home/cloudera/Projects/mirLibHadoop/input/ATH/sRNA_libs/hiconf/
+#output_path=/home/cloudera/Projects/mirLibHadoop/workdir/outlibs/
+#b_index_path=/home/cloudera/Projects/mirLibHadoop/dbs/bowtie_index/a_thaliana_t10
 #
-genome_path_colosse=/scratch/hvg-164-aa/mirlibhadoop/ATH/Genome/
-project_path_cloudera=/home/cloudera/Projects/mirLibHadoop/
-genome_path_cloudera=/home/cloudera/Projects/mirLibHadoop/input/ATH/TAIR/Genome/
-b_index_path=/home/cloudera/Projects/mirLibHadoop/dbs/bowtie_index/a_thaliana_t10
+#==julie-cloudera-paths==
+project_path=/home/cloudera/workspace/mirLibHadoop/
+genome_path=/home/cloudera/workspace/miRNA_predictor/ATH/Genome/
+input_path=/home/cloudera/workspace/mirLibHadoop/input/
+output_path=/home/cloudera/workspace/mirLibHadoop/output/
+b_index_path=/home/cloudera/workspace/mirLibHadoop/dbs/bowtie_index/a_thaliana_t10
+#==julie-colosse-paths==
+#project_path=/home/cjwu/gitproject/mirLibHadoop/
+#genome_path=/scratch/hvg-164-aa/mirlibhadoop/ATH/Genome/
+#input_path=/home/cjwu/gitproject/mirLibHadoop/input/
+#output_path=/home/cjwu/gitproject/mirLibHadoop/output/
+#b_index_path=/home/cjwu/gitproject/mirLibHadoop/dbs/bowtie_index/a_thaliana_t10
 my_sep=,
 limit_s_freq=10
 limit_m_freq=100
