@@ -92,13 +92,30 @@ miRDeep2.pl <file_1> <file_2> <file_3> <file_4> <file_5> <file_6>
 file_1 = reads_collapsed.fa
 file_2 = cel_cluster.fa
 file_3 = reads_collapsed_vs_genome.arf
-file_4 = mature_ref_this_species.fa
-file_5 = mature_ref_other_species.fa
-file_6 = precursors_ref_this_species.fa
+file_4 = mature_ref_this_species.fa (optional)
+file_5 = mature_ref_other_species.fa (optional)
+file_6 = precursors_ref_this_species.fa (optional)
 -t C.elegans
 
 ## TEST 2 ## TO get information on the miRNAs not detected by miRDeep2 (not a desired function for this project)
 miRDeep2.pl reads_collapsed.fa cel_cluster.fa reads_collapsed_vs_genome.arf none none none -t C.elegans 2> report.log
+
+
+
+## TEST 3 ## hc ath 135 seq
+$ bowtie-build ath_genome.fa a_thaliana_t10
+
+seq fasta file: high_conf_mature_ath.fa
+$ mapper.pl high_conf_mature_ath.fa -c -j -l 18 -m -p a_thaliana_t10 -s high_conf_mature_ath_collapsed.fa -t high_conf_mature_ath_collapsedvs_genome.arf -v
+## result: 
+#desc	total	mapped	unmapped	%mapped	%unmapped
+total: 135	118	17	0.874	0.126
+
+$ miRDeep2.pl high_conf_mature_ath_collapsed.fa ath_genome.fa high_conf_mature_ath_collapsedvs_genome.arf none none none -t A.thaliana 2> report.log
+
+
+
+$ quantifier.pl -p precursors_ref_this_species.fa -m mature_ref_this_species.fa -r reads_collapsed.fa -t cel -y 16_19
 
 
 
