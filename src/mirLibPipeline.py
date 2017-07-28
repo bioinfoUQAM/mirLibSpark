@@ -181,9 +181,8 @@ if __name__ == '__main__' :
     #= Mapping with Bowtie
     ## in : 'seq'
     ## out: ('seq', [nbLoc, [['strd','chr',posChr],..]])
-    # print(dmask_rdd.pipe(bowtie_cmd, bowtie_env).collect())
-    # break
-    bowtie_rdd = dmask_rdd.pipe(bowtie_cmd, bowtie_env)\
+    bowtie_rdd = dmask_rdd.map(lambda e: " "+e)\
+                          .pipe(bowtie_cmd, bowtie_env)\
                           .map(bowtie_obj.bowtie_rearrange_map)\
                           .groupByKey()\
                           .map(lambda e: (e[0], [len(list(e[1])), list(e[1])]))\
@@ -194,11 +193,10 @@ if __name__ == '__main__' :
     #= Get the expression value for each reads
     ## in : ('seq', [nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
-    # print(bowtie_rdd.join(sr_short_rdd).collect())
-    # print(bowtie_rdd.join(sr_short_rdd).map(lambda e: e[0]).collect())
     bowFrq_rdd = bowtie_rdd.join(sr_short_rdd)\
                            .map(bowtie_obj.bowtie_freq_rearrange_rule)\
                            .persist()
+
     print('NB bowFrq_rdd: ', len(bowFrq_rdd.collect()))##################################################
     
     #= Filtering miRNA low frequency
@@ -298,5 +296,5 @@ if __name__ == '__main__' :
   sc.stop() #= allow to run multiple SparkContexts
   
   #= print executions time  to a file
-  # outTime = rep_output + appId + '_time.txt'
-  # ut.writeTimeLibToFile (timeDict, outTime, appId, paramDict)
+  outTime = rep_output + appId + '_time.txt'
+  ut.writeTimeLibToFile (timeDict, outTime, appId, paramDict)
