@@ -82,7 +82,7 @@ def getRevComp (seq):
   outab = "TGCA"
   trantab = maketrans(intab, outab)
   n_seq = seq.translate(trantab)
-  return n_seq[::-1];
+  return n_seq[::-1]
 
 def tr_T_U (seq):
   from string import maketrans

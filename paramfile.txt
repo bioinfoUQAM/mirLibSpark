@@ -1,5 +1,5 @@
 # Input directory
-input_path=/home/cloudera/Projects/mirLibHadoop/input/ATH/sRNA_libs/libs/
+input_path=/home/cloudera/Projects/mirLibHadoop/input/ATH/sRNA_libs/hiconf/
 # Output directory#
 output_path=/home/cloudera/Projects/mirLibHadoop/workdir/outlibs/
 #

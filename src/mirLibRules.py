@@ -87,6 +87,7 @@ class prog_bowtie ():
   
   def Bowtie_pipe_cmd (self):
     cmd = "bowtie --mm -a -v 0 --suppress 1,6,7,8 -r " + self.bowtie_index + " -"
+    # cmd = "bowtie --mm -a -v 0 --suppress 1,6,7,8 " + self.bowtie_index + " -"
     
     return cmd, self.env
   
@@ -101,7 +102,10 @@ class prog_bowtie ():
     return (elemTab[3], [elemTab[0], elemTab[1], int(elemTab[2])])
     
   def bowtie_freq_rearrange_rule(self, elem):
-    #= (seq, [freq, nbloc, [mappings] ] )
+    '''
+    in : ('seq',([nbLoc, [['strd','chr',posChr],..]], freq))
+    out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
+    '''
     return (elem[0], [elem[1][1], elem[1][0][0], elem[1][0][1]])
 
 class extract_precurosrs ():
