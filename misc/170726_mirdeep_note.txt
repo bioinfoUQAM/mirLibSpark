@@ -113,6 +113,10 @@ total: 135	118	17	0.874	0.126
 
 $ miRDeep2.pl high_conf_mature_ath_collapsed.fa ath_genome.fa high_conf_mature_ath_collapsedvs_genome.arf none none none -t A.thaliana 2> report.log
 
+$ miRDeep2.pl high_conf_mature_ath_collapsed.fa ath_genome.fa high_conf_mature_ath_collapsedvs_genome.arf high_conf_mature_ath.fa none none -t A.thaliana 2> report.log
+
+
+
 
 
 $ quantifier.pl -p precursors_ref_this_species.fa -m mature_ref_this_species.fa -r reads_collapsed.fa -t cel -y 16_19
