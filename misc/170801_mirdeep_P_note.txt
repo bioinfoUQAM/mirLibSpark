@@ -1,19 +1,19 @@
 export PATH=/home/cloudera/workspace/miRNA_predictor/mirDeep-P/miRDP1.3:$PATH
 
-cloudera [~/workspace/miRNA_predictor/mirDeep-P/Known_M]
- $ cp ../miRDP1.3/* .
- 
-$ perl fetch_extended_precursors.pl TAIR9_genome.fa ath.gff >annotated_miRNA_extended.fa
+
 
 #### known mirna ####
-#$ mkdir bowtie-index
-#$ bowtie-build -f annotated_miRNA_extended.fa bowtie-index/annotated_miRNA_extended
-#$ bowtie -a -v 0 bowtie-index/annotated_miRNA_extended -f AtShoot.fa >AtShoot_extende.aln
-#$ convert_bowtie_to_blast.pl AtShoot_extended.aln AtShoot.fa annotated_miRNA_extended.fa  > AtShoot_extended.bst
-#$ excise_candidate.pl annotated_miRNA_extended.fa AtShoot_extended.bst 250 >precursors_250.fa
-#$ bowtie-build -f precursors_250.fa bowtie-index/precursors_250
-#$ cat precursors_250.fa|RNAfold -noPS >precursors_250_structure
-#$ bowtie -a -v 0 bowtie-index/precursors_250 -f AtShoot.fa >AtShoot_250.aln
-#$ convert_bowtie_to_blast.pl AtShoot_250.aln AtShoot.fa precursors_250.fa >AtShoot_250.bst
-#$ sort +3 -25 AtShoot_250.bst >AtShoot_250_signature
-#$ miRDP.pl AtShoot_250_signature precursors_250_structure >AtShoot_250_prediction
+cloudera [~/workspace/miRNA_predictor/mirDeep-P/Known_M]
+$ cp ../miRDP1.3/* .
+$ perl fetch_extended_precursors.pl TAIR9_genome.fa ath.gff >annotated_miRNA_extended.fa
+$ mkdir bowtie-index
+$ bowtie-build -f annotated_miRNA_extended.fa bowtie-index/annotated_miRNA_extended
+$ bowtie -a -v 0 bowtie-index/annotated_miRNA_extended -f AtShoot.fa >AtShoot_extende.aln
+$ perl convert_bowtie_to_blast.pl AtShoot_extended.aln AtShoot.fa annotated_miRNA_extended.fa  > AtShoot_extended.bst
+$ perl excise_candidate.pl annotated_miRNA_extended.fa AtShoot_extended.bst 250 >precursors_250.fa
+$ bowtie-build -f precursors_250.fa bowtie-index/precursors_250
+$ cat precursors_250.fa|RNAfold --noPS >precursors_250_structure
+$ bowtie -a -v 0 bowtie-index/precursors_250 -f AtShoot.fa >AtShoot_250.aln
+$ perl convert_bowtie_to_blast.pl AtShoot_250.aln AtShoot.fa precursors_250.fa >AtShoot_250.bst
+$ sort +3 -25 AtShoot_250.bst >AtShoot_250_signature
+$ perl miRDP.pl AtShoot_250_signature precursors_250_structure >AtShoot_250_prediction
