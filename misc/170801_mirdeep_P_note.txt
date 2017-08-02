@@ -17,3 +17,41 @@ $ bowtie -a -v 0 bowtie-index/precursors_250 -f AtShoot.fa >AtShoot_250.aln
 $ perl convert_bowtie_to_blast.pl AtShoot_250.aln AtShoot.fa precursors_250.fa >AtShoot_250.bst
 $ sort +3 -25 AtShoot_250.bst >AtShoot_250_signature
 $ perl miRDP.pl AtShoot_250_signature precursors_250_structure >AtShoot_250_prediction
+
+#### new mirna ####
+$ bowtie-build -f TAIR9_genome.fa bowtie-index/TAIR9_genome
+$ bowtie -a -v 0 bowtie-index/TAIR9_genome -f AtShoot.fa >AtShoot.aln
+$ convert_bowtie_to_blast.pl AtShoot.aln AtShoot.fa TAIR9_genome.fa >AtShoot.bst
+$ perl filter_alignments.pl AtShoot.bst -c 15 >AtShoot_filter15.bst
+$ perl overlap.pl AtShoot_filter15.bst ncRNA_CDS.gff -b >id_overlap_ncRNA_CDS
+$ perl alignedselected.pl AtShoot_filter15.bst -g id_overlap_ncRNA_CDS >AtShoot_filter15_ncRNA_CDS.bst
+$ perl filter_alignments.pl AtShoot_filter15_ncRNA_CDS.bst -b AtShoot.fa > AtShoot_filtered.fa
+$ perl excise_candidate.pl TAIR9_genome.fa  AtShoot_filter15_ncRNA_CDS.bst 250 >AtShoot_precursors.fa
+$ cat AtShoot_precursors.fa | RNAfold --noPS > AtShoot_structures
+$ bowtie-build -f AtShoot_precursors.fa bowtie-index/ AtShoot_precursors
+$ bowtie -a -v 0 bowtie-index/ AtShoot_precursors -f AtShoot_filtered.fa > AtShoot_precursors.aln
+$ perl convert_bowtie_to_blast.pl AtShoot_precursors.aln AtShoot_filtered.fa AtShoot_precursors.fa >AtShoot_precursors.bst
+$ sort +3 -25 AtShoot_precursors.bst >AtShoot_signatures
+$ perl miRDeep.pl AtShoot_signatures AtShoot_structures > AtShoot_predictions
+$ perl rm_redundancy_meet_plant.pl chromosome_length AtShoot_precursors.fa AtShoot_predictions AtShoot_nr_prediction AtShoot_filter_P_prediction
+
+
+$ bowtie-build -f a_thaliana_t10.fa bowtie-index/TAIR10_genome
+$ bowtie -a -v 0 bowtie-index/TAIR10_genome -f high_conf_mature_ath_uniq_collapsed.fa >high_conf_mature_ath_uniq_collapsed.aln
+$ perl convert_bowtie_to_blast.pl high_conf_mature_ath_uniq_collapsed.aln high_conf_mature_ath_uniq_collapsed.fa a_thaliana_t10.fa >high_conf_mature_ath_uniq_collapsed.bst
+$ perl filter_alignments.pl high_conf_mature_ath_uniq_collapsed.bst -c 15 >high_conf_mature_ath_uniq_collapsed_filter15.bst
+$ cp ../New_M/ncRNA_CDS.gff .
+$ perl overlap.pl high_conf_mature_ath_uniq_collapsed_filter15.bst ncRNA_CDS.gff -b >id_overlap_ncRNA_CDS
+	stdout: high_conf_mature_ath_uniq_collapsed_filter15.bst 154
+			ncRNA_CDS.gff 181359
+$ perl alignedselected.pl high_conf_mature_ath_uniq_collapsed_filter15.bst -g id_overlap_ncRNA_CDS >high_conf_mature_ath_uniq_collapsed_filter15_ncRNA_CDS.bst
+$ perl filter_alignments.pl high_conf_mature_ath_uniq_collapsed_filter15_ncRNA_CDS.bst -b high_conf_mature_ath_uniq_collapsed.fa > high_conf_mature_ath_uniq_collapsed_filtered.fa
+$ perl excise_candidate.pl a_thaliana_t10.fa high_conf_mature_ath_uniq_collapsed_filter15_ncRNA_CDS.bst 250 >high_conf_mature_ath_uniq_collapsed_precursors.fa
+$ cat high_conf_mature_ath_uniq_collapsed_precursors.fa | RNAfold --noPS > high_conf_mature_ath_uniq_collapsed_structures
+$ bowtie-build -f high_conf_mature_ath_uniq_collapsed_precursors.fa bowtie-index/high_conf_mature_ath_uniq_collapsed_precursors
+$ bowtie -a -v 0 bowtie-index/high_conf_mature_ath_uniq_collapsed_precursors -f high_conf_mature_ath_uniq_collapsed_filtered.fa > high_conf_mature_ath_uniq_collapsed_precursors.aln
+$ perl convert_bowtie_to_blast.pl high_conf_mature_ath_uniq_collapsed_precursors.aln high_conf_mature_ath_uniq_collapsed_filtered.fa high_conf_mature_ath_uniq_collapsed_precursors.fa >high_conf_mature_ath_uniq_collapsed_precursors.bst
+$ sort +3 -25 high_conf_mature_ath_uniq_collapsed_precursors.bst >high_conf_mature_ath_uniq_collapsed_signatures
+$ perl miRDP.pl high_conf_mature_ath_uniq_collapsed_signatures high_conf_mature_ath_uniq_collapsed_structures > high_conf_mature_ath_uniq_collapsed_predictions
+$ cp ../New_M/chromosome_length .
+$ perl rm_redundant_meet_plant.pl chromosome_length high_conf_mature_ath_uniq_collapsed_precursors.fa high_conf_mature_ath_uniq_collapsed_predictions high_conf_mature_ath_uniq_collapsed_nr_prediction high_conf_mature_ath_uniq_collapsed_filter_P_prediction
