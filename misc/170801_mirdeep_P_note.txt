@@ -35,12 +35,24 @@ $ sort +3 -25 AtShoot_precursors.bst >AtShoot_signatures
 $ perl miRDeep.pl AtShoot_signatures AtShoot_structures > AtShoot_predictions
 $ perl rm_redundancy_meet_plant.pl chromosome_length AtShoot_precursors.fa AtShoot_predictions AtShoot_nr_prediction AtShoot_filter_P_prediction
 
+# JULIE ########################################################
 
-$ bowtie-build -f a_thaliana_t10.fa bowtie-index/TAIR10_genome
+$ cp ../miRDP1.3/* .
+$ cp ../a_thaliana_t10.fa .
+$ mkdir bowtie-index
+#$ bowtie-build -f a_thaliana_t10.fa bowtie-index/TAIR10_genome
+$ cp ../bowtie-index/* bowtie-index/
+$ cp ../New_M/ncRNA_CDS.gff .
+$ cp ../New_M/chromosome_length .
+#
+$ cp ../Known_M/ath.gff .
+$ cp ../Known_M/annotated_miRNA_extended.fa .
+
+
+# new
 $ bowtie -a -v 0 bowtie-index/TAIR10_genome -f high_conf_mature_ath_uniq_collapsed.fa >high_conf_mature_ath_uniq_collapsed.aln
 $ perl convert_bowtie_to_blast.pl high_conf_mature_ath_uniq_collapsed.aln high_conf_mature_ath_uniq_collapsed.fa a_thaliana_t10.fa >high_conf_mature_ath_uniq_collapsed.bst
 $ perl filter_alignments.pl high_conf_mature_ath_uniq_collapsed.bst -c 15 >high_conf_mature_ath_uniq_collapsed_filter15.bst
-$ cp ../New_M/ncRNA_CDS.gff .
 $ perl overlap.pl high_conf_mature_ath_uniq_collapsed_filter15.bst ncRNA_CDS.gff -b >id_overlap_ncRNA_CDS
 	stdout: high_conf_mature_ath_uniq_collapsed_filter15.bst 154
 			ncRNA_CDS.gff 181359
@@ -53,5 +65,19 @@ $ bowtie -a -v 0 bowtie-index/high_conf_mature_ath_uniq_collapsed_precursors -f 
 $ perl convert_bowtie_to_blast.pl high_conf_mature_ath_uniq_collapsed_precursors.aln high_conf_mature_ath_uniq_collapsed_filtered.fa high_conf_mature_ath_uniq_collapsed_precursors.fa >high_conf_mature_ath_uniq_collapsed_precursors.bst
 $ sort +3 -25 high_conf_mature_ath_uniq_collapsed_precursors.bst >high_conf_mature_ath_uniq_collapsed_signatures
 $ perl miRDP.pl high_conf_mature_ath_uniq_collapsed_signatures high_conf_mature_ath_uniq_collapsed_structures > high_conf_mature_ath_uniq_collapsed_predictions
-$ cp ../New_M/chromosome_length .
 $ perl rm_redundant_meet_plant.pl chromosome_length high_conf_mature_ath_uniq_collapsed_precursors.fa high_conf_mature_ath_uniq_collapsed_predictions high_conf_mature_ath_uniq_collapsed_nr_prediction high_conf_mature_ath_uniq_collapsed_filter_P_prediction
+
+
+# known
+$ bowtie-build -f annotated_miRNA_extended.fa bowtie-index/annotated_miRNA_extended
+$ bowtie -a -v 0 bowtie-index/annotated_miRNA_extended -f high_conf_mature_ath_uniq_collapsed.fa >high_conf_mature_ath_uniq_collapsed_extended.aln
+
+$ perl convert_bowtie_to_blast.pl high_conf_mature_ath_uniq_collapsed_extended.aln high_conf_mature_ath_uniq_collapsed.fa annotated_miRNA_extended.fa  > high_conf_mature_ath_uniq_collapsed_extended.bst
+$ perl excise_candidate.pl annotated_miRNA_extended.fa high_conf_mature_ath_uniq_collapsed_extended.bst 250 >precursors_250.fa
+$ bowtie-build -f precursors_250.fa bowtie-index/precursors_250
+$ cat precursors_250.fa|RNAfold --noPS >precursors_250_structure
+$ bowtie -a -v 0 bowtie-index/precursors_250 -f high_conf_mature_ath_uniq_collapsed.fa >high_conf_mature_ath_uniq_collapsed_250.aln
+$ perl convert_bowtie_to_blast.pl high_conf_mature_ath_uniq_collapsed_250.aln high_conf_mature_ath_uniq_collapsed.fa precursors_250.fa >high_conf_mature_ath_uniq_collapsed_250.bst
+$ sort +3 -25 high_conf_mature_ath_uniq_collapsed_250.bst >high_conf_mature_ath_uniq_collapsed_250_signature
+$ perl miRDP.pl high_conf_mature_ath_uniq_collapsed_250_signature precursors_250_structure >high_conf_mature_ath_uniq_collapsed_250_prediction
+$ cut -f1 high_conf_mature_ath_uniq_collapsed_250_prediction | grep 'seq_' | sort | uniq | wc -l
