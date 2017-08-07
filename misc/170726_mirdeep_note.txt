@@ -128,4 +128,4 @@ $ miRDeep2.pl high_conf_mature_ath_uniq_collapsed.fa ath_genome.fa high_conf_mat
 $ quantifier.pl -p precursors_ref_this_species.fa -m mature_ref_this_species.fa -r reads_collapsed.fa -t cel -y 16_19
 
 
-
+mapper.pl 100.fa -c -j -l 18 -m -p a_thaliana_t10 -s 100_collapsed.fa -t high_conf_mature_ath_collapsedvs_genome.arf -v
