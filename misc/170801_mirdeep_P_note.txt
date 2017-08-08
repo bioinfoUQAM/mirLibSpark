@@ -81,3 +81,27 @@ $ perl convert_bowtie_to_blast.pl high_conf_mature_ath_uniq_collapsed_250.aln hi
 $ sort +3 -25 high_conf_mature_ath_uniq_collapsed_250.bst >high_conf_mature_ath_uniq_collapsed_250_signature
 $ perl miRDP.pl high_conf_mature_ath_uniq_collapsed_250_signature precursors_250_structure >high_conf_mature_ath_uniq_collapsed_250_prediction
 $ cut -f1 high_conf_mature_ath_uniq_collapsed_250_prediction | grep 'seq_' | sort | uniq | wc -l
+
+####################################################################
+##
+##  UPDATE AUXILIARY FILES
+##
+####################################################################
+Go to miRBase FTP site: http://www.mirbase.org/ftp.shtml
+download this file: ath.gff3 (based on miRBase v21, TAIR10, NCBI_Assembly:GCA_000001735.1)
+
+#= to count word between (inclusive) line 1 and 2
+sed -n '1,2p' file | wc -w
+#= to remove lines
+Remove the interval between (inclusive) lines 7 and 9: 
+sed '7,9d' filename.txt > remaining.txt
+
+
+chr
+sed -n '2,385162p' a_thaliana_t10.fa | wc -c #= 30812832 - 385161        = 30427671
+sed -n '385164,634509p' a_thaliana_t10.fa | wc -c #= 19947635 - 249346   = 19698289
+sed -n '634511,931470p' a_thaliana_t10.fa | wc -c #= 23756790 - 296960   = 23459830
+sed -n '931472,1166725p' a_thaliana_t10.fa | wc -c #= 18820310 - 235254  = 18585056
+sed -n '1166727,1508189p' a_thaliana_t10.fa | wc -c #= 27316965 - 341463 = 26975502
+
+sed '1508191,1514792d' a_thaliana_t10.fa > a_thaliana_t10.fa_remain
