@@ -129,3 +129,18 @@ $ quantifier.pl -p precursors_ref_this_species.fa -m mature_ref_this_species.fa 
 
 
 mapper.pl 100.fa -c -j -l 18 -m -p a_thaliana_t10 -s 100_collapsed.fa -t high_conf_mature_ath_collapsedvs_genome.arf -v
+
+###############################################################
+##
+## work on testing 100.txt
+## to find out: exet time and how many output mirnas
+##
+###############################################################
+
+to generate 100_collapsed_vs_genome.arf
+because 100_collapsed.fa is already collapsed, so I don't need this 100_collapsed.fa2 file
+$ perl mapper.pl 100_collapsed.fa -c -j -l 18 -m -p a_thaliana_t10 -s 100_collapsed.fa2 -t 100_collapsed_vs_genome.arf -v
+$ rm 100_collapsed.fa2
+$ perl miRDeep2.pl 100_collapsed.fa a_thaliana_t10.fa 100_collapsed_vs_genome.arf none none none 
+
+high_conf_mature_ath.fa mature_not_ath.fa hairpin_ath.fa

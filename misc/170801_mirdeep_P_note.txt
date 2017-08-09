@@ -103,5 +103,29 @@ sed -n '385164,634509p' a_thaliana_t10.fa | wc -c #= 19947635 - 249346   = 19698
 sed -n '634511,931470p' a_thaliana_t10.fa | wc -c #= 23756790 - 296960   = 23459830
 sed -n '931472,1166725p' a_thaliana_t10.fa | wc -c #= 18820310 - 235254  = 18585056
 sed -n '1166727,1508189p' a_thaliana_t10.fa | wc -c #= 27316965 - 341463 = 26975502
+### the chromosome length is exactly the same as tair9
 
 sed '1508191,1514792d' a_thaliana_t10.fa > a_thaliana_t10.fa_remain
+
+#= Go to Arabidopsis website: https://www.arabidopsis.org/download/index.jsp
+Genes > TAIR10 genome release (most updated is Araport11 but we stick we v10) > TAIR10 gff3 > TAIR10_GFF3_genes.gff
+https://www.arabidopsis.org/download_files/Genes/TAIR10_genome_release/TAIR10_gff3/TAIR10_GFF3_genes.gff
+download this file and edit it to obtain two other necessary files
+
+###########################
+#= copy lines containing A1 or B3 or C2
+grep -E 'A1|B3|C2' filename
+
+grep -E 't3|t2' test.txt
+
+grep -E 'CDS|rRNA|snoRNA|snRNA|tRNA' TAIR10_GFF3_genes.gff > ncRNA_CDS.gff
+
+CDS
+gene
+rRNA
+snoRNA
+snRNA
+tRNA
+
+
+
