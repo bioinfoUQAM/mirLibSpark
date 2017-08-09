@@ -239,3 +239,20 @@ def randomStrGen (n):
   import random
   
   return ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(n))
+
+def get_nonMirna_coors (infile):
+  #infile = '../dbs/TAIR10_ncRNA_CDS.gff'
+  idnb = 0
+  d_ncRNA_CDS = {}
+  with open (infile, 'r') as fh:
+    for i in fh:
+      data = i.split('\t') #= ['Chr1', 'TAIR10', 'CDS', '3760', '3913', '.', '+', '0', 'Parent=AT1G01010.1,AT1G01010.1-Protein;\n']
+      chromo   = data[0]
+      #genetype = data[2]   #= CDS, rRNA, snoRNA, rRNA, snoRNA, snRNA, tRNA, (gene)
+      begin    = data[3]
+      end      = data[4]
+      strand   = data[6]
+      d_ncRNA_CDS[idnb] = [chromo, strand, begin, end]
+      idnb += 1
+  return d_ncRNA_CDS
+

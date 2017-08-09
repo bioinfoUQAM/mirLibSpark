@@ -192,7 +192,7 @@ if __name__ == '__main__' :
     
     print('NB bowtie_rdd: ', len(bowtie_rdd.collect()))##################################################
     
-    #= Get the expression value for each reads
+    #= Getting the expression value for each reads
     ## in : ('seq', [nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     bowFrq_rdd = bowtie_rdd.join(sr_short_rdd)\
