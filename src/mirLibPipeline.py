@@ -65,8 +65,12 @@ if __name__ == '__main__' :
 
   # bowtie
   b_index_path = paramDict['b_index_path']
-  # pri-mirna
 
+  #= file and list of known non miRNA
+  known_non = '../dbs/TAIR10_ncRNA_CDS.gff' ###############################################################################
+  l_non_miRNA = ut.get_nonMirna_list (known_non, genome_path)
+
+  # pri-mirna
   pri_l_flank = int(paramDict['pri_l_flank'])       #120
   pri_r_flank = int(paramDict['pri_r_flank'])       #60
   pre_flank = int(paramDict['pre_flank'])           #30
@@ -113,6 +117,7 @@ if __name__ == '__main__' :
   dmask_obj = mru.prog_dustmasker()
   dmask_cmd, dmask_env = dmask_obj.dmask_pipe_cmd()
   bowtie_obj = mru.prog_bowtie(b_index_path)
+  kn_obj = mru.prog_knownNonMiRNA(l_non_miRNA) ##########################################################
   bowtie_cmd, bowtie_env = bowtie_obj.Bowtie_pipe_cmd()
   prec_obj = mru.extract_precurosrs(genome_path, pri_l_flank, pri_r_flank, pre_flank)
   rnafold_obj = mru.prog_RNAfold()
@@ -151,6 +156,9 @@ if __name__ == '__main__' :
     ## out: u'seq,freq'
     distFile = sc.textFile("file:///" + inKvfile).persist()########
     print('NB distFile: ', len(distFile.collect()))####################################################
+
+    excluKnownNon_rdd = distFile.filter(kn_obj.knFilter)
+    print('excluKnownNon_rdd: ', len(excluKnownNon_rdd.collect()))
     
     #= Convert element from string to list
     ## in : u'seq,freq'
@@ -191,6 +199,16 @@ if __name__ == '__main__' :
                           .persist()
     
     print('NB bowtie_rdd: ', len(bowtie_rdd.collect()))##################################################
+
+    ###############################
+    ## Filtering known non-miRNA ##
+    ###############################
+    ## in : ('seq', [nbLoc, [['strd','chr',posChr],..]])
+    ## out: ('seq', [nbLoc, [['strd','chr',posChr],..]])
+    #xx#excluKnownNon_rdd = bowtie_rdd.filter(kn_obj.knFilter)
+    #xx#print('excluKnownNon_rdd: ', len(excluKnownNon_rdd.collect()))##################################################
+    
+
     
     #= Getting the expression value for each reads
     ## in : ('seq', [nbLoc, [['strd','chr',posChr],..]])

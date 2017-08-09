@@ -479,6 +479,21 @@ class prog_miRdup ():
     return e
 
 
+###############
+class prog_knownNonMiRNA ():
+  def __init__ (self, l_non_miRNA):
+    self.env = os.environ
+    
+    #= variable ==
+    self.l_non_miRNA = l_non_miRNA
+    
+  def knFilter (self, e):
+    ##('seq', [nbLoc, [['strd','chr',posChr],..]])
+    seq = e[0]
+    if any(seq in s for s in self.l_non_miRNA): return False
+    return True
+
+
 if __name__ == '__main__' :
    
    values_sep = "<>"
