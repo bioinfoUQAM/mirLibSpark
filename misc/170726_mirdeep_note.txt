@@ -117,13 +117,11 @@ $ miRDeep2.pl high_conf_mature_ath_collapsed.fa ath_genome.fa high_conf_mature_a
 
 ##170801##
 high_conf_mature_ath_uniq.fa
-$ mapper.pl high_conf_mature_ath_uniq.fa -c -j -l 18 -m -p a_thaliana_t10 -s high_conf_mature_ath_uniq_collapsed.fa -t high_conf_mature_ath_uniq_collapsedvs_genome.arf -v
-$ miRDeep2.pl high_conf_mature_ath_uniq_collapsed.fa ath_genome.fa high_conf_mature_ath_uniq_collapsedvs_genome.arf high_conf_mature_ath.fa none none -t A.thaliana 2> report.log
+$ mapper.pl high_conf_mature_ath_uniq.fa -c -j -l 18 -m -p a_thaliana_t10 -s high_conf_mature_ath_uniq_collapsed.fa -t high_conf_mature_ath_uniq_collapsed_vs_genome.arf -v
+#1#$ miRDeep2.pl high_conf_mature_ath_uniq_collapsed.fa ath_genome.fa high_conf_mature_ath_uniq_collapsed_vs_genome.arf high_conf_mature_ath.fa none none -t A.thaliana 2> report.log
+#2#$ miRDeep2.pl high_conf_mature_ath_uniq_collapsed.fa a_thaliana_t10.fa high_conf_mature_ath_uniq_collapsed_vs_genome.arf high_conf_mature_ath.fa mature_not_ath.fa hairpin_ath.fa -t A.thaliana 2> report.log
 
-
-$ miRDeep2.pl high_conf_mature_ath_uniq_collapsed.fa ath_genome.fa high_conf_mature_ath_uniq_collapsedvs_genome.arf high_conf_mature_ath.fa mature_not_ath.fa hairpin_ath.fa -t A.thaliana 2> report.log
-
-
+#today# $ miRDeep2.pl high_conf_mature_ath_uniq_collapsed.fa a_thaliana_t10.fa high_conf_mature_ath_uniq_collapsed_vs_genome.arf high_conf_mature_ath.fa mature_not_ath.fa hairpin_ath.fa -t A.thaliana 2> report.log
 
 $ quantifier.pl -p precursors_ref_this_species.fa -m mature_ref_this_species.fa -r reads_collapsed.fa -t cel -y 16_19
 
@@ -136,11 +134,9 @@ mapper.pl 100.fa -c -j -l 18 -m -p a_thaliana_t10 -s 100_collapsed.fa -t high_co
 ## to find out: exet time and how many output mirnas
 ##
 ###############################################################
-
+## cloudera [~/workspace/miRNA_predictor/mirdeep2_0_0_8/tutorial_dir]
 to generate 100_collapsed_vs_genome.arf
-because 100_collapsed.fa is already collapsed, so I don't need this 100_collapsed.fa2 file
-$ perl mapper.pl 100_collapsed.fa -c -j -l 18 -m -p a_thaliana_t10 -s 100_collapsed.fa2 -t 100_collapsed_vs_genome.arf -v
-$ rm 100_collapsed.fa2
+$ perl mapper.pl 100.fa -c -j -l 18 -m -p a_thaliana_t10 -s 100_collapsed.fa -t 100_collapsed_vs_genome.arf -v
 $ perl miRDeep2.pl 100_collapsed.fa a_thaliana_t10.fa 100_collapsed_vs_genome.arf none none none 
 
 high_conf_mature_ath.fa mature_not_ath.fa hairpin_ath.fa
