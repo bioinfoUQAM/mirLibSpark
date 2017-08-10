@@ -68,7 +68,8 @@ if __name__ == '__main__' :
 
   #= file and list of known non miRNA
   known_non = '../dbs/TAIR10_ncRNA_CDS.gff' ###############################################################################
-  l_non_miRNA = ut.get_nonMirna_list (known_non, genome_path)
+  ##l_non_miRNA = ut.get_nonMirna_list (known_non, genome_path)
+  l_non_miRNA = ['TGGATTTATGAAAGACGAACAACTGCGAAA']
 
   # pri-mirna
   pri_l_flank = int(paramDict['pri_l_flank'])       #120

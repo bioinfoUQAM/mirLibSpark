@@ -490,8 +490,8 @@ class prog_knownNonMiRNA ():
   def knFilter (self, e):
     ##('seq', [nbLoc, [['strd','chr',posChr],..]])
     seq = e[0]
-    if any(seq in s for s in self.l_non_miRNA): return False
-    return True
+    if any(seq in s for s in self.l_non_miRNA): return True #False
+    return False #True
 
 
 if __name__ == '__main__' :
