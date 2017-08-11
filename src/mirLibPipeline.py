@@ -68,8 +68,10 @@ if __name__ == '__main__' :
 
   #= file and list of known non miRNA
   known_non = '../dbs/TAIR10_ncRNA_CDS.gff' ###############################################################################
-  l_non_miRNA = ut.get_nonMirna_list (known_non, genome_path)
+  #l_non_miRNA = ut.get_nonMirna_list (known_non, genome_path)
   #l_non_miRNA = ['TGGATTTATGAAAGACGAACAACTGCGAAA']
+  d_ncRNA_CDS = ut.get_nonMirna_coors (known_non) #= nb = 198736
+  #d_ncRNA_CDS = {1: ['+', 'Chr5', '26939753', '26939884'], 2: ['+', 'Chr5', '26939972', '26940240'], 3: ['+', 'Chr5', '26940312', '26940396'], 4: ['+', 'Chr5', '26940532', '26940578']}
 
   # pri-mirna
   pri_l_flank = int(paramDict['pri_l_flank'])       #120
@@ -118,7 +120,7 @@ if __name__ == '__main__' :
   dmask_obj = mru.prog_dustmasker()
   dmask_cmd, dmask_env = dmask_obj.dmask_pipe_cmd()
   bowtie_obj = mru.prog_bowtie(b_index_path)
-  kn_obj = mru.prog_knownNonMiRNA(l_non_miRNA) ##########################################################
+  kn_obj = mru.prog_knownNonMiRNA(d_ncRNA_CDS) ##########################################################
   bowtie_cmd, bowtie_env = bowtie_obj.Bowtie_pipe_cmd()
   prec_obj = mru.extract_precurosrs(genome_path, pri_l_flank, pri_r_flank, pre_flank)
   rnafold_obj = mru.prog_RNAfold()
@@ -223,21 +225,21 @@ if __name__ == '__main__' :
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr])
     flat_rdd = nbLoc_rdd.flatMap(mru.flatmap_mappings).persist() ###
+    print('NB flat_rdd (this step flats elements): ', len(flat_rdd.groupByKey().collect()))##################
 
     ###############################
     ## Filtering known non-miRNA ##
     ###############################
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr])
-    excluKnownNon_rdd = flat_rdd.filter(kn_obj.knFilter) ###===
-    print('excluKnownNon_rdd: ', len(excluKnownNon_rdd.collect()))###===
+    ##excluKnownNon_rdd = flat_rdd.filter(kn_obj.knFilterBySeq) #= defunct
+    excluKnownNon_rdd = flat_rdd.filter(kn_obj.knFilterByCoor)##xxx
+    print('excluKnownNon_rdd: ', len(excluKnownNon_rdd.collect()))###=== 
     
-
     #= Extraction of the pri-miRNA
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri]])
-    primir_rdd = excluKnownNon_rdd.flatMap(prec_obj.extract_prim_rule).persist()#################################
-    print('NB primir_rdd distinct (this step flats elements): ', len(primir_rdd.groupByKey().collect()))##################
+    primir_rdd = excluKnownNon_rdd.flatMap(prec_obj.extract_prim_rule)
 
     #= pri-miRNA folding
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri]])

@@ -494,17 +494,38 @@ class prog_miRdup ():
 
 ###############
 class prog_knownNonMiRNA ():
-  def __init__ (self, l_non_miRNA):
+  def __init__ (self, non_miRNA):
     self.env = os.environ
     
     #= variable ==
-    self.l_non_miRNA = l_non_miRNA
+    self.non_miRNA = non_miRNA
     
-  def knFilter (self, e):
-    ##('seq', [nbLoc, [['strd','chr',posChr],..]])
+  def knFilterBySeq (self, e):
+    #= non_miRNA is a list of sequences
     seq = e[0]
-    return not any(seq in s for s in self.l_non_miRNA)
+    return not any(seq in s for s in self.non_miRNA)
 
+  def knFilterByCoor (self, e):
+    ##in : ('seq', [freq, nbLoc, ['strd','chr',posChr])
+    #= non_miRNA is a list of genomic coordinations: {idnb, [strand, chromo, begin, end]}
+    seq = e[0]
+    bowtie = e[1][2]
+    strd = bowtie[0]
+    chr = bowtie[1]
+    posBegin = int(bowtie[2])
+    posEnd = posBegin + len(seq) - 1
+
+    for coor in self.non_miRNA.values():
+      nonmir_chromo = coor[1]
+      if not chr == nonmir_chromo: continue
+      nonmir_strand = coor[0]
+      if not strd == nonmir_strand: continue
+      nonmir_begin  = coor[2]
+      if posBegin < nonmir_begin: continue
+      nonmir_end    = coor[3]
+      if posEnd < nonmir_end: return False
+    return True
+      
 if __name__ == '__main__' :
    
    values_sep = "<>"
