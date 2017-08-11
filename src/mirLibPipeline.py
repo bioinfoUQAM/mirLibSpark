@@ -222,7 +222,7 @@ if __name__ == '__main__' :
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr])
     flat_rdd = nbLoc_rdd.flatMap(mru.flatmap_mappings).persist() ###
-    print('NB flat_rdd (this step flats elements): ', len(flat_rdd.collect()))##################
+    print('NB flat_rdd (this step flats elements): ', len(flat_rdd.groupByKey().collect()))##################
 
     ###############################
     ## Filtering known non-miRNA ##
@@ -231,7 +231,7 @@ if __name__ == '__main__' :
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr])
     ##excluKnownNon_rdd = flat_rdd.filter(kn_obj.knFilterBySeq) #= defunct
     excluKnownNon_rdd = flat_rdd.filter(kn_obj.knFilterByCoor).persist()#######
-    print('excluKnownNon_rdd: ', len(excluKnownNon_rdd.collect()))########
+    print('excluKnownNon_rdd: ', len(excluKnownNon_rdd.groupByKey().collect()))########
     
     #= Extraction of the pri-miRNA
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr])
