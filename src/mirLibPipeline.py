@@ -157,8 +157,7 @@ if __name__ == '__main__' :
     #= Convert the text file to RDD object
     ## in : file
     ## out: u'seq,freq'
-    distFile = sc.textFile("file:///" + inKvfile).persist()########
-    print('NB distFile: ', len(distFile.collect()))####################################################
+    distFile = sc.textFile("file:///" + inKvfile)
    
     #= Convert element from string to list
     ## in : u'seq,freq'
@@ -197,7 +196,6 @@ if __name__ == '__main__' :
                           .groupByKey()\
                           .map(lambda e: (e[0], [len(list(e[1])), list(e[1])]))\
                           .persist()
-    
     print('NB bowtie_rdd: ', len(bowtie_rdd.collect()))##################################################
    
     #= Getting the expression value for each reads
@@ -206,7 +204,6 @@ if __name__ == '__main__' :
     bowFrq_rdd = bowtie_rdd.join(sr_short_rdd)\
                            .map(bowtie_obj.bowtie_freq_rearrange_rule)\
                            .persist()
-
     print('NB bowFrq_rdd: ', len(bowFrq_rdd.collect()))##################################################
     
     #= Filtering miRNA low frequency
@@ -267,8 +264,7 @@ if __name__ == '__main__' :
     #= pre-miRNA folding
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre]])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold']])
-    pre_fold_rdd = premir_rdd.map(lambda e: rnafold_obj.RNAfold_map_rule(e, 4)).persist()##################
-    print('NB pre_fold_rdd distinct (step before mirdup): ', len(pre_fold_rdd.groupByKey().collect()))################
+    pre_fold_rdd = premir_rdd.map(lambda e: rnafold_obj.RNAfold_map_rule(e, 4))
 
     ###################################################   
     #= Validating pre-mirna with mircheck
@@ -276,7 +272,7 @@ if __name__ == '__main__' :
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mkPred','mkStart','mkStop']])
     pre_vld_rdd0 = pre_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 4))\
                               .filter(lambda e: any(e[1][4])).persist()
-    print('NB pre_vld_rdd0 distinct (mircheck II): ', len(pre_vld_rdd0.groupByKey().collect()))################
+    print('NB pre_vld_rdd0 distinct (mircheck II): (', len(pre_vld_rdd0.groupByKey().collect()), ')')################
 
     #= Validating pre-mirna with miRdup zipWithUniqueId
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold']])
@@ -292,13 +288,13 @@ if __name__ == '__main__' :
     #= Create dict, chromo_strand as key to search bowtie blocs in the following dict
     dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(bowFrq_rdd.collect())
     
-    #= Results of miRNA prediction
+    #= Filtering by expression profile (< 20%)
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore']])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq])
-    miRNA_rdd = pre_vld_rdd.map(lambda e: profile_obj.computeProfileFrq(e, dict_bowtie_chromo_strand))\
+    profile_rdd = pre_vld_rdd.map(lambda e: profile_obj.computeProfileFrq(e, dict_bowtie_chromo_strand))\
                       .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)\
                       .persist()####################
-    print('NB miRNA_rdd distinct (dominant profile): ', len(miRNA_rdd.groupByKey().collect()))#####################
+    print('NB profile_rdd distinct (final prediction): ', len(profile_rdd.groupByKey().collect()))#####################
 
     #= target prediction
     #miranda_rdd = miRNA_rdd.map(miranda_obj.computeTargetbyMiranda).persist()####
