@@ -230,8 +230,8 @@ if __name__ == '__main__' :
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr])
     ##excluKnownNon_rdd = flat_rdd.filter(kn_obj.knFilterBySeq) #= defunct
-    excluKnownNon_rdd = flat_rdd.filter(kn_obj.knFilterByCoor)##xxx
-    print('excluKnownNon_rdd: ', len(excluKnownNon_rdd.collect()))###=== 
+    excluKnownNon_rdd = flat_rdd.filter(kn_obj.knFilterByCoor).persist()#######
+    print('excluKnownNon_rdd: ', len(excluKnownNon_rdd.collect()))########
     
     #= Extraction of the pri-miRNA
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr])
