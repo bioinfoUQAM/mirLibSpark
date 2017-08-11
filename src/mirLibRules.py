@@ -18,6 +18,19 @@ def rearrange_rule(kv_arg, kv_sep):
   tab = kv_arg.split(kv_sep)
   return (str(tab[0]), int(tab[1]))
 
+def flatmap_mappings(elem) :
+  '''
+  ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
+  ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr])
+  '''
+  newElems = []
+  
+  for mapping in elem[1][2]:
+    newElem = (elem[0], [elem[1][0], elem[1][1], mapping])
+    newElems.append(newElem)
+  
+  return newElems
+
 class prog_dustmasker ():
 
   def __init__(self):
@@ -161,19 +174,19 @@ class extract_precurosrs ():
 
   def extract_prim_rule(self, elem):
     '''
-    elem = (id, [seq, frq, nbloc, [bowties]])
+    ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr])
+    ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri]])
     '''
     newElems = []
-    primirnas = []
     len_srna = len(elem[0])
     
-    for mapping in elem[1][2]:
-      contig = self.genome[mapping[1]]
-      prims = self.extract_precursors(contig, mapping[0], mapping[2], len_srna)
+    mapping = elem[1][2]
+    contig = self.genome[mapping[1]]
+    prims = self.extract_precursors(contig, mapping[0], mapping[2], len_srna)
       
-      for prim in prims :
-        newElem = (elem[0], [elem[1][0], elem[1][1], mapping, prim])
-        newElems.append(newElem)
+    for prim in prims :
+      newElem = (elem[0], [elem[1][0], elem[1][1], mapping, prim])
+      newElems.append(newElem)
     
     return newElems
 
@@ -478,6 +491,19 @@ class prog_miRdup ():
     e[0][1][4].append(mirdup_score)
     return e
 
+
+###############
+class prog_knownNonMiRNA ():
+  def __init__ (self, l_non_miRNA):
+    self.env = os.environ
+    
+    #= variable ==
+    self.l_non_miRNA = l_non_miRNA
+    
+  def knFilter (self, e):
+    ##('seq', [nbLoc, [['strd','chr',posChr],..]])
+    seq = e[0]
+    return not any(seq in s for s in self.l_non_miRNA)
 
 if __name__ == '__main__' :
    

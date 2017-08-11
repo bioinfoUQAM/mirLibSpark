@@ -65,8 +65,13 @@ if __name__ == '__main__' :
 
   # bowtie
   b_index_path = paramDict['b_index_path']
-  # pri-mirna
 
+  #= file and list of known non miRNA
+  known_non = '../dbs/TAIR10_ncRNA_CDS.gff' ###############################################################################
+  l_non_miRNA = ut.get_nonMirna_list (known_non, genome_path)
+  #l_non_miRNA = ['TGGATTTATGAAAGACGAACAACTGCGAAA']
+
+  # pri-mirna
   pri_l_flank = int(paramDict['pri_l_flank'])       #120
   pri_r_flank = int(paramDict['pri_r_flank'])       #60
   pre_flank = int(paramDict['pre_flank'])           #30
@@ -113,6 +118,7 @@ if __name__ == '__main__' :
   dmask_obj = mru.prog_dustmasker()
   dmask_cmd, dmask_env = dmask_obj.dmask_pipe_cmd()
   bowtie_obj = mru.prog_bowtie(b_index_path)
+  kn_obj = mru.prog_knownNonMiRNA(l_non_miRNA) ##########################################################
   bowtie_cmd, bowtie_env = bowtie_obj.Bowtie_pipe_cmd()
   prec_obj = mru.extract_precurosrs(genome_path, pri_l_flank, pri_r_flank, pre_flank)
   rnafold_obj = mru.prog_RNAfold()
@@ -151,13 +157,13 @@ if __name__ == '__main__' :
     ## out: u'seq,freq'
     distFile = sc.textFile("file:///" + inKvfile).persist()########
     print('NB distFile: ', len(distFile.collect()))####################################################
-    
+   
     #= Convert element from string to list
     ## in : u'seq,freq'
     ## out: ('seq', freq)
     input_rdd = distFile.map(lambda line: mru.rearrange_rule(line, my_sep)).persist()
     print('NB input_rdd: ', len(input_rdd.collect()))####################################################
-    
+   
     #= Filtering sRNA low frequency
     ## in : ('seq', freq)
     ## out: ('seq', freq)
@@ -191,8 +197,8 @@ if __name__ == '__main__' :
                           .persist()
     
     print('NB bowtie_rdd: ', len(bowtie_rdd.collect()))##################################################
-    
-    #= Get the expression value for each reads
+   
+    #= Getting the expression value for each reads
     ## in : ('seq', [nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     bowFrq_rdd = bowtie_rdd.join(sr_short_rdd)\
@@ -213,10 +219,24 @@ if __name__ == '__main__' :
     nbLoc_rdd = mr_low_rdd.filter(lambda e: e[1][1] > 0 and e[1][1] < limit_nbLoc).persist()#############
     print('NB nbLoc_rdd: ', len(nbLoc_rdd.collect()))###################################################
     
-    #= Extraction of the pri-miRNA
+    #= Flatmap the RDD
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
+    ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr])
+    flat_rdd = nbLoc_rdd.flatMap(mru.flatmap_mappings).persist() ###
+
+    ###############################
+    ## Filtering known non-miRNA ##
+    ###############################
+    ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr])
+    ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr])
+    excluKnownNon_rdd = flat_rdd.filter(kn_obj.knFilter) ###===
+    print('excluKnownNon_rdd: ', len(excluKnownNon_rdd.collect()))###===
+    
+
+    #= Extraction of the pri-miRNA
+    ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri]])
-    primir_rdd = nbLoc_rdd.flatMap(prec_obj.extract_prim_rule).persist()#################################
+    primir_rdd = excluKnownNon_rdd.flatMap(prec_obj.extract_prim_rule).persist()#################################
     print('NB primir_rdd distinct (this step flats elements): ', len(primir_rdd.groupByKey().collect()))##################
 
     #= pri-miRNA folding
