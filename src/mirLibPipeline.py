@@ -65,8 +65,15 @@ if __name__ == '__main__' :
 
   # bowtie
   b_index_path = paramDict['b_index_path']
-  # pri-mirna
 
+  #= file and list of known non miRNA
+  known_non = '../dbs/TAIR10_ncRNA_CDS.gff' ###############################################################################
+  #l_non_miRNA = ut.get_nonMirna_list (known_non, genome_path)
+  #l_non_miRNA = ['TGGATTTATGAAAGACGAACAACTGCGAAA']
+  d_ncRNA_CDS = ut.get_nonMirna_coors (known_non) #= nb = 198736
+  #d_ncRNA_CDS = {1: ['+', 'Chr5', '26939753', '26939884'], 2: ['+', 'Chr5', '26939972', '26940240'], 3: ['+', 'Chr5', '26940312', '26940396'], 4: ['+', 'Chr5', '26940532', '26940578']}
+
+  # pri-mirna
   pri_l_flank = int(paramDict['pri_l_flank'])       #120
   pri_r_flank = int(paramDict['pri_r_flank'])       #60
   pre_flank = int(paramDict['pre_flank'])           #30
@@ -113,6 +120,7 @@ if __name__ == '__main__' :
   dmask_obj = mru.prog_dustmasker()
   dmask_cmd, dmask_env = dmask_obj.dmask_pipe_cmd()
   bowtie_obj = mru.prog_bowtie(b_index_path)
+  kn_obj = mru.prog_knownNonMiRNA(d_ncRNA_CDS) ##########################################################
   bowtie_cmd, bowtie_env = bowtie_obj.Bowtie_pipe_cmd()
   prec_obj = mru.extract_precurosrs(genome_path, pri_l_flank, pri_r_flank, pre_flank)
   rnafold_obj = mru.prog_RNAfold()
@@ -149,15 +157,14 @@ if __name__ == '__main__' :
     #= Convert the text file to RDD object
     ## in : file
     ## out: u'seq,freq'
-    distFile = sc.textFile("file:///" + inKvfile).persist()########
-    print('NB distFile: ', len(distFile.collect()))####################################################
-    
+    distFile = sc.textFile("file:///" + inKvfile)
+   
     #= Convert element from string to list
     ## in : u'seq,freq'
     ## out: ('seq', freq)
     input_rdd = distFile.map(lambda line: mru.rearrange_rule(line, my_sep)).persist()
     print('NB input_rdd: ', len(input_rdd.collect()))####################################################
-    
+   
     #= Filtering sRNA low frequency
     ## in : ('seq', freq)
     ## out: ('seq', freq)
@@ -189,16 +196,14 @@ if __name__ == '__main__' :
                           .groupByKey()\
                           .map(lambda e: (e[0], [len(list(e[1])), list(e[1])]))\
                           .persist()
-    
     print('NB bowtie_rdd: ', len(bowtie_rdd.collect()))##################################################
-    
+   
     #= Getting the expression value for each reads
     ## in : ('seq', [nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     bowFrq_rdd = bowtie_rdd.join(sr_short_rdd)\
                            .map(bowtie_obj.bowtie_freq_rearrange_rule)\
                            .persist()
-
     print('NB bowFrq_rdd: ', len(bowFrq_rdd.collect()))##################################################
     
     #= Filtering miRNA low frequency
@@ -213,11 +218,25 @@ if __name__ == '__main__' :
     nbLoc_rdd = mr_low_rdd.filter(lambda e: e[1][1] > 0 and e[1][1] < limit_nbLoc).persist()#############
     print('NB nbLoc_rdd: ', len(nbLoc_rdd.collect()))###################################################
     
-    #= Extraction of the pri-miRNA
+    #= Flatmap the RDD
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
+    ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr])
+    flat_rdd = nbLoc_rdd.flatMap(mru.flatmap_mappings).persist() ###
+    print('NB flat_rdd (this step flats elements): ', len(flat_rdd.collect()))##################
+
+    ###############################
+    ## Filtering known non-miRNA ##
+    ###############################
+    ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr])
+    ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr])
+    ##excluKnownNon_rdd = flat_rdd.filter(kn_obj.knFilterBySeq) #= defunct
+    excluKnownNon_rdd = flat_rdd.filter(kn_obj.knFilterByCoor)##xxx
+    print('excluKnownNon_rdd: ', len(excluKnownNon_rdd.collect()))###=== 
+    
+    #= Extraction of the pri-miRNA
+    ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri]])
-    primir_rdd = nbLoc_rdd.flatMap(prec_obj.extract_prim_rule).persist()#################################
-    print('NB primir_rdd distinct (this step flats elements): ', len(primir_rdd.groupByKey().collect()))##################
+    primir_rdd = excluKnownNon_rdd.flatMap(prec_obj.extract_prim_rule)
 
     #= pri-miRNA folding
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri]])
@@ -245,8 +264,7 @@ if __name__ == '__main__' :
     #= pre-miRNA folding
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre]])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold']])
-    pre_fold_rdd = premir_rdd.map(lambda e: rnafold_obj.RNAfold_map_rule(e, 4)).persist()##################
-    print('NB pre_fold_rdd distinct (step before mirdup): ', len(pre_fold_rdd.groupByKey().collect()))################
+    pre_fold_rdd = premir_rdd.map(lambda e: rnafold_obj.RNAfold_map_rule(e, 4))
 
     ###################################################   
     #= Validating pre-mirna with mircheck
@@ -254,7 +272,7 @@ if __name__ == '__main__' :
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mkPred','mkStart','mkStop']])
     pre_vld_rdd0 = pre_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 4))\
                               .filter(lambda e: any(e[1][4])).persist()
-    print('NB pre_vld_rdd0 distinct (mircheck II): ', len(pre_vld_rdd0.groupByKey().collect()))################
+    print('NB pre_vld_rdd0 distinct (mircheck II): (', len(pre_vld_rdd0.groupByKey().collect()), ')')################
 
     #= Validating pre-mirna with miRdup zipWithUniqueId
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold']])
@@ -270,13 +288,13 @@ if __name__ == '__main__' :
     #= Create dict, chromo_strand as key to search bowtie blocs in the following dict
     dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(bowFrq_rdd.collect())
     
-    #= Results of miRNA prediction
+    #= Filtering by expression profile (< 20%)
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore']])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq])
-    miRNA_rdd = pre_vld_rdd.map(lambda e: profile_obj.computeProfileFrq(e, dict_bowtie_chromo_strand))\
+    profile_rdd = pre_vld_rdd.map(lambda e: profile_obj.computeProfileFrq(e, dict_bowtie_chromo_strand))\
                       .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)\
                       .persist()####################
-    print('NB miRNA_rdd distinct (dominant profile): ', len(miRNA_rdd.groupByKey().collect()))#####################
+    print('NB profile_rdd distinct (final prediction): ', len(profile_rdd.groupByKey().collect()))#####################
 
     #= target prediction
     #miranda_rdd = miRNA_rdd.map(miranda_obj.computeTargetbyMiranda).persist()####

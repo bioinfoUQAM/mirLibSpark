@@ -240,10 +240,34 @@ def randomStrGen (n):
   
   return ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(n))
 
+def get_nonMirna_list (infile, genome_path, file_ext = '.fas'):
+  '''
+  defunc: Sequence found within these known non-miRNA sequences can be a valide miRNA. 
+          I tried with high confidence ath miRBase, and one of them would be eliminated by comparing the sequence. 
+          Therefore, it must compare the coordinate.
+  '''
+  genome = getGenome (genome_path, file_ext) #= genome[chr] = sequence
+  #infile = '../dbs/TAIR10_ncRNA_CDS.gff'
+  l_non_miRNA = []
+  with open (infile, 'r') as fh:
+    for i in fh:
+      data = i.split('\t') #= ['Chr1', 'TAIR10', 'CDS', '3760', '3913', '.', '+', '0', 'Parent=AT1G01010.1,AT1G01010.1-Protein;\n']
+      chromo   = data[0]
+      if chromo == 'ChrC': chromo = 'chloroplast'
+      if chromo == 'ChrM': chromo = 'mitochondria'
+      begin    = int(data[3])
+      end      = int(data[4])
+      strand   = data[6]
+      seq = genome[chromo][begin:end+1]
+      if strand == '-':
+        seq = getRevComp (seq)
+      l_non_miRNA.append(seq)
+  return l_non_miRNA
+
 def get_nonMirna_coors (infile):
   #infile = '../dbs/TAIR10_ncRNA_CDS.gff'
   idnb = 0
-  d_ncRNA_CDS = {}
+  d_ncRNA_CDS = {} #= {idnb, [strand, chromo, begin, end]} ==> coor = ['+', 'Chr1', '8244669', '8244712']
   with open (infile, 'r') as fh:
     for i in fh:
       data = i.split('\t') #= ['Chr1', 'TAIR10', 'CDS', '3760', '3913', '.', '+', '0', 'Parent=AT1G01010.1,AT1G01010.1-Protein;\n']
@@ -252,7 +276,11 @@ def get_nonMirna_coors (infile):
       begin    = data[3]
       end      = data[4]
       strand   = data[6]
-      d_ncRNA_CDS[idnb] = [chromo, strand, begin, end]
+      d_ncRNA_CDS[idnb] = [strand, chromo, begin, end]
       idnb += 1
   return d_ncRNA_CDS
+
+
+
+
 

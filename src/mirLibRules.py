@@ -18,6 +18,19 @@ def rearrange_rule(kv_arg, kv_sep):
   tab = kv_arg.split(kv_sep)
   return (str(tab[0]), int(tab[1]))
 
+def flatmap_mappings(elem) :
+  '''
+  ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
+  ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr])
+  '''
+  newElems = []
+  
+  for mapping in elem[1][2]:
+    newElem = (elem[0], [elem[1][0], elem[1][1], mapping])
+    newElems.append(newElem)
+  
+  return newElems
+
 class prog_dustmasker ():
 
   def __init__(self):
@@ -161,19 +174,19 @@ class extract_precurosrs ():
 
   def extract_prim_rule(self, elem):
     '''
-    elem = (id, [seq, frq, nbloc, [bowties]])
+    ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr])
+    ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri]])
     '''
     newElems = []
-    primirnas = []
     len_srna = len(elem[0])
     
-    for mapping in elem[1][2]:
-      contig = self.genome[mapping[1]]
-      prims = self.extract_precursors(contig, mapping[0], mapping[2], len_srna)
+    mapping = elem[1][2]
+    contig = self.genome[mapping[1]]
+    prims = self.extract_precursors(contig, mapping[0], mapping[2], len_srna)
       
-      for prim in prims :
-        newElem = (elem[0], [elem[1][0], elem[1][1], mapping, prim])
-        newElems.append(newElem)
+    for prim in prims :
+      newElem = (elem[0], [elem[1][0], elem[1][1], mapping, prim])
+      newElems.append(newElem)
     
     return newElems
 
@@ -479,6 +492,40 @@ class prog_miRdup ():
     return e
 
 
+###############
+class prog_knownNonMiRNA ():
+  def __init__ (self, non_miRNA):
+    self.env = os.environ
+    
+    #= variable ==
+    self.non_miRNA = non_miRNA
+    
+  def knFilterBySeq (self, e):
+    #= non_miRNA is a list of sequences
+    seq = e[0]
+    return not any(seq in s for s in self.non_miRNA)
+
+  def knFilterByCoor (self, e):
+    ##in : ('seq', [freq, nbLoc, ['strd','chr',posChr])
+    #= non_miRNA is a list of genomic coordinations: {idnb, [strand, chromo, begin, end]}
+    seq = e[0]
+    bowtie = e[1][2]
+    strd = bowtie[0]
+    chr = bowtie[1]
+    posBegin = int(bowtie[2])
+    posEnd = posBegin + len(seq) - 1
+
+    for coor in self.non_miRNA.values():
+      nonmir_chromo = coor[1]
+      if not chr == nonmir_chromo: continue
+      nonmir_strand = coor[0]
+      if not strd == nonmir_strand: continue
+      nonmir_begin  = coor[2]
+      if posBegin < nonmir_begin: continue
+      nonmir_end    = coor[3]
+      if posEnd < nonmir_end: return False
+    return True
+      
 if __name__ == '__main__' :
    
    values_sep = "<>"
