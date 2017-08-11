@@ -225,7 +225,7 @@ if __name__ == '__main__' :
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr])
     flat_rdd = nbLoc_rdd.flatMap(mru.flatmap_mappings).persist() ###
-    print('NB flat_rdd (this step flats elements): ', len(flat_rdd.groupByKey().collect()))##################
+    print('NB flat_rdd (this step flats elements): ', len(flat_rdd.collect()))##################
 
     ###############################
     ## Filtering known non-miRNA ##
