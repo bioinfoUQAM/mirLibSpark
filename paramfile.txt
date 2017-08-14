@@ -9,7 +9,7 @@
 #
 #==julie-cloudera-paths==
 project_path=/home/cloudera/workspace/mirLibHadoop/
-genome_path=/home/cloudera/workspace/miRNA_predictor/ATH/Genome/
+genome_path=/home/cloudera/workspace/mirLibHadoop/dbs/ATH/Genome/
 input_path=/home/cloudera/workspace/mirLibHadoop/input/
 output_path=/home/cloudera/workspace/mirLibHadoop/output/
 b_index_path=/home/cloudera/workspace/mirLibHadoop/dbs/bowtie_index/a_thaliana_t10
