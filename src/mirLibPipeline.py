@@ -36,8 +36,7 @@ if __name__ == '__main__' :
   paramDict = ut.readParam (paramfile)
 
   #= Parameters and cutoffs
-  #platform = paramDict['platform'] 
-  #project_path = paramDict['project_path_' + platform][:-1]
+  input_type = paramDict['input_type']
   project_path = paramDict['project_path'][:-1]
   rep_input = paramDict['input_path']
   rep_output = paramDict['output_path']
@@ -147,23 +146,41 @@ if __name__ == '__main__' :
 
     # hdfsFile = inBasename + '.hkv.txt'
 
-    #= Convert the input file to a Key value file
-    ut.convert_seq_freq_file_to_KeyValue(infile, inKvfile, my_sep)
-    
+    #################################################################################################
+    ## COLLAPSE ##################################################################################    
     #
     print ("  Start of the processing...", end="\n")
     startLib = time.time()
     
     #= Convert the text file to RDD object
     ## in : file
-    ## out: u'seq,freq'
-    distFile = sc.textFile("file:///" + inKvfile)
-   
-    #= Convert element from string to list
-    ## in : u'seq,freq'
+    ## out: (a) u'seq\tfreq'
+    distFile = sc.textFile("file:///" + infile)
+
+    #= Convert the input file to a Key value file
+    if input_type == 'a':
+    ## in : u'seq\tfreq'
     ## out: ('seq', freq)
-    input_rdd = distFile.map(lambda line: mru.rearrange_rule(line, my_sep)).persist()
-    print('NB input_rdd: ', len(input_rdd.collect()))####################################################
+      my_sep = '\t'
+      input_rdd = distFile.map(lambda line: mru.rearrange_rule(line, my_sep))
+
+    elif input_type == 'b':
+    ## in : u'seq1', u'seq2', u'seq1'
+    ## out: ('seq', freq)
+      input_rdd = distFile.map(lambda word: (word, 1)).reduceByKey(lambda a, b: a+b)
+
+    elif input_type == 'c':
+    ## in : u'>name1\nseq1', u'>name2\nseq2', u'>name3\nseq3'
+    ## out: ('seq', freq)
+      input_rdd = distFile.filter(lambda line: not line[0] == '>').map(lambda word: (word, 1)).reduceByKey(lambda a, b: a+b)
+
+
+
+    print(input_rdd.collect())
+
+    #################################################################################################
+    #################################################################################################
+    '''
    
     #= Filtering sRNA low frequency
     ## in : ('seq', freq)
@@ -302,14 +319,14 @@ if __name__ == '__main__' :
     ##results = miranda_rdd.collect()
 
     #results = miRNA_rdd.collect()
-
+    '''
     endLib = time.time()
     print ("  End of the processing     ", end="\n")
     
     #= write results to a file
     outFile = rep_output + inBasename + '_miRNAprediction.txt'
     #ut.writeToFile (results, outFile)
-
+    
     
     timeDict[inBasename] = endLib - startLib
     
