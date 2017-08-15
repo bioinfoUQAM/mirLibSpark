@@ -42,6 +42,7 @@ def convertTOhadoop(rfile, hdfsFile):
   os.system('hadoop fs -copyFromLocal ' + rfile + ' ' + hdfsFile)
 
 # Convert a fasta file into a key value file
+# defucnt
 def covert_fasta_to_KeyValue(infile, outfile):
   fh = open (infile, 'r')
   DATA = fh.readlines()
@@ -57,6 +58,7 @@ def covert_fasta_to_KeyValue(infile, outfile):
   fh_out.close()
 
 #= Convert a seq abundance file into a key value file
+# defucnt
 def convert_seq_freq_file_to_KeyValue(infile, outfile, v_sep):
   fh = open (infile, 'r')
   fh_out = open (outfile, 'w')
@@ -75,7 +77,33 @@ def convert_seq_freq_file_to_KeyValue(infile, outfile, v_sep):
       
   fh.close()
   fh_out.close()
-  
+
+def convert_fastq_file_to_KeyValue(infile, outfile):
+  '''
+  1: @SEQ_ID
+  2: GATTTGGGGTTCAAAGCAGTATCGATCAAATAGTAAATCCATTTGTTCAACTCACAGTTT
+  3: +
+  4: !''*((((***+))%%%++)(%%%%).1***-+*''))**55CCF>>>>>>CCCCCCC65
+  '''
+  fh = open (infile, 'r')
+  fh_out = open (outfile, 'w')
+  i = 1
+  for line in fh:
+    if i == 1 or i == 3: 
+      i += 1
+      continue
+    elif i == 2:
+      seq = line.rstrip('\n')
+      #print >>fh_out, seq
+      i += 1
+    else:
+      quality = line.rstrip('\n')
+      print >>fh_out, seq + '\t' + quality
+      i = 1
+      continue
+  fh.close()
+  fh_out.close()
+
 def getRevComp (seq):
   from string import maketrans
   
