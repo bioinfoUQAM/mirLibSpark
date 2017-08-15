@@ -36,13 +36,13 @@ if __name__ == '__main__' :
   paramDict = ut.readParam (paramfile)
 
   #= Parameters and cutoffs
-  #platform = paramDict['platform'] 
-  #project_path = paramDict['project_path_' + platform][:-1]
+  input_type = paramDict['input_type']
+  adapter = paramDict['adapter']
   project_path = paramDict['project_path'][:-1]
   rep_input = paramDict['input_path']
   rep_output = paramDict['output_path']
   rep_msub_jobsOut = project_path + '/workdir/jobsOut'
-  my_sep = paramDict['my_sep']                      # Separator
+  #my_sep = paramDict['my_sep']                      # Separator
   rep_tmp = project_path + '/tmp/'                   # tmp file folder
   #= spark configuration
 
@@ -68,10 +68,7 @@ if __name__ == '__main__' :
 
   #= file and list of known non miRNA
   known_non = '../dbs/TAIR10_ncRNA_CDS.gff' ###############################################################################
-  #l_non_miRNA = ut.get_nonMirna_list (known_non, genome_path)
-  #l_non_miRNA = ['TGGATTTATGAAAGACGAACAACTGCGAAA']
   d_ncRNA_CDS = ut.get_nonMirna_coors (known_non) #= nb = 198736
-  #d_ncRNA_CDS = {1: ['+', 'Chr5', '26939753', '26939884'], 2: ['+', 'Chr5', '26939972', '26940240'], 3: ['+', 'Chr5', '26940312', '26940396'], 4: ['+', 'Chr5', '26940532', '26940578']}
 
   # pri-mirna
   pri_l_flank = int(paramDict['pri_l_flank'])       #120
@@ -85,6 +82,7 @@ if __name__ == '__main__' :
   mirdup_model = project_path + '/lib/miRdup_1.4/model/' + paramDict['mirdup_model']
   mirdup_jar = project_path + '/lib/miRdup_1.4/miRdup.jar'
   mirdup_limit =  float(paramDict['mirdup_limit'])
+
   #= miRanda parameter
   #target_file = project_path + '/lib/' + paramDict['target_file']
   #miranda_exe = project_path + '/lib/miranda'
@@ -92,6 +90,11 @@ if __name__ == '__main__' :
   #query_motif_match_cutoff = float(paramDict['query_motif_match_cutoff'])
   #gene_motif_match_cutoff = float(paramDict['gene_motif_match_cutoff'])
   #Max_Energy_cutoff = float(paramDict['Max_Energy_cutoff'])
+
+  ## EXMAMIN OPTIONS ####################################
+  ut.validate_options(paramDict)
+  #######################################################
+
   #= make required folders if not exist
   reps = [rep_output, rep_tmp, rep_msub_jobsOut]
   ut.makedirs_reps (reps)
@@ -138,7 +141,7 @@ if __name__ == '__main__' :
   timeDict = {}
   
   for infile in infiles :
-    if infile[:-1] == '~': continue
+    if infile[-1:] == '~': continue
     print ("--Processing of the library: ", infile)
     
     infile = rep_input+infile
@@ -147,28 +150,60 @@ if __name__ == '__main__' :
 
     # hdfsFile = inBasename + '.hkv.txt'
 
-    #= Convert the input file to a Key value file
-    ut.convert_seq_freq_file_to_KeyValue(infile, inKvfile, my_sep)
-    
+    if input_type == 'd': #= fastq
+      ut.convert_fastq_file_to_KeyValue(infile, inKvfile)
+      infile = inKvfile
+      
     #
     print ("  Start of the processing...", end="\n")
     startLib = time.time()
     
     #= Convert the text file to RDD object
     ## in : file
-    ## out: u'seq,freq'
-    distFile = sc.textFile("file:///" + inKvfile)
-   
-    #= Convert element from string to list
-    ## in : u'seq,freq'
+    ## out: (a) u'seq\tfreq'
+    distFile = sc.textFile("file:///" + infile)
+
+    #= Unify different input formats to "seq freq" elements
+
+    if input_type == 'a': #= raw
+    ## in : u'seq\tfreq'
     ## out: ('seq', freq)
-    input_rdd = distFile.map(lambda line: mru.rearrange_rule(line, my_sep)).persist()
-    print('NB input_rdd: ', len(input_rdd.collect()))####################################################
+      ## note that type_a does not need to collapse nor trim.
+      collapse_rdd = distFile.map(lambda line: mru.rearrange_rule(line, '\t')).distinct() ##= .distinct() might not be necessary
+    else:
+      if input_type == 'b': #= reads
+      ## in : u'seq1', u'seq2', u'seq1'
+      ## out: u'seq1', u'seq2', u'seq1'
+        input_rdd = distFile
+
+      elif input_type == 'c': #= fasta
+      ## in : u'>name1\nseq1', u'>name2\nseq2', u'>name3\nseq1'
+      ## out: u'seq1', u'seq2', u'seq1'
+        input_rdd = distFile.filter(lambda line: not line[0] == '>')
+
+      elif input_type == 'd': #= processed fastq
+      ## in : u'seq\tquality'
+      ## out: u'seq1', u'seq2', u'seq1'
+        input_rdd = distFile.map(lambda word: word.split('\t')[0])
+
+    #= trim adapters
+      if not adapter == 'none':
+        trim_adapter_rdd = input_rdd.map(lambda e: trim_adapter (e, adapter))
+      else: trim_adapter_rdd = input_rdd
+      
+    #= colapse seq and calculate frequency
+      ## in : u'seq1', u'seq2', u'seq1'
+      ## out: ('seq', freq)
+      collapse_rdd = trim_adapter_rdd.map(lambda word: (word, 1)).reduceByKey(lambda a, b: a+b)
+    print(collapse_rdd.collect())
+
+
+    #'''
    
     #= Filtering sRNA low frequency
     ## in : ('seq', freq)
     ## out: ('seq', freq)
-    sr_low_rdd = input_rdd.filter(lambda e: int(e[1]) > limit_srna_freq).persist()#########################
+    sr_low_rdd = collapse_rdd.filter(lambda e: int(e[1]) > limit_srna_freq).persist()#########################
     print('NB sr_low_rdd: ', len(sr_low_rdd.collect()))####################################################
     
     #= Filtering short length
@@ -222,7 +257,8 @@ if __name__ == '__main__' :
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr])
     flat_rdd = nbLoc_rdd.flatMap(mru.flatmap_mappings).persist() ###
-    print('NB flat_rdd (this step flats elements): ', len(flat_rdd.groupByKey().collect()))##################
+    print('NB flat_rdd distinct (this step flats elements): ', len(flat_rdd.groupByKey().collect()))##################
+    print('NB flat_rdd not distinct: ', len(flat_rdd.collect()))##################
 
     ###############################
     ## Filtering known non-miRNA ##
@@ -231,7 +267,7 @@ if __name__ == '__main__' :
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr])
     ##excluKnownNon_rdd = flat_rdd.filter(kn_obj.knFilterBySeq) #= defunct
     excluKnownNon_rdd = flat_rdd.filter(kn_obj.knFilterByCoor).persist()#######
-    print('excluKnownNon_rdd: ', len(excluKnownNon_rdd.groupByKey().collect()))########
+    print('excluKnownNon_rdd distinct: ', len(excluKnownNon_rdd.groupByKey().collect()))########
     
     #= Extraction of the pri-miRNA
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr])
@@ -294,7 +330,8 @@ if __name__ == '__main__' :
     profile_rdd = pre_vld_rdd.map(lambda e: profile_obj.computeProfileFrq(e, dict_bowtie_chromo_strand))\
                       .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)\
                       .persist()####################
-    print('NB profile_rdd distinct (final prediction): ', len(profile_rdd.groupByKey().collect()))#####################
+
+    print('NB profile_rdd distinct: ', len(profile_rdd.groupByKey().collect()))#####################
     print('NB profile_rdd not distinct (final prediction): ', len(profile_rdd.collect()))#####################
 
     #= target prediction
@@ -303,14 +340,14 @@ if __name__ == '__main__' :
     ##results = miranda_rdd.collect()
 
     #results = miRNA_rdd.collect()
-
+    #'''
     endLib = time.time()
     print ("  End of the processing     ", end="\n")
     
     #= write results to a file
     outFile = rep_output + inBasename + '_miRNAprediction.txt'
     #ut.writeToFile (results, outFile)
-
+    
     
     timeDict[inBasename] = endLib - startLib
     
