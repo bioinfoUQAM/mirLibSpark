@@ -44,13 +44,14 @@ def pyspark_configuration(appMaster, appName, masterMemory, execMemory, execNb, 
   return SparkContext(conf = conf)
 
 # Convert a file to hadoop file
+# defunct
 def convertTOhadoop(rfile, hdfsFile):
   print('if pre-existing in hdfs, the file would be deleted before the re-distribution of a new file with the same name.\n')
   os.system('hadoop fs -rm ' + hdfsFile) # force delete any pre-existing file in hdfs with the same name.
   os.system('hadoop fs -copyFromLocal ' + rfile + ' ' + hdfsFile)
 
 # Convert a fasta file into a key value file
-# defucnt
+# defunct
 def covert_fasta_to_KeyValue(infile, outfile):
   fh = open (infile, 'r')
   DATA = fh.readlines()
@@ -66,7 +67,7 @@ def covert_fasta_to_KeyValue(infile, outfile):
   fh_out.close()
 
 #= Convert a seq abundance file into a key value file
-# defucnt
+# defunct
 def convert_seq_freq_file_to_KeyValue(infile, outfile, v_sep):
   fh = open (infile, 'r')
   fh_out = open (outfile, 'w')
