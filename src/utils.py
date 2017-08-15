@@ -104,7 +104,7 @@ def convert_fastq_file_to_KeyValue(infile, outfile):
   fh.close()
   fh_out.close()
 
-def trim_adaptor (seq, ad):
+def trim_adapter (seq, ad):
   while len(ad) > 0:
     len_ad = len(ad)
     if seq[-len_ad:] == ad:
