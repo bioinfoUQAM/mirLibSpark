@@ -198,7 +198,7 @@ if __name__ == '__main__' :
     print(collapse_rdd.collect())
 
 
-    '''
+    #'''
    
     #= Filtering sRNA low frequency
     ## in : ('seq', freq)
@@ -339,7 +339,7 @@ if __name__ == '__main__' :
     ##results = miranda_rdd.collect()
 
     #results = miRNA_rdd.collect()
-    '''
+    #'''
     endLib = time.time()
     print ("  End of the processing     ", end="\n")
     
