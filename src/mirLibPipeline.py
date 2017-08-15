@@ -150,9 +150,6 @@ if __name__ == '__main__' :
       ut.convert_fastq_file_to_KeyValue(infile, inKvfile)
       infile = inKvfile
       
-
-    #################################################################################################
-    ## COLLAPSE ##################################################################################    
     #
     print ("  Start of the processing...", end="\n")
     startLib = time.time()
@@ -162,40 +159,38 @@ if __name__ == '__main__' :
     ## out: (a) u'seq\tfreq'
     distFile = sc.textFile("file:///" + infile)
 
-    #= Convert the input file to a Key value file
+    #= Unify different input formats to "seq freq" elements
     if input_type == 'a': #= raw
     ## in : u'seq\tfreq'
     ## out: ('seq', freq)
-      #my_sep = '\t'
-      input_rdd = distFile.map(lambda line: mru.rearrange_rule(line, '\t')).distinct() ##= .distinct() might not be necessary
+      collapse_rdd = distFile.map(lambda line: mru.rearrange_rule(line, '\t')).distinct() ##= .distinct() might not be necessary
+    else:
+      if input_type == 'b': #= reads
+      ## in : u'seq1', u'seq2', u'seq1'
+      ## out: u'seq1', u'seq2', u'seq1'
+        input_rdd = distFile
 
-    elif input_type == 'b': #= reads
-    ## in : u'seq1', u'seq2', u'seq1'
-    ## out: ('seq', freq)
-      input_rdd = distFile.map(lambda word: (word, 1)).reduceByKey(lambda a, b: a+b)
+      elif input_type == 'c': #= fasta
+      ## in : u'>name1\nseq1', u'>name2\nseq2', u'>name3\nseq1'
+      ## out: u'seq1', u'seq2', u'seq1'
+        input_rdd = distFile.filter(lambda line: not line[0] == '>')
 
-    elif input_type == 'c': #= fasta
-    ## in : u'>name1\nseq1', u'>name2\nseq2', u'>name3\nseq3'
-    ## out: ('seq', freq)
-      input_rdd = distFile.filter(lambda line: not line[0] == '>').map(lambda word: (word, 1)).reduceByKey(lambda a, b: a+b)
+      elif input_type == 'd': #= processed fastq
+      ## in : u'seq\tquality'
+      ## out: u'seq1', u'seq2', u'seq1'
+        input_rdd = distFile.map(lambda word: word.split('\t')[0])
 
-    elif input_type == 'd': #= processed fastq
-    ## in : u'seq\tquality'
-    ## out: ('seq', freq)
-      input_rdd = distFile.map(lambda word: (word.split('\t')[0], 1)).reduceByKey(lambda a, b: a+b)
-
+      ## in : u'seq1', u'seq2', u'seq1'
+      ## out: ('seq', freq)
+      collapse_rdd = input_rdd.map(lambda word: (word, 1)).reduceByKey(lambda a, b: a+b)
 
 
-    print(input_rdd.collect())
-
-    #################################################################################################
-    #################################################################################################
-    #'''
+    '''
    
     #= Filtering sRNA low frequency
     ## in : ('seq', freq)
     ## out: ('seq', freq)
-    sr_low_rdd = input_rdd.filter(lambda e: int(e[1]) > limit_srna_freq).persist()#########################
+    sr_low_rdd = collapse_rdd.filter(lambda e: int(e[1]) > limit_srna_freq).persist()#########################
     print('NB sr_low_rdd: ', len(sr_low_rdd.collect()))####################################################
     
     #= Filtering short length
@@ -331,7 +326,7 @@ if __name__ == '__main__' :
     ##results = miranda_rdd.collect()
 
     #results = miRNA_rdd.collect()
-    #'''
+    '''
     endLib = time.time()
     print ("  End of the processing     ", end="\n")
     
