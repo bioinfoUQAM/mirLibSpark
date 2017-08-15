@@ -71,7 +71,6 @@ if __name__ == '__main__' :
   #l_non_miRNA = ut.get_nonMirna_list (known_non, genome_path)
   #l_non_miRNA = ['TGGATTTATGAAAGACGAACAACTGCGAAA']
   d_ncRNA_CDS = ut.get_nonMirna_coors (known_non) #= nb = 198736
-  #d_ncRNA_CDS = {1: ['+', 'Chr5', '26939753', '26939884'], 2: ['+', 'Chr5', '26939972', '26940240'], 3: ['+', 'Chr5', '26940312', '26940396'], 4: ['+', 'Chr5', '26940532', '26940578']}
 
   # pri-mirna
   pri_l_flank = int(paramDict['pri_l_flank'])       #120
@@ -161,9 +160,11 @@ if __name__ == '__main__' :
     distFile = sc.textFile("file:///" + infile)
 
     #= Unify different input formats to "seq freq" elements
+
     if input_type == 'a': #= raw
     ## in : u'seq\tfreq'
     ## out: ('seq', freq)
+      ## note that type_a does not need to collapse nor trim.
       collapse_rdd = distFile.map(lambda line: mru.rearrange_rule(line, '\t')).distinct() ##= .distinct() might not be necessary
     else:
       if input_type == 'b': #= reads
@@ -182,16 +183,14 @@ if __name__ == '__main__' :
         input_rdd = distFile.map(lambda word: word.split('\t')[0])
 
     #= trim adapters
-    if input_type == 'a' and not adapter == 'none': 
-      print('error: Trimming dapters is not allowed in input_type_a. Skipping trimming')
-    elif not adapter == 'none':
-      trim_adapter_rdd = input_rdd.map(lambda e: trim_adapter (e, adapter))
-    else: input_rdd = trim_adapter_rdd
-
+      if not adapter == 'none':
+        trim_adapter_rdd = input_rdd.map(lambda e: trim_adapter (e, adapter))
+      else: trim_adapter_rdd = input_rdd
+      
     #= colapse seq and calculate frequency
-    ## in : u'seq1', u'seq2', u'seq1'
-    ## out: ('seq', freq)
-    collapse_rdd = trim_adapter_rdd.map(lambda word: (word, 1)).reduceByKey(lambda a, b: a+b)
+      ## in : u'seq1', u'seq2', u'seq1'
+      ## out: ('seq', freq)
+      collapse_rdd = trim_adapter_rdd.map(lambda word: (word, 1)).reduceByKey(lambda a, b: a+b)
 
 
     #'''

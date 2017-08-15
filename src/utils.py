@@ -10,6 +10,7 @@ import os
 import re
 import subprocess
 
+def validate_options():
 
 def makedirs_reps (reps):
   for rep in reps:
@@ -280,7 +281,7 @@ def randomStrGen (n):
 def get_nonMirna_coors (infile):
   #infile = '../dbs/TAIR10_ncRNA_CDS.gff'
   idnb = 0
-  d_ncRNA_CDS = {}
+  d_ncRNA_CDS = {} #= {1: ['+', 'Chr5', '26939753', '26939884'], 2: ['+', 'Chr5', '26939972', '26940240'], 3: ['+', 'Chr5', '26940312', '26940396'], 4: ['+', 'Chr5', '26940532', '26940578']}
   with open (infile, 'r') as fh:
     for i in fh:
       data = i.split('\t') #= ['Chr1', 'TAIR10', 'CDS', '3760', '3913', '.', '+', '0', 'Parent=AT1G01010.1,AT1G01010.1-Protein;\n']
@@ -292,6 +293,26 @@ def get_nonMirna_coors (infile):
       d_ncRNA_CDS[idnb] = [chromo, strand, begin, end]
       idnb += 1
   return d_ncRNA_CDS
+
+def get_nonMirna_list (infile, genome_path):
+  genome = ut.getGenome (genome_path, file_ext) #= genome[chr] = sequence
+  #infile = '../dbs/TAIR10_ncRNA_CDS.gff'
+  l_non_miRNA = [] #= ['TGGATTTATGAAAGACGAACAACTGCGAAA']
+  with open (infile, 'r') as fh:
+    for i in fh:
+      data = i.split('\t') #= ['Chr1', 'TAIR10', 'CDS', '3760', '3913', '.', '+', '0', 'Parent=AT1G01010.1,AT1G01010.1-Protein;\n']
+      chromo   = data[0]
+      if chromo == 'ChrC': chromo = 'chloroplast'
+      if chromo == 'ChrM': chromo = 'mitochondria'
+      begin    = int(data[3])
+      end      = int(data[4])
+      strand   = data[6]
+      seq = genome[chromo][begin:end+1]
+      if strand == '-':
+        seq = ut.getRevComp (seq)
+      l_non_miRNA.append(seq)
+  return l_non_miRNA
+
 
 def createFile_KnownNonMiRNA_from_TAIR10data (infile = 'TAIR10_GFF3_genes.gff', outfile = 'TAIR10_ncRNA_CDS.gff'):
   '''
