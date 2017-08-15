@@ -295,6 +295,7 @@ if __name__ == '__main__' :
                       .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)\
                       .persist()####################
     print('NB profile_rdd distinct (final prediction): ', len(profile_rdd.groupByKey().collect()))#####################
+    print('NB profile_rdd not distinct (final prediction): ', len(profile_rdd.collect()))#####################
 
     #= target prediction
     #miranda_rdd = miRNA_rdd.map(miranda_obj.computeTargetbyMiranda).persist()####
