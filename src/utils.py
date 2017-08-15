@@ -9,8 +9,15 @@ version: 1.00.01
 import os
 import re
 import subprocess
+import sys
 
-def validate_options():
+def validate_options(paramDict):
+  input_type = paramDict['input_type']
+  adapter = paramDict['adapter']
+
+  if input_type == 'a' and not adapter == 'none':
+    sys.stderr.write("The adapter option must be 'none' for the input_type_a.")
+    sys.exit()
 
 def makedirs_reps (reps):
   for rep in reps:
@@ -295,6 +302,7 @@ def get_nonMirna_coors (infile):
   return d_ncRNA_CDS
 
 def get_nonMirna_list (infile, genome_path):
+  # defunct
   genome = ut.getGenome (genome_path, file_ext) #= genome[chr] = sequence
   #infile = '../dbs/TAIR10_ncRNA_CDS.gff'
   l_non_miRNA = [] #= ['TGGATTTATGAAAGACGAACAACTGCGAAA']

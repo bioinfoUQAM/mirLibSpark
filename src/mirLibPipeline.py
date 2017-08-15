@@ -68,8 +68,6 @@ if __name__ == '__main__' :
 
   #= file and list of known non miRNA
   known_non = '../dbs/TAIR10_ncRNA_CDS.gff' ###############################################################################
-  #l_non_miRNA = ut.get_nonMirna_list (known_non, genome_path)
-  #l_non_miRNA = ['TGGATTTATGAAAGACGAACAACTGCGAAA']
   d_ncRNA_CDS = ut.get_nonMirna_coors (known_non) #= nb = 198736
 
   # pri-mirna
@@ -84,6 +82,7 @@ if __name__ == '__main__' :
   mirdup_model = project_path + '/lib/miRdup_1.4/model/' + paramDict['mirdup_model']
   mirdup_jar = project_path + '/lib/miRdup_1.4/miRdup.jar'
   mirdup_limit =  float(paramDict['mirdup_limit'])
+
   #= miRanda parameter
   #target_file = project_path + '/lib/' + paramDict['target_file']
   #miranda_exe = project_path + '/lib/miranda'
@@ -91,6 +90,11 @@ if __name__ == '__main__' :
   #query_motif_match_cutoff = float(paramDict['query_motif_match_cutoff'])
   #gene_motif_match_cutoff = float(paramDict['gene_motif_match_cutoff'])
   #Max_Energy_cutoff = float(paramDict['Max_Energy_cutoff'])
+
+  ## EXMAMIN OPTIONS ####################################
+  ut.validate_options(paramDict)
+  #######################################################
+
   #= make required folders if not exist
   reps = [rep_output, rep_tmp, rep_msub_jobsOut]
   ut.makedirs_reps (reps)
@@ -137,7 +141,7 @@ if __name__ == '__main__' :
   timeDict = {}
   
   for infile in infiles :
-    if infile[:-1] == '~': continue
+    if infile[-1:] == '~': continue
     print ("--Processing of the library: ", infile)
     
     infile = rep_input+infile
@@ -191,9 +195,10 @@ if __name__ == '__main__' :
       ## in : u'seq1', u'seq2', u'seq1'
       ## out: ('seq', freq)
       collapse_rdd = trim_adapter_rdd.map(lambda word: (word, 1)).reduceByKey(lambda a, b: a+b)
+    print(collapse_rdd.collect())
 
 
-    #'''
+    '''
    
     #= Filtering sRNA low frequency
     ## in : ('seq', freq)
@@ -334,7 +339,7 @@ if __name__ == '__main__' :
     ##results = miranda_rdd.collect()
 
     #results = miRNA_rdd.collect()
-    #'''
+    '''
     endLib = time.time()
     print ("  End of the processing     ", end="\n")
     
