@@ -181,17 +181,17 @@ if __name__ == '__main__' :
       ## out: u'seq1', u'seq2', u'seq1'
         input_rdd = distFile.map(lambda word: word.split('\t')[0])
 
-      if not adapter == 'none':
-        trim_adapter_rdd = input_rdd.map(lambda e: trim_adapter (e, adapter))
-      else: input_rdd = trim_adapter_rdd
-
     #= trim adapters
-    if input_type == 'a':
-     if not adapter == 'none': print('error: Trimming dapters is not allowed in input_type_a. Skipping trimming')
-    else:
-      ## in : u'seq1', u'seq2', u'seq1'
-      ## out: ('seq', freq)
-      collapse_rdd = input_rdd.map(lambda word: (word, 1)).reduceByKey(lambda a, b: a+b)
+    if input_type == 'a' and not adapter == 'none': 
+      print('error: Trimming dapters is not allowed in input_type_a. Skipping trimming')
+    elif not adapter == 'none':
+      trim_adapter_rdd = input_rdd.map(lambda e: trim_adapter (e, adapter))
+    else: input_rdd = trim_adapter_rdd
+
+    #= colapse seq and calculate frequency
+    ## in : u'seq1', u'seq2', u'seq1'
+    ## out: ('seq', freq)
+    collapse_rdd = trim_adapter_rdd.map(lambda word: (word, 1)).reduceByKey(lambda a, b: a+b)
 
 
     #'''
