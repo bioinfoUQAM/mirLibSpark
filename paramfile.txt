@@ -22,6 +22,8 @@ b_index_path=/home/cloudera/workspace/mirLibHadoop/dbs/bowtie_index/a_thaliana_t
 ##
 #== input_types: a = raw (seq\tfreq); b = reads (each line may be a redundant sequence); c = fasta (>name\nseq); d = fastq
 input_type=d
+#adaptor=none
+adaptor=TCGTATGCCGTCTTCTGCTTGT
 #my_sep=,
 limit_s_freq=10
 limit_m_freq=100

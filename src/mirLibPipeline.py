@@ -37,6 +37,7 @@ if __name__ == '__main__' :
 
   #= Parameters and cutoffs
   input_type = paramDict['input_type']
+  adaptor = paramDict['adaptor']
   project_path = paramDict['project_path'][:-1]
   rep_input = paramDict['input_path']
   rep_output = paramDict['output_path']
@@ -164,6 +165,7 @@ if __name__ == '__main__' :
     ## in : u'seq\tfreq'
     ## out: ('seq', freq)
       collapse_rdd = distFile.map(lambda line: mru.rearrange_rule(line, '\t')).distinct() ##= .distinct() might not be necessary
+      if not adaptor == 'none': print('error: adaptors are not allowed in input_type_a.')
     else:
       if input_type == 'b': #= reads
       ## in : u'seq1', u'seq2', u'seq1'
@@ -180,12 +182,16 @@ if __name__ == '__main__' :
       ## out: u'seq1', u'seq2', u'seq1'
         input_rdd = distFile.map(lambda word: word.split('\t')[0])
 
+      if not adaptor == 'none':
+        trim_adaptor_rdd = input_rdd.map(lambda e: trim_adaptor (e, adaptor))
+      else: input_rdd = trim_adaptor_rdd
+
       ## in : u'seq1', u'seq2', u'seq1'
       ## out: ('seq', freq)
       collapse_rdd = input_rdd.map(lambda word: (word, 1)).reduceByKey(lambda a, b: a+b)
 
 
-    '''
+    #'''
    
     #= Filtering sRNA low frequency
     ## in : ('seq', freq)
@@ -326,7 +332,7 @@ if __name__ == '__main__' :
     ##results = miranda_rdd.collect()
 
     #results = miRNA_rdd.collect()
-    '''
+    #'''
     endLib = time.time()
     print ("  End of the processing     ", end="\n")
     
