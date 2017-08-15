@@ -330,6 +330,7 @@ if __name__ == '__main__' :
     profile_rdd = pre_vld_rdd.map(lambda e: profile_obj.computeProfileFrq(e, dict_bowtie_chromo_strand))\
                       .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)\
                       .persist()####################
+
     print('NB profile_rdd distinct: ', len(profile_rdd.groupByKey().collect()))#####################
     print('NB profile_rdd not distinct (final prediction): ', len(profile_rdd.collect()))#####################
 
