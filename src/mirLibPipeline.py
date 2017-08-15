@@ -155,7 +155,7 @@ if __name__ == '__main__' :
     #= Convert the text file to RDD object
     ## in : file
     ## out: (a) u'seq\tfreq'
-    distFile = sc.textFile("file:///" + infile)
+    distFile = sc.textFile("file:///" + infile).distinct()
 
     #= Convert the input file to a Key value file
     if input_type == 'a':
@@ -180,7 +180,7 @@ if __name__ == '__main__' :
 
     #################################################################################################
     #################################################################################################
-    '''
+    #'''
    
     #= Filtering sRNA low frequency
     ## in : ('seq', freq)
@@ -319,7 +319,7 @@ if __name__ == '__main__' :
     ##results = miranda_rdd.collect()
 
     #results = miRNA_rdd.collect()
-    '''
+    #'''
     endLib = time.time()
     print ("  End of the processing     ", end="\n")
     
