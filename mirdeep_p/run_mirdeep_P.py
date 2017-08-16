@@ -36,7 +36,7 @@ def init_mirdeep_p (op):
 
   #os.system('mkdir bowtie-index')
   #os.system('bowtie-build -f ' + genome + ' bowtie-index/' + genome[:-3] + ' >/dev/null') 
-  return f_annotated
+  return genome, f_annotated
 
 def run_mirdp_new (infile):
   inBase = infile[:-3]
@@ -75,13 +75,13 @@ def run_mirdp_known (infile, fa):
 infile = 'high_conf_mature_ath_uniq_collapsed.fa'
 #infile = '100_collapsed.fa'
 #os.system('cp ../' + infile + ' .')
-f_annotated = init_mirdeep_p ('tair9')
+genome, f_annotated = init_mirdeep_p ('tair9')
 #run_mirdp_new (infile) #= takes 15 secs, validates 75 unique mirna
 #run_mirdp_known (infile, f_annotated) #= also takes 15 secs, validates 75 unique mirna
 
-#inBase = infile[:-3]
-#print('mode of predicting new: ')
-#os.system('cut -f1 ' + inBase + '_predictions | grep \'seq_\' | sort | uniq | wc -l')
+inBase = infile[:-3]
+print('mode of predicting new: ')
+os.system('cut -f1 ' + inBase + '_predictions | grep \'seq_\' | sort | uniq | wc -l')
 #print('mode of predicting known: ')
 #os.system('cut -f1 ' + inBase + '_250_prediction | grep \'seq_\' | sort | uniq | wc -l')
 
