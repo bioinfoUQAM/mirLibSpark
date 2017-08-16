@@ -44,6 +44,9 @@ spark-submit mirTest.py ../paramfile_julie.txt /home/cloudera/workspace/miRNA_pr
 
 spark-submit mirLibPipeline.py ../paramfile.txt 2>/dev/null
 
+#mount
+vim ~/.bashrc
+
 
 ##=========================================================================================================
 Amine misc
