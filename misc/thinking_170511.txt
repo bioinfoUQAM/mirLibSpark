@@ -213,3 +213,7 @@ $java -jar miRdup_1.4/miRdup.jar -r /usr/local/bin/
 ## ath miRBase: -k ath
 $java -jar miRdup_1.4/miRdup.jar -k thaliana -r /usr/local/bin/
 
+
+## cloudera error
+Native memory allocation (malloc) failed to allocate 716177408 bytes for committing reserved memory
+
