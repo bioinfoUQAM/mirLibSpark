@@ -36,22 +36,21 @@ def init_mirdeep_p (op):
   return genome, f_annotated
 
 def run_mirdp_new (infile):
-  inBase = infile[:-3]
-  os.system('bowtie -a -v 0 bowtie-index/' + genome[:-3] + ' -f ' + infile + '>' + inBase + '.aln')
-  os.system('perl convert_bowtie_to_blast.pl ' + inBase + '.aln ' + inBase + '.fa ' + genome + ' >' + inBase + '.bst')
-  os.system('perl filter_alignments.pl ' + inBase + '.bst -c 15 >' + inBase + '_filter15.bst')
-  os.system('perl overlap.pl ' + inBase + '_filter15.bst ncRNA_CDS.gff -b >' + inBase + '_id_overlap_ncRNA_CDS')
-  os.system('perl alignedselected.pl ' + inBase + '_filter15.bst -g ' + inBase + '_id_overlap_ncRNA_CDS >' + inBase + '_filter15_ncRNA_CDS.bst')
-  os.system('perl filter_alignments.pl ' + inBase + '_filter15_ncRNA_CDS.bst -b ' + infile + ' > ' + inBase + '_filtered.fa')
-  os.system('perl excise_candidate.pl ' + genome + ' ' + inBase + '_filter15_ncRNA_CDS.bst 250 >' + inBase + '_precursors.fa')
-  os.system('cat ' + inBase + '_precursors.fa | RNAfold --noPS > ' + inBase + '_structures')
-  os.system('bowtie-build -f ' + inBase + '_precursors.fa bowtie-index/' + inBase + '_precursors >/dev/null')
-  os.system('bowtie -a -v 0 bowtie-index/' + inBase + '_precursors -f ' + inBase + '_filtered.fa > ' + inBase + '_precursors.aln')
-  os.system('perl convert_bowtie_to_blast.pl ' + inBase + '_precursors.aln ' + inBase + '_filtered.fa ' + inBase + '_precursors.fa >' + inBase + '_precursors.bst')
-  os.system('sort +3 -25 ' + inBase + '_precursors.bst >' + inBase + '_signatures')
+  os.system('bowtie -a -v 0 bowtie-index/' + genome[:-3] + ' -f ' + infile + '>indata.aln')
+  os.system('perl convert_bowtie_to_blast.pl indata.aln ' + infile + ' ' + genome + ' >indata.bst')
+  os.system('perl filter_alignments.pl indata.bst -c 15 >indata_filter15.bst')
+  os.system('perl overlap.pl indata_filter15.bst ncRNA_CDS.gff -b >indata_id_overlap_ncRNA_CDS')
+  os.system('perl alignedselected.pl indata_filter15.bst -g indata_id_overlap_ncRNA_CDS >indata_filter15_ncRNA_CDS.bst')
+  os.system('perl filter_alignments.pl indata_filter15_ncRNA_CDS.bst -b ' + infile + ' > indata_filtered.fa')
+  os.system('perl excise_candidate.pl ' + genome + ' indata_filter15_ncRNA_CDS.bst 250 >indata_precursors.fa')
+  os.system('cat indata_precursors.fa | RNAfold --noPS > indata_structures')
+  os.system('bowtie-build -f indata_precursors.fa bowtie-index/indata_precursors >/dev/null')
+  os.system('bowtie -a -v 0 bowtie-index/indata_precursors -f indata_filtered.fa > indata_precursors.aln')
+  os.system('perl convert_bowtie_to_blast.pl indata_precursors.aln indata_filtered.fa indata_precursors.fa >indata_precursors.bst')
+  os.system('sort +3 -25 indata_precursors.bst >indata_signatures')
   print('begin miRDP')
-  os.system('perl miRDP.pl ' + inBase + '_signatures ' + inBase + '_structures > ' + inBase + '_predictions')
-  #os.system('perl rm_redundant_meet_plant.pl chromosome_length ' + inBase + '_precursors.fa ' + inBase + '_predictions ' + inBase + '_nr_prediction ' + inBase + '_filter_P_prediction')
+  os.system('perl miRDP.pl indata_signatures indata_structures > indata_predictions')
+  #os.system('perl rm_redundant_meet_plant.pl chromosome_length indata_precursors.fa indata_predictions indata_nr_prediction indata_filter_P_prediction')
 
 def run_mirdp_known (infile, f_annotated):
   inBase = infile[:-3]
@@ -69,13 +68,13 @@ def run_mirdp_known (infile, f_annotated):
 infile = 'high_conf_mature_ath_uniq_collapsed.fa'
 #infile = '100_collapsed.fa'
 os.system('cp input_storage/' + infile + ' .')
-genome, f_annotated = init_mirdeep_p ('tair10')
+genome, f_annotated = init_mirdeep_p ('tair9')
 run_mirdp_new (infile) #= takes 15 secs, validates 75 unique mirna
 #run_mirdp_known (infile, f_annotated) #= also takes 15 secs, validates 75 unique mirna
 
 inBase = infile[:-3]
 print('mode of predicting new: ')
-os.system('cut -f1 ' + inBase + '_predictions | grep \'seq_\' | sort | uniq | wc -l')
+os.system('cut -f1 indata_predictions | grep \'seq_\' | sort | uniq | wc -l')
 #print('mode of predicting known: ')
 #os.system('cut -f1 ' + inBase + '_250_prediction | grep \'seq_\' | sort | uniq | wc -l')
 
