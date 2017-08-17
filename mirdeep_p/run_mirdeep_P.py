@@ -1,7 +1,5 @@
 '''
-cp /home/cloudera/workspace/mirLibHadoop/test/Run_mirdeep_P.py .
-
-time python Run_mirdeep_P.py
+time python run_mirdeep_P.py
 '''
 import os
 
@@ -9,12 +7,13 @@ options = ['tair9', 'tair10']
 
 
 def init_mirdeep_p (op):
-  #= [~/workspace/miRNA_predictor/mirDeep-P/JulieTest]
   os.system('cp miRDP1.3/* .')
+  #os.system('mkdir bowtie-index')
   if op == options[0]:
     genome = 'TAIR9_genome.fa'
     rep = 'tair9/'
     f_annotated = 'annotated_miRNA_extended.fa'
+    #os.system('bowtie-build -f ' + genome + ' bowtie-index/' + genome[:-3] + ' >/dev/null') 
     os.system('cp ' + rep + 'ath.gff .')#= miRBase v15
     os.system('cp ' + rep + 'annotated_miRNA_extended.fa .')
     os.system('cp genome/' + genome + ' .')
@@ -25,17 +24,15 @@ def init_mirdeep_p (op):
   elif op == options[1]:
     genome = 'a_thaliana_t10.fa'
     rep = 'tair10/'
-    f_annotated = 'annotated_miRNA_v21_extended_v21.fa'
-    os.system('cp ' + rep + 'ath.gff3 .')#= miRBase v21
-    os.system('cp ' + rep + 'annotated_miRNA_v21_extended_v21.fa .')
+    f_annotated = 'annotated_miRNA_v21_extended.fa'
+    #os.system('bowtie-build -f ' + genome + ' bowtie-index/' + genome[:-3] + ' >/dev/null') 
+    os.system('cp ' + rep + 'ath.gff3.edited .')#= miRBase v21
+    #os.system('cp ' + rep + 'annotated_miRNA_v21_extended.fa .')
     os.system('cp genome/' + genome + ' .')
     os.system('cp ' + rep + 'ncRNA_CDS.gff .')#
     os.system('cp ' + rep + 'chromosome_length .')#
-    os.system('perl fetch_extended_precursors.pl ' + genome + ' ath.gff3 >annotated_miRNA_v21_extended.fa')
-    os.system('bowtie-build -f annotated_miRNA_v21_extended_v21.fa bowtie-index/annotated_miRNA_v21_extended_v21.fa >/dev/null')
-
-  #os.system('mkdir bowtie-index')
-  #os.system('bowtie-build -f ' + genome + ' bowtie-index/' + genome[:-3] + ' >/dev/null') 
+    os.system('perl fetch_extended_precursors.pl ' + genome + ' ath.gff3.edited >annotated_miRNA_v21_extended.fa')
+    os.system('bowtie-build -f annotated_miRNA_v21_extended.fa bowtie-index/annotated_miRNA_v21_extended.fa >/dev/null')
   return genome, f_annotated
 
 def run_mirdp_new (infile):
@@ -51,16 +48,16 @@ def run_mirdp_new (infile):
   os.system('bowtie-build -f ' + inBase + '_precursors.fa bowtie-index/' + inBase + '_precursors >/dev/null')
   os.system('bowtie -a -v 0 bowtie-index/' + inBase + '_precursors -f ' + inBase + '_filtered.fa > ' + inBase + '_precursors.aln')
   os.system('perl convert_bowtie_to_blast.pl ' + inBase + '_precursors.aln ' + inBase + '_filtered.fa ' + inBase + '_precursors.fa >' + inBase + '_precursors.bst')
-  os.system('sort +3 -25 ' + inBase + '_precursors.bs t >' + inBase + '_signatures')
+  os.system('sort +3 -25 ' + inBase + '_precursors.bst >' + inBase + '_signatures')
   print('begin miRDP')
   os.system('perl miRDP.pl ' + inBase + '_signatures ' + inBase + '_structures > ' + inBase + '_predictions')
   #os.system('perl rm_redundant_meet_plant.pl chromosome_length ' + inBase + '_precursors.fa ' + inBase + '_predictions ' + inBase + '_nr_prediction ' + inBase + '_filter_P_prediction')
 
-def run_mirdp_known (infile, fa):
+def run_mirdp_known (infile, f_annotated):
   inBase = infile[:-3]
-  os.system('bowtie -a -v 0 bowtie-index/' + fa + ' -f ' + infile + ' >' + inBase + '.aln')
-  os.system('perl convert_bowtie_to_blast.pl ' + inBase + '_extended.aln ' + inBase + '.fa ' + fa + ' > ' + inBase + '_extended.bst')
-  os.system('perl excise_candidate.pl ' + fa + ' ' + inBase + '_extended.bst 250 >precursors_250.fa')
+  os.system('bowtie -a -v 0 bowtie-index/' + f_annotated + ' -f ' + infile + ' >' + inBase + '.aln')
+  os.system('perl convert_bowtie_to_blast.pl ' + inBase + '.aln ' + inBase + '.fa ' + f_annotated + ' > ' + inBase + '_extended.bst')
+  os.system('perl excise_candidate.pl ' + f_annotated + inBase + '_extended.bst 250 >precursors_250.fa')
   os.system('bowtie-build -f precursors_250.fa bowtie-index/precursors_250 >/dev/null')
   os.system('cat precursors_250.fa|RNAfold --noPS >precursors_250_structure')
   os.system('bowtie -a -v 0 bowtie-index/precursors_250 -f ' + inBase + '.fa >' + inBase + '_250.aln')
@@ -69,14 +66,11 @@ def run_mirdp_known (infile, fa):
   os.system('perl miRDP.pl ' + inBase + '_250_signature precursors_250_structure >' + inBase + '_250_prediction')
 
 
-
-
-
 infile = 'high_conf_mature_ath_uniq_collapsed.fa'
 #infile = '100_collapsed.fa'
-#os.system('cp ../' + infile + ' .')
-genome, f_annotated = init_mirdeep_p ('tair9')
-#run_mirdp_new (infile) #= takes 15 secs, validates 75 unique mirna
+os.system('cp input_storage/' + infile + ' .')
+genome, f_annotated = init_mirdeep_p ('tair10')
+run_mirdp_new (infile) #= takes 15 secs, validates 75 unique mirna
 #run_mirdp_known (infile, f_annotated) #= also takes 15 secs, validates 75 unique mirna
 
 inBase = infile[:-3]
