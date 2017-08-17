@@ -20,5 +20,4 @@ module load mugqic/ViennaRNA/2.1.8
 
  
 cd ../mirdeep_p
-mkdir jobsOut
-time python run_mirdeep_P.py
+python run_mirdeep_P.py

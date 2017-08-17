@@ -2,6 +2,7 @@
 time python run_mirdeep_P.py
 '''
 import os
+import time
 
 options = ['tair9', 'tair10']
 
@@ -69,8 +70,16 @@ infile = 'high_conf_mature_ath_uniq_collapsed.fa'
 os.system('cp input_storage/' + infile + ' .')
 genome, f_annotated = init_mirdeep_p ('tair10')
 
+start = time.time()
+
 run_mirdp_new (infile)
 run_mirdp_known (infile, f_annotated)
+
+end = time.time()
+
+duration = end - start
+duration = format(duration, '.0f')
+print(duration)
 
 print('mode of predicting new: ')
 os.system('cut -f1 result_new_predictions | grep \'seq_\' | sort | uniq | wc -l')
