@@ -1,5 +1,8 @@
 '''
 time python run_mirdeep_P.py
+
+author: Chao-Jung Wu
+date: 2017-08-
 '''
 import os
 import time
