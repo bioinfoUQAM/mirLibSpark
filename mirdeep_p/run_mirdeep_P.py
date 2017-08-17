@@ -37,7 +37,7 @@ def init_mirdeep_p (op):
 
 def run_mirdp_new (infile):
   os.system('bowtie -a -v 0 bowtie-index/' + genome[:-3] + ' -f ' + infile + '>indata.aln')
-  os.system('perl convert_bowtie_to_blast.pl indata.aln ' + infile + ' ' + genome + ' >indata.bst')
+  os.system('perl convert_bowtie_to_blast.pl indata.aln ' + infile + ' ' + genome + ' >indata.bst 2>/dev/null')
   os.system('perl filter_alignments.pl indata.bst -c 15 >indata_filter15.bst')
   os.system('perl overlap.pl indata_filter15.bst ncRNA_CDS.gff -b >indata_id_overlap_ncRNA_CDS')
   os.system('perl alignedselected.pl indata_filter15.bst -g indata_id_overlap_ncRNA_CDS >indata_filter15_ncRNA_CDS.bst')
@@ -46,10 +46,10 @@ def run_mirdp_new (infile):
   os.system('cat indata_precursors.fa | RNAfold --noPS > indata_structures')
   os.system('bowtie-build -f indata_precursors.fa bowtie-index/indata_precursors >/dev/null')
   os.system('bowtie -a -v 0 bowtie-index/indata_precursors -f indata_filtered.fa > indata_precursors.aln')
-  os.system('perl convert_bowtie_to_blast.pl indata_precursors.aln indata_filtered.fa indata_precursors.fa >indata_precursors.bst')
+  os.system('perl convert_bowtie_to_blast.pl indata_precursors.aln indata_filtered.fa indata_precursors.fa >indata_precursors.bst 2>/dev/null')
   os.system('sort +3 -25 indata_precursors.bst >indata_signatures')
   print('begin miRDP')
-  os.system('perl miRDP.pl indata_signatures indata_structures > indata_predictions')
+  os.system('perl miRDP.pl indata_signatures indata_structures > result_new_predictions')
   #os.system('perl rm_redundant_meet_plant.pl chromosome_length indata_precursors.fa indata_predictions indata_nr_prediction indata_filter_P_prediction')
 
 def run_mirdp_known (infile, f_annotated):
@@ -61,17 +61,22 @@ def run_mirdp_known (infile, f_annotated):
   os.system('bowtie -a -v 0 bowtie-index/precursors_250 -f ' + infile + ' >indata_250.aln')
   os.system('perl convert_bowtie_to_blast.pl indata_250.aln ' + infile + ' precursors_250.fa >indata_250.bst 2>/dev/null')
   os.system('sort +3 -25 indata_250.bst >indata_250_signature')
-  os.system('perl miRDP.pl indata_250_signature precursors_250_structure >indata_250_prediction 2>/dev/null')
+  os.system('perl miRDP.pl indata_250_signature precursors_250_structure > result_known_250_predictions 2>/dev/null')
 
 infile = 'high_conf_mature_ath_uniq_collapsed.fa'
 #infile = '100_collapsed.fa'
 os.system('cp input_storage/' + infile + ' .')
-genome, f_annotated = init_mirdeep_p ('tair9')
-#run_mirdp_new (infile) #= takes 15 secs, validates 75 unique mirna
-run_mirdp_known (infile, f_annotated) #= also takes 15 secs, validates 75 unique mirna
+genome, f_annotated = init_mirdeep_p ('tair10')
 
-#print('mode of predicting new: ')
-#os.system('cut -f1 indata_predictions | grep \'seq_\' | sort | uniq | wc -l')
+run_mirdp_new (infile)
+run_mirdp_known (infile, f_annotated)
+
+print('mode of predicting new: ')
+os.system('cut -f1 result_new_predictions | grep \'seq_\' | sort | uniq | wc -l')
 print('mode of predicting known: ')
-os.system('cut -f1 indata_250_prediction | grep \'seq_\' | sort | uniq | wc -l')
+os.system('cut -f1 result_known_250_predictions | grep \'seq_\' | sort | uniq | wc -l')
+print('combinded prediction: ')
+os.system('cat result_* > result_combinded.txt')
+os.system('cut -f1 result_combinded | grep \'seq_\' | sort | uniq | wc -l')
+os.system('rm -f indata* *.gff* *.pl precursors_250_structure *.fa chromosome_length')
 
