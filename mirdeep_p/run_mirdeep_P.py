@@ -26,6 +26,7 @@ def init_mirdeep_p (op):
     rep = 'tair10/'
     f_annotated = 'annotated_miRNA_v21_extended.fa'
     #os.system('bowtie-build -f ' + genome + ' bowtie-index/' + genome[:-3] + ' >/dev/null') 
+    os.system('cp ../dbs/bowtie_index/*.ebwt bowtie-index/')
     os.system('cp ' + rep + 'ath.gff3.edited .')#= miRBase v21
     #os.system('cp ' + rep + 'annotated_miRNA_v21_extended.fa .')
     os.system('cp genome/' + genome + ' .')
@@ -77,6 +78,6 @@ print('mode of predicting known: ')
 os.system('cut -f1 result_known_250_predictions | grep \'seq_\' | sort | uniq | wc -l')
 print('combinded prediction: ')
 os.system('cat result_* > result_combinded.txt')
-os.system('cut -f1 result_combinded | grep \'seq_\' | sort | uniq | wc -l')
-os.system('rm -f indata* *.gff* *.pl precursors_250_structure *.fa chromosome_length')
+os.system('cut -f1 result_combinded.txt | grep \'seq_\' | sort | uniq | wc -l')
+os.system('rm -f indata* *.gff* *.pl precursors_250_structure *.fa chromosome_length result_combinded.txt')
 
