@@ -15,12 +15,12 @@ def init_mirdeep_p (op):
     f_annotated = 'annotated_miRNA_extended.fa'
     #os.system('bowtie-build -f ' + genome + ' bowtie-index/' + genome[:-3] + ' >/dev/null') 
     os.system('cp ' + rep + 'ath.gff .')#= miRBase v15
-    os.system('cp ' + rep + 'annotated_miRNA_extended.fa .')
+    #os.system('cp ' + rep + 'annotated_miRNA_extended.fa .')
     os.system('cp genome/' + genome + ' .')
     os.system('cp ' + rep + 'ncRNA_CDS.gff .')#
     os.system('cp ' + rep + 'chromosome_length .')#
-    #os.system('perl fetch_extended_precursors.pl ' + genome + ' ath.gff >annotated_miRNA_extended.fa')
-    #os.system('bowtie-build -f annotated_miRNA_extended.fa bowtie-index/annotated_miRNA_extended.fa >/dev/null')
+    os.system('perl fetch_extended_precursors.pl ' + genome + ' ath.gff3.edited >annotated_miRNA_extended.fa')
+    os.system('bowtie-build -f annotated_miRNA_extended.fa bowtie-index/annotated_miRNA_extended.fa >/dev/null')
   elif op == options[1]:
     genome = 'a_thaliana_t10.fa'
     rep = 'tair10/'
@@ -54,14 +54,14 @@ def run_mirdp_new (infile):
 
 def run_mirdp_known (infile, f_annotated):
   os.system('bowtie -a -v 0 bowtie-index/' + f_annotated + ' -f ' + infile + ' >indata.aln')
-  os.system('perl convert_bowtie_to_blast.pl indata.aln ' + infile + ' ' + f_annotated + ' > indata_extended.bst')
+  os.system('perl convert_bowtie_to_blast.pl indata.aln ' + infile + ' ' + f_annotated + ' > indata_extended.bst 2>/dev/null')
   os.system('perl excise_candidate.pl ' + f_annotated + ' indata_extended.bst 250 >precursors_250.fa')
   os.system('bowtie-build -f precursors_250.fa bowtie-index/precursors_250 >/dev/null')
   os.system('cat precursors_250.fa|RNAfold --noPS >precursors_250_structure')
   os.system('bowtie -a -v 0 bowtie-index/precursors_250 -f ' + infile + ' >indata_250.aln')
-  os.system('perl convert_bowtie_to_blast.pl indata_250.aln ' + infile + ' precursors_250.fa >indata_250.bst')
+  os.system('perl convert_bowtie_to_blast.pl indata_250.aln ' + infile + ' precursors_250.fa >indata_250.bst 2>/dev/null')
   os.system('sort +3 -25 indata_250.bst >indata_250_signature')
-  os.system('perl miRDP.pl indata_250_signature precursors_250_structure >indata_250_prediction')
+  os.system('perl miRDP.pl indata_250_signature precursors_250_structure >indata_250_prediction 2>/dev/null')
 
 infile = 'high_conf_mature_ath_uniq_collapsed.fa'
 #infile = '100_collapsed.fa'
