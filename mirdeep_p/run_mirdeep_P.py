@@ -19,7 +19,7 @@ def init_mirdeep_p (op):
     os.system('cp genome/' + genome + ' .')
     os.system('cp ' + rep + 'ncRNA_CDS.gff .')#
     os.system('cp ' + rep + 'chromosome_length .')#
-    os.system('perl fetch_extended_precursors.pl ' + genome + ' ath.gff3.edited >annotated_miRNA_extended.fa')
+    os.system('perl fetch_extended_precursors.pl ' + genome + ' ath.gff3.edited >' + f_annotated)
     os.system('bowtie-build -f annotated_miRNA_extended.fa bowtie-index/annotated_miRNA_extended.fa >/dev/null')
   elif op == options[1]:
     genome = 'a_thaliana_t10.fa'
@@ -28,12 +28,12 @@ def init_mirdeep_p (op):
     #os.system('bowtie-build -f ' + genome + ' bowtie-index/' + genome[:-3] + ' >/dev/null') 
     os.system('cp ../dbs/bowtie_index/*.ebwt bowtie-index/')
     os.system('cp ' + rep + 'ath.gff3.edited .')#= miRBase v21
-    #os.system('cp ' + rep + 'annotated_miRNA_v21_extended.fa .')
+    os.system('cp ' + rep + 'annotated_miRNA_v21_extended.fa .')
     os.system('cp genome/' + genome + ' .')
     os.system('cp ' + rep + 'ncRNA_CDS.gff .')#
     os.system('cp ' + rep + 'chromosome_length .')#
-    os.system('perl fetch_extended_precursors.pl ' + genome + ' ath.gff3.edited >annotated_miRNA_v21_extended.fa')
-    os.system('bowtie-build -f annotated_miRNA_v21_extended.fa bowtie-index/annotated_miRNA_v21_extended.fa >/dev/null')
+    #os.system('perl fetch_extended_precursors.pl ' + genome + ' ath.gff3.edited >' + f_annotated)
+    #os.system('bowtie-build -f annotated_miRNA_v21_extended.fa bowtie-index/annotated_miRNA_v21_extended.fa >/dev/null')
   return genome, f_annotated
 
 def run_mirdp_new (infile):
@@ -79,5 +79,5 @@ os.system('cut -f1 result_known_250_predictions | grep \'seq_\' | sort | uniq | 
 print('combinded prediction: ')
 os.system('cat result_* > result_combinded.txt')
 os.system('cut -f1 result_combinded.txt | grep \'seq_\' | sort | uniq | wc -l')
-os.system('rm -f indata* *.gff* *.pl precursors_250_structure *.fa chromosome_length result_combinded.txt')
+os.system('rm -f indata* *.gff* *.pl precursors_250_structure *.fa chromosome_length result_combinded.txt bowtie-index/*precursors*')
 
