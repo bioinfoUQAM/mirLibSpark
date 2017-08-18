@@ -68,28 +68,36 @@ def run_mirdp_known (infile, f_annotated):
   os.system('sort +3 -25 indata_250.bst >indata_250_signature')
   os.system('perl miRDP.pl indata_250_signature precursors_250_structure > result_known_250_predictions 2>/dev/null')
 
-infile = 'high_conf_mature_ath_uniq_collapsed.fa'
-#infile = '100_collapsed.fa'
-os.system('cp input_storage/' + infile + ' .')
-genome, f_annotated = init_mirdeep_p ('tair10')
 
-start = time.time()
+def run_miRDP ():
+  rep_input = '/home/cloudera/vm_share/libraries/srna2'
+  infiles = [f for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
 
-run_mirdp_new (infile)
-run_mirdp_known (infile, f_annotated)
+  infile = 'high_conf_mature_ath_uniq_collapsed.fa'
+  #infile = '100_collapsed.fa'
+  os.system('cp input_storage/' + infile + ' .')
+  genome, f_annotated = init_mirdeep_p ('tair10')
 
-end = time.time()
+  start = time.time()
 
-duration = end - start
-duration = format(duration, '.0f')
-print(duration)
+  run_mirdp_new (infile)
+  run_mirdp_known (infile, f_annotated)
 
-print('mode of predicting new: ')
-os.system('cut -f1 result_new_predictions | grep \'seq_\' | sort | uniq | wc -l')
-print('mode of predicting known: ')
-os.system('cut -f1 result_known_250_predictions | grep \'seq_\' | sort | uniq | wc -l')
-print('combinded prediction: ')
-os.system('cat result_* > result_combinded.txt')
-os.system('cut -f1 result_combinded.txt | grep \'seq_\' | sort | uniq | wc -l')
-os.system('rm -f indata* *.gff* *.pl precursors_250_structure *.fa chromosome_length result_combinded.txt bowtie-index/*precursors*')
+  end = time.time()
+
+  duration = end - start
+  duration = format(duration, '.0f')
+  print('miRDP duration (sec):', duration)
+
+  #print('mode of predicting new: ')
+  #os.system('cut -f1 result_new_predictions | grep \'seq_\' | sort | uniq | wc -l')
+  #print('mode of predicting known: ')
+  #os.system('cut -f1 result_known_250_predictions | grep \'seq_\' | sort | uniq | wc -l')
+  #print('combinded prediction: ')
+  os.system('cat result_* > result_combinded.txt')
+  os.system('cut -f1 result_combinded.txt | grep \'seq_\' | sort | uniq | wc -l')
+  os.system('rm -f indata* *.gff* *.pl precursors_250_structure *.fa chromosome_length result_combinded.txt bowtie-index/*precursors*')
+
+run_miRDP ()
+
 
