@@ -6,6 +6,7 @@ date: 2017-08-
 '''
 import os
 import time
+from os import listdir
 
 options = ['tair9', 'tair10']
 
@@ -70,13 +71,13 @@ def run_mirdp_known (infile, f_annotated):
 
 
 def run_miRDP ():
-  rep_input = '/home/cloudera/vm_share/libraries/srna2'
-  infiles = [f for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
+  #rep_input = '/home/cloudera/vm_share/libraries/srna2'
+  #infiles = [f for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
 
   infile = 'high_conf_mature_ath_uniq_collapsed.fa'
   #infile = '100_collapsed.fa'
   os.system('cp input_storage/' + infile + ' .')
-  genome, f_annotated = init_mirdeep_p ('tair10')
+
 
   start = time.time()
 
@@ -87,7 +88,7 @@ def run_miRDP ():
 
   duration = end - start
   duration = format(duration, '.0f')
-  print('miRDP duration (sec):', duration)
+  print 'miRDP duration: ', infile, duration, 'sec'
 
   #print('mode of predicting new: ')
   #os.system('cut -f1 result_new_predictions | grep \'seq_\' | sort | uniq | wc -l')
@@ -98,6 +99,8 @@ def run_miRDP ():
   os.system('cut -f1 result_combinded.txt | grep \'seq_\' | sort | uniq | wc -l')
   os.system('rm -f indata* *.gff* *.pl precursors_250_structure *.fa chromosome_length result_combinded.txt bowtie-index/*precursors*')
 
+
+genome, f_annotated = init_mirdeep_p ('tair10')
 run_miRDP ()
 
 
