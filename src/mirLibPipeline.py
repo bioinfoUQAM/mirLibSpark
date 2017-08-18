@@ -144,8 +144,8 @@ if __name__ == '__main__' :
     if infile[-1:] == '~': continue
     print ("--Processing of the library: ", infile)
     
+    inBasename = os.path.splitext(infile)[0]
     infile = rep_input+infile
-    inBasename = os.path.splitext(os.path.basename(infile))[0]
     inKvfile = rep_tmp + inBasename + '.kv.txt'
 
     # hdfsFile = inBasename + '.hkv.txt'
@@ -204,7 +204,7 @@ if __name__ == '__main__' :
     
 
 
-    '''
+    #'''
    
     #= Filtering sRNA low frequency
     ## in : ('seq', freq)
@@ -346,7 +346,7 @@ if __name__ == '__main__' :
     ##results = miranda_rdd.collect()
 
     #results = miRNA_rdd.collect()
-    '''
+    #'''
     endLib = time.time()
     print ("  End of the processing     ", end="\n")
     
