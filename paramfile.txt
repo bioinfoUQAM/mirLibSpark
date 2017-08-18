@@ -17,6 +17,7 @@ b_index_path=/home/cloudera/workspace/mirLibHadoop/dbs/bowtie_index/a_thaliana_t
 #project_path=/home/cjwu/gitproject/mirLibHadoop/
 #genome_path=/scratch/hvg-164-aa/mirlibhadoop/ATH/Genome/
 #input_path=/home/cjwu/gitproject/mirLibHadoop/input/
+#input_path=/home/cjwu/demo/srna2/
 #output_path=/home/cjwu/gitproject/mirLibHadoop/output/
 #b_index_path=/home/cjwu/gitproject/mirLibHadoop/dbs/bowtie_index/a_thaliana_t10
 ##
