@@ -106,7 +106,7 @@ def process_one_file (infile):
 
 def run_miRDP ():
   #rep_input = '/home/cloudera/Desktop/mirLibHadoop/input/'
-  rep_input = '/home/cloudera/Desktop/mirLibHadoop/mirdeep_p/input/'
+  rep_input = '/home/cjwu/demo/srna2/'
   infiles = [f for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
   totaltime = 0
   for infile in infiles:

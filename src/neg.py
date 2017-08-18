@@ -41,7 +41,7 @@ negseqs = collect_negtive_miRNA ()
 outfile = '../negativeSet/neg_ath1000.txt'
 fh_out = open (outfile, 'w')
 for s in negseqs:
-  print >> fh_out, s, '\t500'
+  print >> fh_out, s+'\t500'
 fh_out.close()
 
 
