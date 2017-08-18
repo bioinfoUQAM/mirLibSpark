@@ -10,6 +10,21 @@ from os import listdir
 
 options = ['tair9', 'tair10']
 
+def convert_raw_to_fasta500 (infile, rep_input):
+  inBasename = os.path.splitext(infile)[0]
+  outfile = '../tmp/' + inBasename + '.fa'
+  fh_out = open (outfile, 'w')
+  nb = 0
+  with open (rep_input + infile, 'r') as fh:
+    for i in fh:
+      seq = i.split('\t')[0]
+      freq = i.rstrip('\n').split('\t')[1]
+      header = '>seq_' + str(nb) + '_x' + freq
+      print >> fh_out, header, '\n', seq
+      nb += 1
+  fh_out.close()
+  return outfile
+
 
 def init_mirdeep_p (op):
   os.system('cp miRDP1.3/* .')
@@ -74,9 +89,14 @@ def run_miRDP ():
   #rep_input = '/home/cloudera/vm_share/libraries/srna2'
   #infiles = [f for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
 
-  infile = 'high_conf_mature_ath_uniq_collapsed.fa'
+  #infile = 'high_conf_mature_ath_uniq_collapsed.fa'
   #infile = '100_collapsed.fa'
-  os.system('cp input_storage/' + infile + ' .')
+  #os.system('cp input_storage/' + infile + ' .')
+
+  #rep_input = '/home/cloudera/Desktop/mirLibHadoop/input/'
+  rep_input = '/home/cloudera/Desktop/mirLibHadoop/mirdeep_p/input/'
+  infile = 'neg_ath1000.txt'
+  infile = convert_raw_to_fasta500 (infile, rep_input)
 
 
   start = time.time()
