@@ -25,7 +25,6 @@ def convert_raw_to_fasta500 (infile, rep_input):
   fh_out.close()
   return outfile
 
-
 def init_mirdeep_p (op):
   os.system('cp miRDP1.3/* .')
   #os.system('mkdir bowtie-index')
@@ -57,48 +56,34 @@ def init_mirdeep_p (op):
   return genome, f_annotated
 
 def run_mirdp_new (infile):
-  os.system('bowtie -a -v 0 bowtie-index/' + genome[:-3] + ' -f ' + infile + '>indata.aln')
+  os.system('bowtie -a -v 0 bowtie-index/' + genome[:-3] + ' -f ' + infile + '>indata.aln 2>/dev/null')
   os.system('perl convert_bowtie_to_blast.pl indata.aln ' + infile + ' ' + genome + ' >indata.bst 2>/dev/null')
-  os.system('perl filter_alignments.pl indata.bst -c 15 >indata_filter15.bst')
-  os.system('perl overlap.pl indata_filter15.bst ncRNA_CDS.gff -b >indata_id_overlap_ncRNA_CDS')
-  os.system('perl alignedselected.pl indata_filter15.bst -g indata_id_overlap_ncRNA_CDS >indata_filter15_ncRNA_CDS.bst')
-  os.system('perl filter_alignments.pl indata_filter15_ncRNA_CDS.bst -b ' + infile + ' > indata_filtered.fa')
-  os.system('perl excise_candidate.pl ' + genome + ' indata_filter15_ncRNA_CDS.bst 250 >indata_precursors.fa')
+  os.system('perl filter_alignments.pl indata.bst -c 15 >indata_filter15.bst 2>/dev/null')
+  os.system('perl overlap.pl indata_filter15.bst ncRNA_CDS.gff -b >indata_id_overlap_ncRNA_CDS 2>/dev/null')
+  os.system('perl alignedselected.pl indata_filter15.bst -g indata_id_overlap_ncRNA_CDS >indata_filter15_ncRNA_CDS.bst 2>/dev/null')
+  os.system('perl filter_alignments.pl indata_filter15_ncRNA_CDS.bst -b ' + infile + ' > indata_filtered.fa 2>/dev/null')
+  os.system('perl excise_candidate.pl ' + genome + ' indata_filter15_ncRNA_CDS.bst 250 >indata_precursors.fa 2>/dev/null')
   os.system('cat indata_precursors.fa | RNAfold --noPS > indata_structures')
-  os.system('bowtie-build -f indata_precursors.fa bowtie-index/indata_precursors >/dev/null')
-  os.system('bowtie -a -v 0 bowtie-index/indata_precursors -f indata_filtered.fa > indata_precursors.aln')
+  os.system('bowtie-build -f indata_precursors.fa bowtie-index/indata_precursors >/dev/null 2>/dev/null')
+  os.system('bowtie -a -v 0 bowtie-index/indata_precursors -f indata_filtered.fa > indata_precursors.aln 2>/dev/null')
   os.system('perl convert_bowtie_to_blast.pl indata_precursors.aln indata_filtered.fa indata_precursors.fa >indata_precursors.bst 2>/dev/null')
   os.system('sort +3 -25 indata_precursors.bst >indata_signatures')
-  print('begin miRDP')
   os.system('perl miRDP.pl indata_signatures indata_structures > result_new_predictions')
   #os.system('perl rm_redundant_meet_plant.pl chromosome_length indata_precursors.fa indata_predictions indata_nr_prediction indata_filter_P_prediction')
 
 def run_mirdp_known (infile, f_annotated):
-  os.system('bowtie -a -v 0 bowtie-index/' + f_annotated + ' -f ' + infile + ' >indata.aln')
+  os.system('bowtie -a -v 0 bowtie-index/' + f_annotated + ' -f ' + infile + ' >indata.aln 2>/dev/null')
   os.system('perl convert_bowtie_to_blast.pl indata.aln ' + infile + ' ' + f_annotated + ' > indata_extended.bst 2>/dev/null')
-  os.system('perl excise_candidate.pl ' + f_annotated + ' indata_extended.bst 250 >precursors_250.fa')
-  os.system('bowtie-build -f precursors_250.fa bowtie-index/precursors_250 >/dev/null')
+  os.system('perl excise_candidate.pl ' + f_annotated + ' indata_extended.bst 250 >precursors_250.fa 2>/dev/null')
+  os.system('bowtie-build -f precursors_250.fa bowtie-index/precursors_250 >/dev/null 2>/dev/null')
   os.system('cat precursors_250.fa|RNAfold --noPS >precursors_250_structure')
-  os.system('bowtie -a -v 0 bowtie-index/precursors_250 -f ' + infile + ' >indata_250.aln')
+  os.system('bowtie -a -v 0 bowtie-index/precursors_250 -f ' + infile + ' >indata_250.aln 2>/dev/null')
   os.system('perl convert_bowtie_to_blast.pl indata_250.aln ' + infile + ' precursors_250.fa >indata_250.bst 2>/dev/null')
   os.system('sort +3 -25 indata_250.bst >indata_250_signature')
-  os.system('perl miRDP.pl indata_250_signature precursors_250_structure > result_known_250_predictions 2>/dev/null')
+  os.system('perl miRDP.pl indata_250_signature precursors_250_structure > result_known_250_predictions')
 
 
-def run_miRDP ():
-  #rep_input = '/home/cloudera/vm_share/libraries/srna2'
-  #infiles = [f for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
-
-  #infile = 'high_conf_mature_ath_uniq_collapsed.fa'
-  #infile = '100_collapsed.fa'
-  #os.system('cp input_storage/' + infile + ' .')
-
-  #rep_input = '/home/cloudera/Desktop/mirLibHadoop/input/'
-  rep_input = '/home/cloudera/Desktop/mirLibHadoop/mirdeep_p/input/'
-  infile = 'neg_ath1000.txt'
-  infile = convert_raw_to_fasta500 (infile, rep_input)
-
-
+def process_one_file (infile):
   start = time.time()
 
   run_mirdp_new (infile)
@@ -119,6 +104,32 @@ def run_miRDP ():
   os.system('cut -f1 result_combinded.txt | grep \'seq_\' | sort | uniq | wc -l')
   os.system('rm -f indata* *.gff* *.pl precursors_250_structure *.fa chromosome_length result_combinded.txt bowtie-index/*precursors*')
 
+def run_miRDP ():
+  #rep_input = '/home/cloudera/Desktop/mirLibHadoop/input/'
+  rep_input = '/home/cloudera/Desktop/mirLibHadoop/mirdeep_p/input/'
+  infiles = [f for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
+  totaltime = 0
+  for infile in infiles:
+    print 'start processing', infile
+    infile = convert_raw_to_fasta500 (infile, rep_input)
+    start = time.time()
+
+    run_mirdp_new (infile)
+    run_mirdp_known (infile, f_annotated)
+
+    end = time.time()
+
+    duration = end - start
+    totaltime += duration
+    duration = format(duration, '.0f')
+    print 'miRDP duration: ', infile, duration, 'sec'
+
+    os.system('cat result_* > result_combinded.txt')
+    os.system('cut -f1 result_combinded.txt | grep \'seq_\' | sort | uniq | wc -l')
+    os.system('rm -f indata* *.gff* *.pl precursors_250_structure *.fa chromosome_length result_combinded.txt bowtie-index/*precursors*')
+  
+  totaltime = format(totaltime, '.0f')
+  print 'miRDP duration: ', totaltime, 'sec'
 
 genome, f_annotated = init_mirdeep_p ('tair10')
 run_miRDP ()
