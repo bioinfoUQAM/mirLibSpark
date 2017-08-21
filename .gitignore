@@ -12,3 +12,4 @@ workdir/
 tmp/
 lib/all.model
 lib/miRdup_1.4/model/all.model
+mirdeep_p/bowtie-index/

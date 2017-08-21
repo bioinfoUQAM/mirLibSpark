@@ -27,7 +27,7 @@ def convert_raw_to_fasta500 (infile, rep_input):
 
 def init_mirdeep_p (op):
   os.system('cp miRDP1.3/* .')
-  #os.system('mkdir bowtie-index')
+  os.system('mkdir bowtie-index 2>/dev/null')
   if op == options[0]:
     genome = 'TAIR9_genome.fa'
     rep = 'tair9/'
@@ -48,11 +48,12 @@ def init_mirdeep_p (op):
     os.system('cp ../dbs/bowtie_index/*.ebwt bowtie-index/')
     os.system('cp ' + rep + 'ath.gff3.edited .')#= miRBase v21
     os.system('cp ' + rep + 'annotated_miRNA_v21_extended.fa .')
-    os.system('cp genome/' + genome + ' .')
+    #os.system('cp genome/' + genome + ' .')
+    os.system('cat ../dbs/ATH/Genome/TAIR10_*.fas > ' + genome)#########
     os.system('cp ' + rep + 'ncRNA_CDS.gff .')#
     os.system('cp ' + rep + 'chromosome_length .')#
     #os.system('perl fetch_extended_precursors.pl ' + genome + ' ath.gff3.edited >' + f_annotated)
-    #os.system('bowtie-build -f annotated_miRNA_v21_extended.fa bowtie-index/annotated_miRNA_v21_extended.fa >/dev/null')
+    os.system('bowtie-build -f annotated_miRNA_v21_extended.fa bowtie-index/annotated_miRNA_v21_extended.fa >/dev/null')
   return genome, f_annotated
 
 def run_mirdp_new (infile):
