@@ -83,32 +83,11 @@ def run_mirdp_known (infile, f_annotated):
   os.system('sort +3 -25 indata_250.bst >indata_250_signature')
   os.system('perl miRDP.pl indata_250_signature precursors_250_structure > result_known_250_predictions')
 
-
-def process_one_file (infile):
-  start = time.time()
-
-  run_mirdp_new (infile)
-  run_mirdp_known (infile, f_annotated)
-
-  end = time.time()
-
-  duration = end - start
-  duration = format(duration, '.0f')
-  print 'miRDP duration: ', infile, duration, 'sec'
-
-  #print('mode of predicting new: ')
-  #os.system('cut -f1 result_new_predictions | grep \'seq_\' | sort | uniq | wc -l')
-  #print('mode of predicting known: ')
-  #os.system('cut -f1 result_known_250_predictions | grep \'seq_\' | sort | uniq | wc -l')
-  #print('combinded prediction: ')
-  os.system('cat result_* > result_combinded.txt')
-  os.system('cut -f1 result_combinded.txt | grep \'seq_\' | sort | uniq | wc -l')
-  os.system('rm -f indata* *.gff* *.pl precursors_250_structure *.fa chromosome_length result_combinded.txt bowtie-index/*precursors*')
-
 def run_miRDP ():
   #rep_input = '/home/cloudera/Desktop/mirLibHadoop/input/'
-  rep_input = '../input/'
   #rep_input = '/home/cjwu/demo/srna2/'
+  rep_input = '../input/'
+
   infiles = [f for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
   totaltime = 0
   for infile in infiles:
