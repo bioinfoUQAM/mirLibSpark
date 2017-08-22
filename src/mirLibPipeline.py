@@ -199,11 +199,7 @@ if __name__ == '__main__' :
       ## in : u'seq1', u'seq2', u'seq1'
       ## out: ('seq', freq)
       collapse_rdd = trim_adapter_rdd.map(lambda word: (word, 1)).reduceByKey(lambda a, b: a+b)
-    #print(collapse_rdd.collect())
-
-    
-
-
+  
     #'''
    
     #= Filtering sRNA low frequency
