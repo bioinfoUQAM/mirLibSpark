@@ -63,14 +63,14 @@ if __name__ == '__main__' :
   limit_len = int(paramDict['limit_len'])           #18       # exclude RNA length < limit_len
   limit_nbLoc = int(paramDict['limit_nbLoc'])       #3        # exculde nbLoc mapped with bowtie  > limit_nbLoc
 
-  # bowtie
+  #= bowtie
   b_index_path = paramDict['b_index_path']
 
   #= file and list of known non miRNA
   known_non = '../dbs/TAIR10_ncRNA_CDS.gff' ###############################################################################
   d_ncRNA_CDS = ut.get_nonMirna_coors (known_non) #= nb = 198736
 
-  # pri-mirna
+  #= pri-mirna
   pri_l_flank = int(paramDict['pri_l_flank'])       #120
   pri_r_flank = int(paramDict['pri_r_flank'])       #60
   pre_flank = int(paramDict['pre_flank'])           #30
