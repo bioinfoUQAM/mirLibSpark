@@ -205,14 +205,14 @@ if __name__ == '__main__' :
     #= Filtering sRNA low frequency
     ## in : ('seq', freq)
     ## out: ('seq', freq)
-    sr_low_rdd = collapse_rdd.filter(lambda e: int(e[1]) > limit_srna_freq).persist()#########################
-    print('NB sr_low_rdd: ', len(sr_low_rdd.collect()))####################################################
+    sr_low_rdd = collapse_rdd.filter(lambda e: int(e[1]) > limit_srna_freq)#.persist()#########################
+    #print('NB sr_low_rdd: ', len(sr_low_rdd.collect()))####################################################
     
     #= Filtering short length
     ## in : ('seq', freq)
     ## out: ('seq', freq)
     sr_short_rdd = sr_low_rdd.filter(lambda e: len(e[0]) > limit_len).persist()  # TO KEEP IT
-    print('NB sr_short_rdd: ', len(sr_short_rdd.collect()))###################################################
+    #print('NB sr_short_rdd: ', len(sr_short_rdd.collect()))###################################################
     
     #= Filtering with DustMasker
     ## in : ('seq', freq)
@@ -222,7 +222,7 @@ if __name__ == '__main__' :
                             .filter(lambda e: e.isupper() and not e.startswith('>'))\
                             .map(lambda e: str(e.rstrip()))\
                             .persist()
-    print('NB dmask_rdd: ', len(dmask_rdd.collect()))############################################
+    #print('NB dmask_rdd: ', len(dmask_rdd.collect()))############################################
     
     #= Mapping with Bowtie
     ## in : 'seq'
@@ -233,7 +233,7 @@ if __name__ == '__main__' :
                           .groupByKey()\
                           .map(lambda e: (e[0], [len(list(e[1])), list(e[1])]))\
                           .persist()
-    print('NB bowtie_rdd: ', len(bowtie_rdd.collect()))##################################################
+    #print('NB bowtie_rdd: ', len(bowtie_rdd.collect()))##################################################
    
     #= Getting the expression value for each reads
     ## in : ('seq', [nbLoc, [['strd','chr',posChr],..]])
@@ -241,26 +241,26 @@ if __name__ == '__main__' :
     bowFrq_rdd = bowtie_rdd.join(sr_short_rdd)\
                            .map(bowtie_obj.bowtie_freq_rearrange_rule)\
                            .persist()
-    print('NB bowFrq_rdd: ', len(bowFrq_rdd.collect()))##################################################
+    #print('NB bowFrq_rdd: ', len(bowFrq_rdd.collect()))##################################################
     
     #= Filtering miRNA low frequency
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
-    mr_low_rdd = bowFrq_rdd.filter(lambda e: e[1][0] > limit_mrna_freq).persist()########################
-    print('NB mr_low_rdd: ', len(mr_low_rdd.collect()))##################################################
+    mr_low_rdd = bowFrq_rdd.filter(lambda e: e[1][0] > limit_mrna_freq)#.persist()########################
+    #print('NB mr_low_rdd: ', len(mr_low_rdd.collect()))##################################################
     
     #= Filtering high nbLocations and zero location
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
-    nbLoc_rdd = mr_low_rdd.filter(lambda e: e[1][1] > 0 and e[1][1] < limit_nbLoc).persist()#############
-    print('NB nbLoc_rdd: ', len(nbLoc_rdd.collect()))###################################################
+    nbLoc_rdd = mr_low_rdd.filter(lambda e: e[1][1] > 0 and e[1][1] < limit_nbLoc)#.persist()#############
+    #print('NB nbLoc_rdd: ', len(nbLoc_rdd.collect()))###################################################
     
     #= Flatmap the RDD
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr])
-    flat_rdd = nbLoc_rdd.flatMap(mru.flatmap_mappings).persist() ###
-    print('NB flat_rdd distinct (this step flats elements): ', len(flat_rdd.groupByKey().collect()))##################
-    print('NB flat_rdd not distinct: ', len(flat_rdd.collect()))##################
+    flat_rdd = nbLoc_rdd.flatMap(mru.flatmap_mappings)#.persist() ###
+    #print('NB flat_rdd distinct (this step flats elements): ', len(flat_rdd.groupByKey().collect()))##################
+    #print('NB flat_rdd not distinct: ', len(flat_rdd.collect()))##################
 
     ###############################
     ## Filtering known non-miRNA ##
@@ -268,8 +268,8 @@ if __name__ == '__main__' :
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr])
     ##excluKnownNon_rdd = flat_rdd.filter(kn_obj.knFilterBySeq) #= defunct
-    excluKnownNon_rdd = flat_rdd.filter(kn_obj.knFilterByCoor).persist()#######
-    print('excluKnownNon_rdd distinct: ', len(excluKnownNon_rdd.groupByKey().collect()))########
+    excluKnownNon_rdd = flat_rdd.filter(kn_obj.knFilterByCoor)#.persist()#######
+    #print('excluKnownNon_rdd distinct: ', len(excluKnownNon_rdd.groupByKey().collect()))########
     
     #= Extraction of the pri-miRNA
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr])
@@ -286,13 +286,13 @@ if __name__ == '__main__' :
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
     pri_vld_rdd = pri_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 3))\
                               .filter(lambda e: any(e[1][3])).persist()###################
-    print('NB pri_vld_rdd distinct (mircheck): ', len(pri_vld_rdd.groupByKey().collect()))#################################
+    #print('NB pri_vld_rdd distinct (mircheck): ', len(pri_vld_rdd.groupByKey().collect()))#################################
 
     #= Filtering structure with branched loop
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
-    one_loop_rdd = pri_vld_rdd.filter(lambda e: ut.containsOnlyOneLoop(e[1][3][2][int(e[1][3][4]) : int(e[1][3][5])+1])).persist()############
-    print('NB one_loop_rdd distinct : ', len(one_loop_rdd.groupByKey().collect()))#########################
+    one_loop_rdd = pri_vld_rdd.filter(lambda e: ut.containsOnlyOneLoop(e[1][3][2][int(e[1][3][4]) : int(e[1][3][5])+1]))#.persist()############
+    #print('NB one_loop_rdd distinct : ', len(one_loop_rdd.groupByKey().collect()))#########################
     
     #= Extraction of the pre-miRNA
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
@@ -308,9 +308,9 @@ if __name__ == '__main__' :
     #= Validating pre-mirna with mircheck
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold']])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mkPred','mkStart','mkStop']])
-    pre_vld_rdd0 = pre_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 4))\
-                              .filter(lambda e: any(e[1][4])).persist()
-    print('NB pre_vld_rdd0 distinct (mircheck II): (', len(pre_vld_rdd0.groupByKey().collect()), ')')################
+    #pre_vld_rdd0 = pre_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 4))\
+                              #.filter(lambda e: any(e[1][4])).persist()
+    #print('NB pre_vld_rdd0 distinct (mircheck II): (', len(pre_vld_rdd0.groupByKey().collect()), ')')################
 
     #= Validating pre-mirna with miRdup zipWithUniqueId
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold']])
@@ -319,8 +319,8 @@ if __name__ == '__main__' :
                               .map(mirdup_obj.run_miRdup)\
                               .map(lambda e: e[0])\
                               .filter(lambda e: e[1][4][3] == "true")\
-                              .persist()##################
-    print('NB pre_vld_rdd distinct (mirdup): ', len(pre_vld_rdd.groupByKey().collect()))################
+                              #.persist()##################
+    #print('NB pre_vld_rdd distinct (mirdup): ', len(pre_vld_rdd.groupByKey().collect()))################
     ###################################################
 
     #= Create dict, chromo_strand as key to search bowtie blocs in the following dict
@@ -330,11 +330,11 @@ if __name__ == '__main__' :
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore']])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq])
     profile_rdd = pre_vld_rdd.map(lambda e: profile_obj.computeProfileFrq(e, dict_bowtie_chromo_strand))\
-                      .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)\
-                      .persist()####################
+                      .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)#\
+                      #.persist()####################
 
     print('NB profile_rdd distinct: ', len(profile_rdd.groupByKey().collect()))#####################
-    print('NB profile_rdd not distinct (final prediction): ', len(profile_rdd.collect()))#####################
+    #print('NB profile_rdd not distinct (final prediction): ', len(profile_rdd.collect()))#####################
 
     #= target prediction
     #miranda_rdd = miRNA_rdd.map(miranda_obj.computeTargetbyMiranda).persist()####
