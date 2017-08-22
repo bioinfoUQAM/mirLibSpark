@@ -172,8 +172,8 @@ if __name__ == '__main__' :
     ## in : u'seq\tfreq'
     ## out: ('seq', freq)
       ## note that type_a does not need to collapse nor trim.
-      collapse_rdd = distFile.map(lambda line: mru.rearrange_rule(line, '\t'))\
-                             .distinct() ##= .distinct() might not be necessary
+      collapse_rdd = distFile.map(lambda line: mru.rearrange_rule(line, '\t'))#\
+                             #.distinct() ##= .distinct() might not be necessary
     else:
       if input_type == 'b': #= reads
       ## in : u'seq1', u'seq2', u'seq1'
@@ -211,7 +211,7 @@ if __name__ == '__main__' :
     #= Filtering short length
     ## in : ('seq', freq)
     ## out: ('seq', freq)
-    sr_short_rdd = sr_low_rdd.filter(lambda e: len(e[0]) > limit_len).persist()  # TO KEEP IT
+    sr_short_rdd = sr_low_rdd.filter(lambda e: len(e[0]) > limit_len)#.persist()  # TO KEEP IT ##= Julie: I remove this persist and the execution time doesn't go up.
     #print('NB sr_short_rdd: ', len(sr_short_rdd.collect()))###################################################
     
     #= Filtering with DustMasker
@@ -231,16 +231,16 @@ if __name__ == '__main__' :
                           .pipe(bowtie_cmd, bowtie_env)\
                           .map(bowtie_obj.bowtie_rearrange_map)\
                           .groupByKey()\
-                          .map(lambda e: (e[0], [len(list(e[1])), list(e[1])]))\
-                          .persist()
+                          .map(lambda e: (e[0], [len(list(e[1])), list(e[1])]))#\
+                          #.persist()
     #print('NB bowtie_rdd: ', len(bowtie_rdd.collect()))##################################################
    
     #= Getting the expression value for each reads
     ## in : ('seq', [nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     bowFrq_rdd = bowtie_rdd.join(sr_short_rdd)\
-                           .map(bowtie_obj.bowtie_freq_rearrange_rule)\
-                           .persist()
+                           .map(bowtie_obj.bowtie_freq_rearrange_rule)#\
+                           #.persist()
     #print('NB bowFrq_rdd: ', len(bowFrq_rdd.collect()))##################################################
     
     #= Filtering miRNA low frequency
