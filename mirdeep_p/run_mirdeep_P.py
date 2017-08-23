@@ -91,6 +91,7 @@ def run_miRDP ():
   infiles = [f for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
   totaltime = 0
   for infile in infiles:
+    if infile[-1:] == '~': continue
     print 'start processing', infile
     infile = convert_raw_to_fasta500 (infile, rep_input)
     start = time.time()
