@@ -195,7 +195,7 @@ if __name__ == '__main__' :
 
     #= trim adapters
       if not adapter == 'none':
-        input_rdd = input_rdd.map(lambda e: trim_adapter (e, adapter))
+        trim_adapter_rdd = input_rdd.map(lambda e: trim_adapter (e, adapter))
       else: trim_adapter_rdd = input_rdd
       
     #= colapse seq and calculate frequency
