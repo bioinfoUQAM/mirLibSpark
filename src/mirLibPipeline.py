@@ -14,6 +14,14 @@ Le programme implemente le pipeline d'analyse des sRAN et prediction des miRNAs.
   - 6 validaiton/filtrage avec l'expression
   
 La version actuelle accepte un seul argument qui est le fichier contenant les sequences reads a traiter.
+
+
+time of execution factors
+persist is required to reduce time in the following steps:
+(1) reuse of the rdd: sr_short_rdd, bowFrq_rdd
+(2) mircheck or mirdup: pri_vld_rdd, pre_vld_rdd
+(3) some kind of complexity of the rdd: dmask_rdd, bowtie_rdd
+
 '''
 
 from __future__ import print_function
@@ -159,7 +167,7 @@ if __name__ == '__main__' :
     ##      (b) u'seq1', u'seq2', u'seq1', 
     ##      (c) u'>name1\nseq1', u'>name2\nseq2', u'>name3\nseq1',
     ##      (d) u'seq\tquality'
-    distFile = sc.textFile("file:///" + infile)
+    distFile_rdd = sc.textFile("file:///" + infile)
 
     #= Unify different input formats to "seq freq" elements
 
@@ -167,23 +175,23 @@ if __name__ == '__main__' :
     ## in : u'seq\tfreq'
     ## out: ('seq', freq)
       ## note that type_a does not need to collapse nor trim.
-      collapse_rdd = distFile.map(lambda line: mru.rearrange_rule(line, '\t'))#\
+      collapse_rdd = distFile_rdd.map(lambda line: mru.rearrange_rule(line, '\t'))#\
                              #.distinct() ##= .distinct() might not be necessary
     else:
       if input_type == 'b': #= reads
       ## in : u'seq1', u'seq2', u'seq1'
       ## out: u'seq1', u'seq2', u'seq1'
-        input_rdd = distFile
+        input_rdd = distFile_rdd
 
       elif input_type == 'c': #= fasta
       ## in : u'>name1\nseq1', u'>name2\nseq2', u'>name3\nseq1'
       ## out: u'seq1', u'seq2', u'seq1'
-        input_rdd = distFile.filter(lambda line: not line[0] == '>')
+        input_rdd = distFile_rdd.filter(lambda line: not line[0] == '>')
 
       elif input_type == 'd': #= processed fastq
       ## in : u'seq\tquality'
       ## out: u'seq1', u'seq2', u'seq1'
-        input_rdd = distFile.map(lambda word: word.split('\t')[0])
+        input_rdd = distFile_rdd.map(lambda word: word.split('\t')[0])
 
     #= trim adapters
       if not adapter == 'none':
