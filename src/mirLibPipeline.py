@@ -44,8 +44,8 @@ if __name__ == '__main__' :
   rep_msub_jobsOut = project_path + '/workdir/jobsOut'
   #my_sep = paramDict['my_sep']                      # Separator
   rep_tmp = project_path + '/tmp/'                   # tmp file folder
-  #= spark configuration
 
+  #= spark configuration
   appMaster = paramDict['sc_master']                #"local" 
   appName = paramDict['sc_appname']                 #"mirLibHadoop"
   mstrMemory = paramDict['sc_mstrmemory']           #"4g"
@@ -54,10 +54,9 @@ if __name__ == '__main__' :
   execCores = paramDict['sc_execcores']             #2
 
   #= genome
-  #genome_path = paramDict['genome_path_' + platform] 
   genome_path = paramDict['genome_path'] 
-  #= cutoffs
 
+  #= cutoffs
   limit_srna_freq = int(paramDict['limit_s_freq'])  #10       # exclude sRNA freq < limit_srna_freq
   limit_mrna_freq = int(paramDict['limit_m_freq'])  #200      # exclude miRNA freq < limit_mrna_freq
   limit_len = int(paramDict['limit_len'])           #18       # exclude RNA length < limit_len
@@ -67,13 +66,14 @@ if __name__ == '__main__' :
   b_index_path = paramDict['b_index_path']
 
   #= file and list of known non miRNA
-  known_non = '../dbs/TAIR10_ncRNA_CDS.gff' ###############################################################################
+  known_non = '../dbs/TAIR10_ncRNA_CDS.gff'
   d_ncRNA_CDS = ut.get_nonMirna_coors (known_non) #= nb = 198736
 
   #= pri-mirna
   pri_l_flank = int(paramDict['pri_l_flank'])       #120
   pri_r_flank = int(paramDict['pri_r_flank'])       #60
   pre_flank = int(paramDict['pre_flank'])           #30
+
   #= mircheck parameter
   mcheck_param = paramDict['mcheck_param']          #'def'    # def : default parameters / mey : meyers parameters
 
@@ -100,30 +100,26 @@ if __name__ == '__main__' :
   ut.makedirs_reps (reps)
   
   #= Spark context
-
   sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, execNb, execCores)
   #
   sc.addPyFile(project_path + '/src/utils.py')
   sc.addPyFile(project_path + '/src/mirLibRules.py')
   sc.addFile(project_path + '/src/eval_mircheck.pl')
   sc.addFile(project_path + '/lib/miRcheck.pm')
-
   sc.addFile(project_path + '/lib/miRdup_1.4/lib/weka.jar')
   sc.addFile(mirdup_jar)
   sc.addFile(mirdup_model)
-
   #sc.addFile(target_file)
   #sc.addFile(miranda_exe)
 
   #= Spark application ID
-
   appId = str(sc.applicationId)
   
   #= Objects for rule functions
   dmask_obj = mru.prog_dustmasker()
   dmask_cmd, dmask_env = dmask_obj.dmask_pipe_cmd()
   bowtie_obj = mru.prog_bowtie(b_index_path)
-  kn_obj = mru.prog_knownNonMiRNA(d_ncRNA_CDS) ##########################################################
+  kn_obj = mru.prog_knownNonMiRNA(d_ncRNA_CDS)
   bowtie_cmd, bowtie_env = bowtie_obj.Bowtie_pipe_cmd()
   prec_obj = mru.extract_precurosrs(genome_path, pri_l_flank, pri_r_flank, pre_flank)
   rnafold_obj = mru.prog_RNAfold()
@@ -134,7 +130,6 @@ if __name__ == '__main__' :
   #miranda_obj = mru.prog_miRanda(Max_Score_cutoff, query_motif_match_cutoff, gene_motif_match_cutoff, Max_Energy_cutoff, target_file, rep_tmp, miranda_exe)
 
   #= Fetch library files in rep_input
-
   infiles = [f for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
   
   #= Time processing of libraries
@@ -285,7 +280,7 @@ if __name__ == '__main__' :
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold']])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
     pri_vld_rdd = pri_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 3))\
-                              .filter(lambda e: any(e[1][3])).persist()###################
+                              .filter(lambda e: any(e[1][3]))#.persist()###################
     #print('NB pri_vld_rdd distinct (mircheck): ', len(pri_vld_rdd.groupByKey().collect()))#################################
 
     #= Filtering structure with branched loop
