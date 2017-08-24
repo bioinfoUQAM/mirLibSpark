@@ -489,7 +489,7 @@ class prog_miRdup ():
     
     e[0][1][4].append(mirdup_pred)
     e[0][1][4].append(mirdup_score)
-    return e
+    return e[0]
 
 
 ###############
