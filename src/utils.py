@@ -32,16 +32,39 @@ def find_RNAfold_path ():
   return path_RNAfold
 	  
 # Configure a spark context
+#def pyspark_configuration(appMaster, appName, masterMemory, execMemory, execNb, execCores):
+#  from pyspark import SparkConf, SparkContext
+#  conf = SparkConf()
+#  # conf.setMaster(appMaster)
+#  conf.setAppName(appName)
+#  conf.set("spark.yarn.am.memory", masterMemory)
+#  conf.set("spark.executor.memory", execMemory)
+#  conf.set("spark.executor.instances", execNb)
+#  conf.set("spark.yarn.am.cores", execCores)
+#  return SparkContext(conf = conf)
+
+# Configure a spark context
 def pyspark_configuration(appMaster, appName, masterMemory, execMemory, execNb, execCores):
   from pyspark import SparkConf, SparkContext
-  conf = SparkConf()
-  # conf.setMaster(appMaster)
-  conf.setAppName(appName)
-  conf.set("spark.yarn.am.memory", masterMemory)
-  conf.set("spark.executor.memory", execMemory)
-  conf.set("spark.executor.instances", execNb)
-  conf.set("spark.yarn.am.cores", execCores)
-  return SparkContext(conf = conf)
+  myConf = SparkConf()
+  #myConf.setMaster(appMaster) #= 'local[2]'
+  myConf.setAppName(appName)  #= 'mirLibHadoop'
+
+  myConf.set("spark.executor.memory", execMemory) #= '4g' #= this is not yarn
+  myConf.set("spark.cores.max", execCores) #= the maximum amount of CPU cores to request for the application from across the cluster (not from each machine)
+  myConf.set('spark.dynamicAllocation.enabled') # testing now
+  
+  #myConf.set("spark.yarn.am.memory", masterMemory) # for yarn
+  #myConf.set("spark.executor.instances", execNb) # for yarn
+  #myConf.set("spark.yarn.am.cores", execCores) # for yarn
+
+  # other keys: "spark.master" = 'spark://5.6.7.8:7077'
+  #             "spark.executor.memory"
+  #             "spark.driver.cores"
+  #             'spark.executor.cores'
+  #             "spark.default.parallelism"
+  #             "spark.cores.max", "10"
+  return SparkContext(conf = myConf)
 
 # Convert a file to hadoop file
 # defunct
