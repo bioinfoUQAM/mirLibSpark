@@ -51,7 +51,8 @@ def pyspark_configuration(appMaster, appName, masterMemory, execMemory, execNb, 
   myConf.setAppName(appName)  #= 'mirLibHadoop'
 
   myConf.set("spark.executor.memory", execMemory) #= '4g' #= this is not yarn
-  myConf.set("spark.cores.max", execCores) #= 8 for colosse?
+  myConf.set("spark.cores.max", execCores) #= the maximum amount of CPU cores to request for the application from across the cluster (not from each machine)
+  myConf.set('spark.dynamicAllocation.enabled') # testing now
   
   #myConf.set("spark.yarn.am.memory", masterMemory) # for yarn
   #myConf.set("spark.executor.instances", execNb) # for yarn
@@ -60,6 +61,7 @@ def pyspark_configuration(appMaster, appName, masterMemory, execMemory, execNb, 
   # other keys: "spark.master" = 'spark://5.6.7.8:7077'
   #             "spark.executor.memory"
   #             "spark.driver.cores"
+  #             'spark.executor.cores'
   #             "spark.default.parallelism"
   #             "spark.cores.max", "10"
   return SparkContext(conf = myConf)
