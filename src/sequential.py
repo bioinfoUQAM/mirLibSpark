@@ -18,7 +18,7 @@ import mirLibRules as mru
 known_non = '../dbs/TAIR10_ncRNA_CDS.gff'
 d_ncRNA_CDS = ut.get_nonMirna_coors (known_non)
 kn_obj = mru.prog_knownNonMiRNA(d_ncRNA_CDS)
-
+profile_obj = mru.prog_dominant_profile()
 
 limit_srna_freq = 10
 limit_len = 18 
@@ -61,9 +61,9 @@ def filterdust (dict_mirna):
   #= echo $'>seq1\nCGTGGCTATGATAGCGATATTCGTTTTTTT' | dustmasker
   dict_mirna2 = dict_mirna.copy()
   for k in dict_mirna.keys():
-      cmd = 'echo $\'>seq1\n' + k + '\' | dustmasker > dustmasker.tmp'
+      cmd = 'echo $\'>seq1\n' + k + '\' | dustmasker > dustmasker.tmp2'
       os.system(cmd)
-      with open ('dustmasker.tmp', 'r') as fh:
+      with open ('dustmasker.tmp2', 'r') as fh:
         data = fh.readlines()
         if len(data) == 2: 
           del dict_mirna2[k]
@@ -72,10 +72,10 @@ def filterdust (dict_mirna):
 def bowtiemap (dict_mirna):
   bowtie_index = '/home/cloudera/workspace/mirLibHadoop/dbs/bowtie_index/a_thaliana_t10'
   for k in dict_mirna.keys():
-    cmd = 'bowtie --mm -a -v 0 --suppress 1,5,6,7,8 -c ' + bowtie_index + ' '+ k + ' > bowtiemap.tmp 2>/dev/null'
+    cmd = 'bowtie --mm -a -v 0 --suppress 1,5,6,7,8 -c ' + bowtie_index + ' '+ k + ' > bowtiemap.tmp2 2>/dev/null'
     os.system(cmd)
     locs = []
-    with open ('bowtiemap.tmp', 'r') as fh:
+    with open ('bowtiemap.tmp2', 'r') as fh:
       for line in fh:
         data = line.rstrip('\n').split('\t') #= +	Chr2	1040947
         locs.append(data)
@@ -129,9 +129,9 @@ def fold1 (dict_mirna):
     for i in range(len(v[2])):
       prims = v[2][i][3]
       for j in range(len(prims)):
-        cmd = 'echo ' + prims[j][0] + '| RNAfold  > rnafold.tmp'
+        cmd = 'echo ' + prims[j][0] + '| RNAfold  > rnafold.tmp2'
         os.system(cmd)
-        with open ('rnafold.tmp', 'r') as fh:
+        with open ('rnafold.tmp2', 'r') as fh:
           fh.readline()
           for line in fh:
             fold = line.split(' (')[0]
@@ -191,17 +191,17 @@ def fold2 (dict_mirna):
       for j in range(len(pres)):
         if len(pres[j]) == 0: continue
         preSeq = pres[j][6]
-        cmd = 'echo ' + preSeq + '| RNAfold  > rnafold2.tmp'
+        cmd = 'echo ' + preSeq + '| RNAfold  > rnafold2.tmp2'
         os.system(cmd)
-        with open ('rnafold2.tmp', 'r') as fh:
+        with open ('rnafold2.tmp2', 'r') as fh:
           fh.readline()
           for line in fh:
             fold = line.split(' (')[0]
             dict_mirna[k][2][i][3][j].append(fold)
 
 def mirdupcheck (dict_mirna):
-  #= cmd = 'java -jar ../lib/miRdup_1.4/miRdup.jar -v mirdupcheck.tmp -c ../lib/miRdup_1.4//model/thaliana.model -r /usr/local/bin/'
-  pred_file = 'mirdupcheck.tmp.thaliana.model.miRdup.txt'
+  #= cmd = 'java -jar ../lib/miRdup_1.4/miRdup.jar -v mirdupcheck.tmp2 -c ../lib/miRdup_1.4//model/thaliana.model -r /usr/local/bin/'
+  pred_file = 'mirdupcheck.tmp2.thaliana.model.miRdup.txt'
 
   for k, v in dict_mirna.items():
     for i in range(len(v[2])):
@@ -213,10 +213,10 @@ def mirdupcheck (dict_mirna):
         fold = pres[j][8]
         #print(preSeq, miseq, fold)
   
-        with open ('mirdupcheck.tmp', 'w') as fhtmp:
+        with open ('mirdupcheck.tmp2', 'w') as fhtmp:
           print('seqx\t' + miseq + '\t' + preSeq + '\t' + fold, file=fhtmp)
 
-        cmd = 'java -jar ../lib/miRdup_1.4/miRdup.jar -v mirdupcheck.tmp -c ../lib/miRdup_1.4//model/thaliana.model -r /usr/local/bin/ 1>/dev/null'
+        cmd = 'java -jar ../lib/miRdup_1.4/miRdup.jar -v mirdupcheck.tmp2 -c ../lib/miRdup_1.4//model/thaliana.model -r /usr/local/bin/ 1>/dev/null'
         os.system(cmd)
 
         with open (pred_file, 'r') as fh_tmp :
@@ -228,16 +228,32 @@ def mirdupcheck (dict_mirna):
         dict_mirna[k][2][i][3][j].append(mirdup_pred)
         dict_mirna[k][2][i][3][j].append(mirdup_score)
 
+def dict_mirna_for_profile (dict_mirna):
+  list_profile = []
+  for k, v in dict_mirna.items():
+    i = [k, v]
+    list_profile.append(i)
+  return list_profile
+
+def filterProfile (dict_mirna):
+  for k, v in dict_mirna.items():
+    elem = [k, v]
+    #elem = computeProfileFrq(elem, dict_bowtie_chromo_strand)
+
+    #profile_rdd = pre_vld_rdd.map(lambda e: profile_obj.computeProfileFrq(e, dict_bowtie_chromo_strand))\
+     #                 .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)#\
+                      #.persist()####################
+
         
 
-#infile = 'test.txt'
-infile = '/home/cloudera/Desktop/mirLibHadoop/input_storage/100.txt'
+infile = 'test.txt'
+#infile = '/home/cloudera/Desktop/mirLibHadoop/input_storage/100.txt'
 dict_mirna = readRaw (infile)
 dict_mirna = filterFreq (limit_srna_freq, dict_mirna)
 dict_mirna = filterShort (limit_len, dict_mirna)
 dict_mirna = filterdust (dict_mirna)
 bowtiemap (dict_mirna)
-dict_mirna_for_profile = dict_mirna.copy() #########################
+list_profile = dict_mirna_for_profile (dict_mirna) #########################
 dict_mirna = filterMirnaFreq (limit_mrna_freq, dict_mirna)
 dict_mirna = filterNbLoc (limit_nbloc, dict_mirna)
 extractPri (dict_mirna)
@@ -247,9 +263,12 @@ filterOneLoop (dict_mirna)
 extractPre_fromPri (dict_mirna)
 fold2 (dict_mirna)
 mirdupcheck (dict_mirna)
+dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict (list_profile)###########
+#filterProfile (dict_mirna)
 
-for k, v in dict_mirna.items():
-  print(k,v)
+
+#for k, v in dict_mirna.items():
+  #print(k,v)
   #break
 
 
