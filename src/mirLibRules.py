@@ -523,7 +523,7 @@ class prog_knownNonMiRNA ():
       nonmir_begin  = coor[2]
       if posBegin < nonmir_begin: continue
       nonmir_end    = coor[3]
-      if posEnd < nonmir_end: return False
+      if not posEnd > nonmir_end: return False
     return True
       
 if __name__ == '__main__' :
