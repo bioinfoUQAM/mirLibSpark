@@ -465,7 +465,7 @@ class prog_miRdup ():
     
     with open (tmp_file, 'w') as fh_tmp:
       print >> fh_tmp, 'seqx\t' + str(e[0][0]) + '\t' + str(e[0][1][4][0]) + '\t' + str(e[0][1][4][2])
-    fh_tmp.close()
+    #fh_tmp.close()
     
     FNULL = open(os.devnull, 'w')
 
@@ -485,7 +485,7 @@ class prog_miRdup ():
         elif line.startswith("#SC") :
           mirdup_score = '%.2f' % round(float(line.rstrip("\n").split("\t")[2]), 2)
 
-    fh_tmp.close()
+    #fh_tmp.close()
     
     e[0][1][4].append(mirdup_pred)
     e[0][1][4].append(mirdup_score)
