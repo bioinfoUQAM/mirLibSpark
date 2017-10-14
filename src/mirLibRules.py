@@ -26,7 +26,7 @@ def rearrange_sam_rule(line):
   if strand == '1': strand = '+'
   else: strand = '-'
   seq = data[9]
-  return (str(seq), [500, 1, [strand, chromo, posChr])
+  return (str(seq), [500, 1, [strand, chromo, posChr]])
 
 
 
