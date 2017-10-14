@@ -74,7 +74,8 @@ if __name__ == '__main__' :
   b_index_path = paramDict['b_index_path']
 
   #= file and list of known non miRNA
-  known_non = '../dbs/TAIR10_ncRNA_CDS.gff'
+  #known_non = '../dbs/TAIR10_ncRNA_CDS.gff'
+  known_non = project_path + '/TAIR10_ncRNA_CDS.gff'###########################
   d_ncRNA_CDS = ut.get_nonMirna_coors (known_non) #= nb = 198736
 
   #= pri-mirna
@@ -110,6 +111,7 @@ if __name__ == '__main__' :
   #= Spark context
   sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, execNb, execCores)
   #
+  sc.addPyFile(known_non)################################
   sc.addPyFile(project_path + '/src/utils.py')
   sc.addPyFile(project_path + '/src/mirLibRules.py')
   sc.addFile(project_path + '/src/eval_mircheck.pl')
