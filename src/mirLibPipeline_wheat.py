@@ -151,7 +151,7 @@ if __name__ == '__main__' :
                             
     #= Unify different input formats to "seq freq" elements
 
-    if input_type == 'a': #= raw
+    elif input_type == 'a': #= raw
     ## in : u'seq\tfreq'
     ## out: ('seq', freq)
       ## note that type_a does not need to collapse nor trim.
