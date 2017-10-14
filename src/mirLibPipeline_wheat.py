@@ -188,34 +188,34 @@ if __name__ == '__main__' :
     #= Filtering sRNA low frequency
     ## in : ('seq', freq)
     ## out: ('seq', freq)
-    sr_low_rdd = collapse_rdd.filter(lambda e: int(e[1]) > limit_srna_freq)#.persist()#########################
+    #sr_low_rdd = collapse_rdd.filter(lambda e: int(e[1]) > limit_srna_freq)#.persist()#########################
     #print('NB sr_low_rdd: ', len(sr_low_rdd.collect()))####################################################
     
     #= Filtering short length
     ## in : ('seq', freq)
     ## out: ('seq', freq)
-    sr_short_rdd = sr_low_rdd.filter(lambda e: len(e[0]) > limit_len).persist()  # TO KEEP IT
+    #sr_short_rdd = sr_low_rdd.filter(lambda e: len(e[0]) > limit_len).persist()  # TO KEEP IT
     #print('NB sr_short_rdd: ', len(sr_short_rdd.collect()))###################################################
     
     #= Filtering with DustMasker
     ## in : ('seq', freq)
     ## out: 'seq'
-    dmask_rdd = sr_short_rdd.map(lambda e: '>s\n'+e[0])\
-                            .pipe(dmask_cmd, dmask_env)\
-                            .filter(lambda e: e.isupper() and not e.startswith('>'))\
-                            .map(lambda e: str(e.rstrip()))\
-                            .persist()
+    #dmask_rdd = sr_short_rdd.map(lambda e: '>s\n'+e[0])\
+    #                        .pipe(dmask_cmd, dmask_env)\
+    #                        .filter(lambda e: e.isupper() and not e.startswith('>'))\
+    #                        .map(lambda e: str(e.rstrip()))\
+    #                        .persist()
     #print('NB dmask_rdd: ', len(dmask_rdd.collect()))############################################
     
     #= Mapping with Bowtie
     ## in : 'seq'
     ## out: ('seq', [nbLoc, [['strd','chr',posChr],..]])
-    bowtie_rdd = dmask_rdd.map(lambda e: " "+e)\
-                          .pipe(bowtie_cmd, bowtie_env)\
-                          .map(bowtie_obj.bowtie_rearrange_map)\
-                          .groupByKey()\
-                          .map(lambda e: (e[0], [len(list(e[1])), list(e[1])]))\
-                          .persist()
+    #bowtie_rdd = dmask_rdd.map(lambda e: " "+e)\
+    #                      .pipe(bowtie_cmd, bowtie_env)\
+    #                      .map(bowtie_obj.bowtie_rearrange_map)\
+    #                      .groupByKey()\
+    #                      .map(lambda e: (e[0], [len(list(e[1])), list(e[1])]))\
+    #                      .persist()
     #print('NB bowtie_rdd: ', len(bowtie_rdd.collect()))##################################################
     #print('bowtie_rdd nbPartition', bowtie_rdd.getNumPartitions())
 
@@ -223,27 +223,27 @@ if __name__ == '__main__' :
     #= Getting the expression value for each reads
     ## in : ('seq', [nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
-    bowFrq_rdd = bowtie_rdd.join(sr_short_rdd)\
-                           .map(bowtie_obj.bowtie_freq_rearrange_rule)\
-                           .persist()
+    #bowFrq_rdd = bowtie_rdd.join(sr_short_rdd)\
+    #                       .map(bowtie_obj.bowtie_freq_rearrange_rule)\
+    #                       .persist()
     #print('NB bowFrq_rdd: ', len(bowFrq_rdd.collect()))##################################################
     
     #= Filtering miRNA low frequency
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
-    mr_low_rdd = bowFrq_rdd.filter(lambda e: e[1][0] > limit_mrna_freq)#.persist()########################
+    #mr_low_rdd = bowFrq_rdd.filter(lambda e: e[1][0] > limit_mrna_freq)#.persist()########################
     #print('NB mr_low_rdd: ', len(mr_low_rdd.collect()))##################################################
     
     #= Filtering high nbLocations and zero location
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
-    nbLoc_rdd = mr_low_rdd.filter(lambda e: e[1][1] > 0 and e[1][1] < limit_nbLoc)#.persist()#############
+    #nbLoc_rdd = mr_low_rdd.filter(lambda e: e[1][1] > 0 and e[1][1] < limit_nbLoc)#.persist()#############
     #print('NB nbLoc_rdd: ', len(nbLoc_rdd.collect()))###################################################
     
     #= Flatmap the RDD
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr])
-    flat_rdd = nbLoc_rdd.flatMap(mru.flatmap_mappings)#.persist() ###
+    #flat_rdd = nbLoc_rdd.flatMap(mru.flatmap_mappings)#.persist() ###
     #print('NB flat_rdd distinct (this step flats elements): ', len(flat_rdd.groupByKey().collect()))##################
     #print('NB flat_rdd not distinct: ', len(flat_rdd.collect()))##################
 
