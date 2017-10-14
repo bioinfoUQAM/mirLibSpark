@@ -2,7 +2,7 @@
 program: sequential.py
 author: Chao-Jung Wu
 date: 2017-10-11
-version: 0.00.01
+version: 0.00.02
   
 '''
 
@@ -45,29 +45,29 @@ def readRaw (infile):
 
 def filterFreq (limit_srna_freq, dict_mirna):
   dict_mirna2 = dict_mirna.copy()
-  for k, v in dict_mirna.items():
+  for k, v in dict_mirna2.items():
     if int(v[0]) < limit_srna_freq:
-      del dict_mirna2[k]
-  return dict_mirna2
+      del dict_mirna[k]
+  #return dict_mirna2
 
 def filterShort (limit_len, dict_mirna):
   dict_mirna2 = dict_mirna.copy()
-  for k in dict_mirna.keys():
+  for k in dict_mirna2.keys():
     if len(k) < limit_len:
-      del dict_mirna2[k]
-  return dict_mirna2
+      del dict_mirna[k]
+  #return dict_mirna2
 
 def filterdust (dict_mirna):
   #= echo $'>seq1\nCGTGGCTATGATAGCGATATTCGTTTTTTT' | dustmasker
   dict_mirna2 = dict_mirna.copy()
-  for k in dict_mirna.keys():
+  for k in dict_mirna2.keys():
       cmd = 'echo $\'>seq1\n' + k + '\' | dustmasker > dustmasker.tmp2'
       os.system(cmd)
       with open ('dustmasker.tmp2', 'r') as fh:
         data = fh.readlines()
         if len(data) == 2: 
-          del dict_mirna2[k]
-  return dict_mirna2
+          del dict_mirna[k]
+  #return dict_mirna2
   
 def bowtiemap (dict_mirna):
   bowtie_index = '/home/cloudera/workspace/mirLibHadoop/dbs/bowtie_index/a_thaliana_t10'
@@ -84,17 +84,17 @@ def bowtiemap (dict_mirna):
 
 def filterMirnaFreq (limit_mrna_freq, dict_mirna):
   dict_mirna2 = dict_mirna.copy()
-  for k, v in dict_mirna.items():
+  for k, v in dict_mirna2.items():
     if int(v[0]) < limit_mrna_freq:
-      del dict_mirna2[k]
-  return dict_mirna2
+      del dict_mirna[k]
+  3return dict_mirna2
 
 def filterNbLoc (limit_nbloc, dict_mirna):
   dict_mirna2 = dict_mirna.copy()
-  for k, v in dict_mirna.items():
+  for k, v in dict_mirna2.items():
     if v[1] == 0 or v[1] > limit_nbloc:
-      del dict_mirna2[k]
-  return dict_mirna2
+      del dict_mirna[k]
+  #return dict_mirna2
 
 def filterKnowNon (dict_mirna):
   dict_mirna2 = dict_mirna.copy()
@@ -250,13 +250,13 @@ def filterProfile (dict_mirna):
 #infile = 'test.txt'
 infile = '/home/cloudera/Desktop/mirLibHadoop/input_storage/100.txt'
 dict_mirna = readRaw (infile)
-dict_mirna = filterFreq (limit_srna_freq, dict_mirna)
-dict_mirna = filterShort (limit_len, dict_mirna)
-dict_mirna = filterdust (dict_mirna)
+filterFreq (limit_srna_freq, dict_mirna)
+filterShort (limit_len, dict_mirna)
+filterdust (dict_mirna)
 bowtiemap (dict_mirna)
 list_profile = dict_mirna_for_profile (dict_mirna) #########################
-dict_mirna = filterMirnaFreq (limit_mrna_freq, dict_mirna)
-dict_mirna = filterNbLoc (limit_nbloc, dict_mirna)
+filterMirnaFreq (limit_mrna_freq, dict_mirna)
+filterNbLoc (limit_nbloc, dict_mirna)
 extractPri (dict_mirna)
 fold1 (dict_mirna)
 check (dict_mirna)
