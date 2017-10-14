@@ -167,7 +167,7 @@ if __name__ == '__main__' :
     ##      (b) u'seq1', u'seq2', u'seq1', 
     ##      (c) u'>name1\nseq1', u'>name2\nseq2', u'>name3\nseq1',
     ##      (d) u'seq\tquality'
-    distFile_rdd = sc.textFile("file:///" + infile, numPartitions=4)
+    distFile_rdd = sc.textFile("file:///" + infile, 4)
     print(distFile_rdd.getNumPartitions())
     print('NB distFile_rdd: ', len(distFile_rdd.collect()))#
 
