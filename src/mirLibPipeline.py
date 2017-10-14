@@ -167,9 +167,9 @@ if __name__ == '__main__' :
     ##      (b) u'seq1', u'seq2', u'seq1', 
     ##      (c) u'>name1\nseq1', u'>name2\nseq2', u'>name3\nseq1',
     ##      (d) u'seq\tquality'
-    distFile_rdd = sc.textFile("file:///" + infile, 4) #= NumPartitions = 4 (default for 100.txt was 2)
+    distFile_rdd = sc.textFile("file:///" + infile, 80) #= NumPartitions = 4 (default for 100.txt was 2)
     print(distFile_rdd.getNumPartitions())
-    print('NB distFile_rdd: ', len(distFile_rdd.collect()))#
+    #print('NB distFile_rdd: ', len(distFile_rdd.collect()))#
 
     #= Unify different input formats to "seq freq" elements
 
@@ -324,11 +324,12 @@ if __name__ == '__main__' :
                               .map(mirdup_obj.run_miRdup)\
                               .filter(lambda e: e[1][4][3] == "true")\
                               .persist()##################
+    print(pre_vld_rdd.getNumPartitions())
     #print('NB pre_vld_rdd distinct (mirdup): ', len(pre_vld_rdd.groupByKey().collect()))################
     ###################################################
 
     #= Create dict, chromo_strand as key to search bowtie blocs in the following dict
-    #dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(bowFrq_rdd.collect())
+    dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(bowFrq_rdd.collect())
     
     #= Filtering by expression profile (< 20%)
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore']])
@@ -337,7 +338,7 @@ if __name__ == '__main__' :
                       .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)#\
                       #.persist()####################
 
-    #print('NB profile_rdd distinct: ', len(profile_rdd.groupByKey().collect()))#####################
+    print('NB profile_rdd distinct: ', len(profile_rdd.groupByKey().collect()))#####################
     #print('NB profile_rdd not distinct (final prediction): ', len(profile_rdd.collect()))#####################
 
     #= target prediction
