@@ -168,6 +168,8 @@ if __name__ == '__main__' :
     ##      (c) u'>name1\nseq1', u'>name2\nseq2', u'>name3\nseq1',
     ##      (d) u'seq\tquality'
     distFile_rdd = sc.textFile("file:///" + infile)
+    print(distFile_rdd.getNumPartitions())
+    print('NB distFile_rdd: ', len(distFile_rdd.collect()))#
 
     #= Unify different input formats to "seq freq" elements
 
@@ -326,7 +328,7 @@ if __name__ == '__main__' :
     ###################################################
 
     #= Create dict, chromo_strand as key to search bowtie blocs in the following dict
-    dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(bowFrq_rdd.collect())
+    #dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(bowFrq_rdd.collect())
     
     #= Filtering by expression profile (< 20%)
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore']])
@@ -335,7 +337,7 @@ if __name__ == '__main__' :
                       .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)#\
                       #.persist()####################
 
-    print('NB profile_rdd distinct: ', len(profile_rdd.groupByKey().collect()))#####################
+    #print('NB profile_rdd distinct: ', len(profile_rdd.groupByKey().collect()))#####################
     #print('NB profile_rdd not distinct (final prediction): ', len(profile_rdd.collect()))#####################
 
     #= target prediction
