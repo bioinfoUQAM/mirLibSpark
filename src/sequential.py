@@ -238,7 +238,8 @@ def dict_mirna_for_profile (dict_mirna):
 def filterProfile (dict_mirna):
   for k, v in dict_mirna.items():
     elem = [k, v]
-    #elem = computeProfileFrq(elem, dict_bowtie_chromo_strand)
+    elem = profile_obj.computeProfileFrq(elem, dict_bowtie_chromo_strand)
+    #print(elem)
 
     #profile_rdd = pre_vld_rdd.map(lambda e: profile_obj.computeProfileFrq(e, dict_bowtie_chromo_strand))\
      #                 .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)#\
@@ -246,8 +247,8 @@ def filterProfile (dict_mirna):
 
         
 
-infile = 'test.txt'
-#infile = '/home/cloudera/Desktop/mirLibHadoop/input_storage/100.txt'
+#infile = 'test.txt'
+infile = '/home/cloudera/Desktop/mirLibHadoop/input_storage/100.txt'
 dict_mirna = readRaw (infile)
 dict_mirna = filterFreq (limit_srna_freq, dict_mirna)
 dict_mirna = filterShort (limit_len, dict_mirna)
@@ -263,13 +264,13 @@ filterOneLoop (dict_mirna)
 extractPre_fromPri (dict_mirna)
 fold2 (dict_mirna)
 mirdupcheck (dict_mirna)
-dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict (list_profile)###########
+#dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict (list_profile)###########
 #filterProfile (dict_mirna)
 
 
-#for k, v in dict_mirna.items():
-  #print(k,v)
-  #break
+for k, v in dict_mirna.items():
+  print(k,v)
+  break
 
 
 
