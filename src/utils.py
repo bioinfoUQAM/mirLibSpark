@@ -47,12 +47,12 @@ def find_RNAfold_path ():
 def pyspark_configuration(appMaster, appName, masterMemory, execMemory, execNb, execCores):
   from pyspark import SparkConf, SparkContext
   myConf = SparkConf()
-  #myConf.setMaster(appMaster) #= 'local[2]'
+  myConf.setMaster(appMaster) #= 'local[2]'
   myConf.setAppName(appName)  #= 'mirLibHadoop'
 
   myConf.set("spark.executor.memory", execMemory) #= '4g' #= this is not yarn
   myConf.set("spark.cores.max", execCores) #= the maximum amount of CPU cores to request for the application from across the cluster (not from each machine)
-  myConf.set('spark.dynamicAllocation.enabled') # testing now
+  #myConf.set('spark.dynamicAllocation.enabled') # testing now --> fail on colosse
   
   #myConf.set("spark.yarn.am.memory", masterMemory) # for yarn
   #myConf.set("spark.executor.instances", execNb) # for yarn
