@@ -3,7 +3,7 @@ program: mirLibRules.py
 author: M.A.Remita
 author: Chao-Jung Wu
 date: 2017-03-28
-version: 1.00.01
+version: 1.00.02
 
 Le programme 
 
@@ -17,6 +17,20 @@ import utils as ut
 def rearrange_rule(kv_arg, kv_sep):
   tab = kv_arg.split(kv_sep)
   return (str(tab[0]), int(tab[1]))
+
+def rearrange_sam_rule(line):
+  data = line.rstrip('\n').split('\t')
+  chromo = data[2]
+  posChr = int(data[3]) - 1 #= because Dr Diallo's file is not zero based
+  strand = data[4]
+  if strand == '1': strand = '+'
+  else: strand = '-'
+  seq = data[9]
+  return (str(seq), [500, 1, [strand, chromo, posChr])
+
+
+
+
 
 def flatmap_mappings(elem) :
   '''
