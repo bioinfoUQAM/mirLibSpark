@@ -41,8 +41,8 @@ if __name__ == '__main__' :
   appName = paramDict['sc_appname']                 #"mirLibHadoop"
   mstrMemory = paramDict['sc_mstrmemory']           #"4g"
   execMemory = paramDict['sc_execmemory']           #"4g"
-  execNb = paramDict['sc_execnb']                   #4
   execCores = paramDict['sc_execcores']             #2
+  partition = paramDict['sc_partition']
 
   #= genome
   genome_path = paramDict['genome_path'] 

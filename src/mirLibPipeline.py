@@ -58,8 +58,8 @@ if __name__ == '__main__' :
   appName = paramDict['sc_appname']                 #"mirLibHadoop"
   mstrMemory = paramDict['sc_mstrmemory']           #"4g"
   execMemory = paramDict['sc_execmemory']           #"4g"
-  execNb = paramDict['sc_execnb']                   #4
   execCores = paramDict['sc_execcores']             #2
+  partition = int(paramDict['sc_partition'])
 
   #= genome
   genome_path = paramDict['genome_path'] 
@@ -169,7 +169,7 @@ if __name__ == '__main__' :
     ##      (b) u'seq1', u'seq2', u'seq1', 
     ##      (c) u'>name1\nseq1', u'>name2\nseq2', u'>name3\nseq1',
     ##      (d) u'seq\tquality'
-    distFile_rdd = sc.textFile("file:///" + infile, 2) #= NumPartitions = 4 (default for 100.txt was 2)
+    distFile_rdd = sc.textFile("file:///" + infile, partition) #= NumPartitions = 4 (default for 100.txt was 2)
     print('distFile_rdd nbPartition', distFile_rdd.getNumPartitions())
     #print('NB distFile_rdd: ', len(distFile_rdd.collect()))#
 
