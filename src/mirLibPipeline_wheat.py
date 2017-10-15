@@ -58,8 +58,8 @@ if __name__ == '__main__' :
 
   #= file and list of known non miRNA
   #known_non = '../dbs/TAIR10_ncRNA_CDS.gff'
-  known_non = project_path + '/dbs/TAIR10_ncRNA_CDS.gff'###########################
-  d_ncRNA_CDS = ut.get_nonMirna_coors (known_non) #= nb = 198736
+  #known_non = project_path + '/dbs/TAIR10_ncRNA_CDS.gff'###########################
+  #d_ncRNA_CDS = ut.get_nonMirna_coors (known_non) #= nb = 198736
 
   #= pri-mirna
   pri_l_flank = int(paramDict['pri_l_flank'])       #120
@@ -86,7 +86,7 @@ if __name__ == '__main__' :
   #= Spark context
   sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, execNb, execCores)
   #
-  sc.addFile(known_non)################################
+  #sc.addFile(known_non)################################
   sc.addPyFile(project_path + '/src/utils.py')
   sc.addPyFile(project_path + '/src/mirLibRules.py')
   sc.addFile(project_path + '/src/eval_mircheck.pl')
@@ -102,7 +102,7 @@ if __name__ == '__main__' :
   dmask_obj = mru.prog_dustmasker()
   dmask_cmd, dmask_env = dmask_obj.dmask_pipe_cmd()
   bowtie_obj = mru.prog_bowtie(b_index_path)
-  kn_obj = mru.prog_knownNonMiRNA(d_ncRNA_CDS)
+  #kn_obj = mru.prog_knownNonMiRNA(d_ncRNA_CDS)
   bowtie_cmd, bowtie_env = bowtie_obj.Bowtie_pipe_cmd()
   prec_obj = mru.extract_precurosrs(genome_path, pri_l_flank, pri_r_flank, pre_flank)
   rnafold_obj = mru.prog_RNAfold()
