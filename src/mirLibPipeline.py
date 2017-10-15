@@ -109,7 +109,7 @@ if __name__ == '__main__' :
   ut.makedirs_reps (reps)
   
   #= Spark context
-  sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, execNb, execCores)
+  sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, execCores)
   #
   sc.addFile(known_non)################################
   sc.addPyFile(project_path + '/src/utils.py')

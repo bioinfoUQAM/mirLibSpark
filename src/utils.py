@@ -44,7 +44,7 @@ def find_RNAfold_path ():
 #  return SparkContext(conf = conf)
 
 # Configure a spark context
-def pyspark_configuration(appMaster, appName, masterMemory, execMemory, execNb, execCores):
+def pyspark_configuration(appMaster, appName, masterMemory, execMemory, execCores):
   from pyspark import SparkConf, SparkContext
   myConf = SparkConf()
   #myConf.setMaster(appMaster) #= 'local[2]'
