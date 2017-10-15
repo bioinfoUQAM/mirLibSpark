@@ -146,7 +146,10 @@ if __name__ == '__main__' :
 
     if input_type == 'e': #= sam
       sam_rdd = distFile_rdd.filter(lambda line: not line[0] == '@')\
-                            .map(lambda line: mru.rearrange_sam_rule(line))
+                            .map(lambda line: mru.rearrange_sam_rule(line))\
+                            .filter(lambda e: not e[1][2][1][0] == '*')
+
+
       excluKnownNon_rdd = sam_rdd
                                 
     #= Extraction of the pri-miRNA
