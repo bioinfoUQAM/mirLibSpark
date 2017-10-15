@@ -148,116 +148,7 @@ if __name__ == '__main__' :
       sam_rdd = distFile_rdd.filter(lambda line: not line[0] == '@')\
                             .map(lambda line: mru.rearrange_sam_rule(line))
       excluKnownNon_rdd = sam_rdd
-                            
-    #= Unify different input formats to "seq freq" elements
-
-    elif input_type == 'a': #= raw
-    ## in : u'seq\tfreq'
-    ## out: ('seq', freq)
-      ## note that type_a does not need to collapse nor trim.
-      collapse_rdd = distFile_rdd.map(lambda line: mru.rearrange_rule(line, '\t'))#\
-                             #.distinct() ##= .distinct() might not be necessary
-    else:
-      if input_type == 'b': #= reads
-      ## in : u'seq1', u'seq2', u'seq1'
-      ## out: u'seq1', u'seq2', u'seq1'
-        input_rdd = distFile_rdd
-
-      elif input_type == 'c': #= fasta
-      ## in : u'>name1\nseq1', u'>name2\nseq2', u'>name3\nseq1'
-      ## out: u'seq1', u'seq2', u'seq1'
-        input_rdd = distFile_rdd.filter(lambda line: not line[0] == '>')
-
-      elif input_type == 'd': #= processed fastq
-      ## in : u'seq\tquality'
-      ## out: u'seq1', u'seq2', u'seq1'
-        input_rdd = distFile_rdd.map(lambda word: word.split('\t')[0])
-
-    #= trim adapters
-      if not adapter == 'none':
-        trim_adapter_rdd = input_rdd.map(lambda e: trim_adapter (e, adapter))
-      else: trim_adapter_rdd = input_rdd
-      
-    #= colapse seq and calculate frequency
-      ## in : u'seq1', u'seq2', u'seq1'
-      ## out: ('seq', freq)
-      collapse_rdd = trim_adapter_rdd.map(lambda word: (word, 1)).reduceByKey(lambda a, b: a+b)
-  
-    #'''
-   
-    #= Filtering sRNA low frequency
-    ## in : ('seq', freq)
-    ## out: ('seq', freq)
-    #sr_low_rdd = collapse_rdd.filter(lambda e: int(e[1]) > limit_srna_freq)#.persist()#########################
-    #print('NB sr_low_rdd: ', len(sr_low_rdd.collect()))####################################################
-    
-    #= Filtering short length
-    ## in : ('seq', freq)
-    ## out: ('seq', freq)
-    #sr_short_rdd = sr_low_rdd.filter(lambda e: len(e[0]) > limit_len).persist()  # TO KEEP IT
-    #print('NB sr_short_rdd: ', len(sr_short_rdd.collect()))###################################################
-    
-    #= Filtering with DustMasker
-    ## in : ('seq', freq)
-    ## out: 'seq'
-    #dmask_rdd = sr_short_rdd.map(lambda e: '>s\n'+e[0])\
-    #                        .pipe(dmask_cmd, dmask_env)\
-    #                        .filter(lambda e: e.isupper() and not e.startswith('>'))\
-    #                        .map(lambda e: str(e.rstrip()))\
-    #                        .persist()
-    #print('NB dmask_rdd: ', len(dmask_rdd.collect()))############################################
-    
-    #= Mapping with Bowtie
-    ## in : 'seq'
-    ## out: ('seq', [nbLoc, [['strd','chr',posChr],..]])
-    #bowtie_rdd = dmask_rdd.map(lambda e: " "+e)\
-    #                      .pipe(bowtie_cmd, bowtie_env)\
-    #                      .map(bowtie_obj.bowtie_rearrange_map)\
-    #                      .groupByKey()\
-    #                      .map(lambda e: (e[0], [len(list(e[1])), list(e[1])]))\
-    #                      .persist()
-    #print('NB bowtie_rdd: ', len(bowtie_rdd.collect()))##################################################
-    #print('bowtie_rdd nbPartition', bowtie_rdd.getNumPartitions())
-
-   
-    #= Getting the expression value for each reads
-    ## in : ('seq', [nbLoc, [['strd','chr',posChr],..]])
-    ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
-    #bowFrq_rdd = bowtie_rdd.join(sr_short_rdd)\
-    #                       .map(bowtie_obj.bowtie_freq_rearrange_rule)\
-    #                       .persist()
-    #print('NB bowFrq_rdd: ', len(bowFrq_rdd.collect()))##################################################
-    
-    #= Filtering miRNA low frequency
-    ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
-    ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
-    #mr_low_rdd = bowFrq_rdd.filter(lambda e: e[1][0] > limit_mrna_freq)#.persist()########################
-    #print('NB mr_low_rdd: ', len(mr_low_rdd.collect()))##################################################
-    
-    #= Filtering high nbLocations and zero location
-    ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
-    ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
-    #nbLoc_rdd = mr_low_rdd.filter(lambda e: e[1][1] > 0 and e[1][1] < limit_nbLoc)#.persist()#############
-    #print('NB nbLoc_rdd: ', len(nbLoc_rdd.collect()))###################################################
-    
-    #= Flatmap the RDD
-    ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
-    ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr])
-    #flat_rdd = nbLoc_rdd.flatMap(mru.flatmap_mappings)#.persist() ###
-    #print('NB flat_rdd distinct (this step flats elements): ', len(flat_rdd.groupByKey().collect()))##################
-    #print('NB flat_rdd not distinct: ', len(flat_rdd.collect()))##################
-
-    ###############################
-    ## Filtering known non-miRNA ##
-    ###############################
-    ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr])
-    ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr])
-    ##excluKnownNon_rdd = flat_rdd.filter(kn_obj.knFilterBySeq) #= defunct
-    #excluKnownNon_rdd = flat_rdd.repartition(100).filter(kn_obj.knFilterByCoor)#.persist()#######
-    #excluKnownNon_rdd = flat_rdd.filter(kn_obj.knFilterByCoor)#.persist()#######
-    #print('excluKnownNon_rdd distinct: ', len(excluKnownNon_rdd.groupByKey().collect()))########
-    #print('excluKnownNon_rdd nbPartition', excluKnownNon_rdd.getNumPartitions())
-    
+                                
     #= Extraction of the pri-miRNA
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri]])
@@ -291,14 +182,6 @@ if __name__ == '__main__' :
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold']])
     pre_fold_rdd = premir_rdd.map(lambda e: rnafold_obj.RNAfold_map_rule(e, 4))
 
-    ###################################################   
-    #= Validating pre-mirna with mircheck
-    ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold']])
-    ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mkPred','mkStart','mkStop']])
-    #pre_vld_rdd0 = pre_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 4))\
-                              #.filter(lambda e: any(e[1][4])).persist()
-    #print('NB pre_vld_rdd0 distinct (mircheck II): (', len(pre_vld_rdd0.groupByKey().collect()), ')')################
-
     #= Validating pre-mirna with miRdup zipWithUniqueId
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold']])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore']])
@@ -308,32 +191,8 @@ if __name__ == '__main__' :
                               .persist()##################
     #print('pre_vld_rdd nbPartition', pre_vld_rdd.getNumPartitions())
     print(pre_vld_rdd.collect())
-    #print('NB pre_vld_rdd distinct (mirdup): ', len(pre_vld_rdd.groupByKey().collect()))################
-    ###################################################
 
-    #= Create dict, chromo_strand as key to search bowtie blocs in the following dict
-    #dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(bowFrq_rdd.collect())
-    #broadcastVar = sc.broadcast(dict_bowtie_chromo_strand)
-    #broadcastVar = sc.broadcast([1, 2, 3])
-    #broadcastVar.value
     
-    #= Filtering by expression profile (< 20%)
-    ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore']])
-    ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq])
-    profile_rdd = pre_vld_rdd.map(lambda e: profile_obj.computeProfileFrq(e, broadcastVar.value))\
-                      .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)#\
-                      #.persist()####################
-
-    #print('NB profile_rdd distinct: ', len(profile_rdd.groupByKey().collect()))#####################
-    #print('profile_rdd nbPartition', profile_rdd.getNumPartitions())
-    #print('NB profile_rdd not distinct (final prediction): ', len(profile_rdd.collect()))#####################
-
-    #= target prediction
-    #miranda_rdd = miRNA_rdd.map(miranda_obj.computeTargetbyMiranda).persist()####
-    #print('NB miranda_rdd distinct : ', len(miranda_rdd.groupByKey().collect()))####
-    ##results = miranda_rdd.collect()
-
-    #results = miRNA_rdd.collect()
     #'''
     endLib = time.time()
     print ("  End of the processing     ", end="\n")
