@@ -91,9 +91,9 @@ if __name__ == '__main__' :
   sc.addPyFile(project_path + '/src/mirLibRules.py')
   sc.addFile(project_path + '/src/eval_mircheck.pl')
   sc.addFile(project_path + '/lib/miRcheck.pm')
-  sc.addFile(project_path + '/lib/miRdup_1.4/lib/weka.jar')
-  sc.addFile(mirdup_jar)
-  sc.addFile(mirdup_model)
+  #sc.addFile(project_path + '/lib/miRdup_1.4/lib/weka.jar')
+  #sc.addFile(mirdup_jar)
+  #sc.addFile(mirdup_model)
 
   #= Spark application ID
   appId = str(sc.applicationId)
@@ -107,9 +107,9 @@ if __name__ == '__main__' :
   prec_obj = mru.extract_precurosrs(genome_path, pri_l_flank, pri_r_flank, pre_flank)
   rnafold_obj = mru.prog_RNAfold()
   mircheck_obj = mru.prog_mirCheck(mcheck_param)
-  profile_obj = mru.prog_dominant_profile()
+  #profile_obj = mru.prog_dominant_profile()
 
-  mirdup_obj = mru.prog_miRdup (rep_tmp, mirdup_model, mirdup_jar, path_RNAfold)
+  #mirdup_obj = mru.prog_miRdup (rep_tmp, mirdup_model, mirdup_jar, path_RNAfold)
 
   #= Fetch library files in rep_input
   infiles = [f for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
