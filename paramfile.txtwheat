@@ -1,0 +1,54 @@
+#==NOTE that project_path and genome_path have to be absolute paths while the input_path, output_path and b_index_path can be relative paths to the project_path.
+#
+#==amine-cloudera-paths==
+#project_path=/home/cloudera/Projects/mirLibHadoop/
+#genome_path=/home/cloudera/Projects/mirLibHadoop/input/ATH/TAIR/Genome/
+#input_path=/home/cloudera/Projects/mirLibHadoop/input/ATH/sRNA_libs/hiconf/
+#output_path=/home/cloudera/Projects/mirLibHadoop/workdir/outlibs/
+#b_index_path=/home/cloudera/Projects/mirLibHadoop/dbs/bowtie_index/a_thaliana_t10
+#
+#==julie-cloudera-paths==
+project_path=/home/cloudera/workspace/mirLibHadoop/
+genome_path=/home/cloudera/workspace/mirLibHadoop/dbs/ATH/Genome/
+input_path=/home/cloudera/workspace/mirLibHadoop/inputsam/
+output_path=/home/cloudera/workspace/mirLibHadoop/output/
+b_index_path=/home/cloudera/workspace/mirLibHadoop/dbs/bowtie_index/a_thaliana_t10
+#==julie-colosse-paths==
+#project_path=/home/cjwu/gitproject/mirLibHadoop/
+#genome_path=/scratch/hvg-164-aa/mirlibhadoop/ATH/Genome/
+#input_path=/home/cjwu/gitproject/mirLibHadoop/input100/
+#input_path=/home/cjwu/demo/srna2/
+#output_path=/home/cjwu/gitproject/mirLibHadoop/output/
+#b_index_path=/home/cjwu/gitproject/mirLibHadoop/dbs/bowtie_index/a_thaliana_t10
+##
+#== input_types: a = raw (seq\tfreq); b = reads (each line may be a redundant sequence); c = fasta (>name\nseq); d = fastq
+input_type=e
+adapter=none
+#adapter=TCGTATGCCGTCTTCTGCTTGT
+#my_sep=,
+limit_s_freq=10
+limit_m_freq=100
+limit_len=18
+limit_nbLoc=15
+pri_l_flank=500
+pri_r_flank=200
+pre_flank=30
+#mirdup_model=Viridiplantae.model
+#mirdup_model=all.model
+mirdup_model=thaliana.model
+mirdup_limit=0.98
+mcheck_param=def
+#Max_Score_cutoff=100
+#query_motif_match_cutoff=30
+#gene_motif_match_cutoff=30
+#Max_Energy_cutoff=-10
+#target_file=TAIR10_cdna_20101214_updated.fasta
+#==================== Spark configuration
+sc_appname=mirLibHadoop
+sc_partition=2
+#==================== local mode
+sc_master=local[*]
+sc_mstrmemory=3g
+sc_execmemory=3g
+#==================== cluster mode
+sc_execcores=16
