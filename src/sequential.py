@@ -50,14 +50,12 @@ def filterFreq (limit_srna_freq, dict_mirna):
   for k, v in dict_mirna2.items():
     if int(v[0]) < limit_srna_freq:
       del dict_mirna[k]
-  #return dict_mirna2
 
 def filterShort (limit_len, dict_mirna):
   dict_mirna2 = dict_mirna.copy()
   for k in dict_mirna2.keys():
     if len(k) < limit_len:
       del dict_mirna[k]
-  #return dict_mirna2
 
 def filterdust (dict_mirna):
   #= echo $'>seq1\nCGTGGCTATGATAGCGATATTCGTTTTTTT' | dustmasker
@@ -69,7 +67,6 @@ def filterdust (dict_mirna):
         data = fh.readlines()
         if len(data) == 2: 
           del dict_mirna[k]
-  #return dict_mirna2
   
 def bowtiemap (dict_mirna):
   bowtie_index = '/home/cloudera/workspace/mirLibHadoop/dbs/bowtie_index/a_thaliana_t10'
@@ -89,21 +86,18 @@ def filterMirnaFreq (limit_mrna_freq, dict_mirna):
   for k, v in dict_mirna2.items():
     if int(v[0]) < limit_mrna_freq:
       del dict_mirna[k]
-  #return dict_mirna2
 
 def filterNbLoc (limit_nbloc, dict_mirna):
   dict_mirna2 = dict_mirna.copy()
   for k, v in dict_mirna2.items():
     if v[1] == 0 or v[1] > limit_nbloc:
       del dict_mirna[k]
-  #return dict_mirna2
 
 def filterKnowNon (dict_mirna):
   dict_mirna2 = dict_mirna.copy()
   for k, v in dict_mirna.items():
     if not kn_obj.knFilterByCoor ([k, v]):
       del dict_mirna2[k]
-  #return dict_mirna2
 
 def extractPri (dict_mirna):
   for k, v in dict_mirna.items():
@@ -119,12 +113,6 @@ def extractPri (dict_mirna):
         contig = extr_obj.genome[chromo]
         prims = extr_obj.extract_precursors (contig, strand, start_srna, len_srna)
       dict_mirna[k][2][i].append(prims)
-
-#def extract_from_genome (strand, chromo, start_srna, len_srna):
-#  if chromo not in extr_obj.genome.keys(): return [['-', -2]]
-#  contig = extr_obj.genome[chromo]
-#  prims = extr_obj.extract_precursors (contig, strand, start_srna, len_srna)
-#  return prims
 
 def fold1 (dict_mirna):
   for k, v in dict_mirna.items():
