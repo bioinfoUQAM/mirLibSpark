@@ -41,7 +41,7 @@ if __name__ == '__main__' :
   appName = paramDict['sc_appname']                 #"mirLibHadoop"
   mstrMemory = paramDict['sc_mstrmemory']           #"4g"
   execMemory = paramDict['sc_execmemory']           #"4g"
-  execNb = paramDict['sc_execnb']                   #4
+  #execNb = paramDict['sc_execnb']                   #4
   execCores = paramDict['sc_execcores']             #2
 
   #= genome
@@ -84,7 +84,7 @@ if __name__ == '__main__' :
   ut.makedirs_reps (reps)
   
   #= Spark context
-  sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, execNb, execCores)
+  sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, execCores)
   #
   sc.addFile(known_non)################################
   sc.addPyFile(project_path + '/src/utils.py')
