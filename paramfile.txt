@@ -16,7 +16,7 @@ b_index_path=/home/cloudera/workspace/mirLibHadoop/dbs/bowtie_index/a_thaliana_t
 #==julie-colosse-paths==
 #project_path=/home/cjwu/gitproject/mirLibHadoop/
 #genome_path=/scratch/hvg-164-aa/mirlibhadoop/ATH/Genome/
-#input_path=/home/cjwu/gitproject/mirLibHadoop/input/
+#input_path=/home/cjwu/gitproject/mirLibHadoop/input100/
 #input_path=/home/cjwu/demo/srna2/
 #output_path=/home/cjwu/gitproject/mirLibHadoop/output/
 #b_index_path=/home/cjwu/gitproject/mirLibHadoop/dbs/bowtie_index/a_thaliana_t10
@@ -34,7 +34,8 @@ pri_l_flank=500
 pri_r_flank=200
 pre_flank=30
 #mirdup_model=Viridiplantae.model
-mirdup_model=all.model
+#mirdup_model=all.model
+mirdup_model=thaliana.model
 mirdup_limit=0.98
 mcheck_param=def
 #Max_Score_cutoff=100
@@ -42,11 +43,12 @@ mcheck_param=def
 #gene_motif_match_cutoff=30
 #Max_Energy_cutoff=-10
 #target_file=TAIR10_cdna_20101214_updated.fasta
-# Spark configuration
-#sc_master=yarn-client
-sc_master=local[*]
+#==================== Spark configuration
 sc_appname=mirLibHadoop
+sc_partition=8
+#==================== local mode
+sc_master=local[*]
 sc_mstrmemory=3g
 sc_execmemory=3g
-sc_execnb=5
-sc_execcores=8
+#==================== cluster mode
+sc_execcores=16

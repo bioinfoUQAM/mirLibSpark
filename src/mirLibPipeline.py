@@ -58,8 +58,8 @@ if __name__ == '__main__' :
   appName = paramDict['sc_appname']                 #"mirLibHadoop"
   mstrMemory = paramDict['sc_mstrmemory']           #"4g"
   execMemory = paramDict['sc_execmemory']           #"4g"
-  execNb = paramDict['sc_execnb']                   #4
   execCores = paramDict['sc_execcores']             #2
+  partition = int(paramDict['sc_partition'])
 
   #= genome
   genome_path = paramDict['genome_path'] 
@@ -109,7 +109,7 @@ if __name__ == '__main__' :
   ut.makedirs_reps (reps)
   
   #= Spark context
-  sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, execNb, execCores)
+  sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, execCores)
   #
   sc.addFile(known_non)################################
   sc.addPyFile(project_path + '/src/utils.py')
@@ -169,7 +169,7 @@ if __name__ == '__main__' :
     ##      (b) u'seq1', u'seq2', u'seq1', 
     ##      (c) u'>name1\nseq1', u'>name2\nseq2', u'>name3\nseq1',
     ##      (d) u'seq\tquality'
-    distFile_rdd = sc.textFile("file:///" + infile, 2) #= NumPartitions = 4 (default for 100.txt was 2)
+    distFile_rdd = sc.textFile("file:///" + infile, partition) #= NumPartitions = 4 (default for 100.txt was 2)
     print('distFile_rdd nbPartition', distFile_rdd.getNumPartitions())
     #print('NB distFile_rdd: ', len(distFile_rdd.collect()))#
 
@@ -347,8 +347,9 @@ if __name__ == '__main__' :
                       .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)#\
                       #.persist()####################
 
-    print(profile_rdd.collect())#####################
-    print('NB profile_rdd distinct: ', len(profile_rdd.groupByKey().collect()))#####################
+    #print(profile_rdd.collect())#####################
+    print('NB profile_rdd: ', len(profile_rdd.collect()))#####################
+    #print('NB profile_rdd distinct: ', len(profile_rdd.groupByKey().collect()))#####################
     print('profile_rdd nbPartition', profile_rdd.getNumPartitions())
     #print('NB profile_rdd not distinct (final prediction): ', len(profile_rdd.collect()))#####################
 
