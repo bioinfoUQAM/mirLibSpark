@@ -170,7 +170,6 @@ if __name__ == '__main__' :
     ##      (c) u'>name1\nseq1', u'>name2\nseq2', u'>name3\nseq1',
     ##      (d) u'seq\tquality'
     distFile_rdd = sc.textFile("file:///" + infile, partition) #= NumPartitions = 4 (default for 100.txt was 2)
-    print('distFile_rdd nbPartition', distFile_rdd.getNumPartitions())
     #print('NB distFile_rdd: ', len(distFile_rdd.collect()))#
 
     #= Unify different input formats to "seq freq" elements
@@ -241,9 +240,7 @@ if __name__ == '__main__' :
                           .map(lambda e: (e[0], [len(list(e[1])), list(e[1])]))\
                           .persist()
     #print('NB bowtie_rdd: ', len(bowtie_rdd.collect()))##################################################
-    print('bowtie_rdd nbPartition', bowtie_rdd.getNumPartitions())
 
-   
     #= Getting the expression value for each reads
     ## in : ('seq', [nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
@@ -280,7 +277,6 @@ if __name__ == '__main__' :
     #excluKnownNon_rdd = flat_rdd.repartition(100).filter(kn_obj.knFilterByCoor)#.persist()#######
     excluKnownNon_rdd = flat_rdd.filter(kn_obj.knFilterByCoor)#.persist()#######
     #print('excluKnownNon_rdd distinct: ', len(excluKnownNon_rdd.groupByKey().collect()))########
-    print('excluKnownNon_rdd nbPartition', excluKnownNon_rdd.getNumPartitions())
     
     #= Extraction of the pri-miRNA
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr])
@@ -330,7 +326,6 @@ if __name__ == '__main__' :
                               .map(mirdup_obj.run_miRdup)\
                               .filter(lambda e: e[1][4][3] == "true")\
                               .persist()##################
-    print('pre_vld_rdd nbPartition', pre_vld_rdd.getNumPartitions())
     #print('NB pre_vld_rdd distinct (mirdup): ', len(pre_vld_rdd.groupByKey().collect()))################
     ###################################################
 
@@ -348,10 +343,8 @@ if __name__ == '__main__' :
                       .persist()####################
 
     #print(profile_rdd.collect())#####################
-    print('NB profile_rdd: ', len(profile_rdd.collect()))#####################
     print('NB profile_rdd distinct: ', len(profile_rdd.groupByKey().collect()))#####################
-    print('profile_rdd nbPartition', profile_rdd.getNumPartitions())
-    #print('NB profile_rdd not distinct (final prediction): ', len(profile_rdd.collect()))#####################
+    print('NB profile_rdd not distinct (final prediction): ', len(profile_rdd.collect()))#####################
 
     #= target prediction
     #miranda_rdd = miRNA_rdd.map(miranda_obj.computeTargetbyMiranda).persist()####

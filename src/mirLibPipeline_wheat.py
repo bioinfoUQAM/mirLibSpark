@@ -40,6 +40,7 @@ if __name__ == '__main__' :
   appMaster = paramDict['sc_master']                #"local" 
   appName = paramDict['sc_appname']                 #"mirLibHadoop"
   mstrMemory = paramDict['sc_mstrmemory']           #"4g"
+  execMemory = paramDict['sc_execmemory']           #"4g"
   execCores = paramDict['sc_execcores']             #2
   partition = paramDict['sc_partition']
 
