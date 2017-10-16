@@ -3,6 +3,8 @@ program: sequential.py
 author: Chao-Jung Wu
 date: 2017-10-11
 version: 0.00.02
+
+100.txt before profile repeats: (1) 116m45s, (2) 96mins
   
 '''
 
@@ -87,7 +89,7 @@ def filterMirnaFreq (limit_mrna_freq, dict_mirna):
   for k, v in dict_mirna2.items():
     if int(v[0]) < limit_mrna_freq:
       del dict_mirna[k]
-  3return dict_mirna2
+  #return dict_mirna2
 
 def filterNbLoc (limit_nbloc, dict_mirna):
   dict_mirna2 = dict_mirna.copy()
@@ -101,7 +103,7 @@ def filterKnowNon (dict_mirna):
   for k, v in dict_mirna.items():
     if not kn_obj.knFilterByCoor ([k, v]):
       del dict_mirna2[k]
-  return dict_mirna2
+  #return dict_mirna2
 
 def extractPri (dict_mirna):
   for k, v in dict_mirna.items():
@@ -248,7 +250,7 @@ def filterProfile (dict_mirna):
         
 
 #infile = 'test.txt'
-infile = '/home/cloudera/Desktop/mirLibHadoop/input_storage/100.txt'
+infile = '/home/cloudera/Desktop/mirLibHadoop/input/100.txt'
 dict_mirna = readRaw (infile)
 filterFreq (limit_srna_freq, dict_mirna)
 filterShort (limit_len, dict_mirna)
