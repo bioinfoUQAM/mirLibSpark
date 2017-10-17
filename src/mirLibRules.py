@@ -28,10 +28,6 @@ def rearrange_sam_rule(line):
   seq = data[9]
   return (str(seq), [500, 1, [strand, chromo, posChr]])
 
-
-
-
-
 def flatmap_mappings(elem) :
   '''
   ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
@@ -479,14 +475,13 @@ class prog_miRdup ():
     
     with open (tmp_file, 'w') as fh_tmp:
       print >> fh_tmp, 'seqx\t' + str(e[0][0]) + '\t' + str(e[0][1][4][0]) + '\t' + str(e[0][1][4][2])
-    #fh_tmp.close()
     
     FNULL = open(os.devnull, 'w')
 
     #cmd = ['java', '-jar', '/home/cjwu/gitproject/mirLibHadoop/lib/miRdup_1.4/miRdup.jar', '-v', self.tmp_file, '-c', self.model, '-r', '/software6/bioinfo/apps/mugqic_space/software/ViennaRNA/ViennaRNA-2.1.8/bin/']
     cmd = ['java', '-jar', self.mirdup_jar, '-v', tmp_file, '-c', self.model, '-r', self.path_RNAfold]
     sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
-    mirdupout = sproc.communicate()[0].split('\n')
+    #mirdupout = sproc.communicate()[0].split('\n')
     FNULL.close()
 
     mirdup_pred = ""
@@ -499,22 +494,18 @@ class prog_miRdup ():
         elif line.startswith("#SC") :
           mirdup_score = '%.2f' % round(float(line.rstrip("\n").split("\t")[2]), 2)
 
-    #fh_tmp.close()
-    
     e[0][1][4].append(mirdup_pred)
     e[0][1][4].append(mirdup_score)
     return e[0]
 
 
-###############
 class prog_knownNonMiRNA ():
   def __init__ (self, non_miRNA):
     self.env = os.environ
-    
-    #= variable ==
     self.non_miRNA = non_miRNA
     
   def knFilterBySeq (self, e):
+    #= defunc
     #= non_miRNA is a list of sequences
     seq = e[0]
     return not any(seq in s for s in self.non_miRNA)
