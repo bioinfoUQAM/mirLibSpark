@@ -41,7 +41,7 @@ def readRaw (infile):
     for line in fh:
       data = line.rstrip('\n').split('\t')
       seq = data[0]
-      freq = data[1]
+      freq = int(data[1])
       dict_mirna[seq] = [freq]
   return dict_mirna
 
@@ -142,8 +142,8 @@ def check (dict_mirna):
             check = line.rstrip('\n').split('\t')
             if 'prime' in check[0]:
               dict_mirna[k][2][i][3][j].append(check[0])
-              dict_mirna[k][2][i][3][j].append(check[1])
-              dict_mirna[k][2][i][3][j].append(check[2])
+              dict_mirna[k][2][i][3][j].append(int(check[1]))
+              dict_mirna[k][2][i][3][j].append(int(check[2]))
             else:
               del dict_mirna[k][2][i][3][j][:]
 
@@ -219,6 +219,7 @@ def mirdupcheck (dict_mirna):
         dict_mirna[k][2][i][3][j].append(mirdup_score)
 
 def dict_mirna_for_profile (dict_mirna):
+  ''' 'elem : (seq, [frq, nbloc, [bowties]])  '''
   list_profile = []
   for k, v in dict_mirna.items():
     i = [k, v]
@@ -226,10 +227,28 @@ def dict_mirna_for_profile (dict_mirna):
   return list_profile
 
 def filterProfile (dict_mirna):
-  for k, v in dict_mirna.items():
-    elem = [k, v]
-    elem = profile_obj.computeProfileFrq(elem, dict_bowtie_chromo_strand)
-    #print(elem)
+  '''
+['GCTCACTGCTCTTTCTGTCAGA', ['500', 1, [['-', 'Chr2', '10676469', [['TTCTCATCGTTTCTTGTTTTCTTTGTTTCATCTTGTAGATCTCTGAAGTTGGACTAATTGTGAATGAAAGAGTTGGGACAAGAGAAACGCAAAGAAACTGACAGAAGAGAGTGAGCACACAAAGGCAATTTGCATATCATTGCACTTGCTTCTCTTGCGTGCTCACTGCTCTTTCTGTCAGATTCCGGTGCTGATCTCTTTG', 160, '.((.(((((........((((((((((((.((((((....((((...(((..((.....)).)))...)))).....)))))))))..)))))))))(((((((((((((((((((((.(((((((((..((((......)))).))))))...))).))))))))).))).)))))))))....)))))..))........', '3prime', '96', '181', 'AAAGAGTTGGGACAAGAGAAACGCAAAGAAACTGACAGAAGAGAGTGAGCACACAAAGGCAATTTGCATATCATTGCACTTGCTTCTCTTGCGTGCTCACTGCTCTTTCTGTCAGATTCCGGTGCTGATCTCTTTG', 94, '.............((((((...(((..(((.(((((((((((((((((((((.(((((((((..((((......)))).))))))...))).))))))))).))).))))))))).)))...)))...))))))..', 'true', '0.72'], []]]]]]
+
+elem = (seq, [frq, nbloc, [bowtie], [pri_miRNA], [pre_miRNA]])
+ '''
+  dict_mirna2 = dict_mirna.copy()
+
+  for k, v in dict_mirna2.items():
+    frq = int(v[0])
+    nbLoc = v[1]
+    bowtie = v[2][0][0:2]
+    bowtie.append(int(v[2][0][2]))
+    items = v[2][0][3]
+    for i in items:
+      if len(i) == 0: continue
+      prim = i[0:6]
+      prem = i[6:11]
+      elem = [k, [int(frq), nbLoc, bowtie, prim, prem]]
+
+      elem = profile_obj.computeProfileFrq(elem, dict_bowtie_chromo_strand)
+      #print(elem)
+      
 
     #profile_rdd = pre_vld_rdd.map(lambda e: profile_obj.computeProfileFrq(e, dict_bowtie_chromo_strand))\
      #                 .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)#\
@@ -237,14 +256,18 @@ def filterProfile (dict_mirna):
 
         
 
-#infile = 'test.txt'
-infile = '/home/cloudera/Desktop/mirLibHadoop/input/100.txt'
+infile = 'test.txt'
+#infile = '/home/cloudera/Desktop/mirLibHadoop/input/100.txt'
 dict_mirna = readRaw (infile)
 filterFreq (limit_srna_freq, dict_mirna)
 filterShort (limit_len, dict_mirna)
 filterdust (dict_mirna)
 bowtiemap (dict_mirna)
-list_profile = dict_mirna_for_profile (dict_mirna) #########################
+#d2 = dict_mirna.copy()
+#bowtie_collect = dict_mirna_for_profile (d2) #########################
+#dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict (bowtie_collect)
+#for k, v in dict_bowtie_chromo_strand.items():
+#  print(k,v)
 filterMirnaFreq (limit_mrna_freq, dict_mirna)
 filterNbLoc (limit_nbloc, dict_mirna)
 extractPri (dict_mirna)
@@ -254,13 +277,14 @@ filterOneLoop (dict_mirna)
 extractPre_fromPri (dict_mirna)
 fold2 (dict_mirna)
 mirdupcheck (dict_mirna)
-#dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict (list_profile)###########
+
+
 #filterProfile (dict_mirna)
 
 
 for k, v in dict_mirna.items():
   print(k,v)
-  break
+  #break
 
 
 
