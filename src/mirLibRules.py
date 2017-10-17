@@ -201,7 +201,6 @@ class extract_precurosrs ():
     return newElems
 
   def extract_sub_seq(self, contig, posMir, fback_start, fback_stop):
-    
     fold_len = fback_stop - fback_start + 1
     pos = posMir - fback_start + self.pre_flank          #= 0-based
     deb = fback_start - self.pre_flank; 
@@ -285,7 +284,6 @@ class prog_mirCheck ():
     elem = (id, [seq, frq, nbloc, [bowtie], [pri_miRNA, posMirPrim, Struct]])
     elem[1][field][0]
     elem = (seq, [frq, nbloc, [bowtie], [pri_miRNA, posMirPrim, Struct]])
-    
     '''
     len_miRNAseq = len(elem[0])
     
@@ -344,8 +342,7 @@ class prog_dominant_profile :
     ''' define x, y with pre_vld_rdd
         old : elem = (id, [seq, frq, nbloc, [bowtie], [pri_miRNA], [pre_miRNA]])
         new : elem = (seq, [frq, nbloc, [bowtie], [pri_miRNA], [pre_miRNA]])
-    '''
-    
+    ''' 
     posgen = elem[1][2][2]
     mirseq = elem[0]
     mirpos_on_pre = elem[1][4][1]
