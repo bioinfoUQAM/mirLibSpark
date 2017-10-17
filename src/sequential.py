@@ -17,6 +17,8 @@ import time
 import utils as ut
 import mirLibRules as mru
 
+tmp_rep = '/home/cloudera/Desktop/mirLibHadoop/tmp/'
+
 known_non = '../dbs/TAIR10_ncRNA_CDS.gff'
 d_ncRNA_CDS = ut.get_nonMirna_coors (known_non)
 kn_obj = mru.prog_knownNonMiRNA(d_ncRNA_CDS)
@@ -61,9 +63,9 @@ def filterdust (dict_mirna):
   #= echo $'>seq1\nCGTGGCTATGATAGCGATATTCGTTTTTTT' | dustmasker
   dict_mirna2 = dict_mirna.copy()
   for k in dict_mirna2.keys():
-      cmd = 'echo $\'>seq1\n' + k + '\' | dustmasker > dustmasker.tmp2'
+      cmd = 'echo $\'>seq1\n' + k + '\' | dustmasker > ' + tmp_rep + 'dustmasker.tmp2'
       os.system(cmd)
-      with open ('dustmasker.tmp2', 'r') as fh:
+      with open (tmp_rep + 'dustmasker.tmp2', 'r') as fh:
         data = fh.readlines()
         if len(data) == 2: 
           del dict_mirna[k]
@@ -71,10 +73,10 @@ def filterdust (dict_mirna):
 def bowtiemap (dict_mirna):
   bowtie_index = '/home/cloudera/workspace/mirLibHadoop/dbs/bowtie_index/a_thaliana_t10'
   for k in dict_mirna.keys():
-    cmd = 'bowtie --mm -a -v 0 --suppress 1,5,6,7,8 -c ' + bowtie_index + ' '+ k + ' > bowtiemap.tmp2 2>/dev/null'
+    cmd = 'bowtie --mm -a -v 0 --suppress 1,5,6,7,8 -c ' + bowtie_index + ' '+ k + ' > ' + tmp_rep + 'bowtiemap.tmp2 2>/dev/null'
     os.system(cmd)
     locs = []
-    with open ('bowtiemap.tmp2', 'r') as fh:
+    with open (tmp_rep + 'bowtiemap.tmp2', 'r') as fh:
       for line in fh:
         data = line.rstrip('\n').split('\t') #= +	Chr2	1040947
         locs.append(data)
@@ -119,9 +121,9 @@ def fold1 (dict_mirna):
     for i in range(len(v[2])):
       prims = v[2][i][3]
       for j in range(len(prims)):
-        cmd = 'echo ' + prims[j][0] + '| RNAfold  > rnafold.tmp2'
+        cmd = 'echo ' + prims[j][0] + '| RNAfold  > ' + tmp_rep + 'rnafold.tmp2'
         os.system(cmd)
-        with open ('rnafold.tmp2', 'r') as fh:
+        with open (tmp_rep + 'rnafold.tmp2', 'r') as fh:
           fh.readline()
           for line in fh:
             fold = line.split(' (')[0]
@@ -135,9 +137,9 @@ def check (dict_mirna):
         miRNA_start = int(prims[j][1])
         miRNA_stop = miRNA_start + len(k) -1
         folding = prims[j][2]
-        cmd = 'perl eval_mircheck.pl \"' + folding + '\" ' + str(miRNA_start) + ' ' + str(miRNA_stop) + ' def > testcheck_tmp.txt'
+        cmd = 'perl eval_mircheck.pl \"' + folding + '\" ' + str(miRNA_start) + ' ' + str(miRNA_stop) + ' def > ' + tmp_rep + 'testcheck_tmp.txt'
         os.system(cmd)
-        with open ('testcheck_tmp.txt', 'r') as fh:
+        with open (tmp_rep + 'testcheck_tmp.txt', 'r') as fh:
           for line in fh:
             check = line.rstrip('\n').split('\t')
             if 'prime' in check[0]:
@@ -181,9 +183,9 @@ def fold2 (dict_mirna):
       for j in range(len(pres)):
         if len(pres[j]) == 0: continue
         preSeq = pres[j][6]
-        cmd = 'echo ' + preSeq + '| RNAfold  > rnafold2.tmp2'
+        cmd = 'echo ' + preSeq + '| RNAfold  > ' + tmp_rep + 'rnafold2.tmp2'
         os.system(cmd)
-        with open ('rnafold2.tmp2', 'r') as fh:
+        with open (tmp_rep + 'rnafold2.tmp2', 'r') as fh:
           fh.readline()
           for line in fh:
             fold = line.split(' (')[0]
@@ -191,7 +193,7 @@ def fold2 (dict_mirna):
 
 def mirdupcheck (dict_mirna):
   #= cmd = 'java -jar ../lib/miRdup_1.4/miRdup.jar -v mirdupcheck.tmp2 -c ../lib/miRdup_1.4//model/thaliana.model -r /usr/local/bin/'
-  pred_file = 'mirdupcheck.tmp2.thaliana.model.miRdup.txt'
+  pred_file = tmp_rep + 'mirdupcheck.tmp2.thaliana.model.miRdup.txt'
 
   for k, v in dict_mirna.items():
     for i in range(len(v[2])):
@@ -203,10 +205,10 @@ def mirdupcheck (dict_mirna):
         fold = pres[j][8]
         #print(preSeq, miseq, fold)
   
-        with open ('mirdupcheck.tmp2', 'w') as fhtmp:
+        with open (tmp_rep + 'mirdupcheck.tmp2', 'w') as fhtmp:
           print('seqx\t' + miseq + '\t' + preSeq + '\t' + fold, file=fhtmp)
 
-        cmd = 'java -jar ../lib/miRdup_1.4/miRdup.jar -v mirdupcheck.tmp2 -c ../lib/miRdup_1.4//model/thaliana.model -r /usr/local/bin/ 1>/dev/null'
+        cmd = 'java -jar ../lib/miRdup_1.4/miRdup.jar -v ' + tmp_rep + 'mirdupcheck.tmp2 -c ../lib/miRdup_1.4//model/thaliana.model -r /usr/local/bin/ 1>/dev/null'
         os.system(cmd)
 
         with open (pred_file, 'r') as fh_tmp :
