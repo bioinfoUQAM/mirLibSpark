@@ -30,8 +30,8 @@ limit_mrna_freq = 100
 limit_nbloc = 15
 
 genome_path = '/home/cloudera/workspace/mirLibHadoop/dbs/ATH/Genome/'
-pri_l_flank = 20 #500
-pri_r_flank = 160 #200
+pri_l_flank = 500 #20
+pri_r_flank = 200 #160
 pre_flank = 30
 extr_obj = mru.extract_precurosrs (genome_path, pri_l_flank, pri_r_flank, pre_flank)
 
@@ -79,6 +79,10 @@ def bowtiemap (dict_mirna):
     with open (tmp_rep + 'bowtiemap.tmp2', 'r') as fh:
       for line in fh:
         data = line.rstrip('\n').split('\t') #= +	Chr2	1040947
+        strand = data[0]
+        chromo = data[1]
+        posSeq = int(data[2])
+        data = [strand, chromo, posSeq]
         locs.append(data)
     dict_mirna[k].append(len(locs))
     dict_mirna[k].append(locs) #= v =[freq, 2, [[strand, chromo, pos],[strand, chromo, pos]]]
@@ -229,47 +233,70 @@ def dict_mirna_for_profile (dict_mirna):
   return list_profile
 
 def filterProfile (dict_mirna):
-  '''
-['GCTCACTGCTCTTTCTGTCAGA', ['500', 1, [['-', 'Chr2', '10676469', [['TTCTCATCGTTTCTTGTTTTCTTTGTTTCATCTTGTAGATCTCTGAAGTTGGACTAATTGTGAATGAAAGAGTTGGGACAAGAGAAACGCAAAGAAACTGACAGAAGAGAGTGAGCACACAAAGGCAATTTGCATATCATTGCACTTGCTTCTCTTGCGTGCTCACTGCTCTTTCTGTCAGATTCCGGTGCTGATCTCTTTG', 160, '.((.(((((........((((((((((((.((((((....((((...(((..((.....)).)))...)))).....)))))))))..)))))))))(((((((((((((((((((((.(((((((((..((((......)))).))))))...))).))))))))).))).)))))))))....)))))..))........', '3prime', '96', '181', 'AAAGAGTTGGGACAAGAGAAACGCAAAGAAACTGACAGAAGAGAGTGAGCACACAAAGGCAATTTGCATATCATTGCACTTGCTTCTCTTGCGTGCTCACTGCTCTTTCTGTCAGATTCCGGTGCTGATCTCTTTG', 94, '.............((((((...(((..(((.(((((((((((((((((((((.(((((((((..((((......)))).))))))...))).))))))))).))).))))))))).)))...)))...))))))..', 'true', '0.72'], []]]]]]
-
-elem = (seq, [frq, nbloc, [bowtie], [pri_miRNA], [pre_miRNA]])
- '''
   dict_mirna2 = dict_mirna.copy()
-
   for k, v in dict_mirna2.items():
-    frq = int(v[0])
+    frq = v[0]
     nbLoc = v[1]
-    bowtie = v[2][0][0:2]
-    bowtie.append(int(v[2][0][2]))
-    items = v[2][0][3]
-    for i in items:
-      if len(i) == 0: continue
-      prim = i[0:6]
-      prem = i[6:11]
-      elem = [k, [int(frq), nbLoc, bowtie, prim, prem]]
+    locs = v[2]
+    for l in range(len(locs)):
+      loc = locs[l]
+      bowtie = loc[0:3]
+      items = loc[3]
+      for i in range(len(items)):
+        item = items[i]
+        if len(item) == 0: continue
+        prim = item[0:6]
+        prem = item[6:11]
+        elem = [k, [frq, nbLoc, bowtie, prim, prem]]
+        elem = profile_obj.computeProfileFrq(elem, dict_bowtie_chromo_strand)
+        totalFrq = elem[1][5]
+        ratio = frq / float (totalFrq)
+        if ratio > 0.2:
+          dict_mirna[k][2][l][3][i].append(ratio)
+        else:
+          del dict_mirna[k][2][l][3][i][:]
+    
+def createBowFrqDict (dict_mirna):
+  ''' note that it must use copy module to make a copy for this operation, otherwise, the return dict_bowtie_chromo_strand will be mutabel with dict_mirna 
+      By using the copied d2, it dissociates the mutation link. This might be a particular inconvenience in python 2.7
+  '''
+  import copy
+  d2 = copy.deepcopy(dict_mirna)
+  bowtie_collect = dict_mirna_for_profile (d2) 
+  dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict (bowtie_collect)   
+  return dict_bowtie_chromo_strand
 
-      elem = profile_obj.computeProfileFrq(elem, dict_bowtie_chromo_strand)
-      #print(elem)
-      
+def keepTrue(dict_mirna):
+  dict_mirna2 = dict_mirna.copy()
+  count = 0
+  for k, v in dict_mirna2.items():
+    TRUE = 0
+    frq = v[0]
+    nbLoc = v[1]
+    locs = v[2]
+    for l in range(len(locs)):
+      loc = locs[l]
+      bowtie = loc[0:3]
+      items = loc[3]
+      for i in range(len(items)):
+        item = items[i]
+        if not len(item) == 0: 
+          TRUE = 1
+          count += 1
+    if TRUE == 0:
+      del dict_mirna[k]
+  return count
 
-    #profile_rdd = pre_vld_rdd.map(lambda e: profile_obj.computeProfileFrq(e, dict_bowtie_chromo_strand))\
-     #                 .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)#\
-                      #.persist()####################
-
-        
-
-infile = 'test.txt'
-#infile = '/home/cloudera/Desktop/mirLibHadoop/input/100.txt'
+#infile = 'test.txt'
+infile = '/home/cloudera/Desktop/mirLibHadoop/input/100.txt'
 dict_mirna = readRaw (infile)
 filterFreq (limit_srna_freq, dict_mirna)
 filterShort (limit_len, dict_mirna)
 filterdust (dict_mirna)
 bowtiemap (dict_mirna)
-#d2 = dict_mirna.copy()
-#bowtie_collect = dict_mirna_for_profile (d2) #########################
-#dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict (bowtie_collect)
-#for k, v in dict_bowtie_chromo_strand.items():
-#  print(k,v)
+
+dict_bowtie_chromo_strand = createBowFrqDict (dict_mirna)
+
 filterMirnaFreq (limit_mrna_freq, dict_mirna)
 filterNbLoc (limit_nbloc, dict_mirna)
 extractPri (dict_mirna)
@@ -279,14 +306,15 @@ filterOneLoop (dict_mirna)
 extractPre_fromPri (dict_mirna)
 fold2 (dict_mirna)
 mirdupcheck (dict_mirna)
+filterProfile (dict_mirna)
+nbTrueDistinct = keepTrue(dict_mirna)
 
+#for k, v in dict_mirna.items():
+#  print(k, v)
 
-#filterProfile (dict_mirna)
+print('nbTrueDistinct: ', nbTrueDistinct)
+print('nbNonDistinct: ', len(dict_mirna))
 
-
-for k, v in dict_mirna.items():
-  print(k,v)
-  #break
 
 
 
