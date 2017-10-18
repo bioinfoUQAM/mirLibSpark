@@ -3,7 +3,7 @@ program: mirLibRules.py
 author: M.A.Remita
 author: Chao-Jung Wu
 date: 2017-03-28
-version: 1.00.01
+version: 1.00.02
 
 Le programme 
 
@@ -17,6 +17,29 @@ import utils as ut
 def rearrange_rule(kv_arg, kv_sep):
   tab = kv_arg.split(kv_sep)
   return (str(tab[0]), int(tab[1]))
+
+def rearrange_sam_rule(line):
+  data = line.rstrip('\n').split('\t')
+  chromo = data[2]
+  posChr = int(data[3]) - 1 #= because Dr Diallo's file is not zero based
+  strand = data[4]
+  if strand == '1': strand = '+'
+  else: strand = '-'
+  seq = data[9]
+  return (str(seq), [500, 1, [strand, chromo, posChr]])
+
+def flatmap_mappings(elem) :
+  '''
+  ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
+  ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr])
+  '''
+  newElems = []
+  
+  for mapping in elem[1][2]:
+    newElem = (elem[0], [elem[1][0], elem[1][1], mapping])
+    newElems.append(newElem)
+  
+  return newElems
 
 class prog_dustmasker ():
 
@@ -161,24 +184,23 @@ class extract_precurosrs ():
 
   def extract_prim_rule(self, elem):
     '''
-    elem = (id, [seq, frq, nbloc, [bowties]])
+    ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr])
+    ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri]])
     '''
     newElems = []
-    primirnas = []
     len_srna = len(elem[0])
     
-    for mapping in elem[1][2]:
-      contig = self.genome[mapping[1]]
-      prims = self.extract_precursors(contig, mapping[0], mapping[2], len_srna)
+    mapping = elem[1][2]
+    contig = self.genome[mapping[1]]
+    prims = self.extract_precursors(contig, mapping[0], mapping[2], len_srna)
       
-      for prim in prims :
-        newElem = (elem[0], [elem[1][0], elem[1][1], mapping, prim])
-        newElems.append(newElem)
+    for prim in prims :
+      newElem = (elem[0], [elem[1][0], elem[1][1], mapping, prim])
+      newElems.append(newElem)
     
     return newElems
 
   def extract_sub_seq(self, contig, posMir, fback_start, fback_stop):
-    
     fold_len = fback_stop - fback_start + 1
     pos = posMir - fback_start + self.pre_flank          #= 0-based
     deb = fback_start - self.pre_flank; 
@@ -262,7 +284,6 @@ class prog_mirCheck ():
     elem = (id, [seq, frq, nbloc, [bowtie], [pri_miRNA, posMirPrim, Struct]])
     elem[1][field][0]
     elem = (seq, [frq, nbloc, [bowtie], [pri_miRNA, posMirPrim, Struct]])
-    
     '''
     len_miRNAseq = len(elem[0])
     
@@ -321,8 +342,7 @@ class prog_dominant_profile :
     ''' define x, y with pre_vld_rdd
         old : elem = (id, [seq, frq, nbloc, [bowtie], [pri_miRNA], [pre_miRNA]])
         new : elem = (seq, [frq, nbloc, [bowtie], [pri_miRNA], [pre_miRNA]])
-    '''
-    
+    ''' 
     posgen = elem[1][2][2]
     mirseq = elem[0]
     mirpos_on_pre = elem[1][4][1]
@@ -452,14 +472,13 @@ class prog_miRdup ():
     
     with open (tmp_file, 'w') as fh_tmp:
       print >> fh_tmp, 'seqx\t' + str(e[0][0]) + '\t' + str(e[0][1][4][0]) + '\t' + str(e[0][1][4][2])
-    fh_tmp.close()
     
     FNULL = open(os.devnull, 'w')
 
     #cmd = ['java', '-jar', '/home/cjwu/gitproject/mirLibHadoop/lib/miRdup_1.4/miRdup.jar', '-v', self.tmp_file, '-c', self.model, '-r', '/software6/bioinfo/apps/mugqic_space/software/ViennaRNA/ViennaRNA-2.1.8/bin/']
     cmd = ['java', '-jar', self.mirdup_jar, '-v', tmp_file, '-c', self.model, '-r', self.path_RNAfold]
     sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
-    mirdupout = sproc.communicate()[0].split('\n')
+    #mirdupout = sproc.communicate()[0].split('\n')
     FNULL.close()
 
     mirdup_pred = ""
@@ -472,13 +491,43 @@ class prog_miRdup ():
         elif line.startswith("#SC") :
           mirdup_score = '%.2f' % round(float(line.rstrip("\n").split("\t")[2]), 2)
 
-    fh_tmp.close()
-    
     e[0][1][4].append(mirdup_pred)
     e[0][1][4].append(mirdup_score)
-    return e
+    return e[0]
 
 
+class prog_knownNonMiRNA ():
+  def __init__ (self, non_miRNA):
+    self.env = os.environ
+    self.non_miRNA = non_miRNA
+    
+  def knFilterBySeq (self, e):
+    #= defunc
+    #= non_miRNA is a list of sequences
+    seq = e[0]
+    return not any(seq in s for s in self.non_miRNA)
+
+  def knFilterByCoor (self, e):
+    ##in : ('seq', [freq, nbLoc, ['strd','chr',posChr])
+    #= non_miRNA is a list of genomic coordinations: {idnb, [strand, chromo, begin, end]}
+    seq = e[0]
+    bowtie = e[1][2]
+    strd = bowtie[0]
+    chr = bowtie[1]
+    posBegin = int(bowtie[2])
+    posEnd = posBegin + len(seq) - 1
+
+    for coor in self.non_miRNA.values():
+      nonmir_chromo = coor[1]
+      if not chr == nonmir_chromo: continue
+      nonmir_strand = coor[0]
+      if not strd == nonmir_strand: continue
+      nonmir_begin  = coor[2]
+      if posBegin < nonmir_begin: continue
+      nonmir_end    = coor[3]
+      if not posEnd > nonmir_end: return False
+    return True
+      
 if __name__ == '__main__' :
    
    values_sep = "<>"

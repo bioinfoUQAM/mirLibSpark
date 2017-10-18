@@ -1,0 +1,39 @@
+COLOSSE
+date: 2017-10-11
+by Julie
+ 
+mirdeep_p
+TP = 81
+TN = 958
+FP = 42
+FN = 19
+f1 = 0.726
+acc = 0.945
+
+
+mirLibHadoop (version: commit: 06fda2d94c8dd on Aug24, 2017)
+# model = thaliana (jobid: 604, 648)
+TP = 81
+TN = 997
+FP = 3
+FN = 19
+f1 = 0.88
+acc = 0.98
+
+# model = all (jobid: 579, 646)
+TP = 83
+TN = 994
+FP = 6
+FN = 17
+f1= 0.878
+acc = 0.979
+
+# model = plantae (jobid: 603, 647)
+TP = 73
+TN = 999
+FP = 1
+FN = 27
+f1 = 0.839
+acc = 0.975
+
+

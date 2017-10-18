@@ -9,7 +9,15 @@ version: 1.00.01
 import os
 import re
 import subprocess
+import sys
 
+def validate_options(paramDict):
+  input_type = paramDict['input_type']
+  adapter = paramDict['adapter']
+
+  if input_type == 'a' and not adapter == 'none':
+    sys.stderr.write("The adapter option must be 'none' for the input_type_a.")
+    sys.exit()
 
 def makedirs_reps (reps):
   for rep in reps:
@@ -24,24 +32,36 @@ def find_RNAfold_path ():
   return path_RNAfold
 	  
 # Configure a spark context
-def pyspark_configuration(appMaster, appName, masterMemory, execMemory, execNb, execCores):
+def pyspark_configuration(appMaster, appName, masterMemory, execMemory, execCores):
   from pyspark import SparkConf, SparkContext
-  conf = SparkConf()
-  # conf.setMaster(appMaster)
-  conf.setAppName(appName)
-  conf.set("spark.yarn.am.memory", masterMemory)
-  conf.set("spark.executor.memory", execMemory)
-  conf.set("spark.executor.instances", execNb)
-  conf.set("spark.yarn.am.cores", execCores)
-  return SparkContext(conf = conf)
+  myConf = SparkConf()
+  #myConf.setMaster(appMaster) #= 'local[2]'
+  myConf.setAppName(appName)  #= 'mirLibHadoop'
+  myConf.set("spark.driver.memory", masterMemory)
+  myConf.set("spark.executor.memory", execMemory) #= '4g'
+  myConf.set("spark.cores.max", execCores) #= the maximum amount of CPU cores to request for the application from across the cluster (not from each machine)
+  #myConf.set('spark.dynamicAllocation.enabled') # testing now --> fail on colosse
+  
+  #myConf.set("spark.yarn.am.memory", masterMemory) # for yarn
+  #myConf.set("spark.executor.instances", execNb) # for yarn
+  #myConf.set("spark.yarn.am.cores", execCores) # for yarn
+
+  # other keys: "spark.master" = 'spark://5.6.7.8:7077'
+  #             "spark.executor.memory"
+  #             "spark.driver.cores"
+  #             'spark.executor.cores'
+  #             "spark.default.parallelism"
+  return SparkContext(conf = myConf)
 
 # Convert a file to hadoop file
+# defunct
 def convertTOhadoop(rfile, hdfsFile):
   print('if pre-existing in hdfs, the file would be deleted before the re-distribution of a new file with the same name.\n')
   os.system('hadoop fs -rm ' + hdfsFile) # force delete any pre-existing file in hdfs with the same name.
   os.system('hadoop fs -copyFromLocal ' + rfile + ' ' + hdfsFile)
 
 # Convert a fasta file into a key value file
+# defunct
 def covert_fasta_to_KeyValue(infile, outfile):
   fh = open (infile, 'r')
   DATA = fh.readlines()
@@ -57,6 +77,7 @@ def covert_fasta_to_KeyValue(infile, outfile):
   fh_out.close()
 
 #= Convert a seq abundance file into a key value file
+# defunct
 def convert_seq_freq_file_to_KeyValue(infile, outfile, v_sep):
   fh = open (infile, 'r')
   fh_out = open (outfile, 'w')
@@ -75,7 +96,42 @@ def convert_seq_freq_file_to_KeyValue(infile, outfile, v_sep):
       
   fh.close()
   fh_out.close()
-  
+
+def convert_fastq_file_to_KeyValue(infile, outfile):
+  '''
+  1: @SEQ_ID
+  2: GATTTGGGGTTCAAAGCAGTATCGATCAAATAGTAAATCCATTTGTTCAACTCACAGTTT
+  3: +
+  4: !''*((((***+))%%%++)(%%%%).1***-+*''))**55CCF>>>>>>CCCCCCC65
+  '''
+  fh = open (infile, 'r')
+  fh_out = open (outfile, 'w')
+  i = 1
+  for line in fh:
+    if i == 1 or i == 3: 
+      i += 1
+      continue
+    elif i == 2:
+      seq = line.rstrip('\n')
+      #print >>fh_out, seq
+      i += 1
+    else:
+      quality = line.rstrip('\n')
+      print >>fh_out, seq + '\t' + quality
+      i = 1
+      continue
+  fh.close()
+  fh_out.close()
+
+def trim_adapter (seq, ad):
+  while len(ad) > 0:
+    len_ad = len(ad)
+    if seq[-len_ad:] == ad:
+      seq = seq[:-len_ad]
+      return seq
+    ad = ad[:-1]
+  return seq
+
 def getRevComp (seq):
   from string import maketrans
   
@@ -239,3 +295,46 @@ def randomStrGen (n):
   import random
   
   return ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(n))
+
+def get_nonMirna_coors (infile):
+  #infile = '../dbs/TAIR10_ncRNA_CDS.gff'
+  idnb = 0
+  d_ncRNA_CDS = {} #= {1: ['+', 'Chr5', '26939753', '26939884'], 2: ['+', 'Chr5', '26939972', '26940240'], 3: ['+', 'Chr5', '26940312', '26940396'], 4: ['+', 'Chr5', '26940532', '26940578']}
+  with open (infile, 'r') as fh:
+    for i in fh:
+      data = i.split('\t') #= ['Chr1', 'TAIR10', 'CDS', '3760', '3913', '.', '+', '0', 'Parent=AT1G01010.1,AT1G01010.1-Protein;\n']
+      chromo   = data[0]
+      #genetype = data[2]   #= CDS, rRNA, snoRNA, rRNA, snoRNA, snRNA, tRNA, (gene)
+      begin    = data[3]
+      end      = data[4]
+      strand   = data[6]
+      d_ncRNA_CDS[idnb] = [chromo, strand, begin, end]
+      idnb += 1
+  return d_ncRNA_CDS
+
+def get_nonMirna_list (infile, genome_path):
+  # defunct
+  genome = ut.getGenome (genome_path, file_ext) #= genome[chr] = sequence
+  #infile = '../dbs/TAIR10_ncRNA_CDS.gff'
+  l_non_miRNA = [] #= ['TGGATTTATGAAAGACGAACAACTGCGAAA']
+  with open (infile, 'r') as fh:
+    for i in fh:
+      data = i.split('\t') #= ['Chr1', 'TAIR10', 'CDS', '3760', '3913', '.', '+', '0', 'Parent=AT1G01010.1,AT1G01010.1-Protein;\n']
+      chromo   = data[0]
+      if chromo == 'ChrC': chromo = 'chloroplast'
+      if chromo == 'ChrM': chromo = 'mitochondria'
+      begin    = int(data[3])
+      end      = int(data[4])
+      strand   = data[6]
+      seq = genome[chromo][begin:end+1]
+      if strand == '-':
+        seq = ut.getRevComp (seq)
+      l_non_miRNA.append(seq)
+  return l_non_miRNA
+
+
+def createFile_KnownNonMiRNA_from_TAIR10data (infile = 'TAIR10_GFF3_genes.gff', outfile = 'TAIR10_ncRNA_CDS.gff'):
+  '''
+  this function is not used in the pipeline, but users may use it to obtain their own KnonNonMiRNA from TAIR
+  '''
+  os.system("grep -E 'CDS|rRNA|snoRNA|snRNA|tRNA' " + infile + ' > ' + outfile)

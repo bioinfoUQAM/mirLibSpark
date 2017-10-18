@@ -1,0 +1,19 @@
+#!/bin/bash
+#PBS -N testMirDeepP
+#PBS -l nodes=1:ppn=8
+#PBS -l walltime=15:00:00
+#PBS -A hvg-164-aa
+#PBS -o jobsOut/$MOAB_JOBID.out
+#PBS -e jobsOut/$MOAB_JOBID.err
+#PBS -E
+
+cd "${PBS_O_WORKDIR}"
+
+module load compilers/gcc/4.8.5
+module load apps/mugqic_pipeline/2.1.1
+module load apps/bowtie/1.1.0
+module load mugqic/ViennaRNA/2.1.8
+#module load compilers/java/1.8
+#module load mugqic/blast/2.2.31+
+
+python run_mirdeep_P.py
