@@ -16,11 +16,8 @@ Le programme implemente le pipeline d'analyse des sRAN et prediction des miRNAs.
 La version actuelle accepte un seul argument qui est le fichier contenant les sequences reads a traiter.
 
 
-time of execution factors
-persist is required to reduce time in the following steps:
-(1) reuse of the rdd: sr_short_rdd, bowFrq_rdd
-(2) mircheck or mirdup: pri_vld_rdd, pre_vld_rdd
-(3) some kind of complexity of the rdd: dmask_rdd, bowtie_rdd
+time of execution factors:
+join and zip are expensive. Consider how to avoid them.
 
 '''
 
