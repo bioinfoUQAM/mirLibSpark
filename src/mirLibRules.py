@@ -381,6 +381,8 @@ class prog_dominant_profile :
     elem[1].append(totalfrq)
     return elem
 
+
+'''
 class prog_miRanda ():
   def __init__ (self, Max_Score_cutoff, lower_motif_match_cutoff, upper_motif_match_cutoff, Max_Energy_cutoff, target_file, rep_tmp, miranda_exe):
     self.env = os.environ
@@ -395,13 +397,66 @@ class prog_miRanda ():
     self.target_file = target_file
     self.rep_tmp = rep_tmp
     self.miranda_exe = miranda_exe
+'''
+
+
+
+
+class prog_miRanda ():
+  def __init__ (self, Max_Score_cutoff, Max_Energy_cutoff, target_file, rep_tmp, miranda_exe, Gap_Penalty):
+    self.env = os.environ
+
+    #== variables ==
+    self.Max_Score_cutoff = Max_Score_cutoff
+    self.Max_Energy_cutoff = Max_Energy_cutoff
+    self.Gap_Penalty = Gap_Penalty
+
+    self.target_file = target_file
+    self.rep_tmp = rep_tmp
+    self.miranda_exe = miranda_exe
 
   def computeTargetbyMiranda (self, e):
     '''
     $miranda examples/bantam_stRNA.fasta examples/hid_UTR.fasta
     $miranda ../tmp/tmp_mirna_seq.txt ../Arabidopsis/TAIR/Genome/TAIR10_blastsets/TAIR10_cdna_20101214_updated_1cdna.fasta
+    $miranda ../tmp/GCTCACTGCTCTTTCTGTCAGA_tmpseq_forMiranda.txt TAIR10_cdna_20101214_updated_39cdna.fasta
 
     ## NOTE before disable miranda (170714): need to modify the code to use options such as -sc, -en, -go, -ge, -quiet
+    '''
+
+    tmp_file = self.rep_tmp + e[0] + '_tmpseq_forMiranda.txt' 
+    with open (tmp_file, 'w') as fh_tmp:
+      print >> fh_tmp, '>x\n' + e[0]
+    FNULL = open(os.devnull, 'w')
+    #cmd = [self.miranda_exe, tmp_file, self.target_file, '-sc', self.Max_Score_cutoff]
+    #cmd = [self.miranda_exe, tmp_file, self.target_file, '-strict']
+    #cmd = [self.miranda_exe, tmp_file, self.target_file, '-strict', '-sc', self.Max_Score_cutoff, '-en', self.Max_Energy_cutoff]
+    cmd = [self.miranda_exe, tmp_file, self.target_file, '-strict', '-sc', self.Max_Score_cutoff, '-en', self.Max_Energy_cutoff, '-go', self.Gap_Penalty]
+    ##cmd = [self.miranda_exe, tmp_file, self.target_file, '-sc', self.Max_Score_cutoff, '-en', self.Max_Energy_cutoff, '-go', self.Gap_Penalty]
+
+    sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
+    mirandaout = sproc.communicate()[0].split('\n')
+    FNULL.close()
+    target_results = []
+
+    for i in mirandaout[30:]: 
+    #= because the first 30ish lines contain only program description
+      if i[:3] == '>>x': 
+        #= isTargteet == [Seq1, Seq2, Tot_Score, Tot_Energy, Max_Score, Max_Energy, Strand, Len1, Len2, Positions]
+        target_result = i.split('\t') 
+        target_results.append(target_result[1:])
+        #target_results.append([target_result[1], target_result[9]]) #= only record gene and positions
+
+    #= target_results == [[target1], [target2], ...]
+    #e[1].append(target_results)
+    e[1].append('nbMiranda_tg=' + str(len(target_results)))
+    return e
+
+
+
+
+
+    ######## old code ###########################
     '''
     if e[0] in self.dict_seq_target.keys():
       e[1].append(self.dict_seq_target[e[0]])
@@ -449,6 +504,7 @@ class prog_miRanda ():
     self.dict_seq_target[e[0]] = target_results
     e[1].append(target_results)
     return e
+    '''
   
 
 class prog_miRdup ():

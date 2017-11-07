@@ -38,17 +38,16 @@ pre_flank=30
 mirdup_model=thaliana.model
 mirdup_limit=0.98
 mcheck_param=def
-#Max_Score_cutoff=100
-#query_motif_match_cutoff=30
-#gene_motif_match_cutoff=30
-#Max_Energy_cutoff=-10
-#target_file=TAIR10_cdna_20101214_updated.fasta
+Max_Score_cutoff=150
+Max_Energy_cutoff=-15
+Gap_Penalty=-15
+target_file=TAIR10_cdna_20101214_updated.fasta
 #==================== Spark configuration
 sc_appname=mirLibHadoop
-sc_partition=8
+sc_partition=4
 #==================== local mode
 sc_master=local[*]
 sc_mstrmemory=3g
 sc_execmemory=3g
 #==================== cluster mode
-sc_execcores=16
+sc_execcores=8

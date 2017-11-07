@@ -90,12 +90,11 @@ if __name__ == '__main__' :
   mirdup_limit =  float(paramDict['mirdup_limit'])
 
   #= miRanda parameter
-  #target_file = project_path + '/lib/' + paramDict['target_file']
-  #miranda_exe = project_path + '/lib/miranda'
-  #Max_Score_cutoff = float(paramDict['Max_Score_cutoff'])
-  #query_motif_match_cutoff = float(paramDict['query_motif_match_cutoff'])
-  #gene_motif_match_cutoff = float(paramDict['gene_motif_match_cutoff'])
-  #Max_Energy_cutoff = float(paramDict['Max_Energy_cutoff'])
+  target_file = project_path + '/lib/' + paramDict['target_file']
+  miranda_exe = project_path + '/lib/miranda'
+  Max_Score_cutoff = paramDict['Max_Score_cutoff'] #= need string or buffer
+  Max_Energy_cutoff = paramDict['Max_Energy_cutoff'] #= NOT WORKING YET
+  Gap_Penalty = paramDict['Gap_Penalty']
 
   ## EXMAMIN OPTIONS ####################################
   ut.validate_options(paramDict)
@@ -135,6 +134,7 @@ if __name__ == '__main__' :
 
   mirdup_obj = mru.prog_miRdup (rep_tmp, mirdup_model, mirdup_jar, path_RNAfold)
   #miranda_obj = mru.prog_miRanda(Max_Score_cutoff, query_motif_match_cutoff, gene_motif_match_cutoff, Max_Energy_cutoff, target_file, rep_tmp, miranda_exe)
+  miranda_obj = mru.prog_miRanda(Max_Score_cutoff, Max_Energy_cutoff, target_file, rep_tmp, miranda_exe, Gap_Penalty)
 
   #= Fetch library files in rep_input
   infiles = [f for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
@@ -344,12 +344,16 @@ if __name__ == '__main__' :
     print('NB profile_rdd not distinct (final prediction): ', len(profile_rdd.collect()))#####################
 
     #= target prediction
-    #miranda_rdd = miRNA_rdd.map(miranda_obj.computeTargetbyMiranda).persist()####
-    #print('NB miranda_rdd distinct : ', len(miranda_rdd.groupByKey().collect()))####
-    ##results = miranda_rdd.collect()
+    miranda_rdd = profile_rdd.map(miranda_obj.computeTargetbyMiranda).persist()####
+    print('NB miranda_rdd distinct : ', len(miranda_rdd.groupByKey().collect()))####
+    results = miranda_rdd.collect()
 
-    #results = miRNA_rdd.collect()
-    #'''
+    #print(results)
+    for r in results:
+      tg = r[1][-1]
+      if len(tg) > 0:
+        print(tg)
+    
     endLib = time.time()
     print ("  End of the processing     ", end="\n")
     
