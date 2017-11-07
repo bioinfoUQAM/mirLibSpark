@@ -10,10 +10,10 @@ def calculate_accuracy (tp, tn, fp, fn):
   return round (acc, 3)
 
 
-TP = 82
-TN = 990
+TP = 90
+TN = 982
 FP = 10
-FN = 18
+FN = 10
 
   
 f1 = calculate_F1_score (TP, TN, FP, FN)
