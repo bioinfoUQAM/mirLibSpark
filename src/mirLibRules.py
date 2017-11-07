@@ -478,7 +478,7 @@ class prog_miRdup ():
     #cmd = ['java', '-jar', '/home/cjwu/gitproject/mirLibHadoop/lib/miRdup_1.4/miRdup.jar', '-v', self.tmp_file, '-c', self.model, '-r', '/software6/bioinfo/apps/mugqic_space/software/ViennaRNA/ViennaRNA-2.1.8/bin/']
     cmd = ['java', '-jar', self.mirdup_jar, '-v', tmp_file, '-c', self.model, '-r', self.path_RNAfold]
     sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
-    #mirdupout = sproc.communicate()[0].split('\n')
+    mirdupout = sproc.communicate()[0].split('\n') #= this line is essential!
     FNULL.close()
 
     mirdup_pred = ""
