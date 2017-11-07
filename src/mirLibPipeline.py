@@ -115,8 +115,8 @@ if __name__ == '__main__' :
   sc.addFile(project_path + '/lib/miRdup_1.4/lib/weka.jar')
   sc.addFile(mirdup_jar)
   sc.addFile(mirdup_model)
-  #sc.addFile(target_file)
-  #sc.addFile(miranda_exe)
+  sc.addFile(target_file)
+  sc.addFile(miranda_exe)
 
   #= Spark application ID
   appId = str(sc.applicationId)
@@ -351,7 +351,7 @@ if __name__ == '__main__' :
     #print(results)
     for r in results:
       tg = r[1][-1]
-      if len(tg) > 0:
+      if not tg == 'SeePreviousItem':
         print(tg)
     
     endLib = time.time()

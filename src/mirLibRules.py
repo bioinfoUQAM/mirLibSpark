@@ -415,6 +415,8 @@ class prog_miRanda ():
     self.rep_tmp = rep_tmp
     self.miranda_exe = miranda_exe
 
+    self.dict_seq_target = {}
+
   def computeTargetbyMiranda (self, e):
     '''
     $miranda examples/bantam_stRNA.fasta examples/hid_UTR.fasta
@@ -423,6 +425,10 @@ class prog_miRanda ():
 
     ## NOTE before disable miranda (170714): need to modify the code to use options such as -sc, -en, -go, -ge, -quiet
     '''
+    if e[0] in self.dict_seq_target.keys():
+      #e[1].append(len(self.dict_seq_target[e[0]]))
+      e[1].append('SeePreviousItem')
+      return e
 
     tmp_file = self.rep_tmp + e[0] + '_tmpseq_forMiranda.txt' 
     with open (tmp_file, 'w') as fh_tmp:
@@ -444,12 +450,13 @@ class prog_miRanda ():
       if i[:3] == '>>x': 
         #= isTargteet == [Seq1, Seq2, Tot_Score, Tot_Energy, Max_Score, Max_Energy, Strand, Len1, Len2, Positions]
         target_result = i.split('\t') 
-        target_results.append(target_result[1:])
-        #target_results.append([target_result[1], target_result[9]]) #= only record gene and positions
+        #target_results.append(target_result[1:])
+        target_results.append([target_result[1], target_result[9]]) #= only record gene and positions
 
     #= target_results == [[target1], [target2], ...]
     #e[1].append(target_results)
-    e[1].append('nbMiranda_tg=' + str(len(target_results)))
+    self.dict_seq_target[e[0]] = target_results
+    e[1].append('nbTarget=' + str(len(target_results)))
     return e
 
 
