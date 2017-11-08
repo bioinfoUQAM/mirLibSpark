@@ -438,9 +438,11 @@ class prog_miRanda ():
     #= [['AT1G51370.2', '306.00', '-36.41', '153.00', '-20.70', '1', '23', '1118', ' 20 698']]
     #= [gene, total_score, total_energy, max_score, max_energy, strand, len_miRNA, len_gene, postions]
 
+    #= targets are sorted from highest total scores to lowest total scores
     target_results = sorted(target_results, key=itemgetter(1), reverse=True)
+    #= only the top 15 targets are curated for report
+    if len(target_results) > 15: target_results = target_results[:15]
     self.dict_seq_target[e[0]] = target_results
-    #e[1].append('nbTarget=' + str(len(target_results)))
     e[1].append(target_results)
     return e
 

@@ -355,12 +355,14 @@ if __name__ == '__main__' :
     #print(results)
     for r in results:
       tg = r[1][-1]
-      if not tg == 'SeePreviousItem':
-        print(tg)
+      print(tg)
+      #if not tg == 'SeePreviousItem':
+      #  print(tg)
     
     endLib = time.time()
     print ("  End of the processing     ", end="\n")
-    
+
+     
     #= write results to a file
     outFile = rep_output + inBasename + '_miRNAprediction.txt'
     #ut.writeToFile (results, outFile)
