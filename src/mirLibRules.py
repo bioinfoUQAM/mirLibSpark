@@ -450,8 +450,8 @@ class prog_miRanda ():
       if i[:3] == '>>x': 
         #= isTargteet == [Seq1, Seq2, Tot_Score, Tot_Energy, Max_Score, Max_Energy, Strand, Len1, Len2, Positions]
         target_result = i.split('\t') 
-        #target_results.append(target_result[1:])
-        target_results.append([target_result[1], target_result[9]]) #= only record gene and positions
+        target_results.append(target_result[1:])
+        #target_results.append([target_result[1], target_result[9]]) #= only record gene and positions
 
     #= target_results == [[target1], [target2], ...]
     #e[1].append(target_results)

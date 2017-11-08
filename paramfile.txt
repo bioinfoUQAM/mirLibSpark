@@ -1,3 +1,5 @@
+#=the char leading message is essential. #message is for users to print a short message in the report to identify this experiment. Support \n new line.
+#message=write your message here line1\nline2
 #==NOTE that project_path and genome_path have to be absolute paths while the input_path, output_path and b_index_path can be relative paths to the project_path.
 #
 #==amine-cloudera-paths==
@@ -38,7 +40,7 @@ pre_flank=30
 mirdup_model=thaliana.model
 mirdup_limit=0.98
 mcheck_param=def
-Max_Score_cutoff=160
+Max_Score_cutoff=170
 Max_Energy_cutoff=-15
 Gap_Penalty=-15
 target_file=TAIR10_cdna_20101214_updated.fasta
