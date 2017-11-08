@@ -48,7 +48,7 @@ spark-submit mirLibPipeline.py ../paramfile.txt 2>/dev/null
 vim ~/.bashrc
 sudo mount -t vboxsf VM_Share /home/cloudera/vm_share/
 
-spark-submit mirLibPipeline_target.py ../paramfile.txt 2>/dev/null
+spark-submit mirLibPipeline.py ../paramfile.txt 2>/dev/null
 
 
 grep -c '>' myfile

@@ -19,6 +19,8 @@ La version actuelle accepte un seul argument qui est le fichier contenant les se
 time of execution factors:
 join and zip are expensive. Consider how to avoid them.
 
+TO DO: NEED TO clean up tmp folder every time automaticly
+
 '''
 
 from __future__ import print_function
@@ -40,6 +42,8 @@ if __name__ == '__main__' :
   paramfile = sys.argv[1]
   paramDict = ut.readParam (paramfile)
 
+  #message = paramDict['message'].split()
+  #for i in message: print(i)
   #= Parameters and cutoffs
   input_type = paramDict['input_type']
   adapter = ut.tr_U_T (paramDict['adapter'])
@@ -90,7 +94,7 @@ if __name__ == '__main__' :
   mirdup_limit =  float(paramDict['mirdup_limit'])
 
   #= miRanda parameter
-  target_file = project_path + '/lib/' + paramDict['target_file']
+  target_file = project_path + '/dbs/' + paramDict['target_file']
   miranda_exe = project_path + '/lib/miranda'
   Max_Score_cutoff = paramDict['Max_Score_cutoff'] #= need string or buffer
   Max_Energy_cutoff = paramDict['Max_Energy_cutoff'] #= NOT WORKING YET

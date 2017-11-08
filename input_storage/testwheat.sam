@@ -1,0 +1,2 @@
+@PG	ID:bowtie2      PN:bowtie2      VN:2.3.2        CL:"/home/abd/essaiWorkflow/tae/iwgsc_reference/bowtie/bowtie2/bowtie2-align-l --wrapper basic-0 -r -s 1 -k 10 -x /home/abd/essaiWorkflow/tae/iwgsc_reference/tae_bowtie_index/tae --passthrough -U chosenMirnaMainJean.txt"
+5	256	1DS	102378159	1	24M	*	0	0	CGAAGATTTTAAAGGAACAAACTT	IIIIIIIIIIIIIIIIIIIIIIII	AS:i:-6	XS:i:0	XN:i:0	XM:i:1	XO:i:0	XG:i:0	NM:i:1	MD:Z:21T2	YT:Z:UU
