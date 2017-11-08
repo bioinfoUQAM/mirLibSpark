@@ -12,6 +12,7 @@ Le programme
 import subprocess as sbp
 import os
 import utils as ut
+from operator import itemgetter
 
 
 def rearrange_rule(kv_arg, kv_sep):
@@ -382,26 +383,6 @@ class prog_dominant_profile :
     return elem
 
 
-'''
-class prog_miRanda ():
-  def __init__ (self, Max_Score_cutoff, lower_motif_match_cutoff, upper_motif_match_cutoff, Max_Energy_cutoff, target_file, rep_tmp, miranda_exe):
-    self.env = os.environ
-    self.dict_seq_target = {}
-
-    #== variables ==
-    self.Max_Score_cutoff = Max_Score_cutoff
-    self.lower_motif_match_cutoff = lower_motif_match_cutoff
-    self.upper_motif_match_cutoff = upper_motif_match_cutoff
-    self.Max_Energy_cutoff = Max_Energy_cutoff
-
-    self.target_file = target_file
-    self.rep_tmp = rep_tmp
-    self.miranda_exe = miranda_exe
-'''
-
-
-
-
 class prog_miRanda ():
   def __init__ (self, Max_Score_cutoff, Max_Energy_cutoff, target_file, rep_tmp, miranda_exe, Gap_Penalty):
     self.env = os.environ
@@ -454,11 +435,13 @@ class prog_miRanda ():
         #target_results.append([target_result[1], target_result[9]]) #= only record gene and positions
 
     #= target_results == [[target1], [target2], ...]
-    #= [['AT1G51370.2', '306.00', '-36.41', '153.00', '-20.70', '1', '23', '1118', ' 20 698', '84.21%', '89.47%']]
-    #= [gene, total_score, total_energy, max_score, max_energy, strand, len_miRNA, len_gene, postions, lower_motif_match, upper_motif_match]
-    #e[1].append(target_results)
+    #= [['AT1G51370.2', '306.00', '-36.41', '153.00', '-20.70', '1', '23', '1118', ' 20 698']]
+    #= [gene, total_score, total_energy, max_score, max_energy, strand, len_miRNA, len_gene, postions]
+
+    target_results = sorted(target_results, key=itemgetter(1), reverse=True)
     self.dict_seq_target[e[0]] = target_results
-    e[1].append('nbTarget=' + str(len(target_results)))
+    #e[1].append('nbTarget=' + str(len(target_results)))
+    e[1].append(target_results)
     return e
 
 
