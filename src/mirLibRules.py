@@ -454,65 +454,13 @@ class prog_miRanda ():
         #target_results.append([target_result[1], target_result[9]]) #= only record gene and positions
 
     #= target_results == [[target1], [target2], ...]
+    #= [['AT1G51370.2', '306.00', '-36.41', '153.00', '-20.70', '1', '23', '1118', ' 20 698', '84.21%', '89.47%']]
+    #= [gene, total_score, total_energy, max_score, max_energy, strand, len_miRNA, len_gene, postions, lower_motif_match, upper_motif_match]
     #e[1].append(target_results)
     self.dict_seq_target[e[0]] = target_results
     e[1].append('nbTarget=' + str(len(target_results)))
     return e
 
-
-
-
-
-    ######## old code ###########################
-    '''
-    if e[0] in self.dict_seq_target.keys():
-      e[1].append(self.dict_seq_target[e[0]])
-      return e
-
-    tmp_file = self.rep_tmp + e[0] + 'tmp_mirna_seq_forMiranda.txt' 
-    with open (tmp_file, 'w') as fh_tmp:
-      print >> fh_tmp, '>x\n' + e[0]
-    FNULL = open(os.devnull, 'w')
-    cmd = [self.miranda_exe, tmp_file, self.target_file]
-
-    sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
-    mirandaout = sproc.communicate()[0].split('\n')
-    FNULL.close()
-    target_results = []
-    lower_motif_match_associ, upper_motif_match_max = 0, 0
-
-    for i in mirandaout[30:]: 
-    #= because the first 30ish lines contain only program description
-      if i == 'No Hits Found above Threshold': 
-        ##= notTarget
-        break
-      if i[:2] == '>x':
-        #= isTargteet_hits == ['>x', 'AT1G51370.2', '153.00', '-15.71', '2 21', '698 722', '22', '68.18%', '77.27%']
-        hit_result = i.split('\t') 
-        lower_motif_match_current = hit_result[7][:-1]
-        upper_motif_match_current = hit_result[8][:-1]
-        if float(upper_motif_match_current) > float(upper_motif_match_max):
-          upper_motif_match_max = upper_motif_match_current
-          lower_motif_match_associ = lower_motif_match_current
-      if i[:3] == '>>x': 
-        #= isTargteet == [Seq1, Seq2, Tot_Score, Tot_Energy, Max_Score, Max_Energy, Strand, Len1, Len2, Positions]
-        target_result = i.split('\t') 
-        Max_Score = float(target_result[4])
-        Max_Energy = float(target_result[5])
-        if Max_Score > self.Max_Score_cutoff and Max_Energy < self.Max_Energy_cutoff and float(upper_motif_match_max) > self.upper_motif_match_cutoff: #and float(lower_motif_match_associ) > self.lower_motif_match_cutoff:
-          target_result.append(lower_motif_match_associ+'%')
-          target_result.append(upper_motif_match_max+'%')
-          target_results.append(target_result[1:])
-
-    #= target_results == [[target1], [target2], ...]
-    #= [['AT1G51370.2', '306.00', '-36.41', '153.00', '-20.70', '1', '23', '1118', ' 20 698', '84.21%', '89.47%']]
-    #= [gene, total_score, total_energy, max_score, max_energy, strand, len_miRNA, len_gene, postions, lower_motif_match, upper_motif_match]
-
-    self.dict_seq_target[e[0]] = target_results
-    e[1].append(target_results)
-    return e
-    '''
-  
 
 class prog_miRdup ():
   def __init__ (self, rep_tmp, model, mirdup_jar, path_RNAfold):
