@@ -1,6 +1,12 @@
 '''
 time python run_mirdeep_P.py
 
+This program wraps to run mirdeep-p. 
+mirdeep-p is distributed as many small scripts, step by step, like a pipeline, only without a wrapping script.
+
+It takes input file from the input folder in this mirLibHadoop project. MirDeep-P does not allow any adjustment of the parameters.
+I can choose to use genome tair9 or tair10 by changing a program parameter in teh calling of the function: init_mirdeep_p (). Default is tair10.
+
 author: Chao-Jung Wu
 date: 2017-08-
 '''
