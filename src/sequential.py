@@ -1,65 +1,112 @@
 '''
+
 program: sequential.py
+
 author: Chao-Jung Wu
+
 date: 2017-10-11
-version: 0.00.02
+
+version: 0.00.03
 
 100.txt before profile repeats: (1) 116m45s, (2) 96mins
+
   
+
 '''
 
+
+
 from __future__ import print_function
+
 import sys
+
 import os.path
+
 import time
+
 #from os import listdir
+
 #
+
 import utils as ut
+
 import mirLibRules as mru
 
-tmp_rep = '/home/cloudera/Desktop/mirLibHadoop/tmp/'
+#tmp_rep = '/home/cloudera/Desktop/mirLibHadoop/tmp/'
+tmp_rep = '/home/cjwu/gitproject/mirLibHadoop/tmp/'
 
-known_non = '../dbs/TAIR10_ncRNA_CDS.gff'
+
+#known_non = '../dbs/TAIR10_ncRNA_CDS.gff'
+known_non = '/home/cjwu/gitproject/mirLibHadoop/dbs/TAIR10_ncRNA_CDS.gff'
 d_ncRNA_CDS = ut.get_nonMirna_coors (known_non)
 kn_obj = mru.prog_knownNonMiRNA(d_ncRNA_CDS)
 profile_obj = mru.prog_dominant_profile()
 
+
 limit_srna_freq = 10
+
 limit_len = 18 
 limit_mrna_freq = 100
 limit_nbloc = 15
 
-genome_path = '/home/cloudera/workspace/mirLibHadoop/dbs/ATH/Genome/'
+#genome_path = '/home/cloudera/workspace/mirLibHadoop/dbs/ATH/Genome/'
+genome_path = '/scratch/hvg-164-aa/mirlibhadoop/ATH/Genome/'
 pri_l_flank = 500 #20
 pri_r_flank = 200 #160
 pre_flank = 30
 extr_obj = mru.extract_precurosrs (genome_path, pri_l_flank, pri_r_flank, pre_flank)
 
 
+
+
 def readRaw (infile):
+
   ''' seq\tfreq'''
+
   dict_mirna = {}
+
   with open (infile, 'r') as fh:
+
     for line in fh:
+
       data = line.rstrip('\n').split('\t')
+
       seq = data[0]
+
       freq = int(data[1])
+
       dict_mirna[seq] = [freq]
+
   return dict_mirna
 
+
+
 def filterFreq (limit_srna_freq, dict_mirna):
+
   dict_mirna2 = dict_mirna.copy()
+
   for k, v in dict_mirna2.items():
+
     if int(v[0]) < limit_srna_freq:
+
       del dict_mirna[k]
+
+
 
 def filterShort (limit_len, dict_mirna):
+
   dict_mirna2 = dict_mirna.copy()
+
   for k in dict_mirna2.keys():
+
     if len(k) < limit_len:
+
       del dict_mirna[k]
 
+
+
 def filterdust (dict_mirna):
+
   #= echo $'>seq1\nCGTGGCTATGATAGCGATATTCGTTTTTTT' | dustmasker
   dict_mirna2 = dict_mirna.copy()
   for k in dict_mirna2.keys():
@@ -71,7 +118,8 @@ def filterdust (dict_mirna):
           del dict_mirna[k]
   
 def bowtiemap (dict_mirna):
-  bowtie_index = '/home/cloudera/workspace/mirLibHadoop/dbs/bowtie_index/a_thaliana_t10'
+  #bowtie_index = '/home/cloudera/workspace/mirLibHadoop/dbs/bowtie_index/a_thaliana_t10'
+  bowtie_index = '/home/cjwu/gitproject/mirLibHadoop/dbs/bowtie_index/a_thaliana_t10'
   for k in dict_mirna.keys():
     cmd = 'bowtie --mm -a -v 0 --suppress 1,5,6,7,8 -c ' + bowtie_index + ' '+ k + ' > ' + tmp_rep + 'bowtiemap.tmp2 2>/dev/null'
     os.system(cmd)
@@ -90,19 +138,25 @@ def bowtiemap (dict_mirna):
 def filterMirnaFreq (limit_mrna_freq, dict_mirna):
   dict_mirna2 = dict_mirna.copy()
   for k, v in dict_mirna2.items():
+
     if int(v[0]) < limit_mrna_freq:
+
       del dict_mirna[k]
 
 def filterNbLoc (limit_nbloc, dict_mirna):
   dict_mirna2 = dict_mirna.copy()
   for k, v in dict_mirna2.items():
+
     if v[1] == 0 or v[1] > limit_nbloc:
+
       del dict_mirna[k]
 
 def filterKnowNon (dict_mirna):
   dict_mirna2 = dict_mirna.copy()
   for k, v in dict_mirna.items():
+
     if not kn_obj.knFilterByCoor ([k, v]):
+
       del dict_mirna2[k]
 
 def extractPri (dict_mirna):
@@ -288,9 +342,14 @@ def keepTrue(dict_mirna):
   return count
 
 #infile = 'test.txt'
-infile = '/home/cloudera/Desktop/mirLibHadoop/input/100.txt'
+#infile = '/home/cloudera/Desktop/mirLibHadoop/input/100.txt'
+#infile = '/home/cloudera/Desktop/mirLibHadoop/input/high_conf_mature_ath_uniq_raw.txt'
+infile = '/home/cjwu/gitproject/mirLibHadoop/input/high_conf_mature_ath_uniq100.txt'
+
 dict_mirna = readRaw (infile)
+
 filterFreq (limit_srna_freq, dict_mirna)
+
 filterShort (limit_len, dict_mirna)
 filterdust (dict_mirna)
 bowtiemap (dict_mirna)
@@ -300,6 +359,7 @@ dict_bowtie_chromo_strand = createBowFrqDict (dict_mirna)
 filterMirnaFreq (limit_mrna_freq, dict_mirna)
 filterNbLoc (limit_nbloc, dict_mirna)
 extractPri (dict_mirna)
+
 fold1 (dict_mirna)
 check (dict_mirna)
 filterOneLoop (dict_mirna)
@@ -314,6 +374,9 @@ nbTrueDistinct = keepTrue(dict_mirna)
 
 print('nbTrueDistinct: ', nbTrueDistinct)
 print('nbNonDistinct: ', len(dict_mirna))
+
+
+
 
 
 
