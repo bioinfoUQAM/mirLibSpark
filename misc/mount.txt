@@ -1,0 +1,1 @@
+sudo mount -t vboxsf VM_Share /home/cloudera/vm_share/
