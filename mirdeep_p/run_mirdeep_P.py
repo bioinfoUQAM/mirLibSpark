@@ -130,4 +130,3 @@ def run_miRDP ():
 genome, f_annotated = init_mirdeep_p ('tair10')
 run_miRDP ()
 
-

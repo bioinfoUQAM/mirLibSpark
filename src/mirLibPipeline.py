@@ -299,13 +299,14 @@ if __name__ == '__main__' :
     #= Filtering structure with branched loop
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
-    one_loop_rdd = pri_vld_rdd.filter(lambda e: ut.containsOnlyOneLoop(e[1][3][2][int(e[1][3][4]) : int(e[1][3][5])+1]))#.persist()############
+    #one_loop_rdd = pri_vld_rdd.filter(lambda e: ut.containsOnlyOneLoop(e[1][3][2][int(e[1][3][4]) : int(e[1][3][5])+1]))#.persist()############
     #print('NB one_loop_rdd distinct : ', len(one_loop_rdd.groupByKey().collect()))#########################
     
     #= Extraction of the pre-miRNA
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop'], ['preSeq',posMirPre]])
-    premir_rdd = one_loop_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3))
+    #premir_rdd = one_loop_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3))
+    premir_rdd = pri_vld_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3))
     
     #= pre-miRNA folding
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre]])
@@ -347,6 +348,7 @@ if __name__ == '__main__' :
     print('NB profile_rdd distinct: ', len(profile_rdd.groupByKey().collect()))#####################
     print('NB profile_rdd not distinct (final prediction): ', len(profile_rdd.collect()))#####################
 
+    '''
     #= target prediction
     miranda_rdd = profile_rdd.map(miranda_obj.computeTargetbyMiranda).persist()####
     print('NB miranda_rdd distinct : ', len(miranda_rdd.groupByKey().collect()))####
@@ -358,6 +360,7 @@ if __name__ == '__main__' :
       print(tg)
       #if not tg == 'SeePreviousItem':
       #  print(tg)
+    '''
     
     endLib = time.time()
     print ("  End of the processing     ", end="\n")

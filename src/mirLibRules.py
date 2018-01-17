@@ -241,7 +241,7 @@ class prog_RNAfold ():
     this requires two subprocesses
     '''
     line1 = ['echo', seq]
-    line2 = ['RNAfold','--noPS', '--noLP']
+    line2 = ['RNAfold','--noPS', '--noLP', '--temp=25.0']
     
     p1 = sbp.Popen(line1, stdout=sbp.PIPE, env=self.env)
     p2 = sbp.Popen(line2, stdin=p1.stdout, stdout=sbp.PIPE, env=self.env)
