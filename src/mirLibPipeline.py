@@ -16,11 +16,10 @@ Le programme implemente le pipeline d'analyse des sRAN et prediction des miRNAs.
 La version actuelle accepte un seul argument qui est le fichier contenant les sequences reads a traiter.
 
 
-time of execution factors
-persist is required to reduce time in the following steps:
-(1) reuse of the rdd: sr_short_rdd, bowFrq_rdd
-(2) mircheck or mirdup: pri_vld_rdd, pre_vld_rdd
-(3) some kind of complexity of the rdd: dmask_rdd, bowtie_rdd
+time of execution factors:
+join and zip are expensive. Consider how to avoid them.
+
+TO DO: NEED TO clean up tmp folder every time automaticly
 
 '''
 
@@ -43,6 +42,8 @@ if __name__ == '__main__' :
   paramfile = sys.argv[1]
   paramDict = ut.readParam (paramfile)
 
+  #message = paramDict['message'].split()
+  #for i in message: print(i)
   #= Parameters and cutoffs
   input_type = paramDict['input_type']
   adapter = ut.tr_U_T (paramDict['adapter'])
@@ -93,12 +94,11 @@ if __name__ == '__main__' :
   mirdup_limit =  float(paramDict['mirdup_limit'])
 
   #= miRanda parameter
-  #target_file = project_path + '/lib/' + paramDict['target_file']
-  #miranda_exe = project_path + '/lib/miranda'
-  #Max_Score_cutoff = float(paramDict['Max_Score_cutoff'])
-  #query_motif_match_cutoff = float(paramDict['query_motif_match_cutoff'])
-  #gene_motif_match_cutoff = float(paramDict['gene_motif_match_cutoff'])
-  #Max_Energy_cutoff = float(paramDict['Max_Energy_cutoff'])
+  target_file = project_path + '/dbs/' + paramDict['target_file']
+  miranda_exe = project_path + '/lib/miranda'
+  Max_Score_cutoff = paramDict['Max_Score_cutoff'] #= need string or buffer
+  Max_Energy_cutoff = paramDict['Max_Energy_cutoff'] #= NOT WORKING YET
+  Gap_Penalty = paramDict['Gap_Penalty']
 
   ## EXMAMIN OPTIONS ####################################
   ut.validate_options(paramDict)
@@ -119,8 +119,8 @@ if __name__ == '__main__' :
   sc.addFile(project_path + '/lib/miRdup_1.4/lib/weka.jar')
   sc.addFile(mirdup_jar)
   sc.addFile(mirdup_model)
-  #sc.addFile(target_file)
-  #sc.addFile(miranda_exe)
+  sc.addFile(target_file)
+  sc.addFile(miranda_exe)
 
   #= Spark application ID
   appId = str(sc.applicationId)
@@ -138,6 +138,7 @@ if __name__ == '__main__' :
 
   mirdup_obj = mru.prog_miRdup (rep_tmp, mirdup_model, mirdup_jar, path_RNAfold)
   #miranda_obj = mru.prog_miRanda(Max_Score_cutoff, query_motif_match_cutoff, gene_motif_match_cutoff, Max_Energy_cutoff, target_file, rep_tmp, miranda_exe)
+  miranda_obj = mru.prog_miRanda(Max_Score_cutoff, Max_Energy_cutoff, target_file, rep_tmp, miranda_exe, Gap_Penalty)
 
   #= Fetch library files in rep_input
   infiles = [f for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
@@ -305,6 +306,7 @@ if __name__ == '__main__' :
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop'], ['preSeq',posMirPre]])
     premir_rdd = one_loop_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3))
+    #premir_rdd = pri_vld_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3))
     
     #= pre-miRNA folding
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre]])
@@ -346,16 +348,24 @@ if __name__ == '__main__' :
     print('NB profile_rdd distinct: ', len(profile_rdd.groupByKey().collect()))#####################
     print('NB profile_rdd not distinct (final prediction): ', len(profile_rdd.collect()))#####################
 
+    '''
     #= target prediction
-    #miranda_rdd = miRNA_rdd.map(miranda_obj.computeTargetbyMiranda).persist()####
-    #print('NB miranda_rdd distinct : ', len(miranda_rdd.groupByKey().collect()))####
-    ##results = miranda_rdd.collect()
+    miranda_rdd = profile_rdd.map(miranda_obj.computeTargetbyMiranda).persist()####
+    print('NB miranda_rdd distinct : ', len(miranda_rdd.groupByKey().collect()))####
+    results = miranda_rdd.collect()
 
-    #results = miRNA_rdd.collect()
-    #'''
+    #print(results)
+    for r in results:
+      tg = r[1][-1]
+      print(tg)
+      #if not tg == 'SeePreviousItem':
+      #  print(tg)
+    '''
+    
     endLib = time.time()
     print ("  End of the processing     ", end="\n")
-    
+
+     
     #= write results to a file
     outFile = rep_output + inBasename + '_miRNAprediction.txt'
     #ut.writeToFile (results, outFile)

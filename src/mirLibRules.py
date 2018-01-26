@@ -12,6 +12,7 @@ Le programme
 import subprocess as sbp
 import os
 import utils as ut
+from operator import itemgetter
 
 
 def rearrange_rule(kv_arg, kv_sep):
@@ -240,6 +241,7 @@ class prog_RNAfold ():
     this requires two subprocesses
     '''
     line1 = ['echo', seq]
+    #line2 = ['RNAfold','--noPS', '--noLP', '--temp=25.0']
     line2 = ['RNAfold','--noPS', '--noLP']
     
     p1 = sbp.Popen(line1, stdout=sbp.PIPE, env=self.env)
@@ -381,75 +383,70 @@ class prog_dominant_profile :
     elem[1].append(totalfrq)
     return elem
 
+
 class prog_miRanda ():
-  def __init__ (self, Max_Score_cutoff, lower_motif_match_cutoff, upper_motif_match_cutoff, Max_Energy_cutoff, target_file, rep_tmp, miranda_exe):
+  def __init__ (self, Max_Score_cutoff, Max_Energy_cutoff, target_file, rep_tmp, miranda_exe, Gap_Penalty):
     self.env = os.environ
-    self.dict_seq_target = {}
 
     #== variables ==
     self.Max_Score_cutoff = Max_Score_cutoff
-    self.lower_motif_match_cutoff = lower_motif_match_cutoff
-    self.upper_motif_match_cutoff = upper_motif_match_cutoff
     self.Max_Energy_cutoff = Max_Energy_cutoff
+    self.Gap_Penalty = Gap_Penalty
 
     self.target_file = target_file
     self.rep_tmp = rep_tmp
     self.miranda_exe = miranda_exe
 
+    self.dict_seq_target = {}
+
   def computeTargetbyMiranda (self, e):
     '''
     $miranda examples/bantam_stRNA.fasta examples/hid_UTR.fasta
     $miranda ../tmp/tmp_mirna_seq.txt ../Arabidopsis/TAIR/Genome/TAIR10_blastsets/TAIR10_cdna_20101214_updated_1cdna.fasta
+    $miranda ../tmp/GCTCACTGCTCTTTCTGTCAGA_tmpseq_forMiranda.txt TAIR10_cdna_20101214_updated_39cdna.fasta
 
     ## NOTE before disable miranda (170714): need to modify the code to use options such as -sc, -en, -go, -ge, -quiet
     '''
     if e[0] in self.dict_seq_target.keys():
-      e[1].append(self.dict_seq_target[e[0]])
+      #e[1].append(len(self.dict_seq_target[e[0]]))
+      e[1].append('SeePreviousItem')
       return e
 
-    tmp_file = self.rep_tmp + e[0] + 'tmp_mirna_seq_forMiranda.txt' 
+    tmp_file = self.rep_tmp + e[0] + '_tmpseq_forMiranda.txt' 
     with open (tmp_file, 'w') as fh_tmp:
       print >> fh_tmp, '>x\n' + e[0]
     FNULL = open(os.devnull, 'w')
-    cmd = [self.miranda_exe, tmp_file, self.target_file]
+    #cmd = [self.miranda_exe, tmp_file, self.target_file, '-sc', self.Max_Score_cutoff]
+    #cmd = [self.miranda_exe, tmp_file, self.target_file, '-strict']
+    #cmd = [self.miranda_exe, tmp_file, self.target_file, '-strict', '-sc', self.Max_Score_cutoff, '-en', self.Max_Energy_cutoff]
+    cmd = [self.miranda_exe, tmp_file, self.target_file, '-strict', '-sc', self.Max_Score_cutoff, '-en', self.Max_Energy_cutoff, '-go', self.Gap_Penalty]
+    ##cmd = [self.miranda_exe, tmp_file, self.target_file, '-sc', self.Max_Score_cutoff, '-en', self.Max_Energy_cutoff, '-go', self.Gap_Penalty]
 
     sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
     mirandaout = sproc.communicate()[0].split('\n')
     FNULL.close()
     target_results = []
-    lower_motif_match_associ, upper_motif_match_max = 0, 0
 
     for i in mirandaout[30:]: 
     #= because the first 30ish lines contain only program description
-      if i == 'No Hits Found above Threshold': 
-        ##= notTarget
-        break
-      if i[:2] == '>x':
-        #= isTargteet_hits == ['>x', 'AT1G51370.2', '153.00', '-15.71', '2 21', '698 722', '22', '68.18%', '77.27%']
-        hit_result = i.split('\t') 
-        lower_motif_match_current = hit_result[7][:-1]
-        upper_motif_match_current = hit_result[8][:-1]
-        if float(upper_motif_match_current) > float(upper_motif_match_max):
-          upper_motif_match_max = upper_motif_match_current
-          lower_motif_match_associ = lower_motif_match_current
       if i[:3] == '>>x': 
         #= isTargteet == [Seq1, Seq2, Tot_Score, Tot_Energy, Max_Score, Max_Energy, Strand, Len1, Len2, Positions]
         target_result = i.split('\t') 
-        Max_Score = float(target_result[4])
-        Max_Energy = float(target_result[5])
-        if Max_Score > self.Max_Score_cutoff and Max_Energy < self.Max_Energy_cutoff and float(upper_motif_match_max) > self.upper_motif_match_cutoff: #and float(lower_motif_match_associ) > self.lower_motif_match_cutoff:
-          target_result.append(lower_motif_match_associ+'%')
-          target_result.append(upper_motif_match_max+'%')
-          target_results.append(target_result[1:])
+        target_results.append(target_result[1:])
+        #target_results.append([target_result[1], target_result[9]]) #= only record gene and positions
 
     #= target_results == [[target1], [target2], ...]
-    #= [['AT1G51370.2', '306.00', '-36.41', '153.00', '-20.70', '1', '23', '1118', ' 20 698', '84.21%', '89.47%']]
-    #= [gene, total_score, total_energy, max_score, max_energy, strand, len_miRNA, len_gene, postions, lower_motif_match, upper_motif_match]
+    #= [['AT1G51370.2', '306.00', '-36.41', '153.00', '-20.70', '1', '23', '1118', ' 20 698']]
+    #= [gene, total_score, total_energy, max_score, max_energy, strand, len_miRNA, len_gene, postions]
 
+    #= targets are sorted from highest total scores to lowest total scores
+    target_results = sorted(target_results, key=itemgetter(1), reverse=True)
+    #= only the top 15 targets are curated for report
+    if len(target_results) > 15: target_results = target_results[:15]
     self.dict_seq_target[e[0]] = target_results
     e[1].append(target_results)
     return e
-  
+
 
 class prog_miRdup ():
   def __init__ (self, rep_tmp, model, mirdup_jar, path_RNAfold):
@@ -478,7 +475,7 @@ class prog_miRdup ():
     #cmd = ['java', '-jar', '/home/cjwu/gitproject/mirLibHadoop/lib/miRdup_1.4/miRdup.jar', '-v', self.tmp_file, '-c', self.model, '-r', '/software6/bioinfo/apps/mugqic_space/software/ViennaRNA/ViennaRNA-2.1.8/bin/']
     cmd = ['java', '-jar', self.mirdup_jar, '-v', tmp_file, '-c', self.model, '-r', self.path_RNAfold]
     sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
-    #mirdupout = sproc.communicate()[0].split('\n')
+    mirdupout = sproc.communicate()[0].split('\n') #= this line is essential!
     FNULL.close()
 
     mirdup_pred = ""

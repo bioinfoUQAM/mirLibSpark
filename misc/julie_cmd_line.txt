@@ -48,6 +48,14 @@ spark-submit mirLibPipeline.py ../paramfile.txt 2>/dev/null
 vim ~/.bashrc
 sudo mount -t vboxsf VM_Share /home/cloudera/vm_share/
 
+spark-submit mirLibPipeline.py ../paramfile.txt 2>/dev/null
+
+
+grep -c '>' myfile
+
+miranda ../tmp/GCTCACTGCTCTTTCTGTCAGA_tmpseq_forMiranda.txt TAIR10_cdna_20101214_updated_39cdna.fasta -strict -en -15 -sc 150   -go -5 > test171107.txt
+grep -c '>>' test171107.txt 
+
 
 ##=========================================================================================================
 Amine misc

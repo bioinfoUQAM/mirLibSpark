@@ -1,8 +1,16 @@
 '''
 time python run_mirdeep_P.py
 
+mirdeep-p is distributed as many small scripts, step by step, like a pipeline, only without a wrapping script.
+
+This program wraps to run mirdeep-p. Run under the folder of mirdeep_p. Use the above command line.
+
+It takes input file in raw format (seq\tfreq)from the input folder in this mirLibHadoop project. MirDeep-P does not allow any adjustment of the parameters.
+I can choose to use genome tair9 or tair10 by changing a program parameter in teh calling of the function: init_mirdeep_p (). Default is tair10.
+
 author: Chao-Jung Wu
 date: 2017-08-
+version: 1.00.02
 '''
 import os
 import time
@@ -63,7 +71,10 @@ def run_mirdp_new (infile):
   os.system('perl overlap.pl indata_filter15.bst ncRNA_CDS.gff -b >indata_id_overlap_ncRNA_CDS 2>/dev/null')
   os.system('perl alignedselected.pl indata_filter15.bst -g indata_id_overlap_ncRNA_CDS >indata_filter15_ncRNA_CDS.bst 2>/dev/null')
   os.system('perl filter_alignments.pl indata_filter15_ncRNA_CDS.bst -b ' + infile + ' > indata_filtered.fa 2>/dev/null')
-  os.system('perl excise_candidate.pl ' + genome + ' indata_filter15_ncRNA_CDS.bst 250 >indata_precursors.fa 2>/dev/null')
+  #################
+  os.system('perl excise_candidate.pl ' + genome + ' indata_filter15_ncRNA_CDS.bst 700 >indata_precursors.fa 2>/dev/null')
+  #os.system('perl excise_candidate.pl ' + genome + ' indata_filter15_ncRNA_CDS.bst 250 >indata_precursors.fa 2>/dev/null')
+  #################
   os.system('cat indata_precursors.fa | RNAfold --noPS > indata_structures')
   os.system('bowtie-build -f indata_precursors.fa bowtie-index/indata_precursors >/dev/null 2>/dev/null')
   os.system('bowtie -a -v 0 bowtie-index/indata_precursors -f indata_filtered.fa > indata_precursors.aln 2>/dev/null')
@@ -75,7 +86,10 @@ def run_mirdp_new (infile):
 def run_mirdp_known (infile, f_annotated):
   os.system('bowtie -a -v 0 bowtie-index/' + f_annotated + ' -f ' + infile + ' >indata.aln 2>/dev/null')
   os.system('perl convert_bowtie_to_blast.pl indata.aln ' + infile + ' ' + f_annotated + ' > indata_extended.bst 2>/dev/null')
-  os.system('perl excise_candidate.pl ' + f_annotated + ' indata_extended.bst 250 >precursors_250.fa 2>/dev/null')
+  ###############
+  #os.system('perl excise_candidate.pl ' + f_annotated + ' indata_extended.bst 250 >precursors_250.fa 2>/dev/null')
+  os.system('perl excise_candidate.pl ' + f_annotated + ' indata_extended.bst 700 >precursors_250.fa 2>/dev/null')
+  ###############
   os.system('bowtie-build -f precursors_250.fa bowtie-index/precursors_250 >/dev/null 2>/dev/null')
   os.system('cat precursors_250.fa|RNAfold --noPS >precursors_250_structure')
   os.system('bowtie -a -v 0 bowtie-index/precursors_250 -f ' + infile + ' >indata_250.aln 2>/dev/null')
@@ -115,5 +129,4 @@ def run_miRDP ():
 
 genome, f_annotated = init_mirdeep_p ('tair10')
 run_miRDP ()
-
 

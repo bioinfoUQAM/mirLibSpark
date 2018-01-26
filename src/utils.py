@@ -196,6 +196,9 @@ def readParam (paramfile, sep = '='):
     if not line.startswith("#"):
       data = line.rstrip('\r\n').split(sep)
       paramDict[data[0]] = data[1]
+    elif line.startswith('#message'): 
+      msg = line.rstrip('\r\n')[9:].split('\\n')
+      for i in msg: print(i)
   
   return paramDict
 

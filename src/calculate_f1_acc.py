@@ -1,19 +1,19 @@
 def calculate_F1_score (tp, tn, fp, fn):
   #= p: precision; r: recall
-  p = tp / (tp + fp)
-  r = tp / (tp + fn)
+  p = tp / float(tp + fp)
+  r = tp / float(tp + fn)
   f1 = 2 * p * r / (p + r)
   return round (f1, 3)
 
 def calculate_accuracy (tp, tn, fp, fn):
-  acc = (tp + tn)/(tp + tn + fp + fn)
+  acc = (tp + tn)/ float(tp + tn + fp + fn)
   return round (acc, 3)
 
 
-TP = 73
-TN = 999
-FP = 1
-FN = 27
+TP = 90
+TN = 982
+FP = 10
+FN = 10
 
   
 f1 = calculate_F1_score (TP, TN, FP, FN)
