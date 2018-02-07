@@ -18,4 +18,4 @@ module load mugqic/ViennaRNA/2.1.8
 #module load compilers/java/1.8
 #module load mugqic/blast/2.2.31+
 
-python run_mirdeep_P.py
+time python run_mirdeep_P.py
