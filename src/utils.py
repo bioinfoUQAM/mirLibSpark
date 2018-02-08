@@ -19,6 +19,15 @@ def validate_options(paramDict):
     sys.stderr.write("The adapter option must be 'none' for the input_type_a.")
     sys.exit()
 
+def transpose_txt(infile, outfile):
+    with open(infile, 'r') as f:
+        lis = [x.rstrip('\n').split('\t') for x in f]
+    fho = open (outfile, 'w')
+    for x in zip(*lis):
+        for y in x:
+            print(y+'\t', end='', file=fho, flush=True)
+        print('', file=fho)
+		
 def makedirs_reps (reps):
   for rep in reps:
     if not os.path.exists(rep):
@@ -369,16 +378,15 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
   fh_out.close()
   fh_out2.close()
 
-  import transpose as tr
   import os
   infile = outfile
   outfile = infile[:-4] + '.txt'
-  tr.transpose_txt(infile, outfile)
+  transpose_txt(infile, outfile)
   os.remove(infile) 
 
   infile = outfile2
   outfile = infile[:-4] + '.txt'
-  tr.transpose_txt(infile, outfile)
+  transpose_txt(infile, outfile)
   os.remove(infile) 
 
 #############################
