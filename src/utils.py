@@ -229,6 +229,9 @@ def containsOnlyOneLoop (folding):
 def writeToFile (results, outfile):
     ''' old : elem = (id, [seq, frq, nbloc, [bowtie], [pri_miRNA], [pre_miRNA]])
         new : elem = (seq, [frq, nbloc, [bowtie], [pri_miRNA], [pre_miRNA]])
+
+    ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq])
+
     '''
     fh_out = open (outfile, 'w')    
 
@@ -237,6 +240,7 @@ def writeToFile (results, outfile):
       values = elem[1]
       miRNAseq = elem[0]
       frq = values[0]
+      #nbLoc = values[1]
       bowtie = values[2]
       strand = bowtie[0]#
       chromo = bowtie[1]#
@@ -244,16 +248,14 @@ def writeToFile (results, outfile):
       pre_miRNA_records = values[4]
       pre_miRNA_seq = pre_miRNA_records[0]#
       struc = pre_miRNA_records[2]#
-      #mirCheck = pre_miRNA_records[3]#
-      #fbstart = pre_miRNA_records[4]#
-      #fbstop = pre_miRNA_records[5]#
+      mpScore = pre_miRNA_records[4]#
       totalfrq = values[5]#
 
       #miRanda = values[6]#
       miRanda = "[TO_DO_target_genes]"
       
       #data = [miRNAseq, frq, strand, chromo, posgen, pre_miRNA_seq, struc, mirCheck, fbstart, fbstop, totalfrq, miRanda]
-      data = [miRNAseq, frq, strand, chromo, posgen, pre_miRNA_seq, struc, totalfrq, miRanda]
+      data = [miRNAseq, frq, strand, chromo, posgen, pre_miRNA_seq, struc, mpScore, totalfrq, miRanda]
       line = ''
       
       for d in data:
@@ -291,6 +293,27 @@ def writeTimeLibToFile (timeDict, outfile, appId, paramDict):
       print >> fh_out, "# " + key + ": " + paramDict[key]
   
   fh_out.close()
+
+
+###########################
+## WORK IN PROGRESS
+###########################
+def writeSummaryFreqToFile (infiles, outfile, appId):
+  #keyword = appId + '_miRNAprediction_'
+  fh_out = open (outfile, 'w')
+
+  #infiles = [f for f in listdir(rep) if (os.path.isfile(os.path.join(rep, f)) and f.startswith(keyword))]
+  for f in infiles :
+      print >> fh_out, f
+
+
+  fh_out.close()
+#############################
+#############################
+
+
+
+
 
 # source : https://stackoverflow.com/questions/2257441/random-string-generation-with-upper-case-letters-and-digits-in-python/23728630#23728630
 def randomStrGen (n):
