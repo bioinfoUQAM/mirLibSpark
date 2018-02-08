@@ -347,7 +347,7 @@ if __name__ == '__main__' :
 
     #print(profile_rdd.collect())#####################
     print('NB profile_rdd distinct: ', len(profile_rdd.groupByKey().collect()))#####################
-    print('NB profile_rdd not distinct (final prediction): ', len(profile_rdd.collect()))#####################
+    #print('NB profile_rdd not distinct (final prediction): ', len(profile_rdd.collect()))#####################
 
     results = profile_rdd.collect()
     '''
@@ -380,11 +380,9 @@ if __name__ == '__main__' :
   #= print executions time  to a file
   outTime = rep_output + appId + '_time.txt'
   ut.writeTimeLibToFile (timeDict, outTime, appId, paramDict)
-  #= make summary table of all libraries in one submission with freq in the field
-  summaryLibFreq = rep_output + appId + '_summaryFreq.txt'
+
+  #= make summary table of all libraries in one submission with expressions in the field
   keyword = appId + '_miRNAprediction_'
-  #infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
-  #infiles = [f for f in listdir(rep_output) if os.path.isfile(os.path.join(rep_output, f))]
   infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
-  ut.writeSummaryFreqToFile (infiles, summaryLibFreq, appId)
+  ut.writeSummaryExpressionToFile (infiles, rep_output, appId)
 

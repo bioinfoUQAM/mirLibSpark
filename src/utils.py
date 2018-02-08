@@ -233,7 +233,9 @@ def writeToFile (results, outfile):
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq])
 
     '''
-    fh_out = open (outfile, 'w')    
+    fh_out = open (outfile, 'w') 
+
+    distinctPreSeq = []
 
     for elem in results :
       # ID = elem[0]#
@@ -255,6 +257,9 @@ def writeToFile (results, outfile):
       miRanda = "[TO_DO_target_genes]"
       
       #data = [miRNAseq, frq, strand, chromo, posgen, pre_miRNA_seq, struc, mirCheck, fbstart, fbstop, totalfrq, miRanda]
+      if pre_miRNA_seq in distinctPreSeq: continue
+      else: distinctPreSeq.append(pre_miRNA_seq)
+      
       data = [miRNAseq, frq, strand, chromo, posgen, pre_miRNA_seq, struc, mpScore, totalfrq, miRanda]
       line = ''
       
@@ -298,16 +303,84 @@ def writeTimeLibToFile (timeDict, outfile, appId, paramDict):
 ###########################
 ## WORK IN PROGRESS
 ###########################
-def writeSummaryFreqToFile (infiles, outfile, appId):
-  #keyword = appId + '_miRNAprediction_'
-  fh_out = open (outfile, 'w')
+def writeSummaryExpressionToFile (infiles, rep_output, appId):
+  '''
+  data = [miRNAseq, frq, strand, chromo, posgen, pre_miRNA_seq, struc, mpScore, totalfrq, miRanda]
+  '''
 
-  #infiles = [f for f in listdir(rep) if (os.path.isfile(os.path.join(rep, f)) and f.startswith(keyword))]
-  for f in infiles :
-      print >> fh_out, f
+  outfile = rep_output + appId + '_summaryFreq.txt'
+  outfile2 = rep_output + appId + '_summaryBinary.txt'
+
+  fh_out = open (outfile, 'w')
+  fh_out2 = open (outfile2, 'w')
+
+  master_predicted = []
+  for f in infiles:
+    with open (rep_output + f, 'r') as fh:
+      for line in fh:
+        data = line.rstrip('\n').split('\t')
+        miRNAseq = data[0]
+        if miRNAseq not in master_predicted:
+          master_predicted.append(miRNAseq)
+  
+  keyword = '_miRNAprediction_'
+  dictLibSeqFreq = {}
+  for f in sorted(infiles):
+    libname = f.split(keyword)[1][:-4]
+    dictLibSeqFreq[libname] = []
+    tmpDict = {}
+    with open (rep_output + f, 'r') as fh:
+      for line in fh:
+        data = line.rstrip('\n').split('\t')
+        miRNAseq = data[0]
+        freq = int(data[1])
+        tmpDict[miRNAseq] = freq
+    for e in master_predicted:
+      if e in tmpDict.keys(): dictLibSeqFreq[libname].append(tmpDict[e])
+      else: dictLibSeqFreq[libname].append(0)
+
+  seqListLine = ''
+  for e in master_predicted:
+    seqListLine += e + '\t'
+  seqListLine = seqListLine.rstrip('\t')
+
+
+  print >> fh_out, seqListLine
+  print >> fh_out2, seqListLine
+
+  for k in sorted(dictLibSeqFreq.keys()):
+    v = dictLibSeqFreq[k]
+    line = k + '\t'
+    for i in v: line += str(i) + '\t'
+    line = line.rstrip('\t')
+    print >> fh_out, line
+
+
+  for k in sorted(dictLibSeqFreq.keys()):
+    v = dictLibSeqFreq[k]
+    line = ''
+    for i in v:
+      if i > 0: i = 1
+      line += str(i) + '\t'
+    line = line.rstrip('\t')
+    print >> fh_out2, line
 
 
   fh_out.close()
+  fh_out2.close()
+
+  import transpose as tr
+  import os
+  infile = outfile
+  outfile = infile[:-4] + '.txt'
+  tr.transpose_txt(infile, outfile)
+  os.remove(infile) 
+
+  infile = outfile2
+  outfile = infile[:-4] + '.txt'
+  tr.transpose_txt(infile, outfile)
+  os.remove(infile) 
+
 #############################
 #############################
 
