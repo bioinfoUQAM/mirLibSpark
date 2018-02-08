@@ -25,8 +25,10 @@ def transpose_txt(infile, outfile):
     fho = open (outfile, 'w')
     for x in zip(*lis):
         for y in x:
-            print(y+'\t', end='', file=fho, flush=True)
-        print('', file=fho)
+            #print(y+'\t', end='', file=fho, flush=True)
+            print >>fho, y+'\t', # the comma in the final signals not to print a new line in python2.x
+        #print('', file=fho)
+        print >>fho, ''
 		
 def makedirs_reps (reps):
   for rep in reps:
@@ -317,8 +319,8 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
   data = [miRNAseq, frq, strand, chromo, posgen, pre_miRNA_seq, struc, mpScore, totalfrq, miRanda]
   '''
 
-  outfile = rep_output + appId + '_summaryFreq.txt'
-  outfile2 = rep_output + appId + '_summaryBinary.txt'
+  outfile = rep_output + appId + '_summaryFreq.trs'
+  outfile2 = rep_output + appId + '_summaryBinary.trs'
 
   fh_out = open (outfile, 'w')
   fh_out2 = open (outfile2, 'w')
@@ -348,7 +350,7 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
       if e in tmpDict.keys(): dictLibSeqFreq[libname].append(tmpDict[e])
       else: dictLibSeqFreq[libname].append(0)
 
-  seqListLine = ''
+  seqListLine = '\t'
   for e in master_predicted:
     seqListLine += e + '\t'
   seqListLine = seqListLine.rstrip('\t')
@@ -367,7 +369,7 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
 
   for k in sorted(dictLibSeqFreq.keys()):
     v = dictLibSeqFreq[k]
-    line = ''
+    line = k + '\t'
     for i in v:
       if i > 0: i = 1
       line += str(i) + '\t'
