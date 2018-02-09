@@ -246,7 +246,7 @@ def writeToFile (results, outfile):
     '''
     fh_out = open (outfile, 'w') 
 
-    distinctPreSeq = []
+    #distinctPreSeq = []
 
     for elem in results :
       # ID = elem[0]#
@@ -268,8 +268,8 @@ def writeToFile (results, outfile):
       miRanda = "[TO_DO_target_genes]"
       
       #data = [miRNAseq, frq, strand, chromo, posgen, pre_miRNA_seq, struc, mirCheck, fbstart, fbstop, totalfrq, miRanda]
-      if pre_miRNA_seq in distinctPreSeq: continue
-      else: distinctPreSeq.append(pre_miRNA_seq)
+      #if pre_miRNA_seq in distinctPreSeq: continue
+      #else: distinctPreSeq.append(pre_miRNA_seq)
       
       data = [miRNAseq, frq, strand, chromo, posgen, pre_miRNA_seq, struc, mpScore, totalfrq, miRanda]
       line = ''
@@ -350,7 +350,7 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
       if e in tmpDict.keys(): dictLibSeqFreq[libname].append(tmpDict[e])
       else: dictLibSeqFreq[libname].append(0)
 
-  seqListLine = '\t'
+  seqListLine = 'miRNA\t'
   for e in master_predicted:
     seqListLine += e + '\t'
   seqListLine = seqListLine.rstrip('\t')
