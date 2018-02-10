@@ -146,10 +146,11 @@ if __name__ == '__main__' :
   #= Time processing of libraries
   timeDict = {}
   
+  
   for infile in infiles :
     if infile[-1:] == '~': continue
     print ("--Processing of the library: ", infile)
-    
+
     inBasename = os.path.splitext(infile)[0]
     infile = rep_input+infile
     inKvfile = rep_tmp + inBasename + '.kv.txt'
@@ -299,14 +300,14 @@ if __name__ == '__main__' :
     #= Filtering structure with branched loop
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
-    #one_loop_rdd = pri_vld_rdd.filter(lambda e: ut.containsOnlyOneLoop(e[1][3][2][int(e[1][3][4]) : int(e[1][3][5])+1]))#.persist()############
+    one_loop_rdd = pri_vld_rdd.filter(lambda e: ut.containsOnlyOneLoop(e[1][3][2][int(e[1][3][4]) : int(e[1][3][5])+1]))#.persist()############
     #print('NB one_loop_rdd distinct : ', len(one_loop_rdd.groupByKey().collect()))#########################
     
     #= Extraction of the pre-miRNA
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop'], ['preSeq',posMirPre]])
-    #premir_rdd = one_loop_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3))
-    premir_rdd = pri_vld_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3))
+    premir_rdd = one_loop_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3))
+    #premir_rdd = pri_vld_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3))
     
     #= pre-miRNA folding
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre]])
@@ -346,8 +347,9 @@ if __name__ == '__main__' :
 
     #print(profile_rdd.collect())#####################
     print('NB profile_rdd distinct: ', len(profile_rdd.groupByKey().collect()))#####################
-    print('NB profile_rdd not distinct (final prediction): ', len(profile_rdd.collect()))#####################
+    #print('NB profile_rdd not distinct (final prediction): ', len(profile_rdd.collect()))#####################
 
+    results = profile_rdd.collect()
     '''
     #= target prediction
     miranda_rdd = profile_rdd.map(miranda_obj.computeTargetbyMiranda).persist()####
@@ -362,13 +364,13 @@ if __name__ == '__main__' :
       #  print(tg)
     '''
     
-    endLib = time.time()
+    endLib = time.time() 
     print ("  End of the processing     ", end="\n")
 
      
     #= write results to a file
-    outFile = rep_output + inBasename + '_miRNAprediction.txt'
-    #ut.writeToFile (results, outFile)
+    outFile = rep_output  +  appId + '_miRNAprediction_' + inBasename + '.txt'
+    ut.writeToFile (results, outFile)
     
     
     timeDict[inBasename] = endLib - startLib
@@ -378,3 +380,9 @@ if __name__ == '__main__' :
   #= print executions time  to a file
   outTime = rep_output + appId + '_time.txt'
   ut.writeTimeLibToFile (timeDict, outTime, appId, paramDict)
+
+  #= make summary table of all libraries in one submission with expressions in the field
+  keyword = appId + '_miRNAprediction_'
+  infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
+  ut.writeSummaryExpressionToFile (infiles, rep_output, appId)
+
