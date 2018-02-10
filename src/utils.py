@@ -446,7 +446,7 @@ def writeTargetsToFile (targets, rep_output, appId):
   for i in targets:
     miRNAseq = i[0]
     genes = i[1]
-    line = miRNAseq + '\t' + genes
+    line = miRNAseq + '\t' + str(genes)
     print >> fh_out, line
 
   fh_out.close()
