@@ -407,11 +407,12 @@ class prog_miRanda ():
 
     ## NOTE before disable miranda (170714): need to modify the code to use options such as -sc, -en, -go, -ge, -quiet
     '''
-    if e[0] in self.dict_seq_target.keys():
+    
+    '''if e[0] in self.dict_seq_target.keys():
       #e[1].append(len(self.dict_seq_target[e[0]]))
       e[1].append(self.dict_seq_target[e[0]])
       #e[1].append('SeePreviousItem')
-      return e
+      return e'''
 
     tmp_file = self.rep_tmp + e[0] + '_tmpseq_forMiranda.txt' 
     with open (tmp_file, 'w') as fh_tmp:
