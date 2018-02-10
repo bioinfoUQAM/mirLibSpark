@@ -436,7 +436,7 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
   return master_predicted_distinctMiRNAs
 
 
-def writeSummaryExpressionToFile (targets, rep_output, appId):
+def writeTargetsToFile (targets, rep_output, appId):
   '''
   targets = [miRNAseq, [targets]]
   '''
