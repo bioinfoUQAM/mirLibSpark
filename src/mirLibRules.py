@@ -414,9 +414,11 @@ class prog_miRanda ():
       #e[1].append('SeePreviousItem')
       return e'''
 
-    tmp_file = self.rep_tmp + e[0] + '_tmpseq_forMiranda.txt' 
+    tmp_file = self.rep_tmp + e + '_tmpseq_forMiranda.txt' 
+    #tmp_file = self.rep_tmp + e[0] + '_tmpseq_forMiranda.txt' 
     with open (tmp_file, 'w') as fh_tmp:
-      print >> fh_tmp, '>x\n' + e[0]
+      #print >> fh_tmp, '>x\n' + e[0]
+      print >> fh_tmp, '>x\n' + e
     FNULL = open(os.devnull, 'w')
     #cmd = [self.miranda_exe, tmp_file, self.target_file, '-sc', self.Max_Score_cutoff]
     #cmd = [self.miranda_exe, tmp_file, self.target_file, '-strict']
@@ -445,7 +447,8 @@ class prog_miRanda ():
     target_results = sorted(target_results, key=itemgetter(1), reverse=True)
     #= only the top 15 targets are curated for report
     if len(target_results) > 15: target_results = target_results[:15]
-    self.dict_seq_target[e[0]] = target_results
+    #self.dict_seq_target[e[0]] = target_results
+    self.dict_seq_target[e] = target_results
     #e[1].append(target_results)
     return [e, target_results]
 
