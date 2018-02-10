@@ -363,11 +363,9 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
 
   outfile = rep_output + appId + '_summaryFreq.trs'
   outfile2 = rep_output + appId + '_summaryBinary.trs'
-  #outfile3 = rep_output + appId + '_distinctMiRNAs.txt'
 
   fh_out = open (outfile, 'w')
   fh_out2 = open (outfile2, 'w')
-  #fh_out3 = open (outfile3, 'w')
 
   master_predicted_distinctMiRNAs = []
   for f in infiles:
@@ -423,7 +421,6 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
 
   fh_out.close()
   fh_out2.close()
-  #fh_out3.close()
 
   import os
   infile = outfile
@@ -437,6 +434,22 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
   os.remove(infile) 
 
   return master_predicted_distinctMiRNAs
+
+
+def writeSummaryExpressionToFile (targets, rep_output, appId):
+  '''
+  targets = [miRNAseq, [targets]]
+  '''
+  outfile = rep_output + appId + '_targets.txt'
+  fh_out = open (outfile, 'w')
+
+  for i in targets:
+    miRNAseq = i[0]
+    genes = i[1]
+    line = miRNAseq + '\t' + genes
+    print >> fh_out, line
+
+  fh_out.close()
 
 #############################
 #############################
