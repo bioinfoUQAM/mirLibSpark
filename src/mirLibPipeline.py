@@ -381,7 +381,12 @@ if __name__ == '__main__' :
   infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
   master_predicted_distinctMiRNAs = ut.writeSummaryExpressionToFile (infiles, rep_output, appId)
 
+  #= post-generating miranda
+  distinct_pred_rdd = sc.parallelize(master_predicted_distinctMiRNAs)
+  miranda_rdd = distinct_pred_rdd.map(miranda_obj.computeTargetbyMiranda)
+  targets = miranda_rdd.collect()
+  for i in targets:
+    print(i)
 
-
-
+  
   sc.stop() #= allow to run multiple SparkContexts
