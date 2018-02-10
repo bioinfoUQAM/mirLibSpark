@@ -409,7 +409,8 @@ class prog_miRanda ():
     '''
     if e[0] in self.dict_seq_target.keys():
       #e[1].append(len(self.dict_seq_target[e[0]]))
-      e[1].append('SeePreviousItem')
+      e[1].append(self.dict_seq_target[e[0]])
+      #e[1].append('SeePreviousItem')
       return e
 
     tmp_file = self.rep_tmp + e[0] + '_tmpseq_forMiranda.txt' 
