@@ -245,8 +245,75 @@ def writeToFile (results, outfile):
 
     '''
     fh_out = open (outfile, 'w') 
+    
+    for elem in results :
+      miRNAseq = elem[0]
+      frq = elem[1][0]
+      #= bowtie_result
+      nbLoc = elem[1][1]
+      strand = elem[1][2][0]
+      chromo = elem[1][2][1]
+      posChr = elem[1][2][2]
+      #= mircheck_result
+      mkPred = elem[1][3][3]
+      #= mirdup_result
+      preSeq = elem[1][4][0]
+      posMirPre = elem[1][4][1]
+      preFold = elem[1][4][2]
+      mpPred = elem[1][4][3]
+      mpScore = elem[1][4][4]
+      #= premirna_range_total_small_rna_freq
+      totalFrq =  elem[1][5]
+      #= miRanda
+      miRanda = "[TO_DO_target_genes]" # = elem[1][6]
 
-    #distinctPreSeq = []
+      data = [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, preSeq, posMirPre, preFold, mpPred, mpScore, totalFrq, miRanda]
+
+
+      #######################
+      ###   OLD           ###
+      #######################
+      ## ID = elem[0]#
+      #values = elem[1]
+      #miRNAseq = elem[0]
+      #frq = values[0]
+      ##nbLoc = values[1]
+      #bowtie = values[2]
+      #strand = bowtie[0]#
+      #chromo = bowtie[1]#
+      #posgen = bowtie[2]#
+      #pre_miRNA_records = values[4]
+      #pre_miRNA_seq = pre_miRNA_records[0]#
+      #struc = pre_miRNA_records[2]#
+      #mpScore = pre_miRNA_records[4]#
+      #totalfrq = values[5]#
+      ##miRanda = values[6]#
+      #miRanda = "[TO_DO_target_genes]"     
+      #data = [miRNAseq, frq, strand, chromo, posgen, pre_miRNA_seq, struc, mpScore, totalfrq, miRanda]
+      
+      
+      line = ''
+      for d in data: line += str(d) + '\t'
+      line = line.rstrip('\t')
+      print >> fh_out, line
+    fh_out.close()
+
+
+
+
+
+
+def OLD____writeToFile (results, outfile):
+    ''' old : elem = (id, [seq, frq, nbloc, [bowtie], [pri_miRNA], [pre_miRNA]])
+        new : elem = (seq, [frq, nbloc, [bowtie], [pri_miRNA], [pre_miRNA]])
+
+    ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq])
+
+    '''
+    fh_out = open (outfile, 'w') 
+
+    distinctPreSeq = []
+    distinctmiRNAseq = []
 
     for elem in results :
       # ID = elem[0]#
@@ -266,10 +333,6 @@ def writeToFile (results, outfile):
 
       #miRanda = values[6]#
       miRanda = "[TO_DO_target_genes]"
-      
-      #data = [miRNAseq, frq, strand, chromo, posgen, pre_miRNA_seq, struc, mirCheck, fbstart, fbstop, totalfrq, miRanda]
-      #if pre_miRNA_seq in distinctPreSeq: continue
-      #else: distinctPreSeq.append(pre_miRNA_seq)
       
       data = [miRNAseq, frq, strand, chromo, posgen, pre_miRNA_seq, struc, mpScore, totalfrq, miRanda]
       line = ''
