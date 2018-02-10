@@ -265,8 +265,8 @@ def writeToFile (results, outfile):
       #= premirna_range_total_small_rna_freq
       totalFrq =  elem[1][5]
       #= miRanda
-      miRanda = "[TO_DO_target_genes]" # = elem[1][6]
-
+      #miRanda = elem[1][6]
+      miRanda = "[TO_DO_target_genes]" ## miranda is very time consuming
       data = [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, preSeq, posMirPre, preFold, mpPred, mpScore, totalFrq, miRanda]
 
 

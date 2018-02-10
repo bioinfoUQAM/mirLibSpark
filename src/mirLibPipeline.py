@@ -134,10 +134,9 @@ if __name__ == '__main__' :
   prec_obj = mru.extract_precurosrs(genome_path, pri_l_flank, pri_r_flank, pre_flank)
   rnafold_obj = mru.prog_RNAfold()
   mircheck_obj = mru.prog_mirCheck(mcheck_param)
-  profile_obj = mru.prog_dominant_profile()
-
   mirdup_obj = mru.prog_miRdup (rep_tmp, mirdup_model, mirdup_jar, path_RNAfold)
-  #miranda_obj = mru.prog_miRanda(Max_Score_cutoff, query_motif_match_cutoff, gene_motif_match_cutoff, Max_Energy_cutoff, target_file, rep_tmp, miranda_exe)
+  profile_obj = mru.prog_dominant_profile()
+  #
   miranda_obj = mru.prog_miRanda(Max_Score_cutoff, Max_Energy_cutoff, target_file, rep_tmp, miranda_exe, Gap_Penalty)
 
   #= Fetch library files in rep_input
@@ -294,74 +293,66 @@ if __name__ == '__main__' :
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold']])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
     pri_vld_rdd = pri_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 3))\
-                              .filter(lambda e: any(e[1][3])).persist()###################
-    #print('NB pri_vld_rdd distinct (mircheck): ', len(pri_vld_rdd.groupByKey().collect()))#################################
+                              .filter(lambda e: any(e[1][3]))#.persist()##
+    #print('NB pri_vld_rdd distinct (mircheck): ', len(pri_vld_rdd.groupByKey().collect()))##
 
     #= Filtering structure with branched loop
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
-    one_loop_rdd = pri_vld_rdd.filter(lambda e: ut.containsOnlyOneLoop(e[1][3][2][int(e[1][3][4]) : int(e[1][3][5])+1]))#.persist()############
-    #print('NB one_loop_rdd distinct : ', len(one_loop_rdd.groupByKey().collect()))#########################
+    one_loop_rdd = pri_vld_rdd.filter(lambda e: ut.containsOnlyOneLoop(e[1][3][2][int(e[1][3][4]) : int(e[1][3][5])+1]))#.persist()##
+    #print('NB one_loop_rdd distinct : ', len(one_loop_rdd.groupByKey().collect()))##
     
     #= Extraction of the pre-miRNA
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop'], ['preSeq',posMirPre]])
-    premir_rdd = one_loop_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3))
-    #premir_rdd = pri_vld_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3))
+    premir_rdd = one_loop_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3)) ## use one-loop rule
+    #premir_rdd = pri_vld_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3)) ## ignore one-loop rule
     
     #= pre-miRNA folding
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre]])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold']])
     pre_fold_rdd = premir_rdd.map(lambda e: rnafold_obj.RNAfold_map_rule(e, 4))
 
-    ###################################################   
-    #= Validating pre-mirna with mircheck
+    #= Validating pre-mirna with mircheck II -- replaced by mirdup
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold']])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mkPred','mkStart','mkStop']])
     #pre_vld_rdd0 = pre_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 4))\
                               #.filter(lambda e: any(e[1][4])).persist()
-    #print('NB pre_vld_rdd0 distinct (mircheck II): (', len(pre_vld_rdd0.groupByKey().collect()), ')')################
+    #print('NB pre_vld_rdd0 distinct (mircheck II): (', len(pre_vld_rdd0.groupByKey().collect()), ')')
+
+
 
     #= Validating pre-mirna with miRdup zipWithUniqueId
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold']])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore']])
     pre_vld_rdd = pre_fold_rdd.zipWithIndex()\
                               .map(mirdup_obj.run_miRdup)\
-                              .filter(lambda e: e[1][4][3] == "true")\
-                              .persist()##################
-    #print('NB pre_vld_rdd distinct (mirdup): ', len(pre_vld_rdd.groupByKey().collect()))################
-    ###################################################
+                              .filter(lambda e: e[1][4][3] == "true")#.persist()##
+    #print('NB pre_vld_rdd distinct (mirdup): ', len(pre_vld_rdd.groupByKey().collect()))##
 
     #= Create dict, chromo_strand as key to search bowtie blocs in the following dict
     dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(bowFrq_rdd.collect())
-    broadcastVar = sc.broadcast(dict_bowtie_chromo_strand)
-    #broadcastVar = sc.broadcast([1, 2, 3])
-    #broadcastVar.value
+    broadcastVar = sc.broadcast(dict_bowtie_chromo_strand) #= get the value by broadcastVar.value
     
     #= Filtering by expression profile (< 20%)
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore']])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq])
     profile_rdd = pre_vld_rdd.map(lambda e: profile_obj.computeProfileFrq(e, broadcastVar.value))\
-                      .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)\
-                      .persist()####################
-
-    #print(profile_rdd.collect())#####################
-    print('NB profile_rdd distinct: ', len(profile_rdd.groupByKey().collect()))#####################
-    #print('NB profile_rdd not distinct (final prediction): ', len(profile_rdd.collect()))#####################
+                      .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)#.persist()##
+    #print(profile_rdd.collect())##
+    print('NB profile_rdd distinct: ', len(profile_rdd.groupByKey().collect()))##
 
     results = profile_rdd.collect()
+
     '''
     #= target prediction
     miranda_rdd = profile_rdd.map(miranda_obj.computeTargetbyMiranda).persist()####
     print('NB miranda_rdd distinct : ', len(miranda_rdd.groupByKey().collect()))####
     results = miranda_rdd.collect()
-
-    #print(results)
-    for r in results:
-      tg = r[1][-1]
-      print(tg)
-      #if not tg == 'SeePreviousItem':
-      #  print(tg)
+    #for r in results:
+    #  tg = r[1][-1]
+    #  print(tg)
+    #  if not tg == 'SeePreviousItem': print(tg)
     '''
     
     endLib = time.time() 
@@ -372,11 +363,11 @@ if __name__ == '__main__' :
     outFile = rep_output  +  appId + '_miRNAprediction_' + inBasename + '.txt'
     ut.writeToFile (results, outFile)
     
-    
     timeDict[inBasename] = endLib - startLib
-    
   sc.stop() #= allow to run multiple SparkContexts
-  
+
+
+
   #= print executions time  to a file
   outTime = rep_output + appId + '_time.txt'
   ut.writeTimeLibToFile (timeDict, outTime, appId, paramDict)
