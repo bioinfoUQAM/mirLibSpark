@@ -244,7 +244,7 @@ def writeToFile (results, outfile):
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq])
 
     '''
-    fh_out = open (outfile, 'w') 
+    fh_out = open (outfile, 'w')
     
     for elem in results :
       miRNAseq = elem[0]
@@ -266,32 +266,10 @@ def writeToFile (results, outfile):
       totalFrq =  elem[1][5]
       
       #= miRanda
-      miRanda = elem[1][6]
-      #miRanda = "[TO_DO_target_genes]" ## miranda is very time consuming
-      data = [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, preSeq, posMirPre, preFold, mpPred, mpScore, totalFrq, miRanda]
-
-
-      #######################
-      ###   OLD           ###
-      #######################
-      ## ID = elem[0]#
-      #values = elem[1]
-      #miRNAseq = elem[0]
-      #frq = values[0]
-      ##nbLoc = values[1]
-      #bowtie = values[2]
-      #strand = bowtie[0]#
-      #chromo = bowtie[1]#
-      #posgen = bowtie[2]#
-      #pre_miRNA_records = values[4]
-      #pre_miRNA_seq = pre_miRNA_records[0]#
-      #struc = pre_miRNA_records[2]#
-      #mpScore = pre_miRNA_records[4]#
-      #totalfrq = values[5]#
-      ##miRanda = values[6]#
-      #miRanda = "[TO_DO_target_genes]"     
-      #data = [miRNAseq, frq, strand, chromo, posgen, pre_miRNA_seq, struc, mpScore, totalfrq, miRanda]
-      
+      #miRanda = elem[1][6]
+      miRanda = "[TO_DO_target_genes]" ## miranda is very time consuming
+      #data = [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, preSeq, posMirPre, preFold, mpPred, mpScore, totalFrq, miRanda]
+      data = [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, preSeq, posMirPre, preFold, mpPred, mpScore, totalFrq]
       
       line = ''
       for d in data: line += str(d) + '\t'
@@ -385,18 +363,20 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
 
   outfile = rep_output + appId + '_summaryFreq.trs'
   outfile2 = rep_output + appId + '_summaryBinary.trs'
+  #outfile3 = rep_output + appId + '_distinctMiRNAs.txt'
 
   fh_out = open (outfile, 'w')
   fh_out2 = open (outfile2, 'w')
+  #fh_out3 = open (outfile3, 'w')
 
-  master_predicted = []
+  master_predicted_distinctMiRNAs = []
   for f in infiles:
     with open (rep_output + f, 'r') as fh:
       for line in fh:
         data = line.rstrip('\n').split('\t')
         miRNAseq = data[0]
-        if miRNAseq not in master_predicted:
-          master_predicted.append(miRNAseq)
+        if miRNAseq not in master_predicted_distinctMiRNAs:
+          master_predicted_distinctMiRNAs.append(miRNAseq)
   
   keyword = '_miRNAprediction_'
   dictLibSeqFreq = {}
@@ -410,12 +390,12 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
         miRNAseq = data[0]
         freq = int(data[1])
         tmpDict[miRNAseq] = freq
-    for e in master_predicted:
+    for e in master_predicted_distinctMiRNAs:
       if e in tmpDict.keys(): dictLibSeqFreq[libname].append(tmpDict[e])
       else: dictLibSeqFreq[libname].append(0)
 
   seqListLine = 'miRNA\t'
-  for e in master_predicted:
+  for e in master_predicted_distinctMiRNAs:
     seqListLine += e + '\t'
   seqListLine = seqListLine.rstrip('\t')
 
@@ -443,6 +423,7 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
 
   fh_out.close()
   fh_out2.close()
+  #fh_out3.close()
 
   import os
   infile = outfile
@@ -454,6 +435,8 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
   outfile = infile[:-4] + '.txt'
   transpose_txt(infile, outfile)
   os.remove(infile) 
+
+  return master_predicted_distinctMiRNAs
 
 #############################
 #############################
