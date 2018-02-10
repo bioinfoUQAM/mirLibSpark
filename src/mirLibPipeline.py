@@ -3,7 +3,7 @@ program: mirLibPipeline.py
 author: M.A.Remita
 author: Chao-Jung Wu
 date: 2017-03-28
-version: 1.00.02
+version: 1.01.00
 
 Le programme implemente le pipeline d'analyse des sRAN et prediction des miRNAs. Les principales etapes de predictions sont :
   - 1 Filtrage
