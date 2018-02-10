@@ -339,12 +339,11 @@ if __name__ == '__main__' :
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq])
     profile_rdd = pre_vld_rdd.map(lambda e: profile_obj.computeProfileFrq(e, broadcastVar.value))\
                       .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)#.persist()##
-    #print(profile_rdd.collect())##
-    #print('NB profile_rdd distinct: ', len(profile_rdd.groupByKey().collect()))##
 
-    #results = profile_rdd.collect()
+    print('NB profile_rdd distinct: ', len(profile_rdd.groupByKey().collect()))##
+    results = profile_rdd.collect()
 
-    #'''
+    '''
     #= target prediction
     miranda_rdd = profile_rdd.map(miranda_obj.computeTargetbyMiranda).persist()####
     print('NB miranda_rdd distinct : ', len(miranda_rdd.groupByKey().collect()))####
@@ -364,7 +363,12 @@ if __name__ == '__main__' :
     ut.writeToFile (results, outFile)
     
     timeDict[inBasename] = endLib - startLib
-  sc.stop() #= allow to run multiple SparkContexts
+
+
+
+
+
+  #sc.stop() #= allow to run multiple SparkContexts
 
 
 
@@ -375,5 +379,9 @@ if __name__ == '__main__' :
   #= make summary table of all libraries in one submission with expressions in the field
   keyword = appId + '_miRNAprediction_'
   infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
-  ut.writeSummaryExpressionToFile (infiles, rep_output, appId)
+  master_predicted_distinctMiRNAs = ut.writeSummaryExpressionToFile (infiles, rep_output, appId)
 
+
+
+
+  sc.stop() #= allow to run multiple SparkContexts
