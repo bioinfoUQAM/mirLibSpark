@@ -340,11 +340,11 @@ if __name__ == '__main__' :
     profile_rdd = pre_vld_rdd.map(lambda e: profile_obj.computeProfileFrq(e, broadcastVar.value))\
                       .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)#.persist()##
     #print(profile_rdd.collect())##
-    print('NB profile_rdd distinct: ', len(profile_rdd.groupByKey().collect()))##
+    #print('NB profile_rdd distinct: ', len(profile_rdd.groupByKey().collect()))##
 
-    results = profile_rdd.collect()
+    #results = profile_rdd.collect()
 
-    '''
+    #'''
     #= target prediction
     miranda_rdd = profile_rdd.map(miranda_obj.computeTargetbyMiranda).persist()####
     print('NB miranda_rdd distinct : ', len(miranda_rdd.groupByKey().collect()))####
@@ -353,7 +353,7 @@ if __name__ == '__main__' :
     #  tg = r[1][-1]
     #  print(tg)
     #  if not tg == 'SeePreviousItem': print(tg)
-    '''
+    #'''
     
     endLib = time.time() 
     print ("  End of the processing     ", end="\n")
