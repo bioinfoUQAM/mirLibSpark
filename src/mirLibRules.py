@@ -446,8 +446,8 @@ class prog_miRanda ():
     #= only the top 15 targets are curated for report
     if len(target_results) > 15: target_results = target_results[:15]
     self.dict_seq_target[e[0]] = target_results
-    e[1].append(target_results)
-    return e
+    #e[1].append(target_results)
+    return [e, target_results]
 
 
 class prog_miRdup ():
