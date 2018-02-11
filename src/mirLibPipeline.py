@@ -385,8 +385,8 @@ if __name__ == '__main__' :
   distinct_pred_rdd = sc.parallelize(master_predicted_distinctMiRNAs)
   miranda_rdd = distinct_pred_rdd.map(miranda_obj.computeTargetbyMiranda)
   targets = miranda_rdd.collect()
-  for i in targets:
-    print(i)
+  ut.writeTargetsToFile (targets, rep_output, appId)
 
   
   sc.stop() #= allow to run multiple SparkContexts
+  #
