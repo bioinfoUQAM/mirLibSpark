@@ -278,52 +278,6 @@ def writeToFile (results, outfile):
     fh_out.close()
 
 
-
-
-
-
-def OLD____writeToFile (results, outfile):
-    ''' old : elem = (id, [seq, frq, nbloc, [bowtie], [pri_miRNA], [pre_miRNA]])
-        new : elem = (seq, [frq, nbloc, [bowtie], [pri_miRNA], [pre_miRNA]])
-
-    ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq])
-
-    '''
-    fh_out = open (outfile, 'w') 
-
-    distinctPreSeq = []
-    distinctmiRNAseq = []
-
-    for elem in results :
-      # ID = elem[0]#
-      values = elem[1]
-      miRNAseq = elem[0]
-      frq = values[0]
-      #nbLoc = values[1]
-      bowtie = values[2]
-      strand = bowtie[0]#
-      chromo = bowtie[1]#
-      posgen = bowtie[2]#
-      pre_miRNA_records = values[4]
-      pre_miRNA_seq = pre_miRNA_records[0]#
-      struc = pre_miRNA_records[2]#
-      mpScore = pre_miRNA_records[4]#
-      totalfrq = values[5]#
-
-      #miRanda = values[6]#
-      miRanda = "[TO_DO_target_genes]"
-      
-      data = [miRNAseq, frq, strand, chromo, posgen, pre_miRNA_seq, struc, mpScore, totalfrq, miRanda]
-      line = ''
-      
-      for d in data:
-        line += str(d) + '\t'
-      line = line.rstrip('\t')
-      
-      print >> fh_out, line
-    
-    fh_out.close()
-
 def writeTimeLibToFile (timeDict, outfile, appId, paramDict):
   import datetime
   
