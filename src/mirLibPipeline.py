@@ -341,7 +341,7 @@ if __name__ == '__main__' :
                       .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2).persist()##
 
     #print('NB profile_rdd distinct: ', len(profile_rdd.groupByKey().collect()))##
-    results = profile_rdd.collect()
+    #results = profile_rdd.collect()
 
     #'''
     #= target prediction
