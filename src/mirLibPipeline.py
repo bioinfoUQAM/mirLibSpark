@@ -338,9 +338,9 @@ if __name__ == '__main__' :
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore']])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq])
     profile_rdd = pre_vld_rdd.map(lambda e: profile_obj.computeProfileFrq(e, broadcastVar.value))\
-                      .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)#.persist()##
+                      .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2).persist()##
 
-    print('NB profile_rdd distinct: ', len(profile_rdd.groupByKey().collect()))##
+    #print('NB profile_rdd distinct: ', len(profile_rdd.groupByKey().collect()))##
     results = profile_rdd.collect()
 
     #'''
