@@ -1,3 +1,13 @@
+'''
+run_miranda.py
+
+a wrapper to run miranda without spark using the function within mirLibRule.py under src folder
+
+
+author: Chao-Jung Wu
+date: 2018-02-12
+version: 0.00.01
+'''
 import mirLibRules as mru
 
 project_path='/home/cloudera/workspace/mirLibHadoop/'
