@@ -7,6 +7,8 @@ a standalone wrapper to run miranda without spark
 author: Chao-Jung Wu
 date: 2018-02-12
 version: 0.00.02
+
+arabidopsis, one miRNA needs 34 seconds to process
 '''
 import os
 from operator import itemgetter
@@ -82,7 +84,7 @@ class prog_miRanda ():
     return target_results
 
 def parse():
-  infile = '../input/predicted859mirna.txt'
+  infile = '../input/predicted686_859.txt'
   master_predicted_mirna = []
   with open (infile, 'r') as fh:
     for i in fh:
@@ -112,7 +114,7 @@ for miRNA in master_predicted_mirna:
   print >> fh_out, '>' + miRNA
   target_results = miranda_obj.computeTargetbyMiranda(miRNA)
   for i in target_results: print >> fh_out, i
-  break
+  #break
 
 fh_out.close()
 
