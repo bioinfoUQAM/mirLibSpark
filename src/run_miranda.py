@@ -79,7 +79,7 @@ class prog_miRanda ():
     self.dict_seq_target[miRNAseq] = target_results
     #e[1].append(target_results)
     #return e
-    return e, target_results
+    return target_results
 
 def parse():
   infile = '../input/predicted859mirna.txt'
