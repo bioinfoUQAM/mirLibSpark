@@ -19,6 +19,17 @@ def validate_options(paramDict):
     sys.stderr.write("The adapter option must be 'none' for the input_type_a.")
     sys.exit()
 
+def transpose_txt(infile, outfile):
+    with open(infile, 'r') as f:
+        lis = [x.rstrip('\n').split('\t') for x in f]
+    fho = open (outfile, 'w')
+    for x in zip(*lis):
+        for y in x:
+            #print(y+'\t', end='', file=fho, flush=True)
+            print >>fho, y+'\t', # the comma in the final signals not to print a new line in python2.x
+        #print('', file=fho)
+        print >>fho, ''
+		
 def makedirs_reps (reps):
   for rep in reps:
     if not os.path.exists(rep):
@@ -229,40 +240,44 @@ def containsOnlyOneLoop (folding):
 def writeToFile (results, outfile):
     ''' old : elem = (id, [seq, frq, nbloc, [bowtie], [pri_miRNA], [pre_miRNA]])
         new : elem = (seq, [frq, nbloc, [bowtie], [pri_miRNA], [pre_miRNA]])
+
+    ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq])
+
     '''
-    fh_out = open (outfile, 'w')    
-
-    for elem in results :
-      # ID = elem[0]#
-      values = elem[1]
-      miRNAseq = elem[0]
-      frq = values[0]
-      bowtie = values[2]
-      strand = bowtie[0]#
-      chromo = bowtie[1]#
-      posgen = bowtie[2]#
-      pre_miRNA_records = values[4]
-      pre_miRNA_seq = pre_miRNA_records[0]#
-      struc = pre_miRNA_records[2]#
-      #mirCheck = pre_miRNA_records[3]#
-      #fbstart = pre_miRNA_records[4]#
-      #fbstop = pre_miRNA_records[5]#
-      totalfrq = values[5]#
-
-      #miRanda = values[6]#
-      miRanda = "[TO_DO_target_genes]"
-      
-      #data = [miRNAseq, frq, strand, chromo, posgen, pre_miRNA_seq, struc, mirCheck, fbstart, fbstop, totalfrq, miRanda]
-      data = [miRNAseq, frq, strand, chromo, posgen, pre_miRNA_seq, struc, totalfrq, miRanda]
-      line = ''
-      
-      for d in data:
-        line += str(d) + '\t'
-      line = line.rstrip('\t')
-      
-      print >> fh_out, line
+    fh_out = open (outfile, 'w')
     
+    for elem in results :
+      miRNAseq = elem[0]
+      frq = elem[1][0]
+      #= bowtie_result
+      nbLoc = elem[1][1]
+      strand = elem[1][2][0]
+      chromo = elem[1][2][1]
+      posChr = elem[1][2][2]
+      #= mircheck_result
+      mkPred = elem[1][3][3]
+      #= mirdup_result
+      preSeq = elem[1][4][0]
+      posMirPre = elem[1][4][1]
+      preFold = elem[1][4][2]
+      mpPred = elem[1][4][3]
+      mpScore = elem[1][4][4]
+      #= premirna_range_total_small_rna_freq
+      totalFrq =  elem[1][5]
+      
+      #= miRanda
+      miRanda = elem[1][6]
+      #miRanda = "[TO_DO_target_genes]" ## miranda is very time consuming
+
+      data = [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, preSeq, posMirPre, preFold, mpPred, mpScore, totalFrq, miRanda]
+      #data = [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, preSeq, posMirPre, preFold, mpPred, mpScore, totalFrq]
+      
+      line = ''
+      for d in data: line += str(d) + '\t'
+      line = line.rstrip('\t')
+      print >> fh_out, line
     fh_out.close()
+
 
 def writeTimeLibToFile (timeDict, outfile, appId, paramDict):
   import datetime
@@ -291,6 +306,112 @@ def writeTimeLibToFile (timeDict, outfile, appId, paramDict):
       print >> fh_out, "# " + key + ": " + paramDict[key]
   
   fh_out.close()
+
+
+###########################
+## WORK IN PROGRESS
+###########################
+def writeSummaryExpressionToFile (infiles, rep_output, appId):
+  '''
+  data = [miRNAseq, frq, strand, chromo, posgen, pre_miRNA_seq, struc, mpScore, totalfrq, miRanda]
+  '''
+
+  outfile = rep_output + appId + '_summaryFreq.trs'
+  outfile2 = rep_output + appId + '_summaryBinary.trs'
+
+  fh_out = open (outfile, 'w')
+  fh_out2 = open (outfile2, 'w')
+
+  master_predicted_distinctMiRNAs = []
+  for f in infiles:
+    with open (rep_output + f, 'r') as fh:
+      for line in fh:
+        data = line.rstrip('\n').split('\t')
+        miRNAseq = data[0]
+        if miRNAseq not in master_predicted_distinctMiRNAs:
+          master_predicted_distinctMiRNAs.append(miRNAseq)
+  
+  keyword = '_miRNAprediction_'
+  dictLibSeqFreq = {}
+  for f in sorted(infiles):
+    libname = f.split(keyword)[1][:-4]
+    dictLibSeqFreq[libname] = []
+    tmpDict = {}
+    with open (rep_output + f, 'r') as fh:
+      for line in fh:
+        data = line.rstrip('\n').split('\t')
+        miRNAseq = data[0]
+        freq = int(data[1])
+        tmpDict[miRNAseq] = freq
+    for e in master_predicted_distinctMiRNAs:
+      if e in tmpDict.keys(): dictLibSeqFreq[libname].append(tmpDict[e])
+      else: dictLibSeqFreq[libname].append(0)
+
+  seqListLine = 'miRNA\t'
+  for e in master_predicted_distinctMiRNAs:
+    seqListLine += e + '\t'
+  seqListLine = seqListLine.rstrip('\t')
+
+
+  print >> fh_out, seqListLine
+  print >> fh_out2, seqListLine
+
+  for k in sorted(dictLibSeqFreq.keys()):
+    v = dictLibSeqFreq[k]
+    line = k + '\t'
+    for i in v: line += str(i) + '\t'
+    line = line.rstrip('\t')
+    print >> fh_out, line
+
+
+  for k in sorted(dictLibSeqFreq.keys()):
+    v = dictLibSeqFreq[k]
+    line = k + '\t'
+    for i in v:
+      if i > 0: i = 1
+      line += str(i) + '\t'
+    line = line.rstrip('\t')
+    print >> fh_out2, line
+
+
+  fh_out.close()
+  fh_out2.close()
+
+  import os
+  infile = outfile
+  outfile = infile[:-4] + '.txt'
+  transpose_txt(infile, outfile)
+  os.remove(infile) 
+
+  infile = outfile2
+  outfile = infile[:-4] + '.txt'
+  transpose_txt(infile, outfile)
+  os.remove(infile) 
+
+  return master_predicted_distinctMiRNAs
+
+
+def writeTargetsToFile (targets, rep_output, appId):
+  '''
+  targets = [miRNAseq, [targets]]
+  '''
+  outfile = rep_output + appId + '_targets.txt'
+  fh_out = open (outfile, 'w')
+
+  for i in targets:
+    miRNAseq = i[0]
+    genes = i[1]
+    line = miRNAseq + '\t' + str(genes)
+    print >> fh_out, line
+
+  fh_out.close()
+
+#############################
+#############################
+
+
+
+
 
 # source : https://stackoverflow.com/questions/2257441/random-string-generation-with-upper-case-letters-and-digits-in-python/23728630#23728630
 def randomStrGen (n):
