@@ -82,7 +82,7 @@ class prog_miRanda ():
     return e, target_results
 
 def parse():
-  infile = 'predicted859mirna.txt'
+  infile = '../input/predicted859mirna.txt'
   master_predicted_mirna = []
   with open (infile, 'r') as fh:
     for i in fh:
