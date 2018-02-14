@@ -15,7 +15,6 @@ from operator import itemgetter
 
 
 
-
 class prog_miRanda ():
   def __init__ (self, Max_Score_cutoff, Max_Energy_cutoff, target_file, rep_tmp, miranda_exe, Gap_Penalty):
     #self.env = os.environ
@@ -82,7 +81,14 @@ class prog_miRanda ():
     #return e
     return e, target_results
 
-
+def parse():
+  infile = 'predicted859mirna.txt'
+  master_predicted_mirna = []
+  with open (infile, 'r') as fh:
+    for i in fh:
+      mirna = i.rstrip('\n')
+     if mirna not in master_predicted_mirna: master_predicted_mirna.append(mirna)
+  return master_predicted_mirna
 
 
 project_path='/home/cloudera/workspace/mirLibHadoop/'
@@ -97,10 +103,17 @@ rep_tmp = project_path + '/tmp/'
 
 miranda_obj = prog_miRanda(Max_Score_cutoff, Max_Energy_cutoff, target_file, rep_tmp, miranda_exe, Gap_Penalty)
 
+outfile = 'tgtg.temp.txt'
+fh_out = open (outfile, 'w')
 
-miRNA = 'TCATGGTCAGATCCGTCATCC'
-e, target_results = miranda_obj.computeTargetbyMiranda(miRNA)
+#miRNA = 'TCATGGTCAGATCCGTCATCC'
+master_predicted_mirna = parse()
+for miRNA in master_predicted_mirna:
+  print >> fh_out, '>' + miRNA
+  target_results = miranda_obj.computeTargetbyMiranda(miRNA)
+  for i in target_results: print >> fh_out, i
+  break
 
-for i in target_results: print(i)
+fh_out.close()
 
 print('test15')
