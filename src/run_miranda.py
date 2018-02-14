@@ -47,12 +47,12 @@ class prog_miRanda ():
       return e
     #'''
 
-    tmp_file = self.rep_tmp + miRNAseq + '_tmpseq_forMiranda.txt' 
+    tmp_file = self.rep_tmp + miRNAseq + '_tmpseq_forMiranda2.txt' 
     with open (tmp_file, 'w') as fh_tmp: print >> fh_tmp, '>x\n' + miRNAseq
 
     #cmd = [self.miranda_exe, tmp_file, self.target_file, '-strict', '-sc', self.Max_Score_cutoff, '-en', self.Max_Energy_cutoff, '-go', self.Gap_Penalty]
 
-    cmd = self.miranda_exe + ' ' + tmp_file + ' ' + self.target_file + ' -strict -sc ' + str(self.Max_Score_cutoff) + ' -en ' + str(self.Max_Energy_cutoff) + ' -go ' + str(self.Gap_Penalty) + '> tmpmiranda.txt'
+    cmd = self.miranda_exe + ' ' + tmp_file + ' ' + self.target_file + ' -strict -sc ' + str(self.Max_Score_cutoff) + ' -en ' + str(self.Max_Energy_cutoff) + ' -go ' + str(self.Gap_Penalty) + '> tmpmiranda2.txt'
     os.system(cmd)
 
     with open ('tmpmiranda.txt', 'r') as fh:
