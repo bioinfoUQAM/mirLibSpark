@@ -87,7 +87,7 @@ def parse():
   with open (infile, 'r') as fh:
     for i in fh:
       mirna = i.rstrip('\n')
-     if mirna not in master_predicted_mirna: master_predicted_mirna.append(mirna)
+      if mirna not in master_predicted_mirna: master_predicted_mirna.append(mirna)
   return master_predicted_mirna
 
 
