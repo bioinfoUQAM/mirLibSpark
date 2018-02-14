@@ -408,10 +408,10 @@ class prog_miRanda ():
     ## NOTE before disable miranda (170714): need to modify the code to use options such as -sc, -en, -go, -ge, -quiet
     '''
 
-    miRNAseq = e[0]
-    #miRNAseq = e #= be careful "return e" and "e[1].append(target_results)"
+    #miRNAseq = e[0]
+    miRNAseq = e #= be careful "return e" and "e[1].append(target_results)"
 
-    #'''
+    '''
     if e[0] in self.dict_seq_target.keys():
       e[1].append(self.dict_seq_target[e[0]])
       return e
@@ -449,9 +449,9 @@ class prog_miRanda ():
     #= only the top 15 targets are curated for report
     if len(target_results) > 15: target_results = target_results[:15]
     self.dict_seq_target[miRNAseq] = target_results
-    e[1].append(target_results)
-    return e
-    #return [e, target_results]
+    #e[1].append(target_results)
+    #return e
+    return [e, target_results]
 
 
 class prog_miRdup ():

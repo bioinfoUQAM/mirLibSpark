@@ -340,35 +340,17 @@ if __name__ == '__main__' :
     profile_rdd = pre_vld_rdd.map(lambda e: profile_obj.computeProfileFrq(e, broadcastVar.value))\
                       .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2).persist()##
 
-    #print('NB profile_rdd distinct: ', len(profile_rdd.groupByKey().collect()))##
-    #results = profile_rdd.collect()
-
-    #'''
-    #= target prediction
-    miranda_rdd = profile_rdd.map(miranda_obj.computeTargetbyMiranda).persist()####
-    print('NB miranda_rdd distinct : ', len(miranda_rdd.groupByKey().collect()))####
-    results = miranda_rdd.collect()
-    #for r in results:
-    #  tg = r[1][-1]
-    #  print(tg)
-    #  if not tg == 'SeePreviousItem': print(tg)
-    #'''
+    print('NB profile_rdd distinct: ', len(profile_rdd.groupByKey().collect()))##
+    results = profile_rdd.collect()
     
     endLib = time.time() 
     print ("  End of the processing     ", end="\n")
-
-     
+   
     #= write results to a file
     outFile = rep_output  +  appId + '_miRNAprediction_' + inBasename + '.txt'
     ut.writeToFile (results, outFile)
     
     timeDict[inBasename] = endLib - startLib
-
-
-
-
-
-  sc.stop() #= allow to run multiple SparkContexts
 
 
 
@@ -382,10 +364,10 @@ if __name__ == '__main__' :
   master_predicted_distinctMiRNAs = ut.writeSummaryExpressionToFile (infiles, rep_output, appId)
 
   #= post-generating miranda
-  #distinct_pred_rdd = sc.parallelize(master_predicted_distinctMiRNAs)
-  #miranda_rdd = distinct_pred_rdd.map(miranda_obj.computeTargetbyMiranda)
-  #targets = miranda_rdd.collect()
-  #ut.writeTargetsToFile (targets, rep_output, appId)
+  distinct_pred_rdd = sc.parallelize(master_predicted_distinctMiRNAs)
+  miranda_rdd = distinct_pred_rdd.map(miranda_obj.computeTargetbyMiranda)
+  targets = miranda_rdd.collect()
+  ut.writeTargetsToFile (targets, rep_output, appId)
 
   
-  #sc.stop() #= allow to run multiple SparkContexts
+  sc.stop() #= allow to run multiple SparkContexts
