@@ -6,7 +6,7 @@ a standalone wrapper to run miranda without spark
 
 author: Chao-Jung Wu
 date: 2018-02-12
-version: 0.00.01
+version: 0.00.02
 '''
 import os
 from operator import itemgetter
@@ -47,12 +47,12 @@ class prog_miRanda ():
       return e
     #'''
 
-    tmp_file = self.rep_tmp + miRNAseq + '_tmpseq_forMiranda2.txt' 
+    tmp_file = self.rep_tmp + miRNAseq + '_tmpseq_forMiranda.txt' 
     with open (tmp_file, 'w') as fh_tmp: print >> fh_tmp, '>x\n' + miRNAseq
 
     #cmd = [self.miranda_exe, tmp_file, self.target_file, '-strict', '-sc', self.Max_Score_cutoff, '-en', self.Max_Energy_cutoff, '-go', self.Gap_Penalty]
 
-    cmd = self.miranda_exe + ' ' + tmp_file + ' ' + self.target_file + ' -strict -sc ' + str(self.Max_Score_cutoff) + ' -en ' + str(self.Max_Energy_cutoff) + ' -go ' + str(self.Gap_Penalty) + '> tmpmiranda2.txt'
+    cmd = self.miranda_exe + ' ' + tmp_file + ' ' + self.target_file + ' -strict -sc ' + str(self.Max_Score_cutoff) + ' -en ' + str(self.Max_Energy_cutoff) + ' -go ' + str(self.Gap_Penalty) + '> tmpmiranda.txt'
     os.system(cmd)
 
     with open ('tmpmiranda.txt', 'r') as fh:
@@ -103,7 +103,7 @@ rep_tmp = project_path + '/tmp/'
 
 miranda_obj = prog_miRanda(Max_Score_cutoff, Max_Energy_cutoff, target_file, rep_tmp, miranda_exe, Gap_Penalty)
 
-outfile = 'tgtg.temp.txt'
+outfile = 'predicted859_target_genes.txt'
 fh_out = open (outfile, 'w')
 
 #miRNA = 'TCATGGTCAGATCCGTCATCC'
