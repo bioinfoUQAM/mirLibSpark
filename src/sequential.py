@@ -1,35 +1,24 @@
 '''
-
 program: sequential.py
-
 author: Chao-Jung Wu
-
 date: 2017-10-11
-
 version: 0.00.03
 
-100.txt before profile repeats: (1) 116m45s, (2) 96mins
 
-  
+This script predicts miRNA using the exactly same steps as in mirLibPipeline, but without data distribution or parallelization.
 
+Tested in Cloudera, good. It somehow does not work on Colosse. 
 '''
 
 
-
 from __future__ import print_function
-
 import sys
-
 import os.path
-
 import time
 
 #from os import listdir
-
 #
-
 import utils as ut
-
 import mirLibRules as mru
 
 #tmp_rep = '/home/cloudera/Desktop/mirLibHadoop/tmp/'
@@ -60,53 +49,33 @@ extr_obj = mru.extract_precurosrs (genome_path, pri_l_flank, pri_r_flank, pre_fl
 
 
 def readRaw (infile):
-
   ''' seq\tfreq'''
-
   dict_mirna = {}
-
   with open (infile, 'r') as fh:
-
     for line in fh:
-
       data = line.rstrip('\n').split('\t')
-
       seq = data[0]
-
       freq = int(data[1])
-
       dict_mirna[seq] = [freq]
-
   return dict_mirna
 
 
-
 def filterFreq (limit_srna_freq, dict_mirna):
-
   dict_mirna2 = dict_mirna.copy()
-
   for k, v in dict_mirna2.items():
-
     if int(v[0]) < limit_srna_freq:
-
       del dict_mirna[k]
 
 
 
 def filterShort (limit_len, dict_mirna):
-
   dict_mirna2 = dict_mirna.copy()
-
   for k in dict_mirna2.keys():
-
     if len(k) < limit_len:
-
       del dict_mirna[k]
 
 
-
 def filterdust (dict_mirna):
-
   #= echo $'>seq1\nCGTGGCTATGATAGCGATATTCGTTTTTTT' | dustmasker
   dict_mirna2 = dict_mirna.copy()
   for k in dict_mirna2.keys():
@@ -138,25 +107,19 @@ def bowtiemap (dict_mirna):
 def filterMirnaFreq (limit_mrna_freq, dict_mirna):
   dict_mirna2 = dict_mirna.copy()
   for k, v in dict_mirna2.items():
-
     if int(v[0]) < limit_mrna_freq:
-
       del dict_mirna[k]
 
 def filterNbLoc (limit_nbloc, dict_mirna):
   dict_mirna2 = dict_mirna.copy()
   for k, v in dict_mirna2.items():
-
     if v[1] == 0 or v[1] > limit_nbloc:
-
       del dict_mirna[k]
 
 def filterKnowNon (dict_mirna):
   dict_mirna2 = dict_mirna.copy()
   for k, v in dict_mirna.items():
-
     if not kn_obj.knFilterByCoor ([k, v]):
-
       del dict_mirna2[k]
 
 def extractPri (dict_mirna):
