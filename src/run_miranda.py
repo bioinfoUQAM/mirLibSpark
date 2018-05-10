@@ -6,7 +6,9 @@ a standalone wrapper to run miranda without spark
 
 author: Chao-Jung Wu
 date: 2018-02-12
-version: 0.00.02
+version: 0.00.03
+
+arabidopsis, one miRNA needs 34 seconds to process
 '''
 import os
 from operator import itemgetter
@@ -75,14 +77,15 @@ class prog_miRanda ():
     #= targets are sorted from highest total scores to lowest total scores
     target_results = sorted(target_results, key=itemgetter(1), reverse=True)
     #= only the top 15 targets are curated for report
-    if len(target_results) > 15: target_results = target_results[:15]
+    #if len(target_results) > 15: target_results = target_results[:15]
+    if len(target_results) > topcurated: target_results = target_results[:topcurated]
     self.dict_seq_target[miRNAseq] = target_results
     #e[1].append(target_results)
     #return e
     return target_results
 
 def parse():
-  infile = '../input/predicted859mirna.txt'
+  infile = '../input/input1_miRNAs.txt'
   master_predicted_mirna = []
   with open (infile, 'r') as fh:
     for i in fh:
@@ -90,30 +93,56 @@ def parse():
       if mirna not in master_predicted_mirna: master_predicted_mirna.append(mirna)
   return master_predicted_mirna
 
-
-project_path='/home/cloudera/workspace/mirLibHadoop/'
+#################################
+##
+##  MAIN
+##
+#################################
+project_path='/home/cloudera/Desktop/180507_jean_target_genes/' #'/home/cloudera/workspace/mirLibHadoop/'
 miranda_exe = project_path + '/lib/miranda'
 
 Max_Score_cutoff=170
 Max_Energy_cutoff=-15
 Gap_Penalty=-15
 
-target_file = project_path + '/dbs/' + 'TAIR10_cdna_20101214_updated.fasta'
+topcurated = 100
+
+#target_file = project_path + '/ref_file/' + 'mRNA_contigs_serialed_10.fasta'
+target_file = project_path + '/ref_file/' + 'mRNA_contigs_serialed.fasta'
 rep_tmp = project_path + '/tmp/' 
 
 miranda_obj = prog_miRanda(Max_Score_cutoff, Max_Energy_cutoff, target_file, rep_tmp, miranda_exe, Gap_Penalty)
 
-outfile = 'predicted859_target_genes.txt'
+outfile = '../JEAN_miRNA_target_genes.txt'
 fh_out = open (outfile, 'w')
 
-#miRNA = 'TCATGGTCAGATCCGTCATCC'
+
+
+''' tests '''
+'''
+print >> fh_out, 'test180507mirnda'
+#miRNA = 'AGGTGGAATACTTGAAGAAGA' #REAL EXAMPLE
+miRNA = 'AGGTGGAATACTTGAAGAAGA' #SUDO EXAMPLE
+target_results = miranda_obj.computeTargetbyMiranda(miRNA)
+for i in target_results: print >> fh_out, i
+for i in target_results: print i
+print >> fh_out, 'test180507mirnda_compute'
+
+#miranda ../tmp/AGGTGGAATACTTGAAGAAGA_tmpseq_forMiranda.txt ../ref_file/mRNA_contigs_serialed_10.fasta
+'''
+
+
 master_predicted_mirna = parse()
+
 for miRNA in master_predicted_mirna:
   print >> fh_out, '>' + miRNA
   target_results = miranda_obj.computeTargetbyMiranda(miRNA)
   for i in target_results: print >> fh_out, i
-  break
+  #break
+
+
 
 fh_out.close()
 
-print('test15')
+
+print('test180507')
