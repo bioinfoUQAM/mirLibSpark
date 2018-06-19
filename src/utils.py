@@ -318,9 +318,24 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
 
   outfile = rep_output + appId + '_summaryFreq.trs'
   outfile2 = rep_output + appId + '_summaryBinary.trs'
+  outfile3 = rep_output + appId + '_summaryGenoLoci.trs'
 
   fh_out = open (outfile, 'w')
   fh_out2 = open (outfile2, 'w')
+  fh_out3 = open (outfile3, 'w')
+  
+  
+  line_seen = []
+  for f in sorted(infiles):
+  with open (rep_output + f, 'r') as fh:
+    for line in fh:
+      line=line.rstrip('\n')
+      if line not in line_seen:
+        line_seen.append(line)
+        #print(line, file=fh_out3)
+        print >> fh_out3, line
+  fh_out3.close()
+
 
   master_predicted_distinctMiRNAs = []
   for f in infiles:
