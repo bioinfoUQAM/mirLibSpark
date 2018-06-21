@@ -266,11 +266,11 @@ def writeToFile (results, outfile):
       totalFrq =  elem[1][5]
       
       #= miRanda
-      miRanda = elem[1][6]
+      #miRanda = elem[1][6]
       #miRanda = "[TO_DO_target_genes]" ## miranda is very time consuming
 
-      data = [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, preSeq, posMirPre, preFold, mpPred, mpScore, totalFrq, miRanda]
-      #data = [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, preSeq, posMirPre, preFold, mpPred, mpScore, totalFrq]
+      #data = [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, preSeq, posMirPre, preFold, mpPred, mpScore, totalFrq, miRanda]
+      data = [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, preSeq, posMirPre, preFold, mpPred, mpScore, totalFrq]
       
       line = ''
       for d in data: line += str(d) + '\t'
@@ -327,12 +327,11 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
   
   line_seen = []
   for f in sorted(infiles):
-  with open (rep_output + f, 'r') as fh:
-    for line in fh:
-      line=line.rstrip('\n')
-      if line not in line_seen:
-        line_seen.append(line)
-        #print(line, file=fh_out3)
+    with open (rep_output + f, 'r') as fh:
+      for line in fh:
+        line=line.rstrip('\n')
+        if line not in line_seen:
+          line_seen.append(line)
         print >> fh_out3, line
   fh_out3.close()
 
