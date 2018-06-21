@@ -316,24 +316,24 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
   data = [miRNAseq, frq, strand, chromo, posgen, pre_miRNA_seq, struc, mpScore, totalfrq, miRanda]
   '''
 
-  outfile = rep_output + appId + '_summaryFreq.trs'
+  outfile = rep_output + appId + '_summaryFreq.trs' #= .trs is a temporary extension, such file will be transposed at the end of this function
   outfile2 = rep_output + appId + '_summaryBinary.trs'
-  outfile3 = rep_output + appId + '_summaryGenoLoci.trs'
+  #outfile3 = rep_output + appId + '_summaryGenoLoci.txt' #= outfile3 is not in a good format yet
 
   fh_out = open (outfile, 'w')
   fh_out2 = open (outfile2, 'w')
-  fh_out3 = open (outfile3, 'w')
+  #fh_out3 = open (outfile3, 'w')
   
   
-  line_seen = []
-  for f in sorted(infiles):
-    with open (rep_output + f, 'r') as fh:
-      for line in fh:
-        line=line.rstrip('\n')
-        if line not in line_seen:
-          line_seen.append(line)
-        print >> fh_out3, line
-  fh_out3.close()
+  #line_seen = []
+  #for f in sorted(infiles):
+  #  with open (rep_output + f, 'r') as fh:
+  #    for line in fh:
+  #      line=line.rstrip('\n')
+  #      if line not in line_seen:
+  #        line_seen.append(line)
+  #      print >> fh_out3, line
+  #fh_out3.close()
 
 
   master_predicted_distinctMiRNAs = []
