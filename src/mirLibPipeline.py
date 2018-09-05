@@ -79,6 +79,10 @@ if __name__ == '__main__' :
   known_non = project_path + '/dbs/TAIR10_ncRNA_CDS.gff'###########################
   d_ncRNA_CDS = ut.get_nonMirna_coors (known_non) #= nb = 198736
 
+  #= RNAfold
+  path_RNAfold = project_path + '/lib/' #'/home/cloudera/workspace/mirLibSpark/lib/' #'../lib/'#ut.find_RNAfold_path () ######################### 180905
+  temperature = int(paramDict['temperature']) ###################### 180905
+
   #= pri-mirna
   pri_l_flank = int(paramDict['pri_l_flank'])       #120
   pri_r_flank = int(paramDict['pri_r_flank'])       #60
@@ -88,7 +92,7 @@ if __name__ == '__main__' :
   mcheck_param = paramDict['mcheck_param']          #'def'    # def : default parameters / mey : meyers parameters
 
   #= miRdup parameter
-  path_RNAfold = ut.find_RNAfold_path ()
+  #path_RNAfold = ut.find_RNAfold_path ()
   mirdup_model = project_path + '/lib/miRdup_1.4/model/' + paramDict['mirdup_model']
   mirdup_jar = project_path + '/lib/miRdup_1.4/miRdup.jar'
   mirdup_limit =  float(paramDict['mirdup_limit'])
@@ -132,7 +136,7 @@ if __name__ == '__main__' :
   kn_obj = mru.prog_knownNonMiRNA(d_ncRNA_CDS)
   bowtie_cmd, bowtie_env = bowtie_obj.Bowtie_pipe_cmd()
   prec_obj = mru.extract_precurosrs(genome_path, pri_l_flank, pri_r_flank, pre_flank)
-  rnafold_obj = mru.prog_RNAfold()
+  rnafold_obj = mru.prog_RNAfold(temperature)
   mircheck_obj = mru.prog_mirCheck(mcheck_param)
   mirdup_obj = mru.prog_miRdup (rep_tmp, mirdup_model, mirdup_jar, path_RNAfold)
   profile_obj = mru.prog_dominant_profile()
