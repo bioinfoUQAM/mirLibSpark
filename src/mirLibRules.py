@@ -85,7 +85,7 @@ class prog_bowtie ():
     FNULL = open(os.devnull, 'w')
     
     # cmd = 'bowtie --mm -a -v 0 --suppress 1,5,6,7,8 -c ' + self.bowtie_index + ' '+ seq  # shell=True
-    cmd = ['bowtie', '--mm', '-a', '-v', '0', '--suppress', '1,5,6,7,8', '-c', self.bowtie_index, seq] # shell=False
+    cmd = ['../lib/bowtie', '--mm', '-a', '-v', '0', '--suppress', '1,5,6,7,8', '-c', self.bowtie_index, seq] # shell=False
     
     sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
     bsout = sproc.communicate()[0]
@@ -112,7 +112,7 @@ class prog_bowtie ():
     return elem
   
   def Bowtie_pipe_cmd (self):
-    cmd = "bowtie --mm -a -v 0 --suppress 1,6,7,8 -r " + self.bowtie_index + " - "
+    cmd = "../lib/bowtie --mm -a -v 0 --suppress 1,6,7,8 -r " + self.bowtie_index + " - "
     # cmd = "bowtie --mm -a -v 0 --suppress 1,6,7,8 " + self.bowtie_index + " - "
     
     return cmd, self.env
@@ -233,8 +233,9 @@ class extract_precurosrs ():
 
 class prog_RNAfold ():
 
-  def __init__(self):
+  def __init__(self, temperature):
     self.env = os.environ
+    self.temperature = str(temperature)
 
   def run_RNAfold(self, seq):
     '''
@@ -244,7 +245,7 @@ class prog_RNAfold ():
     '''
     line1 = ['echo', seq]
     #line2 = ['RNAfold','--noPS', '--noLP', '--temp=25.0']
-    line2 = ['RNAfold','--noPS', '--noLP']
+    line2 = ['../lib/RNAfold','--noPS', '--noLP', '--temp=' + self.temperature]
     
     p1 = sbp.Popen(line1, stdout=sbp.PIPE, env=self.env)
     p2 = sbp.Popen(line2, stdin=p1.stdout, stdout=sbp.PIPE, env=self.env)
