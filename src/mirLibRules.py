@@ -83,7 +83,7 @@ class prog_bowtie ():
     FNULL = open(os.devnull, 'w')
     
     # cmd = 'bowtie --mm -a -v 0 --suppress 1,5,6,7,8 -c ' + self.bowtie_index + ' '+ seq  # shell=True
-    cmd = ['bowtie', '--mm', '-a', '-v', '0', '--suppress', '1,5,6,7,8', '-c', self.bowtie_index, seq] # shell=False
+    cmd = ['../lib/bowtie', '--mm', '-a', '-v', '0', '--suppress', '1,5,6,7,8', '-c', self.bowtie_index, seq] # shell=False
     
     sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
     bsout = sproc.communicate()[0]
@@ -110,7 +110,7 @@ class prog_bowtie ():
     return elem
   
   def Bowtie_pipe_cmd (self):
-    cmd = "bowtie --mm -a -v 0 --suppress 1,6,7,8 -r " + self.bowtie_index + " - "
+    cmd = "../lib/bowtie --mm -a -v 0 --suppress 1,6,7,8 -r " + self.bowtie_index + " - "
     # cmd = "bowtie --mm -a -v 0 --suppress 1,6,7,8 " + self.bowtie_index + " - "
     
     return cmd, self.env

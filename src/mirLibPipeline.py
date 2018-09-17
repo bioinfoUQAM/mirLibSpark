@@ -117,6 +117,7 @@ if __name__ == '__main__' :
   sc.addFile(project_path + '/src/eval_mircheck.pl')
   sc.addFile(project_path + '/lib/miRcheck.pm')
   sc.addFile(project_path + '/lib/miRdup_1.4/lib/weka.jar')
+  sc.addFile(project_path + '/lib/bowtie')
   sc.addFile(mirdup_jar)
   sc.addFile(mirdup_model)
   sc.addFile(target_file)
