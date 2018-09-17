@@ -231,8 +231,9 @@ class extract_precurosrs ():
 
 class prog_RNAfold ():
 
-  def __init__(self):
+  def __init__(self, temperature):
     self.env = os.environ
+    self.temperature = str(temperature)
 
   def run_RNAfold(self, seq):
     '''
@@ -242,7 +243,7 @@ class prog_RNAfold ():
     '''
     line1 = ['echo', seq]
     #line2 = ['RNAfold','--noPS', '--noLP', '--temp=25.0']
-    line2 = ['RNAfold','--noPS', '--noLP']
+    line2 = ['../lib/RNAfold','--noPS', '--noLP', '--temp=' + self.temperature]
     
     p1 = sbp.Popen(line1, stdout=sbp.PIPE, env=self.env)
     p2 = sbp.Popen(line2, stdin=p1.stdout, stdout=sbp.PIPE, env=self.env)
