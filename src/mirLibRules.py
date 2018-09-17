@@ -53,7 +53,8 @@ class prog_dustmasker ():
   def dmask_filter_rule(self, elem):
     sRNAseq = str(elem[0])
     line1 = ['echo', '>seqMir\n' + sRNAseq]
-    line2 = ['dustmasker']
+    #line2 = ['dustmasker']
+    line2 = ['../lib/dustmasker']
     
     p1 = sbp.Popen(line1, stdout=sbp.PIPE, env=self.env)
     p2 = sbp.Popen(line2, stdin=p1.stdout, stdout=sbp.PIPE, env=self.env)
@@ -66,7 +67,8 @@ class prog_dustmasker ():
     return False  ##= false data will be automatically excluded in the new RDD
 
   def dmask_pipe_cmd(self):
-    return 'dustmasker -outfmt fasta', self.env
+    #return 'dustmasker -outfmt fasta', self.env
+    return '../lib/dustmasker -outfmt fasta', self.env
 
 class prog_bowtie ():
 
