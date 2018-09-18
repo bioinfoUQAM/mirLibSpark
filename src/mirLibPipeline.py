@@ -124,6 +124,8 @@ if __name__ == '__main__' :
   sc.addFile(project_path + '/lib/dustmasker')
   sc.addFile(project_path + '/lib/RNAfold')
   sc.addFile(project_path + '/lib/bowtie')
+  sc.addFile(project_path + '/lib/bowtie-align-l')
+  sc.addFile(project_path + '/lib/bowtie-align-s')
   sc.addFile(mirdup_jar)
   sc.addFile(mirdup_model)
   sc.addFile(target_file)
