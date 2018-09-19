@@ -3,6 +3,7 @@ program: utils.py
 author: Chao-Jung Wu
 author: M.A.Remita
 date: 2017-03-25
+update: 2018-09-18
 version: 1.00.01
 '''
 
@@ -238,14 +239,13 @@ def containsOnlyOneLoop (folding):
     return True
 
 def writeToFile (results, outfile):
-    ''' old : elem = (id, [seq, frq, nbloc, [bowtie], [pri_miRNA], [pre_miRNA]])
-        new : elem = (seq, [frq, nbloc, [bowtie], [pri_miRNA], [pre_miRNA]])
-
-    ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq])
-
-    '''
+    ## result: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq])
     fh_out = open (outfile, 'w')
-    
+
+    line = '\t'.join('miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq'.split(', ')) ##update
+    print >> fh_out, line
+
+
     for elem in results :
       miRNAseq = elem[0]
       frq = elem[1][0]
@@ -254,11 +254,19 @@ def writeToFile (results, outfile):
       strand = elem[1][2][0]
       chromo = elem[1][2][1]
       posChr = elem[1][2][2]
+      #= pri-miRNA
+      priSeq = elem[1][3][0] ##update180918
+      posMirPri = elem[1][3][1] ##update
+      priFold = elem[1][3][2] ##update
       #= mircheck_result
       mkPred = elem[1][3][3]
+      mkStart = elem[1][3][4] ##update
+      mkStop = elem[1][3][5]  ##update
       #= mirdup_result
       preSeq = elem[1][4][0]
       posMirPre = elem[1][4][1]
+      newfbstart = posMirPre + posMirPri - mkStart ##update
+      newfbstop  = posMirPre + mkStop - posMirPri ##update
       preFold = elem[1][4][2]
       mpPred = elem[1][4][3]
       mpScore = elem[1][4][4]
@@ -270,7 +278,8 @@ def writeToFile (results, outfile):
       #miRanda = "[TO_DO_target_genes]" ## miranda is very time consuming
 
       #data = [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, preSeq, posMirPre, preFold, mpPred, mpScore, totalFrq, miRanda]
-      data = [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, preSeq, posMirPre, preFold, mpPred, mpScore, totalFrq]
+      data = [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq] ##update
+
       
       line = ''
       for d in data: line += str(d) + '\t'
@@ -476,3 +485,5 @@ def createFile_KnownNonMiRNA_from_TAIR10data (infile = 'TAIR10_GFF3_genes.gff', 
   this function is not used in the pipeline, but users may use it to obtain their own KnonNonMiRNA from TAIR
   '''
   os.system("grep -E 'CDS|rRNA|snoRNA|snRNA|tRNA' " + infile + ' > ' + outfile)
+
+
