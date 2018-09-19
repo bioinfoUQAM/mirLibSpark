@@ -350,7 +350,7 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
 
 
   master_predicted_distinctMiRNAs = []
-  master_distinctMiRNAs_infos = {}
+  tmp_master_distinctMiRNAs_infos = {}
   for f in sorted(infiles):
     with open (rep_output + f, 'r') as fh:
       fh.readline()
@@ -378,10 +378,10 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
         if miRNAseq not in master_predicted_distinctMiRNAs:
           master_predicted_distinctMiRNAs.append(miRNAseq)
         #################################### 
-        key = miRNAseq + newfbstart + newfbstop
-        if key not in master_distinctMiRNAs_infos.keys():
+        key = miRNAseq + ':'+ newfbstart + newfbstop
+        if key not in tmp_master_distinctMiRNAs_infos.keys():
           infos = [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
-          master_distinctMiRNAs_infos[key] = infos
+          tmp_master_distinctMiRNAs_infos[key] = infos
         #################################### 
 
 
@@ -429,9 +429,15 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
     line = line.rstrip('\t')
     print >> fh_out2, line
 
-  for k in sorted(master_distinctMiRNAs_infos.keys()):
-    line = '\t'.join(master_distinctMiRNAs_infos[k])
+  master_distinctMiRNAs_infos = []
+  for k in sorted(tmp_master_distinctMiRNAs_infos.keys()):
+    v = tmp_master_distinctMiRNAs_infos[k]
+    line = '\t'.join(v)
     print >> fh_out4, line
+
+
+    master_distinctMiRNAs_infos.append(v)
+
 
 
   fh_out.close()
@@ -449,7 +455,7 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
   transpose_txt(infile, outfile)
   os.remove(infile) 
 
-  return sorted(master_predicted_distinctMiRNAs)
+  return sorted(master_predicted_distinctMiRNAs), sorted(master_distinctMiRNAs_infos)
 
 
 def writeTargetsToFile (targets, rep_output, appId):
@@ -473,7 +479,7 @@ def writeTargetsToFile (targets, rep_output, appId):
 # precursor visualization
 def run_VARNA_prog (preSEQ, preFOLD, miRNApos, title, filename):
   # "12-20:fill=#ff0000"
-  cmd = 'java -cp VARNAv3-93.jar fr.orsay.lri.varna.applications.VARNAcmd -sequenceDBN "'+ preSEQ +'" -structureDBN "' + preFOLD + '" -highlightRegion "'+ miRNApos + ':fill=#ff0000" -title "' + title + '" -o ../output_vis_220_geno6trim_180918/'+ filename +'.jpg'
+  cmd = 'java -cp ../lib/VARNAv3-93.jar fr.orsay.lri.varna.applications.VARNAcmd -sequenceDBN "'+ preSEQ +'" -structureDBN "' + preFOLD + '" -highlightRegion "'+ miRNApos + ':fill=#ff0000" -title "' + title + '" -o '+ filename +'.jpg'
   os.system(cmd)
 
 

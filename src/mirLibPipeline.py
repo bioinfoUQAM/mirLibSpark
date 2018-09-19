@@ -399,13 +399,25 @@ if __name__ == '__main__' :
   #= make summary table of all libraries in one submission with expressions in the field
   keyword = appId + '_miRNAprediction_'
   infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
-  master_predicted_distinctMiRNAs = ut.writeSummaryExpressionToFile (infiles, rep_output, appId)
-  
-  #### test to parallize list
+  master_predicted_distinctMiRNAs, master_distinctMiRNAs_infos = ut.writeSummaryExpressionToFile (infiles, rep_output, appId)
+
+
+  '''## tmp
+  [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore] = master_distinctMiRNAs_infos[0]
+  miRNApos = str(int(posMirPre)) + '-' + str(int(posMirPre) + len(miRNAseq)-1) 
+  title = appId + '_' + chromo + '_' + posChr
+  #filename = '../output/' + '2'.zfill(4) + '_' + title
+  filename = '../output/' + title
+  ut.run_VARNA_prog (preSeq, preFold, miRNApos, title, filename)  '''
+
+  #### test to parallize list and run VARNA
+  varna_obj = mru.prog_varna(appId, rep_output)
+
   sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, execCores) ##update
-  distData_rdd = sc.parallelize(master_predicted_distinctMiRNAs, partition) ##update
-  test = distData_rdd.collect() ##update 
-  print(test)
+  distData_rdd = sc.parallelize(master_distinctMiRNAs_infos, partition) ##update
+  VARNA_rdd = distData_rdd.zipWithIndex()\
+                          .map(varna_obj.run_VARNA)
+  generateVis = VARNA_rdd.collect() ##update 
   sc.stop() ##update
 
 
