@@ -239,7 +239,7 @@ def containsOnlyOneLoop (folding):
     return True
 
 def writeToFile (results, outfile):
-    ## result: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq])
+    ## result: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq]) ##update
     fh_out = open (outfile, 'w')
 
     line = '\t'.join('miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq'.split(', ')) ##update
@@ -265,8 +265,8 @@ def writeToFile (results, outfile):
       #= mirdup_result
       preSeq = elem[1][4][0]
       posMirPre = elem[1][4][1]
-      newfbstart = posMirPre + posMirPri - mkStart ##update
-      newfbstop  = posMirPre + mkStop - posMirPri ##update
+      newfbstart = int(posMirPre) + int(posMirPri) - int(mkStart) ##update
+      newfbstop  = int(posMirPre) + int(mkStop) - int(posMirPri) ##update
       preFold = elem[1][4][2]
       mpPred = elem[1][4][3]
       mpScore = elem[1][4][4]
@@ -280,10 +280,10 @@ def writeToFile (results, outfile):
       #data = [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, preSeq, posMirPre, preFold, mpPred, mpScore, totalFrq, miRanda]
       data = [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq] ##update
 
-      
-      line = ''
-      for d in data: line += str(d) + '\t'
-      line = line.rstrip('\t')
+      line = '\t'.join([str(d) for d in data])
+      #line = ''
+      #for d in data: line += str(d) + '\t'
+      #line = line.rstrip('\t')
       print >> fh_out, line
     fh_out.close()
 
@@ -322,16 +322,20 @@ def writeTimeLibToFile (timeDict, outfile, appId, paramDict):
 ###########################
 def writeSummaryExpressionToFile (infiles, rep_output, appId):
   '''
-  data = [miRNAseq, frq, strand, chromo, posgen, pre_miRNA_seq, struc, mpScore, totalfrq, miRanda]
+  old_data = [miRNAseq, frq, strand, chromo, posgen, pre_miRNA_seq, struc, mpScore, totalfrq, miRanda]
+  data = [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq]
   '''
 
   outfile = rep_output + appId + '_summaryFreq.trs' #= .trs is a temporary extension, such file will be transposed at the end of this function
   outfile2 = rep_output + appId + '_summaryBinary.trs'
   #outfile3 = rep_output + appId + '_summaryGenoLoci.txt' #= outfile3 is not in a good format yet
+  outfile4 = rep_output + appId + '_uniqueMiRNA_infos.txt'
+
 
   fh_out = open (outfile, 'w')
   fh_out2 = open (outfile2, 'w')
   #fh_out3 = open (outfile3, 'w')
+  fh_out4 = open (outfile4, 'w')
   
   
   #line_seen = []
@@ -346,14 +350,42 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
 
 
   master_predicted_distinctMiRNAs = []
-  for f in infiles:
+  master_distinctMiRNAs_infos = {}
+  for f in sorted(infiles):
     with open (rep_output + f, 'r') as fh:
+      fh.readline()
       for line in fh:
         data = line.rstrip('\n').split('\t')
+        ########################################## 
         miRNAseq = data[0]
+        frq = data[1]
+        nbLoc = data[2]
+        strand = data[3]
+        chromo = data[4]
+        posChr = data[5]
+        mkPred = data[6]
+        mkStart = data[7]
+        mkStop = data[8]  
+        preSeq = data[9]
+        posMirPre = data[10]
+        newfbstart = data[11]
+        newfbstop  = data[12]
+        preFold = data[13]
+        mpPred = data[14]
+        mpScore = data[15]
+        totalFrq =  data[16]
+        #################################### 
         if miRNAseq not in master_predicted_distinctMiRNAs:
           master_predicted_distinctMiRNAs.append(miRNAseq)
-  
+        #################################### 
+        key = miRNAseq + newfbstart + newfbstop
+        if key not in master_distinctMiRNAs_infos.keys():
+          infos = [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
+          master_distinctMiRNAs_infos[key] = infos
+        #################################### 
+
+
+
   keyword = '_miRNAprediction_'
   dictLibSeqFreq = {}
   for f in sorted(infiles):
@@ -361,6 +393,7 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
     dictLibSeqFreq[libname] = []
     tmpDict = {}
     with open (rep_output + f, 'r') as fh:
+      fh.readline()
       for line in fh:
         data = line.rstrip('\n').split('\t')
         miRNAseq = data[0]
@@ -396,9 +429,14 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
     line = line.rstrip('\t')
     print >> fh_out2, line
 
+  for k in sorted(master_distinctMiRNAs_infos.keys()):
+    line = '\t'.join(master_distinctMiRNAs_infos[k])
+    print >> fh_out4, line
+
 
   fh_out.close()
   fh_out2.close()
+  fh_out4.close()
 
   import os
   infile = outfile
@@ -411,7 +449,7 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
   transpose_txt(infile, outfile)
   os.remove(infile) 
 
-  return master_predicted_distinctMiRNAs
+  return sorted(master_predicted_distinctMiRNAs)
 
 
 def writeTargetsToFile (targets, rep_output, appId):
@@ -432,6 +470,11 @@ def writeTargetsToFile (targets, rep_output, appId):
 #############################
 #############################
 
+# precursor visualization
+def run_VARNA_prog (preSEQ, preFOLD, miRNApos, title, filename):
+  # "12-20:fill=#ff0000"
+  cmd = 'java -cp VARNAv3-93.jar fr.orsay.lri.varna.applications.VARNAcmd -sequenceDBN "'+ preSEQ +'" -structureDBN "' + preFOLD + '" -highlightRegion "'+ miRNApos + ':fill=#ff0000" -title "' + title + '" -o ../output_vis_220_geno6trim_180918/'+ filename +'.jpg'
+  os.system(cmd)
 
 
 

@@ -385,10 +385,32 @@ if __name__ == '__main__' :
   outTime = rep_output + appId + '_time.txt'
   ut.writeTimeLibToFile (timeDict, outTime, appId, paramDict)
 
+  '''
+  ### test to initiate a new sc context ########
+  infile = outTime ##update
+  sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, execCores) ##update
+  distFile_rdd = sc.textFile("file:///" + infile, partition) ##update
+  test = distFile_rdd.collect() ##update
+  print(test) ##update
+  sc.stop() ##update
+  '''
+
+
   #= make summary table of all libraries in one submission with expressions in the field
   keyword = appId + '_miRNAprediction_'
   infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
   master_predicted_distinctMiRNAs = ut.writeSummaryExpressionToFile (infiles, rep_output, appId)
+  
+  #### test to parallize list
+  sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, execCores) ##update
+  distData_rdd = sc.parallelize(master_predicted_distinctMiRNAs, partition) ##update
+  test = distData_rdd.collect() ##update 
+  print(test)
+  sc.stop() ##update
+
+
+
+
 
   #= post-generating miranda
   #distinct_pred_rdd = sc.parallelize(master_predicted_distinctMiRNAs)
