@@ -27,8 +27,7 @@ from __future__ import print_function
 #import sys
 import os.path
 import time
-#from os import listdir
-import os.listdir
+from os import listdir
 #
 import utils as ut
 import mirLibRules as mru
@@ -149,7 +148,7 @@ if __name__ == '__main__' :
   appId = str(sc.applicationId)
   
   #= Fetch library files in rep_input
-  infiles = [f for f in os.listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
+  infiles = [f for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
   
   #= Time processing of libraries
   timeDict = {}
@@ -382,7 +381,7 @@ if __name__ == '__main__' :
 
   #= make summary table of all libraries in one submission with expressions in the field
   keyword = appId + '_miRNAprediction_'
-  infiles = [f for f in os.listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
+  infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
   master_predicted_distinctMiRNAs, master_distinctPrecursor_infos = ut.writeSummaryExpressionToFile (infiles, rep_output, appId)
 
 
