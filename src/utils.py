@@ -329,13 +329,11 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
   outfile = rep_output + appId + '_summaryFreq.trs' #= .trs is a temporary extension, such file will be transposed at the end of this function
   outfile2 = rep_output + appId + '_summaryBinary.trs'
   #outfile3 = rep_output + appId + '_summaryGenoLoci.txt' #= outfile3 is not in a good format yet
-  outfile4 = rep_output + appId + '_uniqueMiRNA_infos.txt'
 
 
   fh_out = open (outfile, 'w')
   fh_out2 = open (outfile2, 'w')
   #fh_out3 = open (outfile3, 'w')
-  ##fh_out4 = open (outfile4, 'w')
   
   
   #line_seen = []
@@ -350,7 +348,7 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
 
 
   master_predicted_distinctMiRNAs = []
-  tmp_master_distinctMiRNAs_infos = {}
+  tmp_master_distinctPrecursor_infos = {}
   for f in sorted(infiles):
     with open (rep_output + f, 'r') as fh:
       fh.readline()
@@ -379,9 +377,9 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
           master_predicted_distinctMiRNAs.append(miRNAseq)
         #################################### 
         key = miRNAseq + ':'+ newfbstart + newfbstop
-        if key not in tmp_master_distinctMiRNAs_infos.keys():
+        if key not in tmp_master_distinctPrecursor_infos.keys():
           infos = [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
-          tmp_master_distinctMiRNAs_infos[key] = infos
+          tmp_master_distinctPrecursor_infos[key] = infos
         #################################### 
 
 
@@ -430,17 +428,14 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
     print >> fh_out2, line
 
   master_distinctMiRNAs_infos = []
-  for k in sorted(tmp_master_distinctMiRNAs_infos.keys()):
-    v = tmp_master_distinctMiRNAs_infos[k]
-    #line = '\t'.join(v)
-    #print >> fh_out4, line
+  for k in sorted(tmp_master_distinctPrecursor_infos.keys()):
+    v = tmp_master_distinctPrecursor_infos[k]
     master_distinctMiRNAs_infos.append(v)
 
 
 
   fh_out.close()
   fh_out2.close()
-  ##fh_out4.close()
 
   import os
   infile = outfile
@@ -481,7 +476,7 @@ def run_VARNA_prog (preSEQ, preFOLD, miRNApos, title, filename):
   os.system(cmd)
 
 def write_index (data, rep_output, appId):
-  outfile = rep_output + appId + '_mirnaindex.txt'
+  outfile = rep_output + appId + '_precursorindex.txt'
   fh_out = open (outfile, 'w')
   for i in data:
     i[0] = str(i[0]).zfill(4)
@@ -493,12 +488,8 @@ def write_index (data, rep_output, appId):
 
 def write_html (DATA, rep_output, appId):
   #=serial, miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore
-  infile = rep_output + appId + '_mirnaindex.txt'
-
-  #with open (infile, 'r') as fh:
-  #  DATA = [x.rstrip('\n').split('\t') for x in fh.readlines()]
-
-  outfile = rep_output + appId +'_index.html'
+  infile = rep_output + appId + '_precursorindex.txt'
+  outfile = rep_output + appId +'_precursorindex.html'
   fh_out=open(outfile,'w')
 
   l='<html>\n<head>\n<style>';print >> fh_out, l
@@ -516,6 +507,7 @@ def write_html (DATA, rep_output, appId):
   l='    <th>miRNA.pre-miRNA.Structure</th>';print >> fh_out, l
   l='    <th>Coordination</th>';print >> fh_out, l
   l='  </tr>';print >> fh_out, l
+
   ## loop start
   for i in DATA:
     i = [str(x) for x in i]
@@ -529,8 +521,7 @@ def write_html (DATA, rep_output, appId):
     structure = i[7]	
     #mircheck = i[8:11]	
     strand = i[2]
-
-    #path = rep_output + serial.zfill(4) + '_' + newid + '_' + chromo + '_' + poschromo + '.jpg'
+ 
     path = rep_output + appId + '_' + serial.zfill(4) + '_' + chromo + '_' + poschromo + '.jpg'
   
     l='  <tr>';print >> fh_out, l
@@ -547,6 +538,7 @@ def write_html (DATA, rep_output, appId):
     l="    <td colspan=2 style='font-family:monospace'>"+ structure + "</td>";print >> fh_out, l
     l="  </tr>";print >> fh_out, l
   ## loop end
+  
   l="</table></div>";print >> fh_out, l
   l="</body></html>";print >> fh_out, l
 
