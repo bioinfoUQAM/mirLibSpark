@@ -5,6 +5,8 @@ author: Chao-Jung Wu
 date: 2017-03-28
 version: 1.01.00
 
+update: 2018-09-20 cjwu, include varna, miranda, html, format output, reduce dependency of third party programs
+
 Le programme implemente le pipeline d'analyse des sRAN et prediction des miRNAs. Les principales etapes de predictions sont :
   - 1 Filtrage
   - 2 Alignement 
@@ -13,8 +15,6 @@ Le programme implemente le pipeline d'analyse des sRAN et prediction des miRNAs.
   - 5 prediction/validation du miRNA
   - 6 validaiton/filtrage avec l'expression
   
-La version actuelle accepte un seul argument qui est le fichier contenant les sequences reads a traiter.
-
 
 time of execution factors:
 join and zip are expensive. Consider how to avoid them.
