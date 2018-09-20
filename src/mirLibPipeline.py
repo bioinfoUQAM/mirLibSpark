@@ -237,16 +237,25 @@ if __name__ == '__main__' :
                             .persist()
     #print('NB dmask_rdd: ', len(dmask_rdd.collect()))############################################
     
-    #= Mapping with Bowtie
-    ## in : 'seq'
-    ## out: ('seq', [nbLoc, [['strd','chr',posChr],..]])
-    bowtie_rdd = dmask_rdd.map(lambda e: " "+e)\
-                          .pipe(bowtie_cmd, bowtie_env)\
-                          .map(bowtie_obj.bowtie_rearrange_map)\
-                          .groupByKey()\
-                          .map(lambda e: (e[0], [len(list(e[1])), list(e[1])]))\
-                          .persist()
-    #print('NB bowtie_rdd: ', len(bowtie_rdd.collect()))##################################################
+
+    chromosome = [1, 2, 3]
+    for ch in chromosome:
+
+      #= Mapping with Bowtie
+      ## in : 'seq'
+      ## out: ('seq', [nbLoc, [['strd','chr',posChr],..]])
+      bowtie_rdd = dmask_rdd.map(lambda e: " "+e)\
+                            .pipe(bowtie_cmd, bowtie_env)\
+                            .map(bowtie_obj.bowtie_rearrange_map)\
+                            .groupByKey()\
+                            .map(lambda e: (e[0], [len(list(e[1])), list(e[1])]))\
+                            .persist()
+      #print('NB bowtie_rdd: ', len(bowtie_rdd.collect()))##################################################
+
+      bowtiesplit = bowtie_rdd.collect()
+      mergebowtie += bowtiesplit
+    print(mergebowtie)
+
 
     #= Getting the expression value for each reads
     ## in : ('seq', [nbLoc, [['strd','chr',posChr],..]])
