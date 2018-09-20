@@ -49,7 +49,7 @@ if __name__ == '__main__' :
   rep_input = paramDict['input_path']
   rep_output = paramDict['output_path']
   rep_msub_jobsOut = project_path + '/workdir/jobsOut'
-  rep_tmp = project_path + '/tmp/'                   # tmp file folder
+  rep_tmp = project_path + '/tmp/'                   
 
   #= spark configuration
   appMaster = paramDict['sc_master']                #"local[*]" 
@@ -72,12 +72,12 @@ if __name__ == '__main__' :
   b_index_path = paramDict['b_index_path']
 
   #= file and list of known non miRNA
-  #known_non = '../dbs/TAIR10_ncRNA_CDS.gff'
   known_non = project_path + '/dbs/TAIR10_ncRNA_CDS.gff'###########################
   d_ncRNA_CDS = ut.get_nonMirna_coors (known_non) #= nb = 198736
 
   #= RNAfold
-  path_RNAfold = project_path + '/lib/' #'/home/cloudera/workspace/mirLibSpark/lib/' #'../lib/'#ut.find_RNAfold_path () ######################### 180905
+  path_RNAfold = project_path + '/lib/'
+  path_RNAfold = ut.find_RNAfold_path () #mirdup dependency
   temperature = int(paramDict['temperature']) ###################### 180905
 
   #= pri-mirna
@@ -89,7 +89,6 @@ if __name__ == '__main__' :
   mcheck_param = paramDict['mcheck_param']          #'def'    # def : default parameters / mey : meyers parameters
 
   #= miRdup parameter
-  path_RNAfold = ut.find_RNAfold_path ()
   mirdup_model = project_path + '/lib/miRdup_1.4/model/' + paramDict['mirdup_model']
   mirdup_jar = project_path + '/lib/miRdup_1.4/miRdup.jar'
   mirdup_limit =  float(paramDict['mirdup_limit'])
@@ -101,7 +100,7 @@ if __name__ == '__main__' :
   Max_Energy_cutoff = paramDict['Max_Energy_cutoff'] #= NOT WORKING YET
   Gap_Penalty = paramDict['Gap_Penalty']
 
-  ## EXMAMINE OPTIONS ####################################
+  #= EXMAMINE OPTIONS 
   ut.validate_options(paramDict)
 
   #= make required folders if not exist
@@ -215,8 +214,6 @@ if __name__ == '__main__' :
       ## out: ('seq', freq)
       collapse_rdd = trim_adapter_rdd.map(lambda word: (word, 1)).reduceByKey(lambda a, b: a+b)
   
-    #'''
-   
     #= Filtering sRNA low frequency
     ## in : ('seq', freq)
     ## out: ('seq', freq)
@@ -351,16 +348,7 @@ if __name__ == '__main__' :
     print('NB profile_rdd distinct: ', len(profile_rdd.groupByKey().collect()))##
     results = profile_rdd.collect()
 
-    '''
-    #= target prediction
-    miranda_rdd = profile_rdd.map(miranda_obj.computeTargetbyMiranda).persist()####
-    print('NB miranda_rdd distinct : ', len(miranda_rdd.groupByKey().collect()))####
-    results = miranda_rdd.collect()
-    #for r in results:
-    #  tg = r[1][-1]
-    #  print(tg)
-    #  if not tg == 'SeePreviousItem': print(tg)
-    '''
+
     
     endLib = time.time() 
     print ("  End of the processing     ", end="\n")
