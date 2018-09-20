@@ -543,11 +543,11 @@ class prog_varna ():
   def run_VARNA_prog (self, preSEQ, preFOLD, miRNApos, title, filename):
     #-highlightRegion "48-63:fill=#bcffdd;81-102:fill=#bcffdd"
     cmd = 'java -cp ../lib/VARNAv3-93.jar fr.orsay.lri.varna.applications.VARNAcmd -sequenceDBN "'+ preSEQ +'" -structureDBN "' + preFOLD + '" -highlightRegion "'+ miRNApos + ':fill=#ff0000" -title "' + title + '" -o '+ filename +'.jpg'
-
-    cmd = ['java', '-cp', '../lib/VARNAv3-93.jar', 'fr.orsay.lri.varna.applications.VARNAcmd', '-sequenceDBN', preSEQ, '-structureDBN', preFOLD, '-highlightRegion',  '"' + miRNApos + ':fill=#ff0000"', '-title', '-o', filename + '.jpg'] 
-    FNULL = open(os.devnull, 'w')
-    sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
-    FNULL.close()
+    os.system(cmd)
+    #cmd = ['java', '-cp', '../lib/VARNAv3-93.jar', 'fr.orsay.lri.varna.applications.VARNAcmd', '-sequenceDBN', preSEQ, '-structureDBN', preFOLD, '-highlightRegion',  '"' + miRNApos + ':fill=#ff0000"', '-title', '-o', filename + '.jpg'] 
+    #FNULL = open(os.devnull, 'w')
+    #sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
+    #FNULL.close()
 
   def run_VARNA (self, e):
     [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore] = e[0]
