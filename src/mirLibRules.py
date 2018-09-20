@@ -412,7 +412,6 @@ class prog_miRanda ():
     '''
 
     miRNAseq = e
-    #miRNAseq = e #= be careful "return e" and "e[1].append(target_results)"
 
 
     tmp_file = self.rep_tmp + miRNAseq + '_tmpseq_forMiranda.txt' 

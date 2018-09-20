@@ -413,6 +413,8 @@ if __name__ == '__main__' :
 
 
   #= miranda
+  ## in : 'miRNAseq'
+  ## out: ('miRNAseq', [[target1 and its scores], [target2 and its scores]])
   distResultSmallRNA_rdd = sc.parallelize(master_predicted_distinctMiRNAs)
   miranda_rdd = distResultSmallRNA_rdd.map(miranda_obj.computeTargetbyMiranda)
   targets = miranda_rdd.collect()
