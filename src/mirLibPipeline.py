@@ -110,9 +110,9 @@ if __name__ == '__main__' :
   #= Objects for rule functions
   dmask_obj = mru.prog_dustmasker()
   dmask_cmd, dmask_env = dmask_obj.dmask_pipe_cmd()
-  bowtie_obj = mru.prog_bowtie(b_index_path)
+  #bowtie_obj = mru.prog_bowtie(b_index_path)
+  #bowtie_cmd, bowtie_env = bowtie_obj.Bowtie_pipe_cmd()
   kn_obj = mru.prog_knownNonMiRNA(d_ncRNA_CDS)
-  bowtie_cmd, bowtie_env = bowtie_obj.Bowtie_pipe_cmd()
   prec_obj = mru.extract_precurosrs(genome_path, pri_l_flank, pri_r_flank, pre_flank)
   rnafold_obj = mru.prog_RNAfold(temperature)
   mircheck_obj = mru.prog_mirCheck(mcheck_param)
@@ -154,7 +154,7 @@ if __name__ == '__main__' :
   
   
   for infile in infiles :
-    mergebowtie = []
+    #mergebowtie = []
     if infile[-1:] == '~': continue
     print ("--Processing of the library: ", infile)
 
@@ -238,8 +238,16 @@ if __name__ == '__main__' :
     #print('NB dmask_rdd: ', len(dmask_rdd.collect()))############################################
     
 
+    ###############################################################
+    ##
+    ##  bowtie chromosome loop
+    ##
+    ##############################################################
     chromosome = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     for ch in chromosome:
+      bowtie_obj = mru.prog_bowtie(b_index_path)
+      bowtie_cmd, bowtie_env = bowtie_obj.Bowtie_pipe_cmd()
+
 
       #= Mapping with Bowtie
       ## in : 'seq'
@@ -253,8 +261,16 @@ if __name__ == '__main__' :
       #print('NB bowtie_rdd: ', len(bowtie_rdd.collect()))##################################################
 
       bowtiesplit = bowtie_rdd.collect()
-      mergebowtie += bowtiesplit
-    print(mergebowtie)
+      #mergebowtie += bowtiesplit
+      
+    #print(mergebowtie)
+
+    ###############################################################
+    ##
+    ##  bowtie chromosome loop END
+    ##
+    ##############################################################
+
 
 
     #= Getting the expression value for each reads
@@ -403,7 +419,7 @@ if __name__ == '__main__' :
   #= miranda
   ## in : 'miRNAseq'
   ## out: ('miRNAseq', [[target1 and its scores], [target2 and its scores]])
-  distResultSmallRNA_rdd = sc.parallelize(master_predicted_distinctMiRNAs)
+  distResultSmallRNA_rdd = sc.parallelize(master_predicted_distinctMiRNAs, partition)
   miranda_rdd = distResultSmallRNA_rdd.map(miranda_obj.computeTargetbyMiranda).persist()
   mirna_and_targets = miranda_rdd.collect()
   ut.writeTargetsToFile (mirna_and_targets, rep_output, appId)
