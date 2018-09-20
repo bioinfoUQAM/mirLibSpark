@@ -290,7 +290,7 @@ if __name__ == '__main__' :
     splitbowtie = bowFrq_rdd.collect()
     print('bowFrq_rdd: ', splitbowtie) ##################################################
     
-    '''
+    #'''
     #= Filtering miRNA low frequency
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
@@ -384,7 +384,7 @@ if __name__ == '__main__' :
 
     print('NB profile_rdd distinct: ', len(profile_rdd.groupByKey().collect()))##
     results = profile_rdd.collect()
-    '''
+    #'''
 
 
     
@@ -392,11 +392,11 @@ if __name__ == '__main__' :
     timeDict[inBasename] = endLib - startLib
     print ("  End of the processing     ", end="\n")
 
-    ''' 
+    #''' 
     #= write results to a file
     outFile = rep_output  +  appId + '_miRNAprediction_' + inBasename + '.txt'
     ut.writeToFile (results, outFile)
-    '''
+    #'''
     
 
 
