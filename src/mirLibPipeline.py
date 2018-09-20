@@ -417,8 +417,8 @@ if __name__ == '__main__' :
   distData_rdd = sc.parallelize(master_distinctMiRNAs_infos, partition) ##update
   VARNA_rdd = distData_rdd.zipWithIndex()\
                           .map(varna_obj.run_VARNA)
-  generateVis = VARNA_rdd.collect() ##update 
-  print(generateVis)
+  generateVis = VARNA_rdd.collect() ##update
+  ut.write_index (data, rep_output, appId) ##update
   sc.stop() ##update
 
 

@@ -335,7 +335,7 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
   fh_out = open (outfile, 'w')
   fh_out2 = open (outfile2, 'w')
   #fh_out3 = open (outfile3, 'w')
-  fh_out4 = open (outfile4, 'w')
+  ##fh_out4 = open (outfile4, 'w')
   
   
   #line_seen = []
@@ -429,11 +429,11 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
     line = line.rstrip('\t')
     print >> fh_out2, line
 
-  master_distinctMiRNAs_infos = []
-  for k in sorted(tmp_master_distinctMiRNAs_infos.keys()):
-    v = tmp_master_distinctMiRNAs_infos[k]
-    line = '\t'.join(v)
-    print >> fh_out4, line
+  ##master_distinctMiRNAs_infos = []
+  ##for k in sorted(tmp_master_distinctMiRNAs_infos.keys()):
+  ##  v = tmp_master_distinctMiRNAs_infos[k]
+  ##  line = '\t'.join(v)
+  ##  print >> fh_out4, line
 
 
     master_distinctMiRNAs_infos.append(v)
@@ -442,7 +442,7 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
 
   fh_out.close()
   fh_out2.close()
-  fh_out4.close()
+  ##fh_out4.close()
 
   import os
   infile = outfile
@@ -481,6 +481,14 @@ def run_VARNA_prog (preSEQ, preFOLD, miRNApos, title, filename):
   # "12-20:fill=#ff0000"
   cmd = 'java -cp ../lib/VARNAv3-93.jar fr.orsay.lri.varna.applications.VARNAcmd -sequenceDBN "'+ preSEQ +'" -structureDBN "' + preFOLD + '" -highlightRegion "'+ miRNApos + ':fill=#ff0000" -title "' + title + '" -o '+ filename +'.jpg'
   os.system(cmd)
+
+def write_index (data, rep_output, appId):
+  outfile = rep_output + appId + '_mirnaindex.txt'
+  fh_out = open (outfile, 'w')
+  for i in data:
+    line = '\t'.join( [str(x) for x in i] )
+    print >> fh_out, line
+  fh_out.close()
 
 
 
