@@ -24,7 +24,7 @@ os.system(cmd)
 
 chro = [1, 2, 3, 4, 5, 'C', 'M']
 for c in chro:
-  refgenome = 'TAIR10_chr' + str(c) + '.fas'
+  refgenome = '../dbs/ATH/Genome/TAIR10_chr' + str(c) + '.fas'
   cmd = '../lib/bowtie-build -f ' + refgenome + ' atht10_' + 'chr' + str(c)
   os.system(cmd)
 
