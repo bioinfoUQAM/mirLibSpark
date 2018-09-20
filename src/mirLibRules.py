@@ -448,7 +448,7 @@ class prog_miRanda ():
     if len(target_results) > 15: target_results = target_results[:15]
     self.dict_seq_target[miRNAseq] = target_results
     #e[1].append(target_results)
-    return e
+    #return e
     return [e, target_results]
 
 
