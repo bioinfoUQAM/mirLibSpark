@@ -407,7 +407,6 @@ if __name__ == '__main__' :
   varna_obj = mru.prog_varna(appId, rep_output) # this object needs to be initiated after appId is generated
   distData_rdd = sc.parallelize(master_distinctPrecursor_infos, partition)
   VARNA_rdd = distData_rdd.zipWithIndex()\
-                          .map(lambda e: e[0].insert(0, e[1]))\
                           .map(varna_obj.run_VARNA).persist()
   indexVis = VARNA_rdd.collect() ##update
   ut.write_index (indexVis, rep_output, appId) ##update
