@@ -267,7 +267,9 @@ if __name__ == '__main__' :
 
 
     #print(mergebowtie)
-    for i in mergebowtie: print(i) 
+    for i in mergebowtie: 
+      for j in i:
+        print(j) 
 
     ###############################################################
     ##
