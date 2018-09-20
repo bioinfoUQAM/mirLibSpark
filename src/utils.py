@@ -429,13 +429,11 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
     line = line.rstrip('\t')
     print >> fh_out2, line
 
-  ##master_distinctMiRNAs_infos = []
-  ##for k in sorted(tmp_master_distinctMiRNAs_infos.keys()):
-  ##  v = tmp_master_distinctMiRNAs_infos[k]
-  ##  line = '\t'.join(v)
-  ##  print >> fh_out4, line
-
-
+  master_distinctMiRNAs_infos = []
+  for k in sorted(tmp_master_distinctMiRNAs_infos.keys()):
+    v = tmp_master_distinctMiRNAs_infos[k]
+    #line = '\t'.join(v)
+    #print >> fh_out4, line
     master_distinctMiRNAs_infos.append(v)
 
 
