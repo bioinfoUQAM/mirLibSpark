@@ -47,7 +47,7 @@ def find_RNAfold_path ():
 def pyspark_configuration(appMaster, appName, masterMemory, execMemory, execCores):
   from pyspark import SparkConf, SparkContext
   myConf = SparkConf()
-  #myConf.setMaster(appMaster) #= 'local[2]'
+  myConf.setMaster(appMaster) #= 'local[2] or local[*]'
   myConf.setAppName(appName)  #= 'mirLibHadoop'
   myConf.set("spark.driver.memory", masterMemory)
   myConf.set("spark.executor.memory", execMemory) #= '4g'
