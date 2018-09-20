@@ -421,7 +421,7 @@ if __name__ == '__main__' :
   ut.writeTargetsToFile (mirna_and_targets, rep_output, appId)
 
 
-  master_tg = miranda_rdd.map(lambda e: [  i[0].split('.')[0] for i in e[1]  ]).collect()
+  master_tg = miranda_rdd.map(lambda e: [  i[0].split('.')[0] for i in e[1]  ]).reduce(lambda a, b: list(set(a+b))).collect()
   print(master_tg)
   sc.stop() ##update
 
