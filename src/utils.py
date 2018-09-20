@@ -484,6 +484,7 @@ def write_index (data, rep_output, appId):
   outfile = rep_output + appId + '_mirnaindex.txt'
   fh_out = open (outfile, 'w')
   for i in data:
+    i[0] = str(i[0]).zfill(4)
     line = '\t'.join( [str(x) for x in i] )
     print >> fh_out, line
   fh_out.close()
