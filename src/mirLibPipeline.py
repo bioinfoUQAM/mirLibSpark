@@ -416,11 +416,13 @@ if __name__ == '__main__' :
   ## in : 'miRNAseq'
   ## out: ('miRNAseq', [[target1 and its scores], [target2 and its scores]])
   distResultSmallRNA_rdd = sc.parallelize(master_predicted_distinctMiRNAs)
-  miranda_rdd = distResultSmallRNA_rdd.map(miranda_obj.computeTargetbyMiranda)
-  targets = miranda_rdd.collect()
-  ut.writeTargetsToFile (targets, rep_output, appId)
+  miranda_rdd = distResultSmallRNA_rdd.map(miranda_obj.computeTargetbyMiranda).persist()
+  mirna_and_targets = miranda_rdd.collect()
+  ut.writeTargetsToFile (mirna_and_targets, rep_output, appId)
 
-  
+
+  master_tg = miranda_rdd.map(lambda e: [  i[0].split('.')[0] for i in e[1]  ]).collect()
+  print(master_tg)
   sc.stop() ##update
 
 
