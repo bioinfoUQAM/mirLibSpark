@@ -42,8 +42,6 @@ if __name__ == '__main__' :
   paramfile = sys.argv[1]
   paramDict = ut.readParam (paramfile)
 
-  #message = paramDict['message'].split()
-  #for i in message: print(i)
   #= Parameters and cutoffs
   input_type = paramDict['input_type']
   adapter = ut.tr_U_T (paramDict['adapter'])
@@ -51,12 +49,11 @@ if __name__ == '__main__' :
   rep_input = paramDict['input_path']
   rep_output = paramDict['output_path']
   rep_msub_jobsOut = project_path + '/workdir/jobsOut'
-  #my_sep = paramDict['my_sep']                      # Separator
   rep_tmp = project_path + '/tmp/'                   # tmp file folder
 
   #= spark configuration
-  appMaster = paramDict['sc_master']                #"local" 
-  appName = paramDict['sc_appname']                 #"mirLibHadoop"
+  appMaster = paramDict['sc_master']                #"local[*]" 
+  appName = paramDict['sc_appname']                 #"mirLibSpark"
   mstrMemory = paramDict['sc_mstrmemory']           #"4g"
   execMemory = paramDict['sc_execmemory']           #"4g"
   execCores = paramDict['sc_execcores']             #2
@@ -92,7 +89,7 @@ if __name__ == '__main__' :
   mcheck_param = paramDict['mcheck_param']          #'def'    # def : default parameters / mey : meyers parameters
 
   #= miRdup parameter
-  #path_RNAfold = ut.find_RNAfold_path ()
+  path_RNAfold = ut.find_RNAfold_path ()
   mirdup_model = project_path + '/lib/miRdup_1.4/model/' + paramDict['mirdup_model']
   mirdup_jar = project_path + '/lib/miRdup_1.4/miRdup.jar'
   mirdup_limit =  float(paramDict['mirdup_limit'])
@@ -126,6 +123,7 @@ if __name__ == '__main__' :
   sc.addFile(project_path + '/lib/bowtie')
   sc.addFile(project_path + '/lib/bowtie-align-l')
   sc.addFile(project_path + '/lib/bowtie-align-s')
+  sc.addFile(project_path + '/lib/VARNAv3-93.jar')
   sc.addFile(mirdup_jar)
   sc.addFile(mirdup_model)
   sc.addFile(target_file)
@@ -385,10 +383,45 @@ if __name__ == '__main__' :
   outTime = rep_output + appId + '_time.txt'
   ut.writeTimeLibToFile (timeDict, outTime, appId, paramDict)
 
+  '''
+  ### test to initiate a new sc context ########
+  infile = outTime ##update
+  sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, execCores) ##update
+  distFile_rdd = sc.textFile("file:///" + infile, partition) ##update
+  test = distFile_rdd.collect() ##update
+  print(test) ##update
+  sc.stop() ##update
+  '''
+
+
   #= make summary table of all libraries in one submission with expressions in the field
   keyword = appId + '_miRNAprediction_'
   infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
-  master_predicted_distinctMiRNAs = ut.writeSummaryExpressionToFile (infiles, rep_output, appId)
+  master_predicted_distinctMiRNAs, master_distinctMiRNAs_infos = ut.writeSummaryExpressionToFile (infiles, rep_output, appId)
+
+
+  '''## tmp
+  [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore] = master_distinctMiRNAs_infos[0]
+  miRNApos = str(int(posMirPre)) + '-' + str(int(posMirPre) + len(miRNAseq)-1) 
+  title = appId + '_' + chromo + '_' + posChr
+  #filename = '../output/' + '2'.zfill(4) + '_' + title
+  filename = '../output/' + title
+  ut.run_VARNA_prog (preSeq, preFold, miRNApos, title, filename)  '''
+
+  #### test to parallize list and run VARNA
+  varna_obj = mru.prog_varna(appId, rep_output)
+
+  sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, execCores) ##update
+  distData_rdd = sc.parallelize(master_distinctMiRNAs_infos, partition) ##update
+  VARNA_rdd = distData_rdd.zipWithIndex()\
+                          .map(varna_obj.run_VARNA)
+  indexVis = VARNA_rdd.collect() ##update
+  ut.write_index (indexVis, rep_output, appId) ##update
+  sc.stop() ##update
+
+
+
+
 
   #= post-generating miranda
   #distinct_pred_rdd = sc.parallelize(master_predicted_distinctMiRNAs)

@@ -3,6 +3,7 @@ program: utils.py
 author: Chao-Jung Wu
 author: M.A.Remita
 date: 2017-03-25
+update: 2018-09-18
 version: 1.00.01
 '''
 
@@ -50,17 +51,10 @@ def pyspark_configuration(appMaster, appName, masterMemory, execMemory, execCore
   myConf.setAppName(appName)  #= 'mirLibHadoop'
   myConf.set("spark.driver.memory", masterMemory)
   myConf.set("spark.executor.memory", execMemory) #= '4g'
-  myConf.set("spark.cores.max", execCores) #= the maximum amount of CPU cores to request for the application from across the cluster (not from each machine)
-  #myConf.set('spark.dynamicAllocation.enabled') # testing now --> fail on colosse
+  myConf.set("spark.cores.max", execCores) 
   
-  #myConf.set("spark.yarn.am.memory", masterMemory) # for yarn
-  #myConf.set("spark.executor.instances", execNb) # for yarn
-  #myConf.set("spark.yarn.am.cores", execCores) # for yarn
-
   # other keys: "spark.master" = 'spark://5.6.7.8:7077'
-  #             "spark.executor.memory"
   #             "spark.driver.cores"
-  #             'spark.executor.cores'
   #             "spark.default.parallelism"
   return SparkContext(conf = myConf)
 
@@ -204,12 +198,12 @@ def readParam (paramfile, sep = '='):
   fh.close()
   
   for line in DATA:
-    if not line.startswith("#"):
+    if line.startswith('message'): 
+      msg = line.rstrip('\r\n')[8:].split('\\n')
+      for i in msg: print(i)
+    elif not line.startswith("#"):
       data = line.rstrip('\r\n').split(sep)
       paramDict[data[0]] = data[1]
-    elif line.startswith('#message'): 
-      msg = line.rstrip('\r\n')[9:].split('\\n')
-      for i in msg: print(i)
   
   return paramDict
 
@@ -238,14 +232,13 @@ def containsOnlyOneLoop (folding):
     return True
 
 def writeToFile (results, outfile):
-    ''' old : elem = (id, [seq, frq, nbloc, [bowtie], [pri_miRNA], [pre_miRNA]])
-        new : elem = (seq, [frq, nbloc, [bowtie], [pri_miRNA], [pre_miRNA]])
-
-    ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq])
-
-    '''
+    ## result: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq]) ##update
     fh_out = open (outfile, 'w')
-    
+
+    line = '\t'.join('miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq'.split(', ')) ##update
+    print >> fh_out, line
+
+
     for elem in results :
       miRNAseq = elem[0]
       frq = elem[1][0]
@@ -254,11 +247,19 @@ def writeToFile (results, outfile):
       strand = elem[1][2][0]
       chromo = elem[1][2][1]
       posChr = elem[1][2][2]
+      #= pri-miRNA
+      priSeq = elem[1][3][0] ##update180918
+      posMirPri = elem[1][3][1] ##update
+      priFold = elem[1][3][2] ##update
       #= mircheck_result
       mkPred = elem[1][3][3]
+      mkStart = elem[1][3][4] ##update
+      mkStop = elem[1][3][5]  ##update
       #= mirdup_result
       preSeq = elem[1][4][0]
       posMirPre = elem[1][4][1]
+      newfbstart = int(posMirPre) + int(posMirPri) - int(mkStart) ##update
+      newfbstop  = int(posMirPre) + int(mkStop) - int(posMirPri) ##update
       preFold = elem[1][4][2]
       mpPred = elem[1][4][3]
       mpScore = elem[1][4][4]
@@ -270,11 +271,12 @@ def writeToFile (results, outfile):
       #miRanda = "[TO_DO_target_genes]" ## miranda is very time consuming
 
       #data = [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, preSeq, posMirPre, preFold, mpPred, mpScore, totalFrq, miRanda]
-      data = [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, preSeq, posMirPre, preFold, mpPred, mpScore, totalFrq]
-      
-      line = ''
-      for d in data: line += str(d) + '\t'
-      line = line.rstrip('\t')
+      data = [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq] ##update
+
+      line = '\t'.join([str(d) for d in data])
+      #line = ''
+      #for d in data: line += str(d) + '\t'
+      #line = line.rstrip('\t')
       print >> fh_out, line
     fh_out.close()
 
@@ -313,12 +315,14 @@ def writeTimeLibToFile (timeDict, outfile, appId, paramDict):
 ###########################
 def writeSummaryExpressionToFile (infiles, rep_output, appId):
   '''
-  data = [miRNAseq, frq, strand, chromo, posgen, pre_miRNA_seq, struc, mpScore, totalfrq, miRanda]
+  old_data = [miRNAseq, frq, strand, chromo, posgen, pre_miRNA_seq, struc, mpScore, totalfrq, miRanda]
+  data = [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq]
   '''
 
   outfile = rep_output + appId + '_summaryFreq.trs' #= .trs is a temporary extension, such file will be transposed at the end of this function
   outfile2 = rep_output + appId + '_summaryBinary.trs'
   #outfile3 = rep_output + appId + '_summaryGenoLoci.txt' #= outfile3 is not in a good format yet
+
 
   fh_out = open (outfile, 'w')
   fh_out2 = open (outfile2, 'w')
@@ -337,14 +341,42 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
 
 
   master_predicted_distinctMiRNAs = []
-  for f in infiles:
+  tmp_master_distinctPrecursor_infos = {}
+  for f in sorted(infiles):
     with open (rep_output + f, 'r') as fh:
+      fh.readline()
       for line in fh:
         data = line.rstrip('\n').split('\t')
+        ########################################## 
         miRNAseq = data[0]
+        frq = data[1]
+        nbLoc = data[2]
+        strand = data[3]
+        chromo = data[4]
+        posChr = data[5]
+        mkPred = data[6]
+        mkStart = data[7]
+        mkStop = data[8]  
+        preSeq = data[9]
+        posMirPre = data[10]
+        newfbstart = data[11]
+        newfbstop  = data[12]
+        preFold = data[13]
+        mpPred = data[14]
+        mpScore = data[15]
+        totalFrq =  data[16]
+        #################################### 
         if miRNAseq not in master_predicted_distinctMiRNAs:
           master_predicted_distinctMiRNAs.append(miRNAseq)
-  
+        #################################### 
+        key = miRNAseq + ':'+ newfbstart + newfbstop
+        if key not in tmp_master_distinctPrecursor_infos.keys():
+          infos = [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
+          tmp_master_distinctPrecursor_infos[key] = infos
+        #################################### 
+
+
+
   keyword = '_miRNAprediction_'
   dictLibSeqFreq = {}
   for f in sorted(infiles):
@@ -352,6 +384,7 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
     dictLibSeqFreq[libname] = []
     tmpDict = {}
     with open (rep_output + f, 'r') as fh:
+      fh.readline()
       for line in fh:
         data = line.rstrip('\n').split('\t')
         miRNAseq = data[0]
@@ -387,6 +420,12 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
     line = line.rstrip('\t')
     print >> fh_out2, line
 
+  master_distinctMiRNAs_infos = []
+  for k in sorted(tmp_master_distinctPrecursor_infos.keys()):
+    v = tmp_master_distinctPrecursor_infos[k]
+    master_distinctMiRNAs_infos.append(v)
+
+
 
   fh_out.close()
   fh_out2.close()
@@ -402,7 +441,7 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
   transpose_txt(infile, outfile)
   os.remove(infile) 
 
-  return master_predicted_distinctMiRNAs
+  return sorted(master_predicted_distinctMiRNAs), sorted(master_distinctMiRNAs_infos)
 
 
 def writeTargetsToFile (targets, rep_output, appId):
@@ -422,6 +461,85 @@ def writeTargetsToFile (targets, rep_output, appId):
 
 #############################
 #############################
+
+# precursor visualization
+def run_VARNA_prog (preSEQ, preFOLD, miRNApos, title, filename):
+  # "12-20:fill=#ff0000"
+  cmd = 'java -cp ../lib/VARNAv3-93.jar fr.orsay.lri.varna.applications.VARNAcmd -sequenceDBN "'+ preSEQ +'" -structureDBN "' + preFOLD + '" -highlightRegion "'+ miRNApos + ':fill=#ff0000" -title "' + title + '" -o '+ filename +'.jpg'
+  os.system(cmd)
+
+def write_index (data, rep_output, appId):
+  outfile = rep_output + appId + '_precursorindex.txt'
+  fh_out = open (outfile, 'w')
+  for i in data:
+    i[0] = str(i[0]).zfill(4)
+    line = '\t'.join( [str(x) for x in i] )
+    print >> fh_out, line
+  fh_out.close()
+  write_html (data, rep_output, appId)
+
+
+def write_html (DATA, rep_output, appId):
+  #=serial, miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore
+  infile = rep_output + appId + '_precursorindex.txt'
+  outfile = rep_output + appId +'_precursorindex.html'
+  fh_out=open(outfile,'w')
+
+  l='<html>\n<head>\n<style>';print >> fh_out, l
+  l='table{\nfont-family:arial,sans-serif;\nborder-collapse:collapse;\nwidth:90%;\nmargin:auto;\n}';print >> fh_out, l
+  l='td,th{\nborder:1pxsolid#dddddd;\ntext-align:left;\npadding:8px;\nmax-width:200px;\nword-break:break-all;\n}';print >> fh_out, l
+  l='tr:nth-child(even){background-color:#dddddd;}';print >> fh_out, l
+  l='img.heightSet{max-width:100px;max-height:200px;}';print >> fh_out, l
+  l='img:hover{box-shadow:002px1pxrgba(0,140,186,0.5);}';print >> fh_out, l
+  l='</style></head><body>';print >> fh_out, l
+  l='<div GenomicPre><h2>miRNAs and their genomic precursors</h2><table>';print >> fh_out, l
+  l='  <tr>';print >> fh_out, l
+  l='    <th>Serial</th>';print >> fh_out, l
+  l='    <th>NewID</th>';print >> fh_out, l
+  l='    <th>image</th>';print >> fh_out, l
+  l='    <th>miRNA.pre-miRNA.Structure</th>';print >> fh_out, l
+  l='    <th>Coordination</th>';print >> fh_out, l
+  l='  </tr>';print >> fh_out, l
+
+  ## loop start
+  for i in DATA:
+    i = [str(x) for x in i]
+    serial = i[0]
+    newid = 'na'	
+    mirna = i[1]	
+    chromo = i[3]	
+    poschromo = i[4]	
+    preseq = i[5]	
+    #pospre = i[6]	
+    structure = i[7]	
+    #mircheck = i[8:11]	
+    strand = i[2]
+ 
+    path = rep_output + appId + '_' + serial.zfill(4) + '_' + chromo + '_' + poschromo + '.jpg'
+  
+    l='  <tr>';print >> fh_out, l
+    l="    <td rowspan=3 style='width: 120px;'><strong>"+ serial + "</strong></td>";print >> fh_out, l
+    l="    <td rowspan=3 style='width: 120px;'>"+newid+"</td>";print >> fh_out, l
+    l="    <td rowspan=3 > <a href="+ path + " target='_blank'><img class='heightSet' src="+ path + " alt='Struture'></a></td>";print >> fh_out, l
+    l="    <td style='width: 400px;'>"+ mirna + "</td>";print >> fh_out, l
+    l="    <td>"+ chromo + ":"+ poschromo + " ["+ strand + "] </td>";print >> fh_out, l
+    l="  </tr>";print >> fh_out, l
+    l="  <tr>";print >> fh_out, l
+    l="    <td colspan=2 style='font-family:monospace'>"+ preseq + "</td>";print >> fh_out, l
+    l="  </tr>";print >> fh_out, l
+    l="  <tr>";print >> fh_out, l
+    l="    <td colspan=2 style='font-family:monospace'>"+ structure + "</td>";print >> fh_out, l
+    l="  </tr>";print >> fh_out, l
+  ## loop end
+  
+  l="</table></div>";print >> fh_out, l
+  l="</body></html>";print >> fh_out, l
+
+  fh_out.close()
+
+
+
+
 
 
 
@@ -476,3 +594,5 @@ def createFile_KnownNonMiRNA_from_TAIR10data (infile = 'TAIR10_GFF3_genes.gff', 
   this function is not used in the pipeline, but users may use it to obtain their own KnonNonMiRNA from TAIR
   '''
   os.system("grep -E 'CDS|rRNA|snoRNA|snRNA|tRNA' " + infile + ' > ' + outfile)
+
+
