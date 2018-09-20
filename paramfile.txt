@@ -1,4 +1,4 @@
-message=write your message here line1\nline2: modify mirLibPipeline map pipe VARNA
+message=write your message here line1\nline2: modify mirLibPipeline split bowtie by chromosome
 #==NOTE that project_path and genome_path have to be absolute paths while the input_path, output_path and b_index_path can be relative paths to the project_path (I am not sure this statement180919).
 project_path=/home/cloudera/workspace/mirLibSpark/
 genome_path=/home/cloudera/workspace/mirLibSpark/dbs/ATH/Genome/
