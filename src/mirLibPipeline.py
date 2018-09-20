@@ -154,7 +154,7 @@ if __name__ == '__main__' :
   
   
   for infile in infiles :
-    mergebowtie = 
+    mergebowtie = []
     if infile[-1:] == '~': continue
     print ("--Processing of the library: ", infile)
 
@@ -255,7 +255,8 @@ if __name__ == '__main__' :
                            .map(bowtie_obj.bowtie_freq_rearrange_rule)\
                            .persist()
     #print('NB bowFrq_rdd: ', len(bowFrq_rdd.collect()))##################################################
-    print('bowFrq_rdd: ', bowFrq_rdd.collect())##################################################
+    splitbowtie = bowFrq_rdd.collect())
+    print('bowFrq_rdd: ', splitbowtie) ##################################################
     
     '''
     #= Filtering miRNA low frequency
