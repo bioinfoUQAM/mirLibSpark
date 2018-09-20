@@ -487,17 +487,17 @@ def write_index (data, rep_output, appId):
     line = '\t'.join( [str(x) for x in i] )
     print >> fh_out, line
   fh_out.close()
-  write_html (rep_output, appId)
+  write_html (data, rep_output, appId)
 
 
-def write_html (rep_output, appId):
+def write_html (DATA, rep_output, appId):
   #=serial, miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore
   infile = rep_output + appId + '_mirnaindex.txt'
 
-  with open (infile, 'r') as fh:
-    DATA = [x.rstrip('\n').split('\t') for x in fh.readlines()]
+  #with open (infile, 'r') as fh:
+  #  DATA = [x.rstrip('\n').split('\t') for x in fh.readlines()]
 
-  outfile='index.html'
+  outfile = rep_output + appId +'_index.html'
   fh_out=open(outfile,'w')
 
   l='<html>\n<head>\n<style>';print >> fh_out, l
