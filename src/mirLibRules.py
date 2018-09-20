@@ -540,6 +540,9 @@ class prog_varna ():
     self.appId = appId
     self.rep_output = rep_output
 
+  def write_IndexImage (self):
+    
+
   def run_VARNA (self, e):
     [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore] = e[0]
     uid = str(e[1]).zfill(4)
@@ -547,7 +550,11 @@ class prog_varna ():
     title = self.appId + '_' + uid + '_' + chromo + '_' + posChr
     filename = self.rep_output + title
     ut.run_VARNA_prog (preSeq, preFold, miRNApos, title, filename) 
+
+    self.write_IndexImage (uid, miRNAseq, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore)
     return e[0]
+
+
 
 
       
