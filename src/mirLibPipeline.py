@@ -110,9 +110,9 @@ if __name__ == '__main__' :
   #= Objects for rule functions
   dmask_obj = mru.prog_dustmasker()
   dmask_cmd, dmask_env = dmask_obj.dmask_pipe_cmd()
-  bowtie_obj = mru.prog_bowtie(b_index_path)
+  #bowtie_obj = mru.prog_bowtie(b_index_path)
+  #bowtie_cmd, bowtie_env = bowtie_obj.Bowtie_pipe_cmd()
   kn_obj = mru.prog_knownNonMiRNA(d_ncRNA_CDS)
-  bowtie_cmd, bowtie_env = bowtie_obj.Bowtie_pipe_cmd()
   prec_obj = mru.extract_precurosrs(genome_path, pri_l_flank, pri_r_flank, pre_flank)
   rnafold_obj = mru.prog_RNAfold(temperature)
   mircheck_obj = mru.prog_mirCheck(mcheck_param)
@@ -235,17 +235,50 @@ if __name__ == '__main__' :
                             .map(lambda e: str(e.rstrip()))\
                             .persist()
     #print('NB dmask_rdd: ', len(dmask_rdd.collect()))############################################
-    
-    #= Mapping with Bowtie
-    ## in : 'seq'
-    ## out: ('seq', [nbLoc, [['strd','chr',posChr],..]])
-    bowtie_rdd = dmask_rdd.map(lambda e: " "+e)\
-                          .pipe(bowtie_cmd, bowtie_env)\
-                          .map(bowtie_obj.bowtie_rearrange_map)\
-                          .groupByKey()\
-                          .map(lambda e: (e[0], [len(list(e[1])), list(e[1])]))\
-                          .persist()
-    #print('NB bowtie_rdd: ', len(bowtie_rdd.collect()))##################################################
+    dmask_rdd.collect()
+
+    ###############################################################
+    ##
+    ##  bowtie chromosome loop
+    ##
+    ##############################################################
+    chromosome = 'chr1, chr2, chr3, chr4, chr5, chrC, chrM'.split(', ')
+    mergebowtie = []
+    for i in range(len(chromosome)):
+      ch = chromosome[i]
+      bowtie_obj = mru.prog_bowtie(b_index_path + ch + '/' + 'atht10_' + ch)
+      #bowtie_obj = mru.prog_bowtie(b_index_path)
+      bowtie_cmd, bowtie_env = bowtie_obj.Bowtie_pipe_cmd()
+
+
+      #= Mapping with Bowtie
+      ## in : 'seq'
+      ## out: ('seq', [nbLoc, [['strd','chr',posChr],..]])
+      bowtie_rdd = dmask_rdd.map(lambda e: " "+e)\
+                            .pipe(bowtie_cmd, bowtie_env)\
+                            .map(bowtie_obj.bowtie_rearrange_map)\
+                            .groupByKey()\
+                            .map(lambda e: (e[0], [len(list(e[1])), list(e[1])]))\
+                            .persist()
+      #print('NB bowtie_rdd: ', len(bowtie_rdd.collect()))##################################################
+      bowtiesplit = bowtie_rdd.collect()
+      mergebowtie += bowtiesplit
+     
+
+
+    #print(mergebowtie)
+    bowtie_rdd = sc.parallelize(mergebowtie, partition)
+    #for i in mergebowtie: 
+    #  for j in i:
+    #    print(j) 
+
+    ###############################################################
+    ##
+    ##  bowtie chromosome loop END
+    ##
+    ##############################################################
+
+
 
     #= Getting the expression value for each reads
     ## in : ('seq', [nbLoc, [['strd','chr',posChr],..]])
@@ -254,7 +287,10 @@ if __name__ == '__main__' :
                            .map(bowtie_obj.bowtie_freq_rearrange_rule)\
                            .persist()
     #print('NB bowFrq_rdd: ', len(bowFrq_rdd.collect()))##################################################
+    splitbowtie = bowFrq_rdd.collect()
+    #print('bowFrq_rdd: ', splitbowtie) ##################################################
     
+    #'''
     #= Filtering miRNA low frequency
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
@@ -266,6 +302,7 @@ if __name__ == '__main__' :
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     nbLoc_rdd = mr_low_rdd.filter(lambda e: e[1][1] > 0 and e[1][1] < limit_nbLoc)#.persist()#############
     #print('NB nbLoc_rdd: ', len(nbLoc_rdd.collect()))###################################################
+    
     
     #= Flatmap the RDD
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
@@ -347,19 +384,20 @@ if __name__ == '__main__' :
 
     print('NB profile_rdd distinct: ', len(profile_rdd.groupByKey().collect()))##
     results = profile_rdd.collect()
+    #'''
 
 
     
     endLib = time.time() 
+    timeDict[inBasename] = endLib - startLib
     print ("  End of the processing     ", end="\n")
 
-     
+    #''' 
     #= write results to a file
     outFile = rep_output  +  appId + '_miRNAprediction_' + inBasename + '.txt'
     ut.writeToFile (results, outFile)
+    #'''
     
-    timeDict[inBasename] = endLib - startLib
-
 
 
 
@@ -367,6 +405,7 @@ if __name__ == '__main__' :
   outTime = rep_output + appId + '_time.txt'
   ut.writeTimeLibToFile (timeDict, outTime, appId, paramDict)
 
+  #'''
   #= make summary table of all libraries in one submission with expressions in the field
   keyword = appId + '_miRNAprediction_'
   infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
@@ -387,7 +426,7 @@ if __name__ == '__main__' :
   #= miranda
   ## in : 'miRNAseq'
   ## out: ('miRNAseq', [[target1 and its scores], [target2 and its scores]])
-  distResultSmallRNA_rdd = sc.parallelize(master_predicted_distinctMiRNAs)
+  distResultSmallRNA_rdd = sc.parallelize(master_predicted_distinctMiRNAs, partition)
   miranda_rdd = distResultSmallRNA_rdd.map(miranda_obj.computeTargetbyMiranda).persist()
   mirna_and_targets = miranda_rdd.collect()
   ut.writeTargetsToFile (mirna_and_targets, rep_output, appId)
@@ -397,6 +436,7 @@ if __name__ == '__main__' :
                          .reduce(lambda a, b: a+b)
   master_distinctTG = list(set(master_distinctTG))
   #print( master_distinctTG )
+  #'''
 
 
   
