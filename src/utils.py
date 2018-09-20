@@ -51,17 +51,10 @@ def pyspark_configuration(appMaster, appName, masterMemory, execMemory, execCore
   myConf.setAppName(appName)  #= 'mirLibHadoop'
   myConf.set("spark.driver.memory", masterMemory)
   myConf.set("spark.executor.memory", execMemory) #= '4g'
-  myConf.set("spark.cores.max", execCores) #= the maximum amount of CPU cores to request for the application from across the cluster (not from each machine)
-  #myConf.set('spark.dynamicAllocation.enabled') # testing now --> fail on colosse
+  myConf.set("spark.cores.max", execCores) 
   
-  #myConf.set("spark.yarn.am.memory", masterMemory) # for yarn
-  #myConf.set("spark.executor.instances", execNb) # for yarn
-  #myConf.set("spark.yarn.am.cores", execCores) # for yarn
-
   # other keys: "spark.master" = 'spark://5.6.7.8:7077'
-  #             "spark.executor.memory"
   #             "spark.driver.cores"
-  #             'spark.executor.cores'
   #             "spark.default.parallelism"
   return SparkContext(conf = myConf)
 
@@ -205,12 +198,12 @@ def readParam (paramfile, sep = '='):
   fh.close()
   
   for line in DATA:
-    if not line.startswith("#"):
-      data = line.rstrip('\r\n').split(sep)
-      paramDict[data[0]] = data[1]
-    elif line.startswith('#message'): 
+    if line.startswith('message'): 
       msg = line.rstrip('\r\n')[9:].split('\\n')
       for i in msg: print(i)
+    elif not line.startswith("#"):
+      data = line.rstrip('\r\n').split(sep)
+      paramDict[data[0]] = data[1]
   
   return paramDict
 

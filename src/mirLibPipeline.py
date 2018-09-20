@@ -42,8 +42,6 @@ if __name__ == '__main__' :
   paramfile = sys.argv[1]
   paramDict = ut.readParam (paramfile)
 
-  #message = paramDict['message'].split()
-  #for i in message: print(i)
   #= Parameters and cutoffs
   input_type = paramDict['input_type']
   adapter = ut.tr_U_T (paramDict['adapter'])
@@ -51,12 +49,11 @@ if __name__ == '__main__' :
   rep_input = paramDict['input_path']
   rep_output = paramDict['output_path']
   rep_msub_jobsOut = project_path + '/workdir/jobsOut'
-  #my_sep = paramDict['my_sep']                      # Separator
   rep_tmp = project_path + '/tmp/'                   # tmp file folder
 
   #= spark configuration
-  appMaster = paramDict['sc_master']                #"local" 
-  appName = paramDict['sc_appname']                 #"mirLibHadoop"
+  appMaster = paramDict['sc_master']                #"local[*]" 
+  appName = paramDict['sc_appname']                 #"mirLibSpark"
   mstrMemory = paramDict['sc_mstrmemory']           #"4g"
   execMemory = paramDict['sc_execmemory']           #"4g"
   execCores = paramDict['sc_execcores']             #2
