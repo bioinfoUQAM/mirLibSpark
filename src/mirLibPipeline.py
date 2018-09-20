@@ -24,7 +24,7 @@ TO DO: NEED TO clean up tmp folder every time automaticly
 '''
 
 from __future__ import print_function
-#import sys
+import sys
 import os.path
 import time
 from os import listdir
