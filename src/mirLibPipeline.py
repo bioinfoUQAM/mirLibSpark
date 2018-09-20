@@ -89,7 +89,7 @@ if __name__ == '__main__' :
   mcheck_param = paramDict['mcheck_param']          #'def'    # def : default parameters / mey : meyers parameters
 
   #= miRdup parameter
-  #path_RNAfold = ut.find_RNAfold_path ()
+  path_RNAfold = ut.find_RNAfold_path ()
   mirdup_model = project_path + '/lib/miRdup_1.4/model/' + paramDict['mirdup_model']
   mirdup_jar = project_path + '/lib/miRdup_1.4/miRdup.jar'
   mirdup_limit =  float(paramDict['mirdup_limit'])
