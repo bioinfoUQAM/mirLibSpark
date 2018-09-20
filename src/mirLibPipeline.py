@@ -244,7 +244,8 @@ if __name__ == '__main__' :
     ##############################################################
     chromosome = 'chr1, chr2, chr3, chr4, chr5, chrC, chrM'.split(', ')
     mergebowtie = []
-    for ch in chromosome:
+    for i in range(chromosome):
+      ch = chromosome[i]
       bowtie_obj = mru.prog_bowtie(b_index_path + ch + '/' + 'atht10_' + ch)
       #bowtie_obj = mru.prog_bowtie(b_index_path)
       bowtie_cmd, bowtie_env = bowtie_obj.Bowtie_pipe_cmd()
@@ -260,11 +261,18 @@ if __name__ == '__main__' :
                             .map(lambda e: (e[0], [len(list(e[1])), list(e[1])]))\
                             .persist()
       #print('NB bowtie_rdd: ', len(bowtie_rdd.collect()))##################################################
-
       bowtiesplit = bowtie_rdd.collect()
       mergebowtie += bowtiesplit
-      
+      if i > 0: 
+        addbowtie_rdd = addbowtie_rdd.join(bowtie_rdd).persist()
+        addbowtie_rdd.collect()
+      else: addbowtie_rdd = bowtie_rdd
+     
+
+
     print(mergebowtie)
+    print()
+    print(addbowtie_rdd)
     ###############################################################
     ##
     ##  bowtie chromosome loop END
