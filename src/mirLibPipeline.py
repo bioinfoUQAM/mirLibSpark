@@ -242,8 +242,7 @@ if __name__ == '__main__' :
     ##  bowtie chromosome loop
     ##
     ##############################################################
-    #chromosome = 'chr1, chr2, chr3, chr4, chr5, chrC, chrM'.split(', ')
-    chromosome = 'chr0'.split(', ')
+    chromosome = 'chr1, chr2, chr3, chr4, chr5, chrC, chrM'.split(', ')
     mergebowtie = []
     for ch in chromosome:
       #bowtie_obj = mru.prog_bowtie(b_index_path + ch)
