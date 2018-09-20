@@ -447,19 +447,17 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
   return sorted(master_predicted_distinctMiRNAs), sorted(master_distinctMiRNAs_infos)
 
 
-def writeTargetsToFile (targets, rep_output, appId):
+def writeTargetsToFile (mirna_and_targets, rep_output, appId):
   '''
   targets = [miRNAseq, [targets]]
   '''
-  outfile = rep_output + appId + '_targets.txt'
+  outfile = rep_output + appId + '_mirna_and_targets.txt'
   fh_out = open (outfile, 'w')
 
-  for i in targets:
-    #miRNAseq = i[0]
-    #genes = i[1]
-    #line = miRNAseq + '\t' + str(genes)
+  for i in mirna_and_targets:
+    #mirna = i[0]
+    #targets = [ ' '.join(t) for t in targets]
     print >> fh_out, i[0], i[1]
-  #print >> fh_out, targets
 
 
   fh_out.close()

@@ -24,10 +24,11 @@ TO DO: NEED TO clean up tmp folder every time automaticly
 '''
 
 from __future__ import print_function
-import sys
+#import sys
 import os.path
 import time
-from os import listdir
+#from os import listdir
+import os.listdir
 #
 import utils as ut
 import mirLibRules as mru
@@ -148,7 +149,7 @@ if __name__ == '__main__' :
   appId = str(sc.applicationId)
   
   #= Fetch library files in rep_input
-  infiles = [f for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
+  infiles = [f for f in os.listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
   
   #= Time processing of libraries
   timeDict = {}
@@ -375,29 +376,13 @@ if __name__ == '__main__' :
 
 
 
-
-  #sc.stop() #= allow to run multiple SparkContexts
-
-
-
   #= print executions time  to a file
   outTime = rep_output + appId + '_time.txt'
   ut.writeTimeLibToFile (timeDict, outTime, appId, paramDict)
 
-  '''
-  ### test to initiate a new sc context ########
-  infile = outTime ##update
-  sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, execCores) ##update
-  distFile_rdd = sc.textFile("file:///" + infile, partition) ##update
-  test = distFile_rdd.collect() ##update
-  print(test) ##update
-  sc.stop() ##update
-  '''
-
-
   #= make summary table of all libraries in one submission with expressions in the field
   keyword = appId + '_miRNAprediction_'
-  infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
+  infiles = [f for f in os.listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
   master_predicted_distinctMiRNAs, master_distinctPrecursor_infos = ut.writeSummaryExpressionToFile (infiles, rep_output, appId)
 
 
@@ -421,19 +406,26 @@ if __name__ == '__main__' :
   ut.writeTargetsToFile (mirna_and_targets, rep_output, appId)
 
 
-  master_tg = miranda_rdd.map(lambda e: [  i[0].split('.')[0] for i in e[1]  ]).reduce(lambda a, b: a+b)
-  print( list(set(master_tg)) )
-  sc.stop() ##update
+  master_distinctTG = miranda_rdd.map(lambda e: [  i[0].split('.')[0] for i in e[1]  ])\
+                         .reduce(lambda a, b: a+b)
+  master_distinctTG = list(set(master_distinctTG))
+  #print( master_distinctTG )
 
-
-
-
-
-  #= post-generating miranda
-  #distinct_pred_rdd = sc.parallelize(master_predicted_distinctMiRNAs)
-  #miranda_rdd = distinct_pred_rdd.map(miranda_obj.computeTargetbyMiranda)
-  #targets = miranda_rdd.collect()
-  #ut.writeTargetsToFile (targets, rep_output, appId)
 
   
-  #sc.stop() #= allow to run multiple SparkContexts
+
+
+  
+  sc.stop() #= allow to run multiple SparkContexts
+
+
+
+  '''
+  ### test to initiate a new sc context ########
+  infile = outTime ##update
+  sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, execCores) ##update
+  distFile_rdd = sc.textFile("file:///" + infile, partition) ##update
+  test = distFile_rdd.collect() ##update
+  print(test) ##update
+  sc.stop() ##update
+  '''
