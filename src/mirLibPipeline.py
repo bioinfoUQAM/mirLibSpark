@@ -267,9 +267,10 @@ if __name__ == '__main__' :
 
 
     #print(mergebowtie)
-    for i in mergebowtie: 
-      for j in i:
-        print(j) 
+    bowtie_rdd = sc.parallelize(mergebowtie, partition)
+    #for i in mergebowtie: 
+    #  for j in i:
+    #    print(j) 
 
     ###############################################################
     ##
