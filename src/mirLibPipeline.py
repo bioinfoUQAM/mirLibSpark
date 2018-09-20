@@ -154,7 +154,6 @@ if __name__ == '__main__' :
   
   
   for infile in infiles :
-    #mergebowtie = []
     if infile[-1:] == '~': continue
     print ("--Processing of the library: ", infile)
 
@@ -244,6 +243,7 @@ if __name__ == '__main__' :
     ##
     ##############################################################
     chromosome = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    mergebowtie = []
     for ch in chromosome:
       bowtie_obj = mru.prog_bowtie(b_index_path)
       bowtie_cmd, bowtie_env = bowtie_obj.Bowtie_pipe_cmd()
@@ -261,10 +261,9 @@ if __name__ == '__main__' :
       #print('NB bowtie_rdd: ', len(bowtie_rdd.collect()))##################################################
 
       bowtiesplit = bowtie_rdd.collect()
-      #mergebowtie += bowtiesplit
+      mergebowtie += bowtiesplit
       
-    #print(mergebowtie)
-
+    print(mergebowtie)
     ###############################################################
     ##
     ##  bowtie chromosome loop END
