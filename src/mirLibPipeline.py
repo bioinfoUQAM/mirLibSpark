@@ -272,7 +272,7 @@ if __name__ == '__main__' :
 
     print(mergebowtie)
     print()
-    print(addbowtie_rdd.collect)
+    print(addbowtie_rdd.collect())
     ###############################################################
     ##
     ##  bowtie chromosome loop END
