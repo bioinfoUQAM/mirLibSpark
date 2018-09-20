@@ -418,6 +418,7 @@ if __name__ == '__main__' :
   VARNA_rdd = distData_rdd.zipWithIndex()\
                           .map(varna_obj.run_VARNA)
   generateVis = VARNA_rdd.collect() ##update 
+  print(generateVis)
   sc.stop() ##update
 
 
