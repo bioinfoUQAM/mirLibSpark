@@ -235,7 +235,7 @@ if __name__ == '__main__' :
                             .map(lambda e: str(e.rstrip()))\
                             .persist()
     #print('NB dmask_rdd: ', len(dmask_rdd.collect()))############################################
-    
+    dmask_rdd.collect()
 
     ###############################################################
     ##
