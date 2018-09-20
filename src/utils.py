@@ -13,6 +13,9 @@ import subprocess
 import sys
 
 def validate_options(paramDict):
+  '''
+  wip: examine the combination of the parameters to see if it is compatible logically
+  '''
   input_type = paramDict['input_type']
   adapter = paramDict['adapter']
 
@@ -47,7 +50,7 @@ def find_RNAfold_path ():
 def pyspark_configuration(appMaster, appName, masterMemory, execMemory, execCores):
   from pyspark import SparkConf, SparkContext
   myConf = SparkConf()
-  #myConf.setMaster(appMaster) #= 'local[2]'
+  myConf.setMaster(appMaster) #= 'local[2] or local[*]'
   myConf.setAppName(appName)  #= 'mirLibHadoop'
   myConf.set("spark.driver.memory", masterMemory)
   myConf.set("spark.executor.memory", execMemory) #= '4g'
@@ -444,31 +447,25 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
   return sorted(master_predicted_distinctMiRNAs), sorted(master_distinctMiRNAs_infos)
 
 
-def writeTargetsToFile (targets, rep_output, appId):
+def writeTargetsToFile (mirna_and_targets, rep_output, appId):
   '''
   targets = [miRNAseq, [targets]]
   '''
-  outfile = rep_output + appId + '_targets.txt'
+  outfile = rep_output + appId + '_mirna_and_targets.txt'
   fh_out = open (outfile, 'w')
 
-  for i in targets:
-    miRNAseq = i[0]
-    genes = i[1]
-    line = miRNAseq + '\t' + str(genes)
-    print >> fh_out, line
+  for i in mirna_and_targets:
+    #mirna = i[0]
+    #targets = [ ' '.join(t) for t in targets]
+    print >> fh_out, i[0], i[1]
+
 
   fh_out.close()
 
 #############################
 #############################
-
-# precursor visualization
-def run_VARNA_prog (preSEQ, preFOLD, miRNApos, title, filename):
-  # "12-20:fill=#ff0000"
-  cmd = 'java -cp ../lib/VARNAv3-93.jar fr.orsay.lri.varna.applications.VARNAcmd -sequenceDBN "'+ preSEQ +'" -structureDBN "' + preFOLD + '" -highlightRegion "'+ miRNApos + ':fill=#ff0000" -title "' + title + '" -o '+ filename +'.jpg'
-  os.system(cmd)
-
 def write_index (data, rep_output, appId):
+  #=serial, miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore
   outfile = rep_output + appId + '_precursorindex.txt'
   fh_out = open (outfile, 'w')
   for i in data:

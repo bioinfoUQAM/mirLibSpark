@@ -411,14 +411,8 @@ class prog_miRanda ():
     ## NOTE before disable miranda (170714): need to modify the code to use options such as -sc, -en, -go, -ge, -quiet
     '''
 
-    miRNAseq = e[0]
-    #miRNAseq = e #= be careful "return e" and "e[1].append(target_results)"
+    miRNAseq = e
 
-    #'''
-    if e[0] in self.dict_seq_target.keys():
-      e[1].append(self.dict_seq_target[e[0]])
-      return e
-    #'''
 
     tmp_file = self.rep_tmp + miRNAseq + '_tmpseq_forMiranda.txt' 
     with open (tmp_file, 'w') as fh_tmp:
@@ -452,9 +446,9 @@ class prog_miRanda ():
     #= only the top 15 targets are curated for report
     if len(target_results) > 15: target_results = target_results[:15]
     self.dict_seq_target[miRNAseq] = target_results
-    e[1].append(target_results)
-    return e
-    #return [e, target_results]
+    #e[1].append(target_results)
+    #return e
+    return [e, target_results]
 
 
 class prog_miRdup ():
@@ -540,13 +534,22 @@ class prog_varna ():
     self.appId = appId
     self.rep_output = rep_output
 
+  def run_VARNA_prog (self, preSEQ, preFOLD, miRNApos, title, filename):
+    #-highlightRegion "48-63:fill=#bcffdd;81-102:fill=#bcffdd"
+    cmd = 'java -cp ../lib/VARNAv3-93.jar fr.orsay.lri.varna.applications.VARNAcmd -sequenceDBN "'+ preSEQ +'" -structureDBN "' + preFOLD + '" -highlightRegion "'+ miRNApos + ':fill=#ff0000" -title "' + title + '" -o '+ filename +'.jpg'
+    os.system(cmd)
+    #cmd = ['java', '-cp', '../lib/VARNAv3-93.jar', 'fr.orsay.lri.varna.applications.VARNAcmd', '-sequenceDBN', preSEQ, '-structureDBN', preFOLD, '-highlightRegion',  '"' + miRNApos + ':fill=#ff0000"', '-title', '-o', filename + '.jpg'] 
+    #FNULL = open(os.devnull, 'w')
+    #sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
+    #FNULL.close()
+
   def run_VARNA (self, e):
     [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore] = e[0]
     uid = str(e[1]).zfill(4)
     miRNApos = str(int(posMirPre)) + '-' + str(int(posMirPre) + len(miRNAseq)-1) 
     title = self.appId + '_' + uid + '_' + chromo + '_' + posChr
     filename = self.rep_output + title
-    ut.run_VARNA_prog (preSeq, preFold, miRNApos, title, filename) 
+    self.run_VARNA_prog (preSeq, preFold, miRNApos, title, filename) 
     e[0].insert(0, e[1])
     return e[0]
 

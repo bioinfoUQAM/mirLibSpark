@@ -5,6 +5,8 @@ author: Chao-Jung Wu
 date: 2017-03-28
 version: 1.01.00
 
+update: 2018-09-20 cjwu, include varna, miranda, html, format output, reduce dependency of third party programs
+
 Le programme implemente le pipeline d'analyse des sRAN et prediction des miRNAs. Les principales etapes de predictions sont :
   - 1 Filtrage
   - 2 Alignement 
@@ -13,8 +15,6 @@ Le programme implemente le pipeline d'analyse des sRAN et prediction des miRNAs.
   - 5 prediction/validation du miRNA
   - 6 validaiton/filtrage avec l'expression
   
-La version actuelle accepte un seul argument qui est le fichier contenant les sequences reads a traiter.
-
 
 time of execution factors:
 join and zip are expensive. Consider how to avoid them.
@@ -101,18 +101,33 @@ if __name__ == '__main__' :
   Max_Energy_cutoff = paramDict['Max_Energy_cutoff'] #= NOT WORKING YET
   Gap_Penalty = paramDict['Gap_Penalty']
 
-  ## EXMAMIN OPTIONS ####################################
+  ## EXMAMINE OPTIONS ####################################
   ut.validate_options(paramDict)
-  #######################################################
 
   #= make required folders if not exist
   reps = [rep_output, rep_tmp, rep_msub_jobsOut]
   ut.makedirs_reps (reps)
+
+  #= Objects for rule functions
+  dmask_obj = mru.prog_dustmasker()
+  dmask_cmd, dmask_env = dmask_obj.dmask_pipe_cmd()
+  bowtie_obj = mru.prog_bowtie(b_index_path)
+  kn_obj = mru.prog_knownNonMiRNA(d_ncRNA_CDS)
+  bowtie_cmd, bowtie_env = bowtie_obj.Bowtie_pipe_cmd()
+  prec_obj = mru.extract_precurosrs(genome_path, pri_l_flank, pri_r_flank, pre_flank)
+  rnafold_obj = mru.prog_RNAfold(temperature)
+  mircheck_obj = mru.prog_mirCheck(mcheck_param)
+  mirdup_obj = mru.prog_miRdup (rep_tmp, mirdup_model, mirdup_jar, path_RNAfold)
+  profile_obj = mru.prog_dominant_profile()
+  #
+  miranda_obj = mru.prog_miRanda(Max_Score_cutoff, Max_Energy_cutoff, target_file, rep_tmp, miranda_exe, Gap_Penalty)
+
   
   #= Spark context
   sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, execCores)
   #
-  sc.addFile(known_non)################################
+  sc.addFile(known_non)
+  #
   sc.addPyFile(project_path + '/src/utils.py')
   sc.addPyFile(project_path + '/src/mirLibRules.py')
   sc.addFile(project_path + '/src/eval_mircheck.pl')
@@ -132,20 +147,6 @@ if __name__ == '__main__' :
   #= Spark application ID
   appId = str(sc.applicationId)
   
-  #= Objects for rule functions
-  dmask_obj = mru.prog_dustmasker()
-  dmask_cmd, dmask_env = dmask_obj.dmask_pipe_cmd()
-  bowtie_obj = mru.prog_bowtie(b_index_path)
-  kn_obj = mru.prog_knownNonMiRNA(d_ncRNA_CDS)
-  bowtie_cmd, bowtie_env = bowtie_obj.Bowtie_pipe_cmd()
-  prec_obj = mru.extract_precurosrs(genome_path, pri_l_flank, pri_r_flank, pre_flank)
-  rnafold_obj = mru.prog_RNAfold(temperature)
-  mircheck_obj = mru.prog_mirCheck(mcheck_param)
-  mirdup_obj = mru.prog_miRdup (rep_tmp, mirdup_model, mirdup_jar, path_RNAfold)
-  profile_obj = mru.prog_dominant_profile()
-  #
-  miranda_obj = mru.prog_miRanda(Max_Score_cutoff, Max_Energy_cutoff, target_file, rep_tmp, miranda_exe, Gap_Penalty)
-
   #= Fetch library files in rep_input
   infiles = [f for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
   
@@ -374,14 +375,49 @@ if __name__ == '__main__' :
 
 
 
-
-  sc.stop() #= allow to run multiple SparkContexts
-
-
-
   #= print executions time  to a file
   outTime = rep_output + appId + '_time.txt'
   ut.writeTimeLibToFile (timeDict, outTime, appId, paramDict)
+
+  #= make summary table of all libraries in one submission with expressions in the field
+  keyword = appId + '_miRNAprediction_'
+  infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
+  master_predicted_distinctMiRNAs, master_distinctPrecursor_infos = ut.writeSummaryExpressionToFile (infiles, rep_output, appId)
+
+
+  #= create precursor images VARNA
+  ## in : [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
+  ## out: [zipindex, miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
+  varna_obj = mru.prog_varna(appId, rep_output) # this object needs to be initiated after appId is generated
+  distPrecursor_rdd = sc.parallelize(master_distinctPrecursor_infos, partition)
+  VARNA_rdd = distPrecursor_rdd.zipWithIndex()\
+                          .map(varna_obj.run_VARNA)#.persist()
+  indexVis = VARNA_rdd.collect()
+  ut.write_index (indexVis, rep_output, appId)
+
+
+  #= miranda
+  ## in : 'miRNAseq'
+  ## out: ('miRNAseq', [[target1 and its scores], [target2 and its scores]])
+  distResultSmallRNA_rdd = sc.parallelize(master_predicted_distinctMiRNAs)
+  miranda_rdd = distResultSmallRNA_rdd.map(miranda_obj.computeTargetbyMiranda).persist()
+  mirna_and_targets = miranda_rdd.collect()
+  ut.writeTargetsToFile (mirna_and_targets, rep_output, appId)
+
+
+  master_distinctTG = miranda_rdd.map(lambda e: [  i[0].split('.')[0] for i in e[1]  ])\
+                         .reduce(lambda a, b: a+b)
+  master_distinctTG = list(set(master_distinctTG))
+  #print( master_distinctTG )
+
+
+  
+
+
+  
+  sc.stop() #= allow to run multiple SparkContexts
+
+
 
   '''
   ### test to initiate a new sc context ########
@@ -392,42 +428,3 @@ if __name__ == '__main__' :
   print(test) ##update
   sc.stop() ##update
   '''
-
-
-  #= make summary table of all libraries in one submission with expressions in the field
-  keyword = appId + '_miRNAprediction_'
-  infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
-  master_predicted_distinctMiRNAs, master_distinctMiRNAs_infos = ut.writeSummaryExpressionToFile (infiles, rep_output, appId)
-
-
-  '''## tmp
-  [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore] = master_distinctMiRNAs_infos[0]
-  miRNApos = str(int(posMirPre)) + '-' + str(int(posMirPre) + len(miRNAseq)-1) 
-  title = appId + '_' + chromo + '_' + posChr
-  #filename = '../output/' + '2'.zfill(4) + '_' + title
-  filename = '../output/' + title
-  ut.run_VARNA_prog (preSeq, preFold, miRNApos, title, filename)  '''
-
-  #### test to parallize list and run VARNA
-  varna_obj = mru.prog_varna(appId, rep_output)
-
-  sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, execCores) ##update
-  distData_rdd = sc.parallelize(master_distinctMiRNAs_infos, partition) ##update
-  VARNA_rdd = distData_rdd.zipWithIndex()\
-                          .map(varna_obj.run_VARNA)
-  indexVis = VARNA_rdd.collect() ##update
-  ut.write_index (indexVis, rep_output, appId) ##update
-  sc.stop() ##update
-
-
-
-
-
-  #= post-generating miranda
-  #distinct_pred_rdd = sc.parallelize(master_predicted_distinctMiRNAs)
-  #miranda_rdd = distinct_pred_rdd.map(miranda_obj.computeTargetbyMiranda)
-  #targets = miranda_rdd.collect()
-  #ut.writeTargetsToFile (targets, rep_output, appId)
-
-  
-  #sc.stop() #= allow to run multiple SparkContexts
