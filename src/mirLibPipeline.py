@@ -255,7 +255,7 @@ if __name__ == '__main__' :
                            .map(bowtie_obj.bowtie_freq_rearrange_rule)\
                            .persist()
     #print('NB bowFrq_rdd: ', len(bowFrq_rdd.collect()))##################################################
-    splitbowtie = bowFrq_rdd.collect())
+    splitbowtie = bowFrq_rdd.collect()
     print('bowFrq_rdd: ', splitbowtie) ##################################################
     
     '''
