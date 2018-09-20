@@ -546,8 +546,9 @@ class prog_varna ():
     #os.system(cmd)
 
     cmd = cmd.split(' ') 
+    FNULL = open(os.devnull, 'w')
     sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
-
+    FNULL.close()
 
   def run_VARNA (self, e):
     [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore] = e[0]
