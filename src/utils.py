@@ -13,6 +13,9 @@ import subprocess
 import sys
 
 def validate_options(paramDict):
+  '''
+  wip: examine the combination of the parameters to see if it is compatible logically
+  '''
   input_type = paramDict['input_type']
   adapter = paramDict['adapter']
 

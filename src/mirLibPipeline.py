@@ -101,9 +101,8 @@ if __name__ == '__main__' :
   Max_Energy_cutoff = paramDict['Max_Energy_cutoff'] #= NOT WORKING YET
   Gap_Penalty = paramDict['Gap_Penalty']
 
-  ## EXMAMIN OPTIONS ####################################
+  ## EXMAMINE OPTIONS ####################################
   ut.validate_options(paramDict)
-  #######################################################
 
   #= make required folders if not exist
   reps = [rep_output, rep_tmp, rep_msub_jobsOut]
@@ -121,13 +120,15 @@ if __name__ == '__main__' :
   mirdup_obj = mru.prog_miRdup (rep_tmp, mirdup_model, mirdup_jar, path_RNAfold)
   profile_obj = mru.prog_dominant_profile()
   #
+  varna_obj = mru.prog_varna(appId, rep_output)
   miranda_obj = mru.prog_miRanda(Max_Score_cutoff, Max_Energy_cutoff, target_file, rep_tmp, miranda_exe, Gap_Penalty)
 
   
   #= Spark context
   sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, execCores)
   #
-  sc.addFile(known_non)################################
+  sc.addFile(known_non)
+  #
   sc.addPyFile(project_path + '/src/utils.py')
   sc.addPyFile(project_path + '/src/mirLibRules.py')
   sc.addFile(project_path + '/src/eval_mircheck.pl')
@@ -376,7 +377,7 @@ if __name__ == '__main__' :
 
 
 
-  sc.stop() #= allow to run multiple SparkContexts
+  #sc.stop() #= allow to run multiple SparkContexts
 
 
 
@@ -401,18 +402,9 @@ if __name__ == '__main__' :
   master_predicted_distinctMiRNAs, master_distinctMiRNAs_infos = ut.writeSummaryExpressionToFile (infiles, rep_output, appId)
 
 
-  '''## tmp
-  [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore] = master_distinctMiRNAs_infos[0]
-  miRNApos = str(int(posMirPre)) + '-' + str(int(posMirPre) + len(miRNAseq)-1) 
-  title = appId + '_' + chromo + '_' + posChr
-  #filename = '../output/' + '2'.zfill(4) + '_' + title
-  filename = '../output/' + title
-  ut.run_VARNA_prog (preSeq, preFold, miRNApos, title, filename)  '''
+  #### create precursor images VARNA
 
-  #### test to parallize list and run VARNA
-  varna_obj = mru.prog_varna(appId, rep_output)
-
-  sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, execCores) ##update
+  #sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, execCores) ##update
   distData_rdd = sc.parallelize(master_distinctMiRNAs_infos, partition) ##update
   VARNA_rdd = distData_rdd.zipWithIndex()\
                           .map(varna_obj.run_VARNA)
