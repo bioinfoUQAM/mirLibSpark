@@ -500,21 +500,21 @@ def write_html (rep_output, appId):
   outfile='index.html'
   fh_out=open(outfile,'w')
 
-  l='<html>\n<head>\n<style>';print(l,fh_out)
-  l='table{\nfont-family:arial,sans-serif;\nborder-collapse:collapse;\nwidth:90%;\nmargin:auto;\n}';print(l,fh_out)
-  l='td,th{\nborder:1pxsolid#dddddd;\ntext-align:left;\npadding:8px;\nmax-width:200px;\nword-break:break-all;\n}';print(l,fh_out)
-  l='tr:nth-child(even){background-color:#dddddd;}';print(l,fh_out)
-  l='img.heightSet{max-width:100px;max-height:200px;}';print(l,fh_out)
-  l='img:hover{box-shadow:002px1pxrgba(0,140,186,0.5);}';print(l,fh_out)
-  l='</style></head><body>';print(l,fh_out)
-  l='<div GenomicPre><h2>miRNAs and their genomic precursors</h2><table>';print(l,fh_out)
-  l='  <tr>';print(l,fh_out)
-  l='    <th>Serial</th>';print(l,fh_out)
-  l='    <th>NewID</th>';print(l,fh_out)
-  l='    <th>image</th>';print(l,fh_out)
-  l='    <th>miRNA.pre-miRNA.Structure</th>';print(l,fh_out)
-  l='    <th>Coordination</th>';print(l,fh_out)
-  l='  </tr>';print(l,fh_out)
+  l='<html>\n<head>\n<style>';print >> fh_out, l
+  l='table{\nfont-family:arial,sans-serif;\nborder-collapse:collapse;\nwidth:90%;\nmargin:auto;\n}';print >> fh_out, l
+  l='td,th{\nborder:1pxsolid#dddddd;\ntext-align:left;\npadding:8px;\nmax-width:200px;\nword-break:break-all;\n}';print >> fh_out, l
+  l='tr:nth-child(even){background-color:#dddddd;}';print >> fh_out, l
+  l='img.heightSet{max-width:100px;max-height:200px;}';print >> fh_out, l
+  l='img:hover{box-shadow:002px1pxrgba(0,140,186,0.5);}';print >> fh_out, l
+  l='</style></head><body>';print >> fh_out, l
+  l='<div GenomicPre><h2>miRNAs and their genomic precursors</h2><table>';print >> fh_out, l
+  l='  <tr>';print >> fh_out, l
+  l='    <th>Serial</th>';print >> fh_out, l
+  l='    <th>NewID</th>';print >> fh_out, l
+  l='    <th>image</th>';print >> fh_out, l
+  l='    <th>miRNA.pre-miRNA.Structure</th>';print >> fh_out, l
+  l='    <th>Coordination</th>';print >> fh_out, l
+  l='  </tr>';print >> fh_out, l
   ## loop start
   for i in DATA[1:]:
     serial = i[0]
@@ -530,24 +530,27 @@ def write_html (rep_output, appId):
 
     path = rep_output + serial.zfill(4) + '_' + newid + '_' + chromo + '_' + poschromo + '.jpg'
   
-    l='  <tr>';print(l,fh_out)
-    l="    <td rowspan=3 style='width: 120px;'><strong>"+ serial + "</strong></td>";print(l,fh_out)
-    l="    <td rowspan=3 style='width: 120px;'>"+newid+"</td>";print(l,fh_out)
-    l="    <td rowspan=3 > <a href="+ path + " target='_blank'><img class='heightSet' src="+ path + " alt='Struture'></a></td>";print(l,fh_out)
-    l="    <td style='width: 400px;'>"+ mirna + "</td>";print(l,fh_out)
-    l="    <td>"+ chromo + ":"+ poschromo + " ["+ strand + "] </td>";print(l,fh_out)
-    l="  </tr>";print(l,fh_out)
-    l="  <tr>";print(l,fh_out)
-    l="    <td colspan=2 style='font-family:monospace'>"+ preseq + "</td>";print(l,fh_out)
-    l="  </tr>";print(l,fh_out)
-    l="  <tr>";print(l,fh_out)
-    l="    <td colspan=2 style='font-family:monospace'>"+ structure + "</td>";print(l,fh_out)
-    l="  </tr>";print(l,fh_out)
+    l='  <tr>';print >> fh_out, l
+    l="    <td rowspan=3 style='width: 120px;'><strong>"+ serial + "</strong></td>";print >> fh_out, l
+    l="    <td rowspan=3 style='width: 120px;'>"+newid+"</td>";print >> fh_out, l
+    l="    <td rowspan=3 > <a href="+ path + " target='_blank'><img class='heightSet' src="+ path + " alt='Struture'></a></td>";print >> fh_out, l
+    l="    <td style='width: 400px;'>"+ mirna + "</td>";print >> fh_out, l
+    l="    <td>"+ chromo + ":"+ poschromo + " ["+ strand + "] </td>";print >> fh_out, l
+    l="  </tr>";print >> fh_out, l
+    l="  <tr>";print >> fh_out, l
+    l="    <td colspan=2 style='font-family:monospace'>"+ preseq + "</td>";print >> fh_out, l
+    l="  </tr>";print >> fh_out, l
+    l="  <tr>";print >> fh_out, l
+    l="    <td colspan=2 style='font-family:monospace'>"+ structure + "</td>";print >> fh_out, l
+    l="  </tr>";print >> fh_out, l
   ## loop end
-  l="</table></div>";print(l,fh_out)
-  l="</body></html>";print(l,fh_out)
+  l="</table></div>";print >> fh_out, l
+  l="</body></html>";print >> fh_out, l
 
   fh_out.close()
+
+
+
 
 
 
