@@ -238,7 +238,7 @@ if __name__ == '__main__' :
     #print('NB dmask_rdd: ', len(dmask_rdd.collect()))############################################
     
 
-    chromosome = [1, 2, 3]
+    chromosome = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     for ch in chromosome:
 
       #= Mapping with Bowtie
