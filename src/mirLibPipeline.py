@@ -154,6 +154,7 @@ if __name__ == '__main__' :
   
   
   for infile in infiles :
+    mergebowtie = 
     if infile[-1:] == '~': continue
     print ("--Processing of the library: ", infile)
 
@@ -254,7 +255,9 @@ if __name__ == '__main__' :
                            .map(bowtie_obj.bowtie_freq_rearrange_rule)\
                            .persist()
     #print('NB bowFrq_rdd: ', len(bowFrq_rdd.collect()))##################################################
+    print('bowFrq_rdd: ', bowFrq_rdd.collect())##################################################
     
+    '''
     #= Filtering miRNA low frequency
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
@@ -266,6 +269,7 @@ if __name__ == '__main__' :
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     nbLoc_rdd = mr_low_rdd.filter(lambda e: e[1][1] > 0 and e[1][1] < limit_nbLoc)#.persist()#############
     #print('NB nbLoc_rdd: ', len(nbLoc_rdd.collect()))###################################################
+    
     
     #= Flatmap the RDD
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
@@ -347,6 +351,7 @@ if __name__ == '__main__' :
 
     print('NB profile_rdd distinct: ', len(profile_rdd.groupByKey().collect()))##
     results = profile_rdd.collect()
+    '''
 
 
     
@@ -367,6 +372,7 @@ if __name__ == '__main__' :
   outTime = rep_output + appId + '_time.txt'
   ut.writeTimeLibToFile (timeDict, outTime, appId, paramDict)
 
+  '''
   #= make summary table of all libraries in one submission with expressions in the field
   keyword = appId + '_miRNAprediction_'
   infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
@@ -397,6 +403,7 @@ if __name__ == '__main__' :
                          .reduce(lambda a, b: a+b)
   master_distinctTG = list(set(master_distinctTG))
   #print( master_distinctTG )
+  '''
 
 
   
