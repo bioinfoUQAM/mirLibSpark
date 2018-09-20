@@ -120,7 +120,6 @@ if __name__ == '__main__' :
   mirdup_obj = mru.prog_miRdup (rep_tmp, mirdup_model, mirdup_jar, path_RNAfold)
   profile_obj = mru.prog_dominant_profile()
   #
-  varna_obj = mru.prog_varna(appId, rep_output)
   miranda_obj = mru.prog_miRanda(Max_Score_cutoff, Max_Energy_cutoff, target_file, rep_tmp, miranda_exe, Gap_Penalty)
 
   
@@ -405,6 +404,7 @@ if __name__ == '__main__' :
   #### create precursor images VARNA
 
   #sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, execCores) ##update
+  varna_obj = mru.prog_varna(appId, rep_output) # this object needs to be initiated after appId is generated
   distData_rdd = sc.parallelize(master_distinctMiRNAs_infos, partition) ##update
   VARNA_rdd = distData_rdd.zipWithIndex()\
                           .map(varna_obj.run_VARNA)
