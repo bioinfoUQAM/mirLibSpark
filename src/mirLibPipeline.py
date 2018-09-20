@@ -288,7 +288,7 @@ if __name__ == '__main__' :
                            .persist()
     #print('NB bowFrq_rdd: ', len(bowFrq_rdd.collect()))##################################################
     splitbowtie = bowFrq_rdd.collect()
-    print('bowFrq_rdd: ', splitbowtie) ##################################################
+    #print('bowFrq_rdd: ', splitbowtie) ##################################################
     
     #'''
     #= Filtering miRNA low frequency
@@ -405,7 +405,7 @@ if __name__ == '__main__' :
   outTime = rep_output + appId + '_time.txt'
   ut.writeTimeLibToFile (timeDict, outTime, appId, paramDict)
 
-  '''
+  #'''
   #= make summary table of all libraries in one submission with expressions in the field
   keyword = appId + '_miRNAprediction_'
   infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
@@ -436,7 +436,7 @@ if __name__ == '__main__' :
                          .reduce(lambda a, b: a+b)
   master_distinctTG = list(set(master_distinctTG))
   #print( master_distinctTG )
-  '''
+  #'''
 
 
   
