@@ -516,7 +516,7 @@ def write_html (DATA, rep_output, appId):
   l='    <th>Coordination</th>';print >> fh_out, l
   l='  </tr>';print >> fh_out, l
   ## loop start
-  for i in DATA[1:]:
+  for i in DATA:
     i = [str(x) for x in i]
     serial = i[0]
     newid = 'na'	
@@ -529,7 +529,8 @@ def write_html (DATA, rep_output, appId):
     #mircheck = i[8:11]	
     strand = i[2]
 
-    path = rep_output + serial.zfill(4) + '_' + newid + '_' + chromo + '_' + poschromo + '.jpg'
+    #path = rep_output + serial.zfill(4) + '_' + newid + '_' + chromo + '_' + poschromo + '.jpg'
+    path = rep_output + appId + '_' + serial.zfill(4) + '_' + chromo + '_' + poschromo + '.jpg'
   
     l='  <tr>';print >> fh_out, l
     l="    <td rowspan=3 style='width: 120px;'><strong>"+ serial + "</strong></td>";print >> fh_out, l
