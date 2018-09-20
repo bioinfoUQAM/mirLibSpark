@@ -517,6 +517,7 @@ def write_html (DATA, rep_output, appId):
   l='  </tr>';print >> fh_out, l
   ## loop start
   for i in DATA[1:]:
+    i = [str(x) for x in i]
     serial = i[0]
     newid = 'na'	
     mirna = i[1]	
