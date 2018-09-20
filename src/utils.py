@@ -199,7 +199,7 @@ def readParam (paramfile, sep = '='):
   
   for line in DATA:
     if line.startswith('message'): 
-      msg = line.rstrip('\r\n')[9:].split('\\n')
+      msg = line.rstrip('\r\n')[8:].split('\\n')
       for i in msg: print(i)
     elif not line.startswith("#"):
       data = line.rstrip('\r\n').split(sep)
