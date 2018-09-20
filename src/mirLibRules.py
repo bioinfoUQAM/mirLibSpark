@@ -540,7 +540,7 @@ class prog_varna ():
     self.appId = appId
     self.rep_output = rep_output
 
-  def run_VARNA_prog (preSEQ, preFOLD, miRNApos, title, filename):
+  def run_VARNA_prog (self, preSEQ, preFOLD, miRNApos, title, filename):
     #-highlightRegion "48-63:fill=#bcffdd;81-102:fill=#bcffdd"
     cmd = 'java -cp ../lib/VARNAv3-93.jar fr.orsay.lri.varna.applications.VARNAcmd -sequenceDBN "'+ preSEQ +'" -structureDBN "' + preFOLD + '" -highlightRegion "'+ miRNApos + ':fill=#ff0000" -title "' + title + '" -o '+ filename +'.jpg'
     #os.system(cmd)
