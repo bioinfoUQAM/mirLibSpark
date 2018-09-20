@@ -402,14 +402,23 @@ if __name__ == '__main__' :
 
 
   #= create precursor images VARNA
-  ## in : [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq]
-  ## out: [zipindex, miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq]
+  ## in : [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
+  ## out: [zipindex, miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
   varna_obj = mru.prog_varna(appId, rep_output) # this object needs to be initiated after appId is generated
   distData_rdd = sc.parallelize(master_distinctPrecursor_infos, partition)
   VARNA_rdd = distData_rdd.zipWithIndex()\
-                          .map(varna_obj.run_VARNA).persist()
-  indexVis = VARNA_rdd.collect() ##update
-  ut.write_index (indexVis, rep_output, appId) ##update
+                          .map(varna_obj.run_VARNA)#.persist()
+  indexVis = VARNA_rdd.collect()
+  ut.write_index (indexVis, rep_output, appId)
+
+
+  #= miranda
+  distinct_pred_rdd = sc.parallelize(master_predicted_distinctMiRNAs)
+  miranda_rdd = distinct_pred_rdd.map(miranda_obj.computeTargetbyMiranda)
+  targets = miranda_rdd.collect()
+  ut.writeTargetsToFile (targets, rep_output, appId)
+
+  
   sc.stop() ##update
 
 
