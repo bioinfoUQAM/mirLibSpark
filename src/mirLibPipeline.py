@@ -108,6 +108,21 @@ if __name__ == '__main__' :
   #= make required folders if not exist
   reps = [rep_output, rep_tmp, rep_msub_jobsOut]
   ut.makedirs_reps (reps)
+
+  #= Objects for rule functions
+  dmask_obj = mru.prog_dustmasker()
+  dmask_cmd, dmask_env = dmask_obj.dmask_pipe_cmd()
+  bowtie_obj = mru.prog_bowtie(b_index_path)
+  kn_obj = mru.prog_knownNonMiRNA(d_ncRNA_CDS)
+  bowtie_cmd, bowtie_env = bowtie_obj.Bowtie_pipe_cmd()
+  prec_obj = mru.extract_precurosrs(genome_path, pri_l_flank, pri_r_flank, pre_flank)
+  rnafold_obj = mru.prog_RNAfold(temperature)
+  mircheck_obj = mru.prog_mirCheck(mcheck_param)
+  mirdup_obj = mru.prog_miRdup (rep_tmp, mirdup_model, mirdup_jar, path_RNAfold)
+  profile_obj = mru.prog_dominant_profile()
+  #
+  miranda_obj = mru.prog_miRanda(Max_Score_cutoff, Max_Energy_cutoff, target_file, rep_tmp, miranda_exe, Gap_Penalty)
+
   
   #= Spark context
   sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, execCores)
@@ -132,20 +147,6 @@ if __name__ == '__main__' :
   #= Spark application ID
   appId = str(sc.applicationId)
   
-  #= Objects for rule functions
-  dmask_obj = mru.prog_dustmasker()
-  dmask_cmd, dmask_env = dmask_obj.dmask_pipe_cmd()
-  bowtie_obj = mru.prog_bowtie(b_index_path)
-  kn_obj = mru.prog_knownNonMiRNA(d_ncRNA_CDS)
-  bowtie_cmd, bowtie_env = bowtie_obj.Bowtie_pipe_cmd()
-  prec_obj = mru.extract_precurosrs(genome_path, pri_l_flank, pri_r_flank, pre_flank)
-  rnafold_obj = mru.prog_RNAfold(temperature)
-  mircheck_obj = mru.prog_mirCheck(mcheck_param)
-  mirdup_obj = mru.prog_miRdup (rep_tmp, mirdup_model, mirdup_jar, path_RNAfold)
-  profile_obj = mru.prog_dominant_profile()
-  #
-  miranda_obj = mru.prog_miRanda(Max_Score_cutoff, Max_Energy_cutoff, target_file, rep_tmp, miranda_exe, Gap_Penalty)
-
   #= Fetch library files in rep_input
   infiles = [f for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
   
