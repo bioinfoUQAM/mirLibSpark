@@ -263,16 +263,12 @@ if __name__ == '__main__' :
       #print('NB bowtie_rdd: ', len(bowtie_rdd.collect()))##################################################
       bowtiesplit = bowtie_rdd.collect()
       mergebowtie += bowtiesplit
-      if i > 0: 
-        addbowtie_rdd = addbowtie_rdd.join(bowtie_rdd).persist()
-        addbowtie_rdd.collect()
-      else: addbowtie_rdd = bowtie_rdd
      
 
 
-    print(mergebowtie)
-    print()
-    print(addbowtie_rdd.collect())
+    #print(mergebowtie)
+    for i in mergebowtie: print(i) 
+
     ###############################################################
     ##
     ##  bowtie chromosome loop END
