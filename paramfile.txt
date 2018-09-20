@@ -1,7 +1,7 @@
 message=write your message here line1\nline2: modify paramfile.txt
 #==NOTE that project_path and genome_path have to be absolute paths while the input_path, output_path and b_index_path can be relative paths to the project_path.
 project_path=/home/cloudera/workspace/mirLibSpark/
-genome_path=/home/cloudera/workspace//ATH/Genome/
+genome_path=/home/cloudera/workspace/ATH/Genome/
 input_path=input/
 output_path=output/
 b_index_path=dbs/bowtie_index/a_thaliana_t10
