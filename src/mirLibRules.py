@@ -550,14 +550,14 @@ class prog_varna ():
     #FNULL.close()
 
   def run_VARNA (self, e):
-    [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore] = e[0]
-    uid = str(e[1]).zfill(4)
+    [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore] = e[1]
+    uid = str(e[0]).zfill(4)
     miRNApos = str(int(posMirPre)) + '-' + str(int(posMirPre) + len(miRNAseq)-1) 
     title = self.appId + '_' + uid + '_' + chromo + '_' + posChr
     filename = self.rep_output + title
     self.run_VARNA_prog (preSeq, preFold, miRNApos, title, filename) 
-    e[0].insert(0, e[1])
-    return e[0]
+    #e[0].insert(0, e[1])
+    return e
 
 
 
