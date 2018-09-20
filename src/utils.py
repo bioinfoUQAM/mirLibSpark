@@ -487,6 +487,69 @@ def write_index (data, rep_output, appId):
     line = '\t'.join( [str(x) for x in i] )
     print >> fh_out, line
   fh_out.close()
+  write_html (rep_output, appId)
+
+
+def write_html (rep_output, appId):
+  #=serial, miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore
+  infile = rep_output + appId + '_mirnaindex.txt'
+
+  with open (infile, 'r') as fh:
+    DATA = [x.rstrip('\n').split('\t') for x in fh.readlines()]
+
+  outfile='index.html'
+  fh_out=open(outfile,'w')
+
+  l='<html>\n<head>\n<style>';print(l,fh_out)
+  l='table{\nfont-family:arial,sans-serif;\nborder-collapse:collapse;\nwidth:90%;\nmargin:auto;\n}';print(l,fh_out)
+  l='td,th{\nborder:1pxsolid#dddddd;\ntext-align:left;\npadding:8px;\nmax-width:200px;\nword-break:break-all;\n}';print(l,fh_out)
+  l='tr:nth-child(even){background-color:#dddddd;}';print(l,fh_out)
+  l='img.heightSet{max-width:100px;max-height:200px;}';print(l,fh_out)
+  l='img:hover{box-shadow:002px1pxrgba(0,140,186,0.5);}';print(l,fh_out)
+  l='</style></head><body>';print(l,fh_out)
+  l='<div GenomicPre><h2>miRNAs and their genomic precursors</h2><table>';print(l,fh_out)
+  l='  <tr>';print(l,fh_out)
+  l='    <th>Serial</th>';print(l,fh_out)
+  l='    <th>NewID</th>';print(l,fh_out)
+  l='    <th>image</th>';print(l,fh_out)
+  l='    <th>miRNA.pre-miRNA.Structure</th>';print(l,fh_out)
+  l='    <th>Coordination</th>';print(l,fh_out)
+  l='  </tr>';print(l,fh_out)
+  ## loop start
+  for i in DATA[1:]:
+    serial = i[0]
+    newid = 'na'	
+    mirna = i[1]	
+    chromo = i[3]	
+    poschromo = i[4]	
+    preseq = i[5]	
+    #pospre = i[6]	
+    structure = i[7]	
+    #mircheck = i[8:11]	
+    strand = i[2]
+
+    path = rep_output + serial.zfill(4) + '_' + newid + '_' + chromo + '_' + poschromo + '.jpg'
+  
+    l='  <tr>';print(l,fh_out)
+    l="    <td rowspan=3 style='width: 120px;'><strong>"+ serial + "</strong></td>";print(l,fh_out)
+    l="    <td rowspan=3 style='width: 120px;'>"+newid+"</td>";print(l,fh_out)
+    l="    <td rowspan=3 > <a href="+ path + " target='_blank'><img class='heightSet' src="+ path + " alt='Struture'></a></td>";print(l,fh_out)
+    l="    <td style='width: 400px;'>"+ mirna + "</td>";print(l,fh_out)
+    l="    <td>"+ chromo + ":"+ poschromo + " ["+ strand + "] </td>";print(l,fh_out)
+    l="  </tr>";print(l,fh_out)
+    l="  <tr>";print(l,fh_out)
+    l="    <td colspan=2 style='font-family:monospace'>"+ preseq + "</td>";print(l,fh_out)
+    l="  </tr>";print(l,fh_out)
+    l="  <tr>";print(l,fh_out)
+    l="    <td colspan=2 style='font-family:monospace'>"+ structure + "</td>";print(l,fh_out)
+    l="  </tr>";print(l,fh_out)
+  ## loop end
+  l="</table></div>";print(l,fh_out)
+  l="</body></html>";print(l,fh_out)
+
+  fh_out.close()
+
+
 
 
 
