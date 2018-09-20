@@ -357,15 +357,15 @@ if __name__ == '__main__' :
 
     
     endLib = time.time() 
+    timeDict[inBasename] = endLib - startLib
     print ("  End of the processing     ", end="\n")
 
-     
+    ''' 
     #= write results to a file
     outFile = rep_output  +  appId + '_miRNAprediction_' + inBasename + '.txt'
     ut.writeToFile (results, outFile)
+    '''
     
-    timeDict[inBasename] = endLib - startLib
-
 
 
 
