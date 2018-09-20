@@ -4,7 +4,7 @@ project_path=/home/cloudera/workspace/mirLibSpark/
 genome_path=/home/cloudera/workspace/mirLibSpark/dbs/ATH/Genome/
 input_path=/home/cloudera/workspace/mirLibSpark/input/
 output_path=/home/cloudera/workspace/mirLibSpark/output/
-b_index_path=/home/cloudera/workspace/mirLibSpark/dbs/ATH/bowtie_split_index/
+b_index_path=/home/cloudera/workspace/mirLibSpark/dbs/bowtie_index/a_thaliana_t10
 #== input_types: a = raw (seq\tfreq); b = reads (each line may be a redundant sequence); c = fasta (>name\nseq); d = fastq
 input_type=a
 adapter=none

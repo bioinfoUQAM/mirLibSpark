@@ -246,7 +246,8 @@ if __name__ == '__main__' :
     chromosome = 'chr0'.split(', ')
     mergebowtie = []
     for ch in chromosome:
-      bowtie_obj = mru.prog_bowtie(b_index_path + ch)
+      #bowtie_obj = mru.prog_bowtie(b_index_path + ch)
+      bowtie_obj = mru.prog_bowtie(b_index_path)
       bowtie_cmd, bowtie_env = bowtie_obj.Bowtie_pipe_cmd()
 
 
