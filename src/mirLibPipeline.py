@@ -398,16 +398,16 @@ if __name__ == '__main__' :
   #= make summary table of all libraries in one submission with expressions in the field
   keyword = appId + '_miRNAprediction_'
   infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
-  master_predicted_distinctMiRNAs, master_distinctMiRNAs_infos = ut.writeSummaryExpressionToFile (infiles, rep_output, appId)
+  master_predicted_distinctMiRNAs, master_distinctPrecursor_infos = ut.writeSummaryExpressionToFile (infiles, rep_output, appId)
 
 
-  #### create precursor images VARNA
-
-  #sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, execCores) ##update
+  #= create precursor images VARNA
+  ## in : [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq]
+  ## out: [zipindex, miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq]
   varna_obj = mru.prog_varna(appId, rep_output) # this object needs to be initiated after appId is generated
-  distData_rdd = sc.parallelize(master_distinctMiRNAs_infos, partition) ##update
+  distData_rdd = sc.parallelize(master_distinctPrecursor_infos, partition)
   VARNA_rdd = distData_rdd.zipWithIndex()\
-                          .map(varna_obj.run_VARNA)
+                          .map(varna_obj.run_VARNA).persist()
   indexVis = VARNA_rdd.collect() ##update
   ut.write_index (indexVis, rep_output, appId) ##update
   sc.stop() ##update

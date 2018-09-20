@@ -464,14 +464,8 @@ def writeTargetsToFile (targets, rep_output, appId):
 
 #############################
 #############################
-
-# precursor visualization
-def run_VARNA_prog (preSEQ, preFOLD, miRNApos, title, filename):
-  # "12-20:fill=#ff0000"
-  cmd = 'java -cp ../lib/VARNAv3-93.jar fr.orsay.lri.varna.applications.VARNAcmd -sequenceDBN "'+ preSEQ +'" -structureDBN "' + preFOLD + '" -highlightRegion "'+ miRNApos + ':fill=#ff0000" -title "' + title + '" -o '+ filename +'.jpg'
-  os.system(cmd)
-
 def write_index (data, rep_output, appId):
+  #=serial, miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore
   outfile = rep_output + appId + '_precursorindex.txt'
   fh_out = open (outfile, 'w')
   for i in data:

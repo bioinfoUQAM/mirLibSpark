@@ -540,13 +540,18 @@ class prog_varna ():
     self.appId = appId
     self.rep_output = rep_output
 
+  def run_VARNA_prog (preSEQ, preFOLD, miRNApos, title, filename):
+    #-highlightRegion "48-63:fill=#bcffdd;81-102:fill=#bcffdd"
+    cmd = 'java -cp ../lib/VARNAv3-93.jar fr.orsay.lri.varna.applications.VARNAcmd -sequenceDBN "'+ preSEQ +'" -structureDBN "' + preFOLD + '" -highlightRegion "'+ miRNApos + ':fill=#ff0000" -title "' + title + '" -o '+ filename +'.jpg'
+    os.system(cmd)
+
   def run_VARNA (self, e):
     [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore] = e[0]
     uid = str(e[1]).zfill(4)
     miRNApos = str(int(posMirPre)) + '-' + str(int(posMirPre) + len(miRNAseq)-1) 
     title = self.appId + '_' + uid + '_' + chromo + '_' + posChr
     filename = self.rep_output + title
-    ut.run_VARNA_prog (preSeq, preFold, miRNApos, title, filename) 
+    run_VARNA_prog (preSeq, preFold, miRNApos, title, filename) 
     e[0].insert(0, e[1])
     return e[0]
 
