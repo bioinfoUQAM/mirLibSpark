@@ -10,8 +10,8 @@ os.system (cmd)
 #os.system(cmd)
 
 
-#cmd = 'cp ../input_samples/fake_a3.txt ../input'
-#os.system(cmd)
+cmd = 'cp ../input_samples/fake_a3.txt ../input'
+os.system(cmd)
 
 
 
