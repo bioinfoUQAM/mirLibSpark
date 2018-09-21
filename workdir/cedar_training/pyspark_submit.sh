@@ -3,10 +3,10 @@
 #SBATCH --time=01:00:00
 #SBATCH --nodes=3
 #SBATCH --mem=2000M
-#SBATCH --cpus-per-task=1
-#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=3
+#SBATCH --ntasks-per-node=3
 #SBATCH --job-name=multi-node-spark-180921
-#SBATCH --output=%x-%j.out
+#SBATCH --output=jobout/%x-%j.out
 
 module load spark
 module load nixpkgs/16.09
