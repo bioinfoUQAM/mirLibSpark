@@ -56,7 +56,8 @@ adapter=none
 #
 #
 #====================  Ideally, do not change the following parameters since they are already tuned.
-chromosomes=chr1,chr2,chr3,chr4,chr5,chrC,chrM
+#chromosomes=chr1,chr2,chr3,chr4,chr5,chrC,chrM
+chromosomes=All
 bowtie_index_suffix=a_thaliana_t10_
 #mirdup_model=Viridiplantae.model
 mirdup_model=thaliana.model

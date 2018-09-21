@@ -251,7 +251,6 @@ class prog_RNAfold ():
     this requires two subprocesses
     '''
     line1 = ['echo', seq]
-    #line2 = ['RNAfold','--noPS', '--noLP', '--temp=25.0']
     line2 = ['../lib/RNAfold','--noPS', '--noLP', '--temp=' + self.temperature]
     
     p1 = sbp.Popen(line1, stdout=sbp.PIPE, env=self.env)
