@@ -220,7 +220,7 @@ class extract_precurosrs ():
 
   def extract_prem_rule(self, elem, field):
     '''
-    olde : elem = (id, [seq, frq, nbloc, [bowtie], [pri_miRNA, posMirPrim, Struct, mircheck, fbstart, fbstop]])
+    old : elem = (id, [seq, frq, nbloc, [bowtie], [pri_miRNA, posMirPrim, Struct, mircheck, fbstart, fbstop]])
     new : elem = (seq, [frq, nbloc, [bowtie], [pri_miRNA, posMirPrim, Struct, mircheck, fbstart, fbstop]])
     '''
     priSeq = elem[1][field][0]
@@ -235,6 +235,8 @@ class extract_precurosrs ():
     mapping = e[1][2]
     if mapping[1] in self.genome.keys(): return 1
     else: return 0
+
+
 
 
 

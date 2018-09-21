@@ -183,7 +183,6 @@ if __name__ == '__main__' :
     #print('NB distFile_rdd: ', len(distFile_rdd.collect()))#
 
     #= Unify different input formats to "seq freq" elements
-
     if input_type == 'a': #= raw
     ## in : u'seq\tfreq'
     ## out: ('seq', freq)
@@ -237,9 +236,6 @@ if __name__ == '__main__' :
                             .map(lambda e: str(e.rstrip()))\
                             .persist()
     #print('NB dmask_rdd: ', len(dmask_rdd.collect()))############################################
-    dmask_rdd.collect()
-
-
 
     mergebowtie = []
     for i in range(len(chromosomes)):
@@ -261,8 +257,6 @@ if __name__ == '__main__' :
       bowtiesplit = bowtie_rdd.collect()
       mergebowtie += bowtiesplit     
     bowtie_rdd = sc.parallelize(mergebowtie, partition)
-
-
 
     #= Getting the expression value for each reads
     ## in : ('seq', [nbLoc, [['strd','chr',posChr],..]])
@@ -304,7 +298,6 @@ if __name__ == '__main__' :
     excluKnownNon_rdd = flat_rdd.filter(kn_obj.knFilterByCoor)#.persist()#######
     #print('excluKnownNon_rdd distinct: ', len(excluKnownNon_rdd.groupByKey().collect()))########
     
-
     mergeChromosomesResults = []
     for i in range(len(chromosomes)):
       ch = chromosomes[i]
@@ -339,13 +332,10 @@ if __name__ == '__main__' :
       ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop'], ['preSeq',posMirPre]])
       premir_rdd = one_loop_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3)) ## use one-loop rule
       #premir_rdd = pri_vld_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3)) ## ignore one-loop rule
-   
       #================================================================================================================
       chromosomesplit = premir_rdd.collect()
       mergeChromosomesResults += chromosomesplit
     premir_rdd = sc.parallelize(mergeChromosomesResults, partition)
-
-
 
     #= pre-miRNA folding
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre]])
@@ -358,8 +348,6 @@ if __name__ == '__main__' :
     #pre_vld_rdd0 = pre_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 4))\
                               #.filter(lambda e: any(e[1][4])).persist()
     #print('NB pre_vld_rdd0 distinct (mircheck II): (', len(pre_vld_rdd0.groupByKey().collect()), ')')
-
-
 
     #= Validating pre-mirna with miRdup zipWithUniqueId
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold']])
