@@ -14,7 +14,7 @@ os.system (cmd)
 
 
 #cmd = 'cp ../input_samples/100.txt ../input'
-cmd = 'rm ../input/100.txt'
+cmd = 'rm -fr ../input/100.txt'
 os.system(cmd)
 
 
