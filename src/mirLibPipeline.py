@@ -353,8 +353,8 @@ if __name__ == '__main__' :
       #chromosomesplit = premir_rdd.collect()
       #mergeChromosomesResults += chromosomesplit
       mergeChromosomesResults_rdd = mergeChromosomesResults_rdd.union(premir_rdd).persist()
-    premir_rdd = sc.parallelize(mergeChromosomesResults, partition)
-    print('premir_rdd distinct: ', len(premir_rdd.groupByKey().collect()))########
+    #premir_rdd = sc.parallelize(mergeChromosomesResults, partition)
+    print('mergeChromosomesResults: ', len(mergeChromosomesResults_rdd.collect()))########
 
     '''
     #= pre-miRNA folding
