@@ -3,12 +3,12 @@ message=write your message here line1\nline2: test relative path
 project_path=/home/cloudera/workspace/mirLibSpark/
 #genome_path=/home/cloudera/workspace/mirLibSpark/dbs/ATH/Genome/
 #input_path=/home/cloudera/workspace/mirLibSpark/input/
-#output_path=/home/cloudera/workspace/mirLibSpark/output/
+output_path=/home/cloudera/workspace/mirLibSpark/output/
 b_index_path=/home/cloudera/workspace/mirLibSpark/dbs/ATH/bowtie_split_index/
 #
 genome_path=/home/cloudera/workspace/mirLibSpark/dbs/ATH/Genome/
 input_path=../input/
-output_path=../output/
+#output_path=../output/
 #b_index_path=../dbs/ATH/bowtie_split_index/
 #
 chromosome=chr1,chr2,chr3,chr4,chr5,chrC,chrM
