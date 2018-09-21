@@ -319,7 +319,7 @@ if __name__ == '__main__' :
       ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr])
       ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri]])
       primir_rdd = excluKnownNon_rdd.flatMap(prec_obj.extract_prim_rule)\
-                                    .filter(lambda e: 'notvalid' not in e)
+                                    .filter(lambda e: not e[0] == 0)
 
       #= pri-miRNA folding
       ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri]])

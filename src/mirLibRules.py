@@ -194,7 +194,7 @@ class extract_precurosrs ():
     len_srna = len(elem[0])
     
     mapping = elem[1][2]
-    if not mapping[1] in self.genome.keys(): return 'notvalid'
+    if not mapping[1] in self.genome.keys(): return (0)
     contig = self.genome[mapping[1]]
     prims = self.extract_precursors(contig, mapping[0], mapping[2], len_srna)
       
