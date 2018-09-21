@@ -429,7 +429,7 @@ if __name__ == '__main__' :
 
 
   master_distinctTG = miranda_rdd.map(lambda e: [  i[0].split('.')[0] for i in e[1]  ])\
-                         .reduce(lambda a, b: a+b)
+                                 .reduce(lambda a, b: a+b)
   master_distinctTG = list(set(master_distinctTG))
   #print( master_distinctTG )
   #'''
