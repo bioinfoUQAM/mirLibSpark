@@ -1,10 +1,16 @@
-message=write your message here line1\nline2: modify mirLibPipeline split bowtie by chromosome
+message=write your message here line1\nline2: test relative path
 #==NOTE that project_path and genome_path have to be absolute paths while the input_path, output_path and b_index_path can be relative paths to the project_path (I am not sure this statement180919).
 project_path=/home/cloudera/workspace/mirLibSpark/
+#genome_path=/home/cloudera/workspace/mirLibSpark/dbs/ATH/Genome/
+#input_path=/home/cloudera/workspace/mirLibSpark/input/
+#output_path=/home/cloudera/workspace/mirLibSpark/output/
+#b_index_path=/home/cloudera/workspace/mirLibSpark/dbs/ATH/bowtie_split_index/
+#
 genome_path=/home/cloudera/workspace/mirLibSpark/dbs/ATH/Genome/
-input_path=/home/cloudera/workspace/mirLibSpark/input/
-output_path=/home/cloudera/workspace/mirLibSpark/output/
-b_index_path=/home/cloudera/workspace/mirLibSpark/dbs/ATH/bowtie_split_index/
+input_path=../input/
+output_path=../output/
+b_index_path=../dbs/ATH/bowtie_split_index/
+#
 chromosome=chr1,chr2,chr3,chr4,chr5,chrC,chrM
 bowtie_index_suffix=a_thaliana_t10_
 known_non_file=/home/cloudera/workspace/mirLibSpark/dbs/ATH/TAIR10_ncRNA_CDS.gff
