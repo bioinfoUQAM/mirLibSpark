@@ -200,7 +200,7 @@ def getGenome (genome_path, file_ext, chromosomeName):
   if chromosomeName == 'All':
     files = [each for each in os.listdir(genome_path) if each.endswith(file_ext)]
   else:
-    files = [genome_path + chromosomeName + file_ext]
+    files = [ chromosomeName + file_ext]
 
   for namefile in files :
     file = genome_path+namefile
