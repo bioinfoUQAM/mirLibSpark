@@ -239,17 +239,14 @@ if __name__ == '__main__' :
     #print('NB dmask_rdd: ', len(dmask_rdd.collect()))############################################
     dmask_rdd.collect()
 
-    ###############################################################
-    ##
-    ##  bowtie chromosome loop
-    ##
-    ##############################################################
+
+
     mergebowtie = []
     for i in range(len(chromosomes)):
       ch = chromosomes[i]
       bowtie_obj = mru.prog_bowtie(b_index_path + ch + '/' + bowtie_index_suffix + ch)
       bowtie_cmd, bowtie_env = bowtie_obj.Bowtie_pipe_cmd()
-
+      #================================================================================================================
       #= Mapping with Bowtie
       ## in : 'seq'
       ## out: ('seq', [nbLoc, [['strd','chr',posChr],..]])
@@ -260,17 +257,10 @@ if __name__ == '__main__' :
                             .map(lambda e: (e[0], [len(list(e[1])), list(e[1])]))\
                             .persist()
       #print('NB bowtie_rdd: ', len(bowtie_rdd.collect()))##################################################
+      #================================================================================================================
       bowtiesplit = bowtie_rdd.collect()
-      mergebowtie += bowtiesplit
-     
-
+      mergebowtie += bowtiesplit     
     bowtie_rdd = sc.parallelize(mergebowtie, partition)
-
-    ###############################################################
-    ##
-    ##  bowtie chromosome loop END
-    ##
-    ##############################################################
 
 
 
@@ -323,8 +313,8 @@ if __name__ == '__main__' :
       #= Extraction of the pri-miRNA
       ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr])
       ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri]])
-      primir_rdd = excluKnownNon_rdd.flatMap(prec_obj.extract_prim_rule)
-                                    #.filter(lambda e: not e[0] == 0)
+      primir_rdd = excluKnownNon_rdd.filter(lambda e: prec_obj.hasKey (e) > 0)\
+                                    .flatMap(prec_obj.extract_prim_rule)
 
       #= pri-miRNA folding
       ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri]])
