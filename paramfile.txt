@@ -23,6 +23,8 @@ Max_Score_cutoff=170
 Max_Energy_cutoff=-15
 Gap_Penalty=-15
 target_file=TAIR10_cdna_20101214_updated.fasta
+chromosome=chr1,chr2,chr3,chr4,chr5,chrC,chrM
+bowtie_index_suffix=atht10_
 #==================== Spark configuration
 sc_appname=mirLibSpark
 sc_partition=12

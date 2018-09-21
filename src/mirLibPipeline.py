@@ -70,6 +70,8 @@ if __name__ == '__main__' :
 
   #= bowtie
   b_index_path = paramDict['b_index_path']
+  chromosome = paramDict['chromosome'].split(',')
+  bowtie_index_suffix = paramDict['bowtie_index_suffix']
 
   #= file and list of known non miRNA
   known_non = project_path + '/dbs/TAIR10_ncRNA_CDS.gff'###########################
@@ -242,12 +244,11 @@ if __name__ == '__main__' :
     ##  bowtie chromosome loop
     ##
     ##############################################################
-    chromosome = 'chr1, chr2, chr3, chr4, chr5, chrC, chrM'.split(', ')
+    #chromosome = 'chr1, chr2, chr3, chr4, chr5, chrC, chrM'.split(', ')
     mergebowtie = []
     for i in range(len(chromosome)):
       ch = chromosome[i]
-      bowtie_obj = mru.prog_bowtie(b_index_path + ch + '/' + 'atht10_' + ch)
-      #bowtie_obj = mru.prog_bowtie(b_index_path)
+      bowtie_obj = mru.prog_bowtie(b_index_path + ch + '/' + bowtie_index_suffix + ch)
       bowtie_cmd, bowtie_env = bowtie_obj.Bowtie_pipe_cmd()
 
 
@@ -265,12 +266,7 @@ if __name__ == '__main__' :
       mergebowtie += bowtiesplit
      
 
-
-    #print(mergebowtie)
     bowtie_rdd = sc.parallelize(mergebowtie, partition)
-    #for i in mergebowtie: 
-    #  for j in i:
-    #    print(j) 
 
     ###############################################################
     ##
