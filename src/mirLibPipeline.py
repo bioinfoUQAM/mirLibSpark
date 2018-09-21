@@ -274,7 +274,8 @@ if __name__ == '__main__' :
     bowFrq_rdd = mergebowtie_rdd.join(sr_short_rdd)\
                            .map(bowtie_obj.bowtie_freq_rearrange_rule)\
                            .persist()
-    #print('NB bowFrq_rdd: ', len(bowFrq_rdd.collect()))############################################ 180921 takes 20 secs till this step
+    #print('NB bowFrq_rdd: ', len(bowFrq_rdd.collect()))############################################ 
+    #180921 takes 20 secs till this step, option chromo=All
 
     #'''#!!#
     #= Filtering miRNA low frequency
@@ -353,7 +354,9 @@ if __name__ == '__main__' :
       #mergeChromosomesResults += chromosomesplit
       mergeChromosomesResults_rdd = mergeChromosomesResults_rdd.union(premir_rdd).persist()
     #premir_rdd = sc.parallelize(mergeChromosomesResults, partition)
-    print('mergeChromosomesResults: ', len(mergeChromosomesResults_rdd.collect()))######## 180921 it takes 49 secs to run till this line (All chromo)
+    print('mergeChromosomesResults: ', len(mergeChromosomesResults_rdd.collect()))######## 
+    #180921 it takes 49 secs to run till this line (All chromo)
+    #180921 it takes 479 secs to run till this line (split chromo)
 
     '''
     #= pre-miRNA folding

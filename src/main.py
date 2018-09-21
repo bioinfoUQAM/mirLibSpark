@@ -9,17 +9,17 @@ os.system (cmd)
 
 
 #cmd = 'cp ../input_samples/fake_a3.txt ../input'
-cmd = 'rm -fr ../input/fake_a3.txt'
-os.system(cmd)
-
-
-#cmd = 'cp ../input_samples/100.txt ../input'
-cmd = 'rm -fr ../input/100.txt'
+#cmd = 'rm -fr ../input/fake_a3.txt'
 #os.system(cmd)
 
 
-cmd = 'mv ../output/* ../output_depo/'
-os.system(cmd)
+#cmd = 'cp ../input_samples/100.txt ../input'
+#cmd = 'rm -fr ../input/100.txt'
+#os.system(cmd)
+
+
+#cmd = 'mv ../output/* ../output_depo/'
+#os.system(cmd)
 
 
 
