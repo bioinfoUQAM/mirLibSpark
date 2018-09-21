@@ -9,6 +9,7 @@
 #SBATCH --output=%x-%j.out
 
 module load spark
+module load nixpkgs/16.09
 
 export SPARK_IDENT_STRING=$SLURM_JOBID
 export SPARK_WORKER_DIR=$SLURM_TMPDIR
