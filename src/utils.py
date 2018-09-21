@@ -204,7 +204,9 @@ def getGenome (genome_path, file_ext, chromosomeName):
 
   for namefile in files :
     file = genome_path+namefile
-    chr = getChromosomeName(file)
+    if chromosomeName == 'All':
+      chr = getChromosomeName(file)
+    else: chr = chromosomeName
     sequence = getFastaSeq(file)
     genome[chr] = sequence
     
