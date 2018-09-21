@@ -22,9 +22,9 @@
 #  note: adapter
 #  none or ATCG sequence
 #
-#  (not sure true)note:
-#  (not sure true)chromosomes are the folder names within bowtie_split_index folder
-#  (not sure true)option All is the entire genome index without split by chromosomes
+#  note:
+#  chromosomes are the folder names within bowtie_split_index folder
+#  option All is the entire genome index without split by chromosomes
 #
 ########################################################################
 #
