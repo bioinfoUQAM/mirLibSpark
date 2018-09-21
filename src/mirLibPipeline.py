@@ -244,7 +244,6 @@ if __name__ == '__main__' :
       ch = chromosomes[i]
       p = b_index_path + ch + '/' + bowtie_index_suffix + '_' + ch 
       if ch == 'All': p = b_index_path + ch + '/' + bowtie_index_suffix 
-      print(p)
       bowtie_obj = mru.prog_bowtie(p)
       bowtie_cmd, bowtie_env = bowtie_obj.Bowtie_pipe_cmd()
       #================================================================================================================
