@@ -22,9 +22,6 @@ join and zip are expensive. Consider how to avoid them.
 TO DO: NEED TO clean up tmp folder every time automaticly
 
 
-note: shorten pipeline switch ==> replace #'''#!!# ==> '''#!!#
-'''
-
 '''
 
 from __future__ import print_function
@@ -458,3 +455,7 @@ if __name__ == '__main__' :
   print(test) ##update
   sc.stop() ##update
   #'''
+
+
+#note: shorten pipeline switch ==> replace #'''#!!# ==> '''#!!#
+
