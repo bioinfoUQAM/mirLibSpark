@@ -275,9 +275,9 @@ if __name__ == '__main__' :
     bowFrq_rdd = mergebowtie_rdd.join(sr_short_rdd)\
                            .map(bowtie_obj.bowtie_freq_rearrange_rule)\
                            .persist()
-    print('NB bowFrq_rdd: ', len(bowFrq_rdd.collect()))##################################################
+    #print('NB bowFrq_rdd: ', len(bowFrq_rdd.collect()))############################################ 180921 takes 20 secs till this step
 
-    '''#!!#
+    #'''#!!#
     #= Filtering miRNA low frequency
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
@@ -353,8 +353,10 @@ if __name__ == '__main__' :
       #chromosomesplit = premir_rdd.collect()
       #mergeChromosomesResults += chromosomesplit
       mergeChromosomesResults_rdd = mergeChromosomesResults_rdd.union(premir_rdd).persist()
-    #premir_rdd = sc.parallelize(mergeChromosomesResults, partition)
+    premir_rdd = sc.parallelize(mergeChromosomesResults, partition)
+    print('premir_rdd distinct: ', len(premir_rdd.groupByKey().collect()))########
 
+    '''
     #= pre-miRNA folding
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre]])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold']])
