@@ -244,6 +244,9 @@ if __name__ == '__main__' :
       bowtie_obj = mru.prog_bowtie(b_index_path + ch + '/' + bowtie_index_suffix + ch)
       bowtie_cmd, bowtie_env = bowtie_obj.Bowtie_pipe_cmd()
       #================================================================================================================
+      #================================================================================================================
+      #================================================================================================================
+      #================================================================================================================
       #= Mapping with Bowtie
       ## in : 'seq'
       ## out: ('seq', [nbLoc, [['strd','chr',posChr],..]])
@@ -253,6 +256,9 @@ if __name__ == '__main__' :
                             .groupByKey()\
                             .map(lambda e: (e[0], [len(list(e[1])), list(e[1])]))#.persist()
       #print('NB bowtie_rdd: ', len(bowtie_rdd.collect()))##################################################
+      #================================================================================================================
+      #================================================================================================================
+      #================================================================================================================
       #================================================================================================================
       #bowtiesplit = bowtie_rdd.collect()
       #mergebowtie += bowtiesplit  
@@ -265,8 +271,9 @@ if __name__ == '__main__' :
     bowFrq_rdd = mergebowtie_rdd.join(sr_short_rdd)\
                            .map(bowtie_obj.bowtie_freq_rearrange_rule)\
                            .persist()
-    #print('NB bowFrq_rdd: ', len(bowFrq_rdd.collect()))##################################################
-    
+    print('NB bowFrq_rdd: ', len(bowFrq_rdd.collect()))##################################################
+
+    '''
     #= Filtering miRNA low frequency
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
@@ -303,6 +310,9 @@ if __name__ == '__main__' :
       ch = chromosomes[i]
       prec_obj = mru.extract_precurosrs(genome_path, pri_l_flank, pri_r_flank, pre_flank, ch)
       #================================================================================================================
+      #================================================================================================================
+      #================================================================================================================
+      #================================================================================================================
       #= Extraction of the pri-miRNA
       ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr])
       ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri]])
@@ -332,6 +342,9 @@ if __name__ == '__main__' :
       ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop'], ['preSeq',posMirPre]])
       premir_rdd = one_loop_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3)) ## use one-loop rule
       #premir_rdd = pri_vld_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3)) ## ignore one-loop rule
+      #================================================================================================================
+      #================================================================================================================
+      #================================================================================================================
       #================================================================================================================
       #chromosomesplit = premir_rdd.collect()
       #mergeChromosomesResults += chromosomesplit
@@ -369,7 +382,7 @@ if __name__ == '__main__' :
                              .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2).persist()##
     print('NB profile_rdd distinct: ', len(profile_rdd.groupByKey().collect()))##
     results = profile_rdd.collect()
-    #'''
+    '''
 
 
     
@@ -379,8 +392,8 @@ if __name__ == '__main__' :
 
     #''' 
     #= write results to a file
-    outFile = rep_output  +  appId + '_miRNAprediction_' + inBasename + '.txt'
-    ut.writeToFile (results, outFile)
+    eachLiboutFile = rep_output  +  appId + '_miRNAprediction_' + inBasename + '.txt'
+    ut.writeToFile (results, eachLiboutFile)
     #'''
     
 
@@ -390,7 +403,7 @@ if __name__ == '__main__' :
   outTime = rep_output + appId + '_time.txt'
   ut.writeTimeLibToFile (timeDict, outTime, appId, paramDict)
 
-  #'''
+  '''
   #= make summary table of all libraries in one submission with expressions in the field
   keyword = appId + '_miRNAprediction_'
   infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
@@ -421,7 +434,7 @@ if __name__ == '__main__' :
                                  .reduce(lambda a, b: a+b)
   master_distinctTG = list(set(master_distinctTG))
   #print( master_distinctTG )
-  #'''
+  '''
 
 
   
