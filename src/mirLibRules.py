@@ -231,7 +231,7 @@ class extract_precurosrs ():
     elem[1].append(self.extract_sub_seq(priSeq, posMir, fback_start, fback_stop))
     return elem
 
-  def hasKey (e):
+  def hasKey (self, e):
     mapping = elem[1][2]
     if mapping[1] in self.genome.keys(): return 1
     else: return 0
