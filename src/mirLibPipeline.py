@@ -249,6 +249,8 @@ if __name__ == '__main__' :
       ch = chromosomes[i]
       bowtie_obj = mru.prog_bowtie(b_index_path + ch + '/' + bowtie_index_suffix + ch)
       bowtie_cmd, bowtie_env = bowtie_obj.Bowtie_pipe_cmd()
+      prec_obj = mru.extract_precurosrs(genome_path, pri_l_flank, pri_r_flank, pre_flank, ch)
+
 
 
       #= Mapping with Bowtie
