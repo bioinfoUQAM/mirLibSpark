@@ -16,8 +16,6 @@ os.system (cmd)
 
 
 
-cmd = 'time spark-submit mirLibPipeline.py ../paramfile.txt 2>/dev/null'
-os.system(cmd)
 
 
 #cmd = 'mkdir ../dbs/ATH/bowtie_split_index'
@@ -80,5 +78,10 @@ for c in chro:
   os.system(cmd)
 
 cmd = 'echo "this is TAIR10 genome" > TAIR10_genome.txt'
+os.system(cmd)
+
+
+
+cmd = 'time spark-submit mirLibPipeline.py ../paramfile.txt 2>/dev/null'
 os.system(cmd)
 
