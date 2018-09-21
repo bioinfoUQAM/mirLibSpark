@@ -244,14 +244,11 @@ if __name__ == '__main__' :
     ##  bowtie chromosome loop
     ##
     ##############################################################
-    mergeChromosomesResults = []
+    mergebowtie = []
     for i in range(len(chromosomes)):
       ch = chromosomes[i]
       bowtie_obj = mru.prog_bowtie(b_index_path + ch + '/' + bowtie_index_suffix + ch)
       bowtie_cmd, bowtie_env = bowtie_obj.Bowtie_pipe_cmd()
-      prec_obj = mru.extract_precurosrs(genome_path, pri_l_flank, pri_r_flank, pre_flank, ch)
-
-
 
       #= Mapping with Bowtie
       ## in : 'seq'
@@ -263,57 +260,65 @@ if __name__ == '__main__' :
                             .map(lambda e: (e[0], [len(list(e[1])), list(e[1])]))\
                             .persist()
       #print('NB bowtie_rdd: ', len(bowtie_rdd.collect()))##################################################
-      #bowtiesplit = bowtie_rdd.collect()
-      #mergebowtie += bowtiesplit
+      bowtiesplit = bowtie_rdd.collect()
+      mergebowtie += bowtiesplit
      
 
-      #bowtie_rdd = sc.parallelize(mergebowtie, partition)
+    bowtie_rdd = sc.parallelize(mergebowtie, partition)
+
+    ###############################################################
+    ##
+    ##  bowtie chromosome loop END
+    ##
+    ##############################################################
 
 
 
-
-      #= Getting the expression value for each reads
-      ## in : ('seq', [nbLoc, [['strd','chr',posChr],..]])
-      ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
-      bowFrq_rdd = bowtie_rdd.join(sr_short_rdd)\
-                             .map(bowtie_obj.bowtie_freq_rearrange_rule)\
-                             .persist()
-      #print('NB bowFrq_rdd: ', len(bowFrq_rdd.collect()))##################################################
-      splitbowtie = bowFrq_rdd.collect()
-      #print('bowFrq_rdd: ', splitbowtie) ##################################################
+    #= Getting the expression value for each reads
+    ## in : ('seq', [nbLoc, [['strd','chr',posChr],..]])
+    ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
+    bowFrq_rdd = bowtie_rdd.join(sr_short_rdd)\
+                           .map(bowtie_obj.bowtie_freq_rearrange_rule)\
+                           .persist()
+    #print('NB bowFrq_rdd: ', len(bowFrq_rdd.collect()))##################################################
+    splitbowtie = bowFrq_rdd.collect()
+    #print('bowFrq_rdd: ', splitbowtie) ##################################################
     
-      #'''
-      #= Filtering miRNA low frequency
-      ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
-      ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
-      mr_low_rdd = bowFrq_rdd.filter(lambda e: e[1][0] > limit_mrna_freq)#.persist()########################
-      #print('NB mr_low_rdd: ', len(mr_low_rdd.collect()))##################################################
+    #= Filtering miRNA low frequency
+    ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
+    ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
+    mr_low_rdd = bowFrq_rdd.filter(lambda e: e[1][0] > limit_mrna_freq)#.persist()########################
+    #print('NB mr_low_rdd: ', len(mr_low_rdd.collect()))##################################################
     
-      #= Filtering high nbLocations and zero location
-      ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
-      ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
-      nbLoc_rdd = mr_low_rdd.filter(lambda e: e[1][1] > 0 and e[1][1] < limit_nbLoc)#.persist()#############
-      #print('NB nbLoc_rdd: ', len(nbLoc_rdd.collect()))###################################################
+    #= Filtering high nbLocations and zero location
+    ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
+    ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
+    nbLoc_rdd = mr_low_rdd.filter(lambda e: e[1][1] > 0 and e[1][1] < limit_nbLoc)#.persist()#############
+    #print('NB nbLoc_rdd: ', len(nbLoc_rdd.collect()))###################################################
     
     
-      #= Flatmap the RDD
-      ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
-      ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr])
-      flat_rdd = nbLoc_rdd.flatMap(mru.flatmap_mappings)#.persist() ###
-      #print('NB flat_rdd distinct (this step flats elements): ', len(flat_rdd.groupByKey().collect()))##################
-      #print('NB flat_rdd not distinct: ', len(flat_rdd.collect()))##################
+    #= Flatmap the RDD
+    ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
+    ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr])
+    flat_rdd = nbLoc_rdd.flatMap(mru.flatmap_mappings)#.persist() ###
+    #print('NB flat_rdd distinct (this step flats elements): ', len(flat_rdd.groupByKey().collect()))##################
+    #print('NB flat_rdd not distinct: ', len(flat_rdd.collect()))##################
 
-      ###############################
-      ## Filtering known non-miRNA ##
-      ###############################
-      ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr])
-      ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr])
-      ##excluKnownNon_rdd = flat_rdd.filter(kn_obj.knFilterBySeq) #= defunct
-      #excluKnownNon_rdd = flat_rdd.repartition(100).filter(kn_obj.knFilterByCoor)#.persist()#######
-      excluKnownNon_rdd = flat_rdd.filter(kn_obj.knFilterByCoor)#.persist()#######
-      #print('excluKnownNon_rdd distinct: ', len(excluKnownNon_rdd.groupByKey().collect()))########
+    ###############################
+    ## Filtering known non-miRNA ##
+    ###############################
+    ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr])
+    ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr])
+    ##excluKnownNon_rdd = flat_rdd.filter(kn_obj.knFilterBySeq) #= defunct
+    #excluKnownNon_rdd = flat_rdd.repartition(100).filter(kn_obj.knFilterByCoor)#.persist()#######
+    excluKnownNon_rdd = flat_rdd.filter(kn_obj.knFilterByCoor)#.persist()#######
+    #print('excluKnownNon_rdd distinct: ', len(excluKnownNon_rdd.groupByKey().collect()))########
     
 
+    mergeChromosomesResults = []
+    for i in range(len(chromosomes)):
+      ch = chromosomes[i]
+      prec_obj = mru.extract_precurosrs(genome_path, pri_l_flank, pri_r_flank, pre_flank, ch)
       #================================================================================================================
       #= Extraction of the pri-miRNA
       ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr])
@@ -348,15 +353,8 @@ if __name__ == '__main__' :
       #================================================================================================================
       chromosomesplit = premir_rdd.collect()
       mergeChromosomesResults += chromosomesplit
-     
-
     premir_rdd = sc.parallelize(mergeChromosomesResults, partition)
 
-    ###############################################################
-    ##
-    ##  bowtie chromosome loop END
-    ##
-    ##############################################################
 
 
     #= pre-miRNA folding
