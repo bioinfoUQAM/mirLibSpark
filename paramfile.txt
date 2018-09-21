@@ -28,7 +28,7 @@
 #
 ########################################################################
 #
-message=write your message here line1\nline2: try chromosome All 
+message=write your message here line1\nline2: try chromosome split 
 #
 ########################################################################
 #
