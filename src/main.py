@@ -3,18 +3,17 @@ import os
 #cmd = 'python purge.py'
 #os.system (cmd)
 
-cmd = 'git pull origin join'
+cmd = 'git pull origin faster'
 os.system (cmd)
 
 
 
-cmd = 'cp ../input_samples/fake_a3.txt ../input'
-#cmd = 'rm -fr ../input/fake_a3.txt'
+#cmd = 'cp ../input_samples/fake_a3.txt ../input'
+cmd = 'rm -fr ../input/fake_a3.txt'
 os.system(cmd)
 
-
 cmd = 'cp ../input_samples/100.txt ../input'
-#cmd = 'rm -fr ../input/100.txt'
+#cmd = 'rm -f ../input/100.txt'
 os.system(cmd)
 
 
@@ -39,12 +38,18 @@ os.system(cmd)
 
 
 
+#cmd = 'mv ../output/* ../output_depo/'
+#os.system(cmd)
 
 
 
 
 
 
+#branches = 'athsettings, bowtiesplit, format_vis_input, format_vis_inputs, genomeextract, include_Dustmasker, include_RNAfold, include_bowtie, smooth, smooth_pipevarna, test, varna'.split(', ')
+#for b in branches:
+#  cmd = 'git branch -D ' + b
+#  os.system(cmd)
 
 
 

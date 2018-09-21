@@ -21,6 +21,7 @@ join and zip are expensive. Consider how to avoid them.
 
 TO DO: NEED TO clean up tmp folder every time automaticly
 
+
 '''
 
 from __future__ import print_function
@@ -235,14 +236,19 @@ if __name__ == '__main__' :
                             .filter(lambda e: e.isupper() and not e.startswith('>'))\
                             .map(lambda e: str(e.rstrip()))\
                             .persist()
-    #print('NB dmask_rdd: ', len(dmask_rdd.collect()))############################################
+    print('NB dmask_rdd: ', len(dmask_rdd.collect()))############################################
 
     #mergebowtie = []
     mergebowtie_rdd = sc.emptyRDD()
     for i in range(len(chromosomes)):
       ch = chromosomes[i]
-      bowtie_obj = mru.prog_bowtie(b_index_path + ch + '/' + bowtie_index_suffix + ch)
+      p = b_index_path + ch + '/' + bowtie_index_suffix + '_' + ch 
+      if ch == 'All': p = b_index_path + ch + '/' + bowtie_index_suffix 
+      bowtie_obj = mru.prog_bowtie(p)
       bowtie_cmd, bowtie_env = bowtie_obj.Bowtie_pipe_cmd()
+      #================================================================================================================
+      #================================================================================================================
+      #================================================================================================================
       #================================================================================================================
       #= Mapping with Bowtie
       ## in : 'seq'
@@ -253,6 +259,9 @@ if __name__ == '__main__' :
                             .groupByKey()\
                             .map(lambda e: (e[0], [len(list(e[1])), list(e[1])]))#.persist()
       #print('NB bowtie_rdd: ', len(bowtie_rdd.collect()))##################################################
+      #================================================================================================================
+      #================================================================================================================
+      #================================================================================================================
       #================================================================================================================
       #bowtiesplit = bowtie_rdd.collect()
       #mergebowtie += bowtiesplit  
@@ -265,8 +274,10 @@ if __name__ == '__main__' :
     bowFrq_rdd = mergebowtie_rdd.join(sr_short_rdd)\
                            .map(bowtie_obj.bowtie_freq_rearrange_rule)\
                            .persist()
-    #print('NB bowFrq_rdd: ', len(bowFrq_rdd.collect()))##################################################
-    
+    #print('NB bowFrq_rdd: ', len(bowFrq_rdd.collect()))############################################ 
+    #180921 takes 20 secs till this step, option chromo=All
+
+    #'''#!!#
     #= Filtering miRNA low frequency
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
@@ -303,6 +314,9 @@ if __name__ == '__main__' :
       ch = chromosomes[i]
       prec_obj = mru.extract_precurosrs(genome_path, pri_l_flank, pri_r_flank, pre_flank, ch)
       #================================================================================================================
+      #================================================================================================================
+      #================================================================================================================
+      #================================================================================================================
       #= Extraction of the pri-miRNA
       ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr])
       ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri]])
@@ -333,11 +347,18 @@ if __name__ == '__main__' :
       premir_rdd = one_loop_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3)) ## use one-loop rule
       #premir_rdd = pri_vld_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3)) ## ignore one-loop rule
       #================================================================================================================
+      #================================================================================================================
+      #================================================================================================================
+      #================================================================================================================
       #chromosomesplit = premir_rdd.collect()
       #mergeChromosomesResults += chromosomesplit
       mergeChromosomesResults_rdd = mergeChromosomesResults_rdd.union(premir_rdd).persist()
     #premir_rdd = sc.parallelize(mergeChromosomesResults, partition)
+    print('mergeChromosomesResults: ', len(mergeChromosomesResults_rdd.collect()))######## 
+    #180921 it takes 49 secs to run till this line (All chromo)
+    #180921 it takes 479 secs to run till this line (split chromo)
 
+    '''
     #= pre-miRNA folding
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre]])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold']])
@@ -377,10 +398,10 @@ if __name__ == '__main__' :
     timeDict[inBasename] = endLib - startLib
     print ("  End of the processing     ", end="\n")
 
-    #''' 
+    '''#!!#
     #= write results to a file
-    outFile = rep_output  +  appId + '_miRNAprediction_' + inBasename + '.txt'
-    ut.writeToFile (results, outFile)
+    eachLiboutFile = rep_output  +  appId + '_miRNAprediction_' + inBasename + '.txt'
+    ut.writeToFile (results, eachLiboutFile)
     #'''
     
 
@@ -390,7 +411,7 @@ if __name__ == '__main__' :
   outTime = rep_output + appId + '_time.txt'
   ut.writeTimeLibToFile (timeDict, outTime, appId, paramDict)
 
-  #'''
+  '''#!!#
   #= make summary table of all libraries in one submission with expressions in the field
   keyword = appId + '_miRNAprediction_'
   infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
@@ -432,7 +453,7 @@ if __name__ == '__main__' :
 
 
 
-  '''
+  '''#!!#
   ### test to initiate a new sc context ########
   infile = outTime ##update
   sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, execCores) ##update
@@ -440,4 +461,8 @@ if __name__ == '__main__' :
   test = distFile_rdd.collect() ##update
   print(test) ##update
   sc.stop() ##update
-  '''
+  #'''
+
+
+#note: shorten pipeline switch ==> replace #'''#!!# ==> '''#!!#
+
