@@ -4,13 +4,14 @@
 #  author: Chao-Jung Wu
 #
 #
-#  note:
-#  Viridiplantae.model is better than thaliana.model in terms of prediction, 
-#  but during quick code testing, use the latter to have shorter run time.
 #
 #  note:
 #  lines led by char(#) are omitted.
 #  spaces are not allowed.
+#
+#  note:
+#  Viridiplantae.model is better than thaliana.model in terms of prediction, 
+#  but during quick code testing, use the latter to have shorter run time.
 #
 #  note: input_types 
 #  a = raw (seq\tfreq); 
@@ -25,15 +26,11 @@
 #  (not sure true)chromosomes are the folder names within bowtie_split_index folder
 #  (not sure true)option All is the entire genome index without split by chromosomes
 #
-#
-#
 ########################################################################
 #
 message=write your message here line1\nline2: reduce size of genome for precursor extraction 
 #
 ########################################################################
-#
-#
 #
 #
 #
@@ -48,14 +45,9 @@ target_file=/home/cloudera/workspace/mirLibSpark/dbs/ATH/TAIR10_cdna_20101214_up
 #
 #
 #
-#
-#
-#
 #==================== User needs to define
 input_type=a
 adapter=none
-#
-#
 #
 #
 #
