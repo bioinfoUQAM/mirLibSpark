@@ -305,7 +305,7 @@ if __name__ == '__main__' :
       #= Extraction of the pri-miRNA
       ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr])
       ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri]])
-      primir_rdd = excluKnownNon_rdd.filter(lambda e: prec_obj.hasKey (e) > 0)\
+      primir_rdd = excluKnownNon_rdd.filter(prec_obj.hasKey)\
                                     .flatMap(prec_obj.extract_prim_rule)
 
       #= pri-miRNA folding

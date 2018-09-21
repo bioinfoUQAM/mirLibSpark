@@ -5,7 +5,6 @@ author: Chao-Jung Wu
 date: 2017-03-28
 version: 1.00.02
 
-Le programme 
 
 '''
 
@@ -16,6 +15,10 @@ from operator import itemgetter
 
 
 def rearrange_rule(kv_arg, kv_sep):
+  '''
+  in : u'seq\tfreq'
+  out: ('seq', freq)
+  '''
   tab = kv_arg.split(kv_sep)
   return (str(tab[0]), int(tab[1]))
 
@@ -53,7 +56,6 @@ class prog_dustmasker ():
   def dmask_filter_rule(self, elem):
     sRNAseq = str(elem[0])
     line1 = ['echo', '>seqMir\n' + sRNAseq]
-    #line2 = ['dustmasker']
     line2 = ['../lib/dustmasker']
     
     p1 = sbp.Popen(line1, stdout=sbp.PIPE, env=self.env)
@@ -233,8 +235,8 @@ class extract_precurosrs ():
 
   def hasKey (self, e):
     mapping = e[1][2]
-    if mapping[1] in self.genome.keys(): return 1
-    else: return 0
+    if mapping[1] in self.genome.keys(): return True
+    else: return False
 
 
 
