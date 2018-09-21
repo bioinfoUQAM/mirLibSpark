@@ -232,7 +232,7 @@ class extract_precurosrs ():
     return elem
 
   def hasKey (self, e):
-    mapping = elem[1][2]
+    mapping = e[1][2]
     if mapping[1] in self.genome.keys(): return 1
     else: return 0
 
