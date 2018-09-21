@@ -17,6 +17,11 @@ cmd = 'cp ../input_samples/100.txt ../input'
 os.system(cmd)
 
 
+branches = 'changefoldername, faster, format_vis_input2, join, mirnauid, modifymirdup'
+for b in branches:
+  cmd = 'git branch -D ' + b
+  os.system(cmd)
+
 
 
 
