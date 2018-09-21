@@ -242,7 +242,7 @@ if __name__ == '__main__' :
     mergebowtie_rdd = sc.emptyRDD()
     for i in range(len(chromosomes)):
       ch = chromosomes[i]
-      p = b_index_path + ch + '/' + bowtie_index_suffix + ch + '_'
+      p = b_index_path + ch + '/' + bowtie_index_suffix + '_' + ch 
       if ch == 'All': p = b_index_path + ch + '/' + bowtie_index_suffix 
       print(p)
       bowtie_obj = mru.prog_bowtie(p)
