@@ -1,20 +1,16 @@
+#== arabidopsis thaliana settings
 message=write your message here line1\nline2: test relative path
-#==NOTE that project_path and genome_path have to be absolute paths while the input_path, output_path and b_index_path can be relative paths to the project_path (I am not sure this statement180919).
 project_path=/home/cloudera/workspace/mirLibSpark/
 genome_path=/home/cloudera/workspace/mirLibSpark/dbs/ATH/Genome/
 input_path=/home/cloudera/workspace/mirLibSpark/input/
 output_path=/home/cloudera/workspace/mirLibSpark/output/
 b_index_path=/home/cloudera/workspace/mirLibSpark/dbs/ATH/bowtie_split_index/
-#
-#genome_path=/home/cloudera/workspace/mirLibSpark/dbs/ATH/Genome/
-#input_path=../input/
-#output_path=../output/
-#b_index_path=../dbs/ATH/bowtie_split_index/
-#
 chromosome=chr1,chr2,chr3,chr4,chr5,chrC,chrM
 bowtie_index_suffix=a_thaliana_t10_
 known_non_file=/home/cloudera/workspace/mirLibSpark/dbs/ATH/TAIR10_ncRNA_CDS.gff
 target_file=/home/cloudera/workspace/mirLibSpark/dbs/ATH/TAIR10_cdna_20101214_updated.fasta
+#mirdup_model=Viridiplantae.model
+mirdup_model=thaliana.model
 #== input_types: a = raw (seq\tfreq); b = reads (each line may be a redundant sequence); c = fasta (>name\nseq); d = fastq
 input_type=a
 adapter=none
@@ -26,7 +22,6 @@ pri_l_flank=500
 pri_r_flank=200
 pre_flank=10
 temperature=25
-mirdup_model=thaliana.model
 mirdup_limit=0.98
 mcheck_param=def
 Max_Score_cutoff=170
@@ -34,7 +29,7 @@ Max_Energy_cutoff=-15
 Gap_Penalty=-15
 #==================== Spark configuration
 sc_appname=mirLibSpark
-sc_partition=12
+sc_partition=24
 sc_mstrmemory=20g
 sc_execmemory=20g
 #==================== local mode
