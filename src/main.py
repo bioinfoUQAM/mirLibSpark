@@ -3,7 +3,7 @@ import os
 #cmd = 'python purge.py'
 #os.system (cmd)
 
-cmd = 'git pull origin join'
+cmd = 'git pull origin fatser'
 os.system (cmd)
 
 
