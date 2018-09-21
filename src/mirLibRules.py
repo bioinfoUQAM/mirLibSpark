@@ -136,13 +136,13 @@ class prog_bowtie ():
 
 class extract_precurosrs ():
 
-  def __init__(self, genome_path, ext_left, ext_right, pre_flank):
+  def __init__(self, genome_path, ext_left, ext_right, pre_flank, chromosomeName):
     self.genome_path = genome_path
     self.ext_left = ext_left
     self.ext_right = ext_right
     self.pre_flank = pre_flank
     #
-    self.genome = ut.getGenome(genome_path, ".fas")
+    self.genome = ut.getGenome(genome_path, ".fas", chromosomeName)
 
   def extract_precursors (self, contig, strand, start_srna, len_srna):
     prims = []

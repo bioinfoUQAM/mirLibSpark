@@ -181,7 +181,8 @@ def getFastaSeq (file):
   fh.close()
   return seq
 
-def getGenome (genome_path, file_ext):
+#defunct
+def getGenome_ (genome_path, file_ext):
   genome = dict()
   
   files = [each for each in os.listdir(genome_path) if each.endswith(file_ext)]
@@ -192,6 +193,23 @@ def getGenome (genome_path, file_ext):
     genome[chr] = sequence
     
   return genome
+
+def getGenome (genome_path, file_ext, chromosomeName):
+  genome = dict()
+  
+  if chromosomeName == 'All':
+    files = [each for each in os.listdir(genome_path) if each.endswith(file_ext)]
+  else:
+    files = [genome_path + chromosomeName + file_ext]
+
+  for namefile in files :
+    file = genome_path+namefile
+    chr = getChromosomeName(file)
+    sequence = getFastaSeq(file)
+    genome[chr] = sequence
+    
+  return genome
+
 
 def readParam (paramfile, sep = '='):
   paramDict = {}
@@ -567,7 +585,7 @@ def get_nonMirna_coors (infile):
 
 def get_nonMirna_list (infile, genome_path):
   # defunct
-  genome = ut.getGenome (genome_path, file_ext) #= genome[chr] = sequence
+  genome = ut.getGenome (genome_path, file_ext, 'All') #= genome[chr] = sequence
   #infile = '../dbs/TAIR10_ncRNA_CDS.gff'
   l_non_miRNA = [] #= ['TGGATTTATGAAAGACGAACAACTGCGAAA']
   with open (infile, 'r') as fh:
