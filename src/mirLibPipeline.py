@@ -354,7 +354,7 @@ if __name__ == '__main__' :
       #mergeChromosomesResults += chromosomesplit
       mergeChromosomesResults_rdd = mergeChromosomesResults_rdd.union(premir_rdd).persist()
     #premir_rdd = sc.parallelize(mergeChromosomesResults, partition)
-    print('mergeChromosomesResults: ', len(mergeChromosomesResults_rdd.collect()))########
+    print('mergeChromosomesResults: ', len(mergeChromosomesResults_rdd.collect()))######## 180921 it takes 49 secs to run till this line (All chromo)
 
     '''
     #= pre-miRNA folding
