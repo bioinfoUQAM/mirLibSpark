@@ -3,18 +3,18 @@ import os
 #cmd = 'python purge.py'
 #os.system (cmd)
 
-cmd = 'git pull origin genomeextract'
+cmd = 'git pull origin join'
 os.system (cmd)
 
 
 
-#cmd = 'cp ../input_samples/fake_a3.txt ../input'
+cmd = 'cp ../input_samples/fake_a3.txt ../input'
 #cmd = 'rm -fr ../input/fake_a3.txt'
-#os.system(cmd)
+os.system(cmd)
 
 
-#cmd = 'cp ../input_samples/100.txt ../input'
-cmd = 'rm -fr ../input/100.txt'
+cmd = 'cp ../input_samples/100.txt ../input'
+#cmd = 'rm -fr ../input/100.txt'
 os.system(cmd)
 
 
@@ -23,6 +23,37 @@ os.system(cmd)
 
 cmd = 'time spark-submit mirLibPipeline.py ../paramfile.txt 2>/dev/null'
 os.system(cmd)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 #cmd = 'mkdir ../dbs/ATH/bowtie_split_index'

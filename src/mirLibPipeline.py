@@ -237,7 +237,8 @@ if __name__ == '__main__' :
                             .persist()
     #print('NB dmask_rdd: ', len(dmask_rdd.collect()))############################################
 
-    mergebowtie = []
+    #mergebowtie = []
+    mergebowtie_rdd = sc.emptyRDD()
     for i in range(len(chromosomes)):
       ch = chromosomes[i]
       bowtie_obj = mru.prog_bowtie(b_index_path + ch + '/' + bowtie_index_suffix + ch)
@@ -250,23 +251,21 @@ if __name__ == '__main__' :
                             .pipe(bowtie_cmd, bowtie_env)\
                             .map(bowtie_obj.bowtie_rearrange_map)\
                             .groupByKey()\
-                            .map(lambda e: (e[0], [len(list(e[1])), list(e[1])]))\
-                            .persist()
+                            .map(lambda e: (e[0], [len(list(e[1])), list(e[1])]))#.persist()
       #print('NB bowtie_rdd: ', len(bowtie_rdd.collect()))##################################################
       #================================================================================================================
-      bowtiesplit = bowtie_rdd.collect()
-      mergebowtie += bowtiesplit     
-    bowtie_rdd = sc.parallelize(mergebowtie, partition)
+      #bowtiesplit = bowtie_rdd.collect()
+      #mergebowtie += bowtiesplit  
+      mergebowtie_rdd = mergebowtie_rdd.union(bowtie_rdd).persist()
+    #bowtie_rdd = sc.parallelize(mergebowtie, partition)
 
     #= Getting the expression value for each reads
     ## in : ('seq', [nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
-    bowFrq_rdd = bowtie_rdd.join(sr_short_rdd)\
+    bowFrq_rdd = mergebowtie_rdd.join(sr_short_rdd)\
                            .map(bowtie_obj.bowtie_freq_rearrange_rule)\
                            .persist()
     #print('NB bowFrq_rdd: ', len(bowFrq_rdd.collect()))##################################################
-    splitbowtie = bowFrq_rdd.collect()
-    #print('bowFrq_rdd: ', splitbowtie) ##################################################
     
     #= Filtering miRNA low frequency
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
@@ -298,7 +297,8 @@ if __name__ == '__main__' :
     excluKnownNon_rdd = flat_rdd.filter(kn_obj.knFilterByCoor)#.persist()#######
     #print('excluKnownNon_rdd distinct: ', len(excluKnownNon_rdd.groupByKey().collect()))########
     
-    mergeChromosomesResults = []
+    mergeChromosomesResults_rdd = sc.emptyRDD()
+    #mergeChromosomesResults = []
     for i in range(len(chromosomes)):
       ch = chromosomes[i]
       prec_obj = mru.extract_precurosrs(genome_path, pri_l_flank, pri_r_flank, pre_flank, ch)
@@ -306,7 +306,7 @@ if __name__ == '__main__' :
       #= Extraction of the pri-miRNA
       ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr])
       ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri]])
-      primir_rdd = excluKnownNon_rdd.filter(lambda e: prec_obj.hasKey (e) > 0)\
+      primir_rdd = excluKnownNon_rdd.filter(prec_obj.hasKey)\
                                     .flatMap(prec_obj.extract_prim_rule)
 
       #= pri-miRNA folding
@@ -333,14 +333,15 @@ if __name__ == '__main__' :
       premir_rdd = one_loop_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3)) ## use one-loop rule
       #premir_rdd = pri_vld_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3)) ## ignore one-loop rule
       #================================================================================================================
-      chromosomesplit = premir_rdd.collect()
-      mergeChromosomesResults += chromosomesplit
-    premir_rdd = sc.parallelize(mergeChromosomesResults, partition)
+      #chromosomesplit = premir_rdd.collect()
+      #mergeChromosomesResults += chromosomesplit
+      mergeChromosomesResults_rdd = mergeChromosomesResults_rdd.union(premir_rdd).persist()
+    #premir_rdd = sc.parallelize(mergeChromosomesResults, partition)
 
     #= pre-miRNA folding
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre]])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold']])
-    pre_fold_rdd = premir_rdd.map(lambda e: rnafold_obj.RNAfold_map_rule(e, 4))
+    pre_fold_rdd = mergeChromosomesResults_rdd.map(lambda e: rnafold_obj.RNAfold_map_rule(e, 4))
 
     #= Validating pre-mirna with mircheck II -- replaced by mirdup
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold']])
@@ -402,7 +403,7 @@ if __name__ == '__main__' :
   varna_obj = mru.prog_varna(appId, rep_output) # this object needs to be initiated after appId is generated
   distPrecursor_rdd = sc.parallelize(master_distinctPrecursor_infos, partition)
   VARNA_rdd = distPrecursor_rdd.zipWithIndex()\
-                          .map(varna_obj.run_VARNA)#.persist()
+                               .map(varna_obj.run_VARNA)
   indexVis = VARNA_rdd.collect()
   ut.write_index (indexVis, rep_output, appId)
 

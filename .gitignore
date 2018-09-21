@@ -10,7 +10,6 @@ src/*.kv.txt
 ATH/
 .DS_Store
 src/*.swp
-workdir/
 tmp/
 lib/all.model
 lib/miRdup_1.4/model/all.model
