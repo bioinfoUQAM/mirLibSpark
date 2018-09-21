@@ -297,7 +297,8 @@ if __name__ == '__main__' :
     excluKnownNon_rdd = flat_rdd.filter(kn_obj.knFilterByCoor)#.persist()#######
     #print('excluKnownNon_rdd distinct: ', len(excluKnownNon_rdd.groupByKey().collect()))########
     
-    mergeChromosomesResults = []
+    mergeChromosomesResults_rdd = sc.emptyRDD()
+    #mergeChromosomesResults = []
     for i in range(len(chromosomes)):
       ch = chromosomes[i]
       prec_obj = mru.extract_precurosrs(genome_path, pri_l_flank, pri_r_flank, pre_flank, ch)
@@ -332,14 +333,15 @@ if __name__ == '__main__' :
       premir_rdd = one_loop_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3)) ## use one-loop rule
       #premir_rdd = pri_vld_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3)) ## ignore one-loop rule
       #================================================================================================================
-      chromosomesplit = premir_rdd.collect()
-      mergeChromosomesResults += chromosomesplit
-    premir_rdd = sc.parallelize(mergeChromosomesResults, partition)
+      #chromosomesplit = premir_rdd.collect()
+      #mergeChromosomesResults += chromosomesplit
+      mergeChromosomesResults_rdd = mergeChromosomesResults.union(premir_rdd).persist()
+    #premir_rdd = sc.parallelize(mergeChromosomesResults, partition)
 
     #= pre-miRNA folding
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre]])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold']])
-    pre_fold_rdd = premir_rdd.map(lambda e: rnafold_obj.RNAfold_map_rule(e, 4))
+    pre_fold_rdd = mergeChromosomesResults_rdd.map(lambda e: rnafold_obj.RNAfold_map_rule(e, 4))
 
     #= Validating pre-mirna with mircheck II -- replaced by mirdup
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold']])

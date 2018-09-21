@@ -24,3 +24,6 @@ spark-submit --executor-memory ${SLURM_MEM_PER_NODE}M $SPARK_HOME pi.py 100000
 
 stop-master.sh
 
+
+#= sbatch pyspark_submit.sh
+#= squeue -u cjwu
