@@ -70,9 +70,11 @@ if __name__ == '__main__' :
 
   #= bowtie
   b_index_path = paramDict['b_index_path']
+  chromosome = paramDict['chromosome'].split(',')
+  bowtie_index_suffix = paramDict['bowtie_index_suffix']
 
   #= file and list of known non miRNA
-  known_non = project_path + '/dbs/TAIR10_ncRNA_CDS.gff'###########################
+  known_non = paramDict['known_non_file'] #project_path + '/dbs/TAIR10_ncRNA_CDS.gff'###########################
   d_ncRNA_CDS = ut.get_nonMirna_coors (known_non) #= nb = 198736
 
   #= RNAfold
@@ -94,8 +96,8 @@ if __name__ == '__main__' :
   mirdup_limit =  float(paramDict['mirdup_limit'])
 
   #= miRanda parameter
-  target_file = project_path + '/dbs/' + paramDict['target_file']
-  miranda_exe = project_path + '/lib/miranda'
+  target_file = paramDict['target_file']
+  miranda_binary = project_path + '/lib/miranda'
   Max_Score_cutoff = paramDict['Max_Score_cutoff'] #= need string or buffer
   Max_Energy_cutoff = paramDict['Max_Energy_cutoff'] #= NOT WORKING YET
   Gap_Penalty = paramDict['Gap_Penalty']
@@ -119,7 +121,7 @@ if __name__ == '__main__' :
   mirdup_obj = mru.prog_miRdup (rep_tmp, mirdup_model, mirdup_jar, path_RNAfold)
   profile_obj = mru.prog_dominant_profile()
   #
-  miranda_obj = mru.prog_miRanda(Max_Score_cutoff, Max_Energy_cutoff, target_file, rep_tmp, miranda_exe, Gap_Penalty)
+  miranda_obj = mru.prog_miRanda(Max_Score_cutoff, Max_Energy_cutoff, target_file, rep_tmp, miranda_binary, Gap_Penalty)
 
   
   #= Spark context
@@ -141,7 +143,7 @@ if __name__ == '__main__' :
   sc.addFile(mirdup_jar)
   sc.addFile(mirdup_model)
   sc.addFile(target_file)
-  sc.addFile(miranda_exe)
+  sc.addFile(miranda_binary)
 
   #= Spark application ID
   appId = str(sc.applicationId)
@@ -242,12 +244,11 @@ if __name__ == '__main__' :
     ##  bowtie chromosome loop
     ##
     ##############################################################
-    chromosome = 'chr1, chr2, chr3, chr4, chr5, chrC, chrM'.split(', ')
+    #chromosome = 'chr1, chr2, chr3, chr4, chr5, chrC, chrM'.split(', ')
     mergebowtie = []
     for i in range(len(chromosome)):
       ch = chromosome[i]
-      bowtie_obj = mru.prog_bowtie(b_index_path + ch + '/' + 'atht10_' + ch)
-      #bowtie_obj = mru.prog_bowtie(b_index_path)
+      bowtie_obj = mru.prog_bowtie(b_index_path + ch + '/' + bowtie_index_suffix + ch)
       bowtie_cmd, bowtie_env = bowtie_obj.Bowtie_pipe_cmd()
 
 
@@ -265,12 +266,7 @@ if __name__ == '__main__' :
       mergebowtie += bowtiesplit
      
 
-
-    #print(mergebowtie)
     bowtie_rdd = sc.parallelize(mergebowtie, partition)
-    #for i in mergebowtie: 
-    #  for j in i:
-    #    print(j) 
 
     ###############################################################
     ##
@@ -433,7 +429,7 @@ if __name__ == '__main__' :
 
 
   master_distinctTG = miranda_rdd.map(lambda e: [  i[0].split('.')[0] for i in e[1]  ])\
-                         .reduce(lambda a, b: a+b)
+                                 .reduce(lambda a, b: a+b)
   master_distinctTG = list(set(master_distinctTG))
   #print( master_distinctTG )
   #'''
