@@ -236,7 +236,7 @@ if __name__ == '__main__' :
                             .filter(lambda e: e.isupper() and not e.startswith('>'))\
                             .map(lambda e: str(e.rstrip()))\
                             .persist()
-    #print('NB dmask_rdd: ', len(dmask_rdd.collect()))############################################
+    print('NB dmask_rdd: ', len(dmask_rdd.collect()))############################################
 
     #mergebowtie = []
     mergebowtie_rdd = sc.emptyRDD()
