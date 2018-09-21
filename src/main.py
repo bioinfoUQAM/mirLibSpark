@@ -3,7 +3,7 @@ import os
 #cmd = 'python purge.py'
 #os.system (cmd)
 
-cmd = 'git pull origin athsettings'
+cmd = 'git pull origin genomeextract'
 os.system (cmd)
 
 #cmd = 'rm -fr ../input/fake_a3.txt'
