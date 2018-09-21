@@ -335,7 +335,7 @@ if __name__ == '__main__' :
       #================================================================================================================
       #chromosomesplit = premir_rdd.collect()
       #mergeChromosomesResults += chromosomesplit
-      mergeChromosomesResults_rdd = mergeChromosomesResults.union(premir_rdd).persist()
+      mergeChromosomesResults_rdd = mergeChromosomesResults_rdd.union(premir_rdd).persist()
     #premir_rdd = sc.parallelize(mergeChromosomesResults, partition)
 
     #= pre-miRNA folding
