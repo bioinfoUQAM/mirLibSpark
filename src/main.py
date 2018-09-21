@@ -3,7 +3,7 @@ import os
 #cmd = 'python purge.py'
 #os.system (cmd)
 
-cmd = 'git pull origin fatser'
+cmd = 'git pull origin faster'
 os.system (cmd)
 
 

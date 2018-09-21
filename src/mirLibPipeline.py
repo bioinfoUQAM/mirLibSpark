@@ -21,6 +21,10 @@ join and zip are expensive. Consider how to avoid them.
 
 TO DO: NEED TO clean up tmp folder every time automaticly
 
+
+note: shorten pipeline switch ==> replace #'''#!!# ==> '''#!!#
+'''
+
 '''
 
 from __future__ import print_function
@@ -273,7 +277,7 @@ if __name__ == '__main__' :
                            .persist()
     print('NB bowFrq_rdd: ', len(bowFrq_rdd.collect()))##################################################
 
-    '''
+    '''#!!#
     #= Filtering miRNA low frequency
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
@@ -382,7 +386,7 @@ if __name__ == '__main__' :
                              .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2).persist()##
     print('NB profile_rdd distinct: ', len(profile_rdd.groupByKey().collect()))##
     results = profile_rdd.collect()
-    '''
+    #'''
 
 
     
@@ -390,7 +394,7 @@ if __name__ == '__main__' :
     timeDict[inBasename] = endLib - startLib
     print ("  End of the processing     ", end="\n")
 
-    #''' 
+    '''#!!#
     #= write results to a file
     eachLiboutFile = rep_output  +  appId + '_miRNAprediction_' + inBasename + '.txt'
     ut.writeToFile (results, eachLiboutFile)
@@ -403,7 +407,7 @@ if __name__ == '__main__' :
   outTime = rep_output + appId + '_time.txt'
   ut.writeTimeLibToFile (timeDict, outTime, appId, paramDict)
 
-  '''
+  '''#!!#
   #= make summary table of all libraries in one submission with expressions in the field
   keyword = appId + '_miRNAprediction_'
   infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
@@ -434,7 +438,7 @@ if __name__ == '__main__' :
                                  .reduce(lambda a, b: a+b)
   master_distinctTG = list(set(master_distinctTG))
   #print( master_distinctTG )
-  '''
+  #'''
 
 
   
@@ -445,7 +449,7 @@ if __name__ == '__main__' :
 
 
 
-  '''
+  '''#!!#
   ### test to initiate a new sc context ########
   infile = outTime ##update
   sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, execCores) ##update
@@ -453,4 +457,4 @@ if __name__ == '__main__' :
   test = distFile_rdd.collect() ##update
   print(test) ##update
   sc.stop() ##update
-  '''
+  #'''
