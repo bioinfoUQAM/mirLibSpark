@@ -136,13 +136,13 @@ class prog_bowtie ():
 
 class extract_precurosrs ():
 
-  def __init__(self, genome_path, ext_left, ext_right, pre_flank):
+  def __init__(self, genome_path, ext_left, ext_right, pre_flank, chromosomeName):
     self.genome_path = genome_path
     self.ext_left = ext_left
     self.ext_right = ext_right
     self.pre_flank = pre_flank
     #
-    self.genome = ut.getGenome(genome_path, ".fas")
+    self.genome = ut.getGenome(genome_path, ".fas", chromosomeName)
 
   def extract_precursors (self, contig, strand, start_srna, len_srna):
     prims = []
@@ -194,6 +194,7 @@ class extract_precurosrs ():
     len_srna = len(elem[0])
     
     mapping = elem[1][2]
+    #if not mapping[1] in self.genome.keys(): return (0)
     contig = self.genome[mapping[1]]
     prims = self.extract_precursors(contig, mapping[0], mapping[2], len_srna)
       
@@ -219,7 +220,7 @@ class extract_precurosrs ():
 
   def extract_prem_rule(self, elem, field):
     '''
-    olde : elem = (id, [seq, frq, nbloc, [bowtie], [pri_miRNA, posMirPrim, Struct, mircheck, fbstart, fbstop]])
+    old : elem = (id, [seq, frq, nbloc, [bowtie], [pri_miRNA, posMirPrim, Struct, mircheck, fbstart, fbstop]])
     new : elem = (seq, [frq, nbloc, [bowtie], [pri_miRNA, posMirPrim, Struct, mircheck, fbstart, fbstop]])
     '''
     priSeq = elem[1][field][0]
@@ -229,6 +230,14 @@ class extract_precurosrs ():
     
     elem[1].append(self.extract_sub_seq(priSeq, posMir, fback_start, fback_stop))
     return elem
+
+  def hasKey (self, e):
+    mapping = e[1][2]
+    if mapping[1] in self.genome.keys(): return 1
+    else: return 0
+
+
+
 
 
 class prog_RNAfold ():
@@ -244,7 +253,6 @@ class prog_RNAfold ():
     this requires two subprocesses
     '''
     line1 = ['echo', seq]
-    #line2 = ['RNAfold','--noPS', '--noLP', '--temp=25.0']
     line2 = ['../lib/RNAfold','--noPS', '--noLP', '--temp=' + self.temperature]
     
     p1 = sbp.Popen(line1, stdout=sbp.PIPE, env=self.env)

@@ -21,11 +21,15 @@
 #  note: adapter
 #  none or ATCG sequence
 #
+#  (not sure true)note:
+#  (not sure true)chromosomes are the folder names within bowtie_split_index folder
+#  (not sure true)option All is the entire genome index without split by chromosomes
+#
 #
 #
 ########################################################################
 #
-message=write your message here line1\nline2: test relative path
+message=write your message here line1\nline2: reduce size of genome for precursor extraction 
 #
 ########################################################################
 #
@@ -33,7 +37,7 @@ message=write your message here line1\nline2: test relative path
 #
 #
 #
-#==================== Absolute paths in user's computer
+#==================== Absolute paths in user's computer, please modify this string: /home/cloudera/workspace/
 project_path=/home/cloudera/workspace/mirLibSpark/
 genome_path=/home/cloudera/workspace/mirLibSpark/dbs/ATH/Genome/
 input_path=/home/cloudera/workspace/mirLibSpark/input/
@@ -56,7 +60,8 @@ adapter=none
 #
 #
 #====================  Ideally, do not change the following parameters since they are already tuned.
-chromosome=chr1,chr2,chr3,chr4,chr5,chrC,chrM
+chromosomes=chr1,chr2,chr3,chr4,chr5,chrC,chrM
+#chromosomes=All
 bowtie_index_suffix=a_thaliana_t10_
 #mirdup_model=Viridiplantae.model
 mirdup_model=thaliana.model

@@ -3,15 +3,20 @@ import os
 #cmd = 'python purge.py'
 #os.system (cmd)
 
-cmd = 'git pull origin athsettings'
+cmd = 'git pull origin genomeextract'
 os.system (cmd)
 
+
+
+#cmd = 'cp ../input_samples/fake_a3.txt ../input'
 #cmd = 'rm -fr ../input/fake_a3.txt'
 #os.system(cmd)
 
 
-#cmd = 'cp ../input_samples/fake_a3.txt ../input'
-#os.system(cmd)
+#cmd = 'cp ../input_samples/100.txt ../input'
+cmd = 'rm -fr ../input/100.txt'
+os.system(cmd)
+
 
 
 
@@ -68,4 +73,7 @@ os.system(cmd)
 #  for s in suffixes:
 #    cmd = 'git mv ' + prefix + s + ' ' + newprefix + s
 #    os.system(cmd)
+
+
+
 
