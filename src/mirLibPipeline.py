@@ -237,7 +237,8 @@ if __name__ == '__main__' :
                             .persist()
     #print('NB dmask_rdd: ', len(dmask_rdd.collect()))############################################
 
-    mergebowtie = []
+    #mergebowtie = []
+    mergebowtie_rdd = sc.emptyRDD()
     for i in range(len(chromosomes)):
       ch = chromosomes[i]
       bowtie_obj = mru.prog_bowtie(b_index_path + ch + '/' + bowtie_index_suffix + ch)
@@ -250,23 +251,21 @@ if __name__ == '__main__' :
                             .pipe(bowtie_cmd, bowtie_env)\
                             .map(bowtie_obj.bowtie_rearrange_map)\
                             .groupByKey()\
-                            .map(lambda e: (e[0], [len(list(e[1])), list(e[1])]))\
-                            .persist()
+                            .map(lambda e: (e[0], [len(list(e[1])), list(e[1])]))#.persist()
       #print('NB bowtie_rdd: ', len(bowtie_rdd.collect()))##################################################
       #================================================================================================================
-      bowtiesplit = bowtie_rdd.collect()
-      mergebowtie += bowtiesplit     
-    bowtie_rdd = sc.parallelize(mergebowtie, partition)
+      #bowtiesplit = bowtie_rdd.collect()
+      #mergebowtie += bowtiesplit  
+      mergebowtie_rdd = mergebowtie_rdd.union(bowtie_rdd).persist()
+    #bowtie_rdd = sc.parallelize(mergebowtie, partition)
 
     #= Getting the expression value for each reads
     ## in : ('seq', [nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
-    bowFrq_rdd = bowtie_rdd.join(sr_short_rdd)\
+    bowFrq_rdd = mergebowtie_rdd.join(sr_short_rdd)\
                            .map(bowtie_obj.bowtie_freq_rearrange_rule)\
                            .persist()
     #print('NB bowFrq_rdd: ', len(bowFrq_rdd.collect()))##################################################
-    splitbowtie = bowFrq_rdd.collect()
-    #print('bowFrq_rdd: ', splitbowtie) ##################################################
     
     #= Filtering miRNA low frequency
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])

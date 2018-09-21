@@ -3,7 +3,7 @@ import os
 #cmd = 'python purge.py'
 #os.system (cmd)
 
-cmd = 'git pull origin genomeextract'
+cmd = 'git pull origin join'
 os.system (cmd)
 
 
