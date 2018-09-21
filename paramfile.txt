@@ -25,7 +25,7 @@
 #
 ########################################################################
 #
-message=write your message here line1\nline2: test relative path
+message=write your message here line1\nline2: reduce size of genome for precursor extraction 
 #
 ########################################################################
 #
