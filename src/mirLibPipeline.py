@@ -410,19 +410,18 @@ if __name__ == '__main__' :
 
   distResultSmallRNA_rdd = sc.parallelize(master_predicted_distinctMiRNAs, partition).zipWithIndex() ### <---------------------
 
-  distPrecursor_rdd = sc.parallelize(master_distinctPrecursor_infos, partition)\
-                        .map(lambda e: (e[0], e[1:]))\
-                        .join(distResultSmallRNA_rdd)\
-                        .map(mru.distPrecursor_rdd_rearrange_rule)
-
-  print('distPrecursor_rdd', distPrecursor_rdd.collect())
+  #distPrecursor_rdd = sc.parallelize(master_distinctPrecursor_infos, partition)\
+                        #.map(lambda e: (e[0], e[1:]))\
+                        #.join(distResultSmallRNA_rdd)\
+                        #.map(mru.distPrecursor_rdd_rearrange_rule)
+  #print('distPrecursor_rdd', distPrecursor_rdd.collect())
   
   #
   #= create precursor images VARNA
   ## in : [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
   ## out: [zipindex, miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
   varna_obj = mru.prog_varna(appId, rep_output) # this object needs to be initiated after appId is generated
-  #distPrecursor_rdd = sc.parallelize(master_distinctPrecursor_infos, partition) ### <---------------------
+  distPrecursor_rdd = sc.parallelize(master_distinctPrecursor_infos, partition) ### <---------------------
   VARNA_rdd = distPrecursor_rdd.zipWithIndex()\
                                .map(varna_obj.run_VARNA)
   indexVis = VARNA_rdd.collect()
@@ -432,7 +431,6 @@ if __name__ == '__main__' :
   #= miranda
   ## in : 'miRNAseq', zipindex
   ## out: ('miRNAseq', [[target1 and its scores], [target2 and its scores]])
-  #distResultSmallRNA_rdd = sc.parallelize(master_predicted_distinctMiRNAs, partition).zipWithIndex() ### <---------------------
   miranda_rdd = distResultSmallRNA_rdd.map(miranda_obj.computeTargetbyMiranda)
   master_distinctTG = miranda_rdd.map(lambda e: [  i[0].split('.')[0] for i in e[1]  ])\
                                  .reduce(lambda a, b: a+b)
@@ -448,11 +446,13 @@ if __name__ == '__main__' :
 
 
   
-  #= clear caches
+  #= clear caches (memory leak)
   dmask_rdd.unpersist()
   sr_short_rdd.unpersist()
   mergebowtie_rdd.unpersist()
   mergeChromosomesResults_rdd.unpersist()
+  broadcastVar.unpersist()
+
   #= end of spark context
   sc.stop() #= allow to run multiple SparkContexts
 
