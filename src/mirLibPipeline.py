@@ -236,13 +236,13 @@ if __name__ == '__main__' :
                             .filter(lambda e: e.isupper() and not e.startswith('>'))\
                             .map(lambda e: str(e.rstrip()))\
                             .persist()
-    print('NB dmask_rdd: ', len(dmask_rdd.collect()))############################################
+    #print('NB dmask_rdd: ', len(dmask_rdd.collect()))############################################
 
-    #mergebowtie = []
     mergebowtie_rdd = sc.emptyRDD()
     for i in range(len(chromosomes)):
       ch = chromosomes[i]
-      p = b_index_path + ch + '/' + bowtie_index_suffix + '_' + ch 
+      #= furture work: case insensitive
+      p = b_index_path + ch.replace('Chr', 'chr') + '/' + bowtie_index_suffix + '_' + ch.replace('chr', 'Chr') 
       if ch == 'All': p = b_index_path + ch + '/' + bowtie_index_suffix 
       bowtie_obj = mru.prog_bowtie(p)
       bowtie_cmd, bowtie_env = bowtie_obj.Bowtie_pipe_cmd()
@@ -263,10 +263,7 @@ if __name__ == '__main__' :
       #================================================================================================================
       #================================================================================================================
       #================================================================================================================
-      #bowtiesplit = bowtie_rdd.collect()
-      #mergebowtie += bowtiesplit  
       mergebowtie_rdd = mergebowtie_rdd.union(bowtie_rdd).persist()
-    #bowtie_rdd = sc.parallelize(mergebowtie, partition)
 
     #= Getting the expression value for each reads
     ## in : ('seq', [nbLoc, [['strd','chr',posChr],..]])
@@ -275,7 +272,8 @@ if __name__ == '__main__' :
                            .map(bowtie_obj.bowtie_freq_rearrange_rule)\
                            .persist()
     #print('NB bowFrq_rdd: ', len(bowFrq_rdd.collect()))############################################ 
-    #180921 takes 20 secs till this step, option chromo=All
+    #180921 fake_a.txt takes 17 secs till this step, option chromo=All
+    #180921 100.txt takes 23 secs till this step, option chromo=All
 
     #'''#!!#
     #= Filtering miRNA low frequency
@@ -303,15 +301,14 @@ if __name__ == '__main__' :
     ###############################
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr])
-    ##excluKnownNon_rdd = flat_rdd.filter(kn_obj.knFilterBySeq) #= defunct
     #excluKnownNon_rdd = flat_rdd.repartition(100).filter(kn_obj.knFilterByCoor)#.persist()#######
     excluKnownNon_rdd = flat_rdd.filter(kn_obj.knFilterByCoor)#.persist()#######
     #print('excluKnownNon_rdd distinct: ', len(excluKnownNon_rdd.groupByKey().collect()))########
     
+
     mergeChromosomesResults_rdd = sc.emptyRDD()
-    #mergeChromosomesResults = []
     for i in range(len(chromosomes)):
-      ch = chromosomes[i]
+      ch = chromosomes[i].replace('chr', 'Chr')
       prec_obj = mru.extract_precurosrs(genome_path, pri_l_flank, pri_r_flank, pre_flank, ch)
       #================================================================================================================
       #================================================================================================================
@@ -350,15 +347,12 @@ if __name__ == '__main__' :
       #================================================================================================================
       #================================================================================================================
       #================================================================================================================
-      #chromosomesplit = premir_rdd.collect()
-      #mergeChromosomesResults += chromosomesplit
       mergeChromosomesResults_rdd = mergeChromosomesResults_rdd.union(premir_rdd).persist()
-    #premir_rdd = sc.parallelize(mergeChromosomesResults, partition)
     print('mergeChromosomesResults: ', len(mergeChromosomesResults_rdd.collect()))######## 
-    #180921 it takes 49 secs to run till this line (All chromo)
-    #180921 it takes 479 secs to run till this line (split chromo)
+    #180921 fake_a.txt takes 42 secs to run till this line (All chromo)
+    #180921 fake_a.txt takes 307 secs to run till this line (split chromo)
 
-    '''
+    #'''#
     #= pre-miRNA folding
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre]])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold']])
@@ -398,7 +392,7 @@ if __name__ == '__main__' :
     timeDict[inBasename] = endLib - startLib
     print ("  End of the processing     ", end="\n")
 
-    '''#!!#
+    #'''#!!#
     #= write results to a file
     eachLiboutFile = rep_output  +  appId + '_miRNAprediction_' + inBasename + '.txt'
     ut.writeToFile (results, eachLiboutFile)
@@ -411,7 +405,7 @@ if __name__ == '__main__' :
   outTime = rep_output + appId + '_time.txt'
   ut.writeTimeLibToFile (timeDict, outTime, appId, paramDict)
 
-  '''#!!#
+  #'''#!!#
   #= make summary table of all libraries in one submission with expressions in the field
   keyword = appId + '_miRNAprediction_'
   infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
