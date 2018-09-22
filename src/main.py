@@ -4,8 +4,8 @@ import os
 #cmd = 'python purge.py'
 #os.system (cmd)
 
-#cmd = 'git pull origin speedchrs'
-#os.system (cmd)
+cmd = 'git pull origin test'
+os.system (cmd)
 
 
 
@@ -18,9 +18,9 @@ cmd = 'rm -f ../input/100.txt'
 os.system(cmd)
 
 
-cmd = 'git remote prune origin'
-os.system(cmd)
-cmd = 'git branch -D speedchrs'
+#cmd = 'git remote prune origin'
+#os.system(cmd)
+cmd = 'git branch -D fixmirdup'
 os.system(cmd)
 
 
