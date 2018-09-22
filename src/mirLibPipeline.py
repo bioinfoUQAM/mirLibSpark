@@ -238,7 +238,6 @@ if __name__ == '__main__' :
                             .persist()
     print('NB dmask_rdd: ', len(dmask_rdd.collect()))############################################
 
-    #mergebowtie = []
     mergebowtie_rdd = sc.emptyRDD()
     for i in range(len(chromosomes)):
       ch = chromosomes[i]
@@ -263,10 +262,7 @@ if __name__ == '__main__' :
       #================================================================================================================
       #================================================================================================================
       #================================================================================================================
-      #bowtiesplit = bowtie_rdd.collect()
-      #mergebowtie += bowtiesplit  
       mergebowtie_rdd = mergebowtie_rdd.union(bowtie_rdd).persist()
-    #bowtie_rdd = sc.parallelize(mergebowtie, partition)
 
     #= Getting the expression value for each reads
     ## in : ('seq', [nbLoc, [['strd','chr',posChr],..]])
@@ -274,10 +270,10 @@ if __name__ == '__main__' :
     bowFrq_rdd = mergebowtie_rdd.join(sr_short_rdd)\
                            .map(bowtie_obj.bowtie_freq_rearrange_rule)\
                            .persist()
-    #print('NB bowFrq_rdd: ', len(bowFrq_rdd.collect()))############################################ 
+    print('NB bowFrq_rdd: ', len(bowFrq_rdd.collect()))############################################ 
     #180921 takes 20 secs till this step, option chromo=All
 
-    #'''#!!#
+    '''#!!#
     #= Filtering miRNA low frequency
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
@@ -308,6 +304,12 @@ if __name__ == '__main__' :
     excluKnownNon_rdd = flat_rdd.filter(kn_obj.knFilterByCoor)#.persist()#######
     #print('excluKnownNon_rdd distinct: ', len(excluKnownNon_rdd.groupByKey().collect()))########
     
+    master = []
+    for i in range(len(chromosomes)):
+      ch = chromosomes[i]
+      excluKnownNon_rdd
+
+
     mergeChromosomesResults_rdd = sc.emptyRDD()
     #mergeChromosomesResults = []
     for i in range(len(chromosomes)):
@@ -358,7 +360,7 @@ if __name__ == '__main__' :
     #180921 it takes 49 secs to run till this line (All chromo)
     #180921 it takes 479 secs to run till this line (split chromo)
 
-    '''
+    
     #= pre-miRNA folding
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre]])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold']])
