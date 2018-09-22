@@ -301,14 +301,12 @@ if __name__ == '__main__' :
     ###############################
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr])
-    ##excluKnownNon_rdd = flat_rdd.filter(kn_obj.knFilterBySeq) #= defunct
     #excluKnownNon_rdd = flat_rdd.repartition(100).filter(kn_obj.knFilterByCoor)#.persist()#######
     excluKnownNon_rdd = flat_rdd.filter(kn_obj.knFilterByCoor)#.persist()#######
     #print('excluKnownNon_rdd distinct: ', len(excluKnownNon_rdd.groupByKey().collect()))########
     
 
     mergeChromosomesResults_rdd = sc.emptyRDD()
-    #mergeChromosomesResults = []
     for i in range(len(chromosomes)):
       ch = chromosomes[i].replace('chr', 'Chr')
       prec_obj = mru.extract_precurosrs(genome_path, pri_l_flank, pri_r_flank, pre_flank, ch)
@@ -349,10 +347,7 @@ if __name__ == '__main__' :
       #================================================================================================================
       #================================================================================================================
       #================================================================================================================
-      #chromosomesplit = premir_rdd.collect()
-      #mergeChromosomesResults += chromosomesplit
       mergeChromosomesResults_rdd = mergeChromosomesResults_rdd.union(premir_rdd).persist()
-    #premir_rdd = sc.parallelize(mergeChromosomesResults, partition)
     print('mergeChromosomesResults: ', len(mergeChromosomesResults_rdd.collect()))######## 
     #180921 fake_a.txt takes 49 secs to run till this line (All chromo)
     #180921 fake_a.txt takes 479 secs to run till this line (split chromo)

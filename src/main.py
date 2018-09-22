@@ -13,8 +13,8 @@ os.system (cmd)
 #cmd = 'rm -fr ../input/fake_a3.txt'
 #os.system(cmd)
 
-#cmd = 'cp ../input_samples/100.txt ../input'
-cmd = 'rm -f ../input/100.txt'
+cmd = 'cp ../input_samples/100.txt ../input'
+#cmd = 'rm -f ../input/100.txt'
 os.system(cmd)
 
 
