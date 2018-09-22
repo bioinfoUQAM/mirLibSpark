@@ -173,7 +173,7 @@ if __name__ == '__main__' :
     ##      (b) u'seq1', u'seq2', u'seq1', 
     ##      (c) u'>name1\nseq1', u'>name2\nseq2', u'>name3\nseq1',
     ##      (d) u'seq\tquality'
-    distFile_rdd = sc.textFile("file:///" + infile, partition) #= NumPartitions = 4 (default for 100.txt was 2)
+    distFile_rdd = sc.textFile("file:///" + infile, partition) #= partition is 2 if not set 
     #print('NB distFile_rdd: ', len(distFile_rdd.collect()))#
 
     #= Unify different input formats to "seq freq" elements
@@ -308,7 +308,8 @@ if __name__ == '__main__' :
       ch = chromosomes[i].replace('chr', 'Chr')
       genome = ut.getGenome(genome_path, ".fas", ch)
       broadcastVar_genome = sc.broadcast(genome)
-      prec_obj = mru.extract_precurosrs(broadcastVar_genome.value, pri_l_flank, pri_r_flank, pre_flank, ch)
+      v = broadcastVar_genome.value
+      prec_obj = mru.extract_precurosrs(v, pri_l_flank, pri_r_flank, pre_flank, ch)
       #================================================================================================================
       #================================================================================================================
       #================================================================================================================
