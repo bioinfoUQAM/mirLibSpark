@@ -1,29 +1,6 @@
 import os
 
 
-from os import listdir
-import os.path
-rep_input = '../dbs/ATH/Genome/'
-infiles = [f for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
-for infile in infiles:
-  infile = rep_input + infile
-  outfile = infile.replace ('chr', 'Chr')
-  cmd = 'mv ' + infile + ' ' + outfile
-  os.system(cmd)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #cmd = 'python purge.py'
 #os.system (cmd)
 
@@ -37,8 +14,8 @@ os.system (cmd)
 #os.system(cmd)
 
 #cmd = 'cp ../input_samples/100.txt ../input'
-#cmd = 'rm -f ../input/100.txt'
-#os.system(cmd)
+cmd = 'rm -f ../input/100.txt'
+os.system(cmd)
 
 
 
@@ -152,4 +129,15 @@ os.system(cmd)
 #    infile = indir + '/' + infile    
 #    cmd = 'git mv ' + infile + ' ' + outfile
 #    os.system (cmd)
+
+
+#from os import listdir
+#import os.path
+#rep_input = '../dbs/ATH/Genome/'
+#infiles = [f for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
+#for infile in infiles:
+#  infile = rep_input + infile
+#  outfile = infile.replace ('chr', 'Chr')
+#  cmd = 'mv ' + infile + ' ' + outfile
+#  os.system(cmd)
 
