@@ -1,5 +1,20 @@
 import os
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #cmd = 'python purge.py'
 #os.system (cmd)
 
@@ -9,18 +24,14 @@ os.system (cmd)
 
 
 #cmd = 'cp ../input_samples/fake_a3.txt ../input'
-cmd = 'rm -fr ../input/fake_a3.txt'
-os.system(cmd)
+#cmd = 'rm -fr ../input/fake_a3.txt'
+#os.system(cmd)
 
-cmd = 'cp ../input_samples/100.txt ../input'
+#cmd = 'cp ../input_samples/100.txt ../input'
 #cmd = 'rm -f ../input/100.txt'
-os.system(cmd)
+#os.system(cmd)
 
 
-branches = 'changefoldername, faster, format_vis_input2, join, mirnauid, modifymirdup'.split(', ')
-for b in branches:
-  cmd = 'git branch -D ' + b
-  os.system(cmd)
 
 
 
@@ -57,6 +68,10 @@ os.system(cmd)
 #  os.system(cmd)
 
 
+#branches = 'changefoldername, faster, format_vis_input2, join, mirnauid, modifymirdup'.split(', ')
+#for b in branches:
+#  cmd = 'git branch -D ' + b
+#  os.system(cmd)
 
 
 
@@ -116,5 +131,16 @@ os.system(cmd)
 #    os.system(cmd)
 
 
-
+#from os import listdir
+#import os.path
+#rep_input = '../dbs/ATH/bowtie_split_index/'
+#indirs = [f for f in listdir(rep_input) if os.path.isdir(os.path.join(rep_input, f))]
+#for indir in indirs:
+#  indir = rep_input + indir
+#  infiles = [f for f in listdir(indir) if os.path.isfile(os.path.join(indir, f))]
+#  for infile in infiles:
+#    outfile = indir.rstrip('__') + '/' + infile
+#    infile = indir + '/' + infile    
+#    cmd = 'git mv ' + infile + ' ' + outfile
+#    os.system (cmd)
 
