@@ -27,16 +27,14 @@ os.system(cmd)
 
 
 
-#cmd = 'time spark-submit mirLibPipeline.py ../paramfile.txt 2>/dev/null'
+cmd = 'time spark-submit mirLibPipeline.py ../paramfile.txt 2>/dev/null'
+os.system(cmd)
+
+
+
+#cmd = 'swapoff -a && swapon -a'
 #os.system(cmd)
 
-
-
-cmd = 'swapoff -a && swapon -a'
-os.system(cmd)
-
-cmd = 'echo 1 > /proc/sys/vm/drop_caches'
-os.system(cmd)
 
 
 
