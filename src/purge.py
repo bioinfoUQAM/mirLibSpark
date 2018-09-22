@@ -17,6 +17,12 @@ os.system(cmd)
 #cmd = 'free -m';os.system(cmd)
 #cmd = 'exit';os.system(cmd)
 
-cmd = 'sudo sysctl -w vm.drop_caches=3 vm.drop_caches=0';os.system(cmd)
 
+cmd = 'free -m';os.system(cmd)
+cmd = 'sudo sysctl -w vm.drop_caches=3 vm.drop_caches=0';os.system(cmd)
+cmd = 'sudo dd if=/dev/sda bs=1M of=/dev/null count=1k';os.system(cmd)
+cmd = 'sudo dd if=/dev/sdb bs=1M of=/dev/null count=1k';os.system(cmd)
+cmd = 'sudo dd if=/dev/sdc bs=1M of=/dev/null count=1k';os.system(cmd)
+cmd = 'sudo dd if=/dev/sdd bs=1M of=/dev/null count=1k';os.system(cmd)
+cmd = 'free -m';os.system(cmd)
 
