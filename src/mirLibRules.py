@@ -15,7 +15,8 @@ from operator import itemgetter
 
 
 def distPrecursor_rdd_rearrange_rule (e):
-  rlt = [e[0]]
+  rlt = []
+  rlt.append(e[0])
   rlt += e[1][:-1]
   rlt.append(e[1][-1])
   return rlt
