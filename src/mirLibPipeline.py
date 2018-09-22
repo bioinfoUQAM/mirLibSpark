@@ -348,7 +348,7 @@ if __name__ == '__main__' :
       #================================================================================================================
       #================================================================================================================
       mergeChromosomesResults_rdd = mergeChromosomesResults_rdd.union(premir_rdd).persist()
-    print('mergeChromosomesResults: ', len(mergeChromosomesResults_rdd.collect()))######## 
+    #print('mergeChromosomesResults: ', len(mergeChromosomesResults_rdd.collect()))######## 
     #180921 fake_a.txt takes 42 secs to run till this line (All chromo)
     #180921 fake_a.txt takes 307 secs to run till this line (split chromo)
 
