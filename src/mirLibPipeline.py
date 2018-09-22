@@ -269,7 +269,7 @@ if __name__ == '__main__' :
 
     #= Create dict, chromo_strand as key to search bowtie blocs in the following dict
     dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(bowFrq_rdd.collect())
-    broadcastVar = sc.broadcast(dict_bowtie_chromo_strand) #= get the value by broadcastVar.value
+    broadcastVar_bowtie_chromo_strand = sc.broadcast(dict_bowtie_chromo_strand) #= get the value by broadcastVar.value
 
 
     #'''#!!#
@@ -306,7 +306,9 @@ if __name__ == '__main__' :
     mergeChromosomesResults_rdd = sc.emptyRDD()
     for i in range(len(chromosomes)):
       ch = chromosomes[i].replace('chr', 'Chr')
-      prec_obj = mru.extract_precurosrs(genome_path, pri_l_flank, pri_r_flank, pre_flank, ch)
+      genome = ut.getGenome(genome_path, ".fas", chromosomeName)
+      broadcastVar_genome = sc.broadcast(genome)
+      prec_obj = mru.extract_precurosrs(broadcastVar_genome.value, pri_l_flank, pri_r_flank, pre_flank, ch)
       #================================================================================================================
       #================================================================================================================
       #================================================================================================================
@@ -345,6 +347,7 @@ if __name__ == '__main__' :
       #================================================================================================================
       #================================================================================================================
       mergeChromosomesResults_rdd = mergeChromosomesResults_rdd.union(premir_rdd).persist()
+      broadcastVar_genome.unpersist()
     #print('mergeChromosomesResults: ', len(mergeChromosomesResults_rdd.collect()))######## 
     #180921 fake_a.txt takes 42 secs to run till this line (All chromo)
     #180921 fake_a.txt takes 307 secs to run till this line (split chromo)
@@ -374,7 +377,7 @@ if __name__ == '__main__' :
     #= Filtering by expression profile (< 20%)
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore']])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq])
-    profile_rdd = pre_vld_rdd.map(lambda e: profile_obj.computeProfileFrq(e, broadcastVar.value))\
+    profile_rdd = pre_vld_rdd.map(lambda e: profile_obj.computeProfileFrq(e, broadcastVar_bowtie_chromo_strand.value))\
                              .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)
     print('NB profile_rdd distinct: ', len(profile_rdd.groupByKey().collect()))##
     results = profile_rdd.collect()
@@ -451,7 +454,7 @@ if __name__ == '__main__' :
   sr_short_rdd.unpersist()
   mergebowtie_rdd.unpersist()
   mergeChromosomesResults_rdd.unpersist()
-  broadcastVar.unpersist()
+  broadcastVar_bowtie_chromo_strand.unpersist()
 
   #= end of spark context
   sc.stop() #= allow to run multiple SparkContexts
