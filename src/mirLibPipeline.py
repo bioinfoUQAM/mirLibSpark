@@ -21,6 +21,7 @@ from __future__ import print_function
 import sys
 import os.path
 import time
+import datetime
 from os import listdir
 #
 import utils as ut
@@ -152,6 +153,10 @@ if __name__ == '__main__' :
   #= Time processing of libraries
   timeDict = {}
     
+  print('\n====================== mirLibSpark =========================')
+  print('====================== ' + appId + ' =========================\n')
+  print('begin time:', datetime.datetime.now())
+
   for infile in infiles :
     if infile[-1:] == '~': continue
     print ("--Processing of the library: ", infile)
@@ -463,6 +468,7 @@ if __name__ == '__main__' :
 
   #= end of spark context
   sc.stop() #= allow to run multiple SparkContexts
+  print('finish time:', datetime.datetime.now())
 
 
 
