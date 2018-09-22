@@ -28,7 +28,7 @@
 #
 ########################################################################
 #
-message=write your message here line1\nline2: \nchromosomes=All\ndistPrecursor_rdd zipindex for varna
+message=write your message here line1\nline2: \nbroadcast chromosomes one by one\nchromosomes=chr1,chr2,chr3,chr4,chr5,chrC,chrM\n100.txt
 #
 ########################################################################
 #
@@ -52,9 +52,9 @@ adapter=none
 #
 #
 #====================  Ideally, do not change the following parameters since they are already tuned.
-#chromosomes=chr1,chr2,chr3,chr4,chr5,chrC,chrM
+chromosomes=chr1,chr2,chr3,chr4,chr5,chrC,chrM
 #chromosomes=chr1,chr2
-chromosomes=All
+#chromosomes=All
 bowtie_index_suffix=a_thaliana_t10
 #mirdup_model=Viridiplantae.model
 mirdup_model=thaliana.model

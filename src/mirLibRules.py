@@ -76,7 +76,6 @@ class prog_dustmasker ():
     return False  ##= false data will be automatically excluded in the new RDD
 
   def dmask_pipe_cmd(self):
-    #return 'dustmasker -outfmt fasta', self.env
     return '../lib/dustmasker -outfmt fasta', self.env
 
 class prog_bowtie ():
@@ -122,8 +121,6 @@ class prog_bowtie ():
   
   def Bowtie_pipe_cmd (self):
     cmd = "../lib/bowtie --mm -a -v 0 --suppress 1,6,7,8 -r " + self.bowtie_index + " - "
-    # cmd = "bowtie --mm -a -v 0 --suppress 1,6,7,8 " + self.bowtie_index + " - "
-    
     return cmd, self.env
   
   def bowtie_rearrange_map (self, elem):
@@ -145,13 +142,11 @@ class prog_bowtie ():
 
 class extract_precurosrs ():
 
-  def __init__(self, genome_path, ext_left, ext_right, pre_flank, chromosomeName):
-    self.genome_path = genome_path
+  def __init__(self, genome, ext_left, ext_right, pre_flank, chromosomeName):
+    self.genome = genome 
     self.ext_left = ext_left
     self.ext_right = ext_right
     self.pre_flank = pre_flank
-    #
-    self.genome = ut.getGenome(genome_path, ".fas", chromosomeName)
 
   def extract_precursors (self, contig, strand, start_srna, len_srna):
     prims = []
@@ -203,7 +198,6 @@ class extract_precurosrs ():
     len_srna = len(elem[0])
     
     mapping = elem[1][2]
-    #if not mapping[1] in self.genome.keys(): return (0)
     contig = self.genome[mapping[1]]
     prims = self.extract_precursors(contig, mapping[0], mapping[2], len_srna)
       
@@ -490,7 +484,6 @@ class prog_miRdup ():
     
     FNULL = open(os.devnull, 'w')
 
-    #cmd = ['java', '-jar', '/home/cjwu/gitproject/mirLibHadoop/lib/miRdup_1.4/miRdup.jar', '-v', self.tmp_file, '-c', self.model, '-r', '/software6/bioinfo/apps/mugqic_space/software/ViennaRNA/ViennaRNA-2.1.8/bin/']
     cmd = ['java', '-jar', self.mirdup_jar, '-v', tmp_file, '-c', self.model, '-r', self.path_RNAfold]
     sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
     mirdupout = sproc.communicate()[0].split('\n') #= this line is essential!

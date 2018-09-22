@@ -1,27 +1,26 @@
 import os
 
 
-#cmd = '/usr/local/firefox:/sbin:/usr/java/jdk1.7.0_67-cloudera/bin:/usr/local/apache-ant/apache-ant-1.9.2/bin:/usr/local/apache-maven/apache-maven-3.0.4/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/home/cloudera/bin'
 
 #cmd = 'python purge.py'
 #os.system (cmd)
 
-cmd = 'git pull origin zipindex'
+cmd = 'git pull origin broadcastchr'
 os.system (cmd)
 
 
 
-cmd = 'cp ../input_samples/fake_a3.txt ../input'
-#cmd = 'rm -fr ../input/fake_a3.txt'
+#cmd = 'cp ../input_samples/fake_a3.txt ../input'
+cmd = 'rm -fr ../input/fake_a3.txt'
 os.system(cmd)
 
-#cmd = 'cp ../input_samples/100.txt ../input'
+cmd = 'cp ../input_samples/100.txt ../input'
 #cmd = 'rm -f ../input/100.txt'
-#os.system(cmd)
+os.system(cmd)
 
 
-#cmd = 'git remote prune origin'
-#os.system(cmd)
+cmd = 'git remote prune origin'
+os.system(cmd)
 #cmd = 'git branch -D test'
 #os.system(cmd)
 
@@ -32,8 +31,6 @@ os.system(cmd)
 
 
 
-#cmd = 'swapoff -a && swapon -a'
-#os.system(cmd)
 
 
 

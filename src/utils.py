@@ -141,13 +141,19 @@ def trim_adapter (seq, ad):
   return seq
 
 def getRevComp (seq):
-  from string import maketrans
-  
   intab = "ACGT"
   outab = "TGCA"
+  #= v1 ================================
+  from string import maketrans
   trantab = maketrans(intab, outab)
+  #= v2 ================================
+  #trantab = str.maketrans(intab, outab)
+  #=====================================
   n_seq = seq.translate(trantab)
   return n_seq[::-1]
+  n_seq = seq.translate(trantab)
+  return n_seq[::-1]
+
 
 def tr_T_U (seq):
   from string import maketrans
@@ -181,8 +187,8 @@ def getFastaSeq (file):
   fh.close()
   return seq
 
-#defunct
 def getGenome_ (genome_path, file_ext):
+  ''' defunct '''
   genome = dict()
   
   files = [each for each in os.listdir(genome_path) if each.endswith(file_ext)]
@@ -253,10 +259,10 @@ def containsOnlyOneLoop (folding):
     return True
 
 def writeToFile (results, outfile):
-    ## result: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq]) ##update
+    ## result: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq]) 
     fh_out = open (outfile, 'w')
 
-    line = '\t'.join('miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq'.split(', ')) ##update
+    line = '\t'.join('miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq'.split(', ')) 
     print >> fh_out, line
 
 
@@ -269,35 +275,29 @@ def writeToFile (results, outfile):
       chromo = elem[1][2][1]
       posChr = elem[1][2][2]
       #= pri-miRNA
-      priSeq = elem[1][3][0] ##update180918
-      posMirPri = elem[1][3][1] ##update
-      priFold = elem[1][3][2] ##update
+      priSeq = elem[1][3][0] 
+      posMirPri = elem[1][3][1] 
+      priFold = elem[1][3][2] 
       #= mircheck_result
       mkPred = elem[1][3][3]
-      mkStart = elem[1][3][4] ##update
-      mkStop = elem[1][3][5]  ##update
+      mkStart = elem[1][3][4]
+      mkStop = elem[1][3][5]  
       #= mirdup_result
       preSeq = elem[1][4][0]
       posMirPre = elem[1][4][1]
-      newfbstart = int(posMirPre) + int(posMirPri) - int(mkStart) ##update
-      newfbstop  = int(posMirPre) + int(mkStop) - int(posMirPri) ##update
+      newfbstart = int(posMirPre) + int(posMirPri) - int(mkStart) 
+      newfbstop  = int(posMirPre) + int(mkStop) - int(posMirPri) 
       preFold = elem[1][4][2]
       mpPred = elem[1][4][3]
       mpScore = elem[1][4][4]
       #= premirna_range_total_small_rna_freq
       totalFrq =  elem[1][5]
       
-      #= miRanda
-      #miRanda = elem[1][6]
-      #miRanda = "[TO_DO_target_genes]" ## miranda is very time consuming
 
-      #data = [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, preSeq, posMirPre, preFold, mpPred, mpScore, totalFrq, miRanda]
+      #data = [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, preSeq, posMirPre, preFold, mpPred, mpScore, totalFrq]
       data = [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq] ##update
 
       line = '\t'.join([str(d) for d in data])
-      #line = ''
-      #for d in data: line += str(d) + '\t'
-      #line = line.rstrip('\t')
       print >> fh_out, line
     fh_out.close()
 
@@ -320,7 +320,7 @@ def writeTimeLibToFile (timeDict, outfile, appId, paramDict):
     timeLibSec = format(timeLibSec, '.3f')
     
     print >> fh_out, "Lib "+lib+"\t"+timeLibHMS+"\t"+timeLibSec
-    print ("Lib "+lib+"\t"+timeLibHMS+"\t"+timeLibSec) ##test##
+    print ("Lib "+lib+"\t"+timeLibHMS+"\t"+timeLibSec) #= stdout
   
   print >> fh_out, "\n# SPARK configuration:"
   
