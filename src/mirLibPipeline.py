@@ -416,8 +416,8 @@ if __name__ == '__main__' :
 
   distResultSmallRNA_rdd = sc.parallelize(master_predicted_distinctMiRNAs, partition).zipWithIndex() ### <---------------------
 
-  distPrecursor_rdd = sc.parallelize(master_distinctPrecursor_infos, partition)\ 
-                        .map(lambda e: (e[0], e[1:]))
+  distPrecursor_rdd = sc.parallelize(master_distinctPrecursor_infos, partition)\
+                        .map(lambda e: (e[0], e[1:]))\
                         .join(distResultSmallRNA_rdd)
 
   print('distPrecursor_rdd', distPrecursor_rdd.collect())
