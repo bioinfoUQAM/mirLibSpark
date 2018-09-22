@@ -176,7 +176,7 @@ if __name__ == '__main__' :
     ##      (b) u'seq1', u'seq2', u'seq1', 
     ##      (c) u'>name1\nseq1', u'>name2\nseq2', u'>name3\nseq1',
     ##      (d) u'seq\tquality'
-    distFile_rdd = sc.textFile("file:///" + infile, partition) #= NumPartitions = 4 (default for 100.txt was 2)
+    distFile_rdd = sc.textFile("file:///" + infile, partition) #= partition is 2 if not set 
     #print('NB distFile_rdd: ', len(distFile_rdd.collect()))#
 
     #= Unify different input formats to "seq freq" elements
@@ -272,7 +272,7 @@ if __name__ == '__main__' :
 
     #= Create dict, chromo_strand as key to search bowtie blocs in the following dict
     dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(bowFrq_rdd.collect())
-    broadcastVar = sc.broadcast(dict_bowtie_chromo_strand) #= get the value by broadcastVar.value
+    broadcastVar_bowtie_chromo_strand = sc.broadcast(dict_bowtie_chromo_strand) #= get the value by broadcastVar.value
 
 
     #'''#!!#
@@ -309,7 +309,10 @@ if __name__ == '__main__' :
     mergeChromosomesResults_rdd = sc.emptyRDD()
     for i in range(len(chromosomes)):
       ch = chromosomes[i].replace('chr', 'Chr')
-      prec_obj = mru.extract_precurosrs(genome_path, pri_l_flank, pri_r_flank, pre_flank, ch)
+      genome = ut.getGenome(genome_path, ".fas", ch)
+      broadcastVar_genome = sc.broadcast(genome)
+      v = broadcastVar_genome.value
+      prec_obj = mru.extract_precurosrs(v, pri_l_flank, pri_r_flank, pre_flank, ch)
       #================================================================================================================
       #================================================================================================================
       #================================================================================================================
@@ -348,6 +351,7 @@ if __name__ == '__main__' :
       #================================================================================================================
       #================================================================================================================
       mergeChromosomesResults_rdd = mergeChromosomesResults_rdd.union(premir_rdd).persist()
+      broadcastVar_genome.unpersist()
     #print('mergeChromosomesResults: ', len(mergeChromosomesResults_rdd.collect()))######## 
     #180921 fake_a.txt takes 42 secs to run till this line (All chromo)
     #180921 fake_a.txt takes 307 secs to run till this line (split chromo)
@@ -377,7 +381,7 @@ if __name__ == '__main__' :
     #= Filtering by expression profile (< 20%)
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore']])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq])
-    profile_rdd = pre_vld_rdd.map(lambda e: profile_obj.computeProfileFrq(e, broadcastVar.value))\
+    profile_rdd = pre_vld_rdd.map(lambda e: profile_obj.computeProfileFrq(e, broadcastVar_bowtie_chromo_strand.value))\
                              .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)
     print('NB profile_rdd distinct: ', len(profile_rdd.groupByKey().collect()))##
     results = profile_rdd.collect()
@@ -432,7 +436,7 @@ if __name__ == '__main__' :
 
 
   #= miranda
-  ## in : 'miRNAseq', zipindex
+  ## in : ('miRNAseq', zipindex)
   ## out: ('miRNAseq', [[target1 and its scores], [target2 and its scores]])
   miranda_rdd = distResultSmallRNA_rdd.map(miranda_obj.computeTargetbyMiranda)
   master_distinctTG = miranda_rdd.map(lambda e: [  i[0].split('.')[0] for i in e[1]  ])\
@@ -455,7 +459,7 @@ if __name__ == '__main__' :
   sr_short_rdd.unpersist()
   mergebowtie_rdd.unpersist()
   mergeChromosomesResults_rdd.unpersist()
-  broadcastVar.unpersist()
+  broadcastVar_bowtie_chromo_strand.unpersist()
 
   #= end of spark context
   sc.stop() #= allow to run multiple SparkContexts
