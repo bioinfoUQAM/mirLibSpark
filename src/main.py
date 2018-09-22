@@ -20,8 +20,8 @@ os.system (cmd)
 
 #cmd = 'git remote prune origin'
 #os.system(cmd)
-cmd = 'git branch -D test'
-os.system(cmd)
+#cmd = 'git branch -D test'
+#os.system(cmd)
 
 
 
