@@ -349,10 +349,10 @@ if __name__ == '__main__' :
       #================================================================================================================
       mergeChromosomesResults_rdd = mergeChromosomesResults_rdd.union(premir_rdd).persist()
     print('mergeChromosomesResults: ', len(mergeChromosomesResults_rdd.collect()))######## 
-    #180921 fake_a.txt takes 49 secs to run till this line (All chromo)
+    #180921 fake_a.txt takes 42 secs to run till this line (All chromo)
     #180921 fake_a.txt takes 307 secs to run till this line (split chromo)
 
-    '''#
+    #'''#
     #= pre-miRNA folding
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre]])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold']])
@@ -392,7 +392,7 @@ if __name__ == '__main__' :
     timeDict[inBasename] = endLib - startLib
     print ("  End of the processing     ", end="\n")
 
-    '''#!!#
+    #'''#!!#
     #= write results to a file
     eachLiboutFile = rep_output  +  appId + '_miRNAprediction_' + inBasename + '.txt'
     ut.writeToFile (results, eachLiboutFile)
@@ -405,7 +405,7 @@ if __name__ == '__main__' :
   outTime = rep_output + appId + '_time.txt'
   ut.writeTimeLibToFile (timeDict, outTime, appId, paramDict)
 
-  '''#!!#
+  #'''#!!#
   #= make summary table of all libraries in one submission with expressions in the field
   keyword = appId + '_miRNAprediction_'
   infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]

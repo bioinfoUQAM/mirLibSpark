@@ -28,7 +28,7 @@
 #
 ########################################################################
 #
-message=write your message here line1\nline2: \nproblem with chr and Chr strirngs: run until line356=mergeChromosomesResults_rdd\nchromosomes=All
+message=write your message here line1\nline2: \nchromosomes=All
 #
 ########################################################################
 #
