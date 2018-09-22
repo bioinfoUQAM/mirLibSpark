@@ -418,11 +418,12 @@ if __name__ == '__main__' :
 
   distPrecursor_rdd = sc.parallelize(master_distinctPrecursor_infos, partition)\
                         .map(lambda e: (e[0], e[1:]))\
-                        .join(distResultSmallRNA_rdd)
+                        .join(distResultSmallRNA_rdd)\
+                        .map(ut.distPrecursor_rdd_rearrange_rule)
 
   print('distPrecursor_rdd', distPrecursor_rdd.collect())
   
-  '''
+  #'''
   #= create precursor images VARNA
   ## in : [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
   ## out: [zipindex, miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
