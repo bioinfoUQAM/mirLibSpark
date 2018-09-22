@@ -1,6 +1,8 @@
 import os
 
 
+#cmd = '/usr/local/firefox:/sbin:/usr/java/jdk1.7.0_67-cloudera/bin:/usr/local/apache-ant/apache-ant-1.9.2/bin:/usr/local/apache-maven/apache-maven-3.0.4/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/home/cloudera/bin'
+
 #cmd = 'python purge.py'
 #os.system (cmd)
 
@@ -25,12 +27,16 @@ os.system(cmd)
 
 
 
-cmd = 'time spark-submit mirLibPipeline.py ../paramfile.txt 2>/dev/null'
+#cmd = 'time spark-submit mirLibPipeline.py ../paramfile.txt 2>/dev/null'
+#os.system(cmd)
+
+
+
+cmd = 'swapoff -a && swapon -a'
 os.system(cmd)
 
-
-
-
+cmd = 'echo 1 > /proc/sys/vm/drop_caches'
+os.system(cmd)
 
 
 
@@ -47,7 +53,8 @@ os.system(cmd)
 #os.system(cmd)
 
 
-
+#cmd = 'free -m' #= to check memory
+#os.system(cmd)
 
 
 
