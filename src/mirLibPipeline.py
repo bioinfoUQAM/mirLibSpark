@@ -350,7 +350,7 @@ if __name__ == '__main__' :
       mergeChromosomesResults_rdd = mergeChromosomesResults_rdd.union(premir_rdd).persist()
     print('mergeChromosomesResults: ', len(mergeChromosomesResults_rdd.collect()))######## 
     #180921 fake_a.txt takes 49 secs to run till this line (All chromo)
-    #180921 fake_a.txt takes 479 secs to run till this line (split chromo)
+    #180921 fake_a.txt takes 307 secs to run till this line (split chromo)
 
     '''#
     #= pre-miRNA folding
