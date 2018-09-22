@@ -450,6 +450,7 @@ if __name__ == '__main__' :
 
   
   #= clear caches (memory leak)
+  broadcastVar_paramDict.unpersist()
   dmask_rdd.unpersist()
   sr_short_rdd.unpersist()
   mergebowtie_rdd.unpersist()
