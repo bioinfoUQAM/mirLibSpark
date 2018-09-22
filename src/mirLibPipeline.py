@@ -236,7 +236,7 @@ if __name__ == '__main__' :
                             .filter(lambda e: e.isupper() and not e.startswith('>'))\
                             .map(lambda e: str(e.rstrip()))\
                             .persist()
-    print('NB dmask_rdd: ', len(dmask_rdd.collect()))############################################
+    #print('NB dmask_rdd: ', len(dmask_rdd.collect()))############################################
 
     mergebowtie_rdd = sc.emptyRDD()
     for i in range(len(chromosomes)):
@@ -272,7 +272,7 @@ if __name__ == '__main__' :
                            .map(bowtie_obj.bowtie_freq_rearrange_rule)\
                            .persist()
     print('NB bowFrq_rdd: ', len(bowFrq_rdd.collect()))############################################ 
-    #180921 takes 20 secs till this step, option chromo=All
+    #180921 fake_a takes 20 secs till this step, option chromo=All
 
     '''#!!#
     #= Filtering miRNA low frequency
