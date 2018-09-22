@@ -47,8 +47,6 @@ os.system(cmd)
 
 
 
-
-
 #cmd = 'mv ../output/* ../output_depo/'
 #os.system(cmd)
 
