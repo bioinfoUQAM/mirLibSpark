@@ -14,6 +14,13 @@ import utils as ut
 from operator import itemgetter
 
 
+def distPrecursor_rdd_rearrange_rule (e):
+  rlt = [e[0]]
+  for i in range(len(e[1][:-1])):
+    rlt.append(i)
+  rlt.append(e[1][-1])
+  return rlt
+
 def rearrange_rule(kv_arg, kv_sep):
   '''
   in : u'seq\tfreq'
@@ -421,7 +428,7 @@ class prog_miRanda ():
     ## NOTE before disable miranda (170714): need to modify the code to use options such as -sc, -en, -go, -ge, -quiet
     '''
 
-    miRNAseq = e
+    miRNAseq = e[0]
 
 
     tmp_file = self.rep_tmp + miRNAseq + '_tmpseq_forMiranda.txt' 
@@ -456,9 +463,7 @@ class prog_miRanda ():
     #= only the top 15 targets are curated for report
     if len(target_results) > 15: target_results = target_results[:15]
     self.dict_seq_target[miRNAseq] = target_results
-    #e[1].append(target_results)
-    #return e
-    return [e, target_results]
+    return [e[0], target_results, e[1]]
 
 
 class prog_miRdup ():

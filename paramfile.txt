@@ -28,7 +28,7 @@
 #
 ########################################################################
 #
-message=write your message here line1\nline2: \nchromosomes=All
+message=write your message here line1\nline2: \nchromosomes=All\ndistPrecursor_rdd zipindex for varna
 #
 ########################################################################
 #
