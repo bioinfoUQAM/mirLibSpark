@@ -432,7 +432,7 @@ if __name__ == '__main__' :
 
 
   #= miranda
-  ## in : 'miRNAseq', zipindex
+  ## in : ('miRNAseq', zipindex)
   ## out: ('miRNAseq', [[target1 and its scores], [target2 and its scores]])
   miranda_rdd = distResultSmallRNA_rdd.map(miranda_obj.computeTargetbyMiranda)
   master_distinctTG = miranda_rdd.map(lambda e: [  i[0].split('.')[0] for i in e[1]  ])\
