@@ -1,6 +1,15 @@
 import os
 
 
+from os import listdir
+import os.path
+rep_input = '../dbs/ATH/Genome/'
+infiles = [f for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
+for infile in infiles:
+  infile = rep_input + infile
+  outfile = infile.replace ('chr', 'Chr')
+  cmd = 'mv ' + infile + ' ' + outfile
+  os.system(cmd)
 
 
 
