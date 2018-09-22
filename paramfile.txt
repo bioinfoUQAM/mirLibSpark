@@ -28,7 +28,7 @@
 #
 ########################################################################
 #
-message=write your message here line1\nline2: \nchromosomes=All
+message=write your message here line1\nline2: \nchromosomes=All\ndistResultSmallRNA_rdd zipindex for miranda
 #
 ########################################################################
 #
