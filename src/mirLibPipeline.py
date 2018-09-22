@@ -271,10 +271,11 @@ if __name__ == '__main__' :
     bowFrq_rdd = mergebowtie_rdd.join(sr_short_rdd)\
                            .map(bowtie_obj.bowtie_freq_rearrange_rule)\
                            .persist()
-    print('NB bowFrq_rdd: ', len(bowFrq_rdd.collect()))############################################ 
-    #180921 fake_a takes 20 secs till this step, option chromo=All
+    #print('NB bowFrq_rdd: ', len(bowFrq_rdd.collect()))############################################ 
+    #180921 fake_a.txt takes 17 secs till this step, option chromo=All
+    #180921 100.txt takes 23 secs till this step, option chromo=All
 
-    '''#!!#
+    #'''#!!#
     #= Filtering miRNA low frequency
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
@@ -305,16 +306,11 @@ if __name__ == '__main__' :
     excluKnownNon_rdd = flat_rdd.filter(kn_obj.knFilterByCoor)#.persist()#######
     #print('excluKnownNon_rdd distinct: ', len(excluKnownNon_rdd.groupByKey().collect()))########
     
-    master = []
-    for i in range(len(chromosomes)):
-      ch = chromosomes[i]
-      excluKnownNon_rdd
-
 
     mergeChromosomesResults_rdd = sc.emptyRDD()
     #mergeChromosomesResults = []
     for i in range(len(chromosomes)):
-      ch = chromosomes[i]
+      ch = chromosomes[i].replace('chr', 'Chr')
       prec_obj = mru.extract_precurosrs(genome_path, pri_l_flank, pri_r_flank, pre_flank, ch)
       #================================================================================================================
       #================================================================================================================
@@ -358,10 +354,10 @@ if __name__ == '__main__' :
       mergeChromosomesResults_rdd = mergeChromosomesResults_rdd.union(premir_rdd).persist()
     #premir_rdd = sc.parallelize(mergeChromosomesResults, partition)
     print('mergeChromosomesResults: ', len(mergeChromosomesResults_rdd.collect()))######## 
-    #180921 it takes 49 secs to run till this line (All chromo)
-    #180921 it takes 479 secs to run till this line (split chromo)
+    #180921 fake_a.txt takes 49 secs to run till this line (All chromo)
+    #180921 fake_a.txt takes 479 secs to run till this line (split chromo)
 
-    
+    '''#
     #= pre-miRNA folding
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre]])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold']])
