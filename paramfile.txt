@@ -28,7 +28,7 @@
 #
 ########################################################################
 #
-message=write your message here line1\nline2: try chromosome split 
+message=write your message here line1\nline2: problem with chr and Chr strirngs 
 #
 ########################################################################
 #
