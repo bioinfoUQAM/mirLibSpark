@@ -306,7 +306,7 @@ if __name__ == '__main__' :
     mergeChromosomesResults_rdd = sc.emptyRDD()
     for i in range(len(chromosomes)):
       ch = chromosomes[i].replace('chr', 'Chr')
-      genome = ut.getGenome(genome_path, ".fas", chromosomeName)
+      genome = ut.getGenome(genome_path, ".fas", ch)
       broadcastVar_genome = sc.broadcast(genome)
       prec_obj = mru.extract_precurosrs(broadcastVar_genome.value, pri_l_flank, pri_r_flank, pre_flank, ch)
       #================================================================================================================
