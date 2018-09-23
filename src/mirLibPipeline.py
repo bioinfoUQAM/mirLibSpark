@@ -504,18 +504,6 @@ if __name__ == '__main__' :
   print('====================== End of ' + appId + ' =========================\n')
 
 
-
-
-  '''#!!#
-  ### test to initiate a new sc context ########
-  infile = outTime ##update
-  sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, execCores) ##update
-  distFile_rdd = sc.textFile("file:///" + infile, partition) ##update
-  test = distFile_rdd.collect() ##update
-  print(test) ##update
-  sc.stop() ##update
-  #'''
-
   #os.system('rm -fr ' + rep_tmp)
 #note: shorten pipeline switch ==> replace #'''#!!# ==> '''#!!#
 
