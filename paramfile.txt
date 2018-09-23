@@ -31,7 +31,7 @@
 #
 ########################################################################
 #
-message=\nwrite your message (for stdout) here line1\nline2: \nchromosomes=All\nmask ln418
+message=\nwrite your message (for stdout) here line1\nline2: \nchromosomes=All\nwork on ln 418: writeSummaryExpressionToFile
 #
 ########################################################################
 #
