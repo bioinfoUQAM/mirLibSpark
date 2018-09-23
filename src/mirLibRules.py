@@ -16,9 +16,9 @@ from operator import itemgetter
 
 def distPrecursor_rdd_rearrange_rule (e):
   data = []
-  data.append(e[1][1])
   data.append(e[0])
   for i in e[1]: data.append(i)
+  data.append(e[1][1])
   return data
 
 
