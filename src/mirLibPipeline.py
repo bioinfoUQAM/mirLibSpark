@@ -411,12 +411,22 @@ if __name__ == '__main__' :
   outTime = rep_output + appId + '_time.txt'
   ut.writeTimeLibToFile (timeDict, outTime, appId, paramDict)
 
+
+  #===================================================================================
+  #===================================================================================
+  #===================================================================================
+  #===================================================================================
   #'''#!!#
   #= make summary table of all libraries in one submission with expressions in the field
   keyword = appId + '_miRNAprediction_'
   infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
   #master_distinctPrecursor_infos = ut.writeSummaryExpressionToFile (infiles, rep_output, appId) #= tmp masking 180923
+  #===================================================================================
+  #===================================================================================
+  #===================================================================================
+  #===================================================================================
   
+  '''
   ## in:  ( lib, ('seq', [...]) )
   ## out: ( 'seq', [...] )
   libRESULTS_rdd = sc.parallelize(libRESULTS, partition).flatMap(lambda e: e[1]) 
@@ -429,10 +439,6 @@ if __name__ == '__main__' :
   ## out: ('miRNAseq', zipindex)
   distResultSmallRNA_rdd = master_predicted_distinctMiRNAs_rdd.zipWithIndex() 
 
-  #===================================================================================
-  #===================================================================================
-  #===================================================================================
-  #===================================================================================
   ## in:  ( 'seq', [...] ) 
   ## mid: [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq] 
   ## out : [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
@@ -440,7 +446,7 @@ if __name__ == '__main__' :
                                 .map(mru.distinctPrecursor_infos_select)
   #print('Precursor_rdd:', Precursor_rdd.collect())
   
-  #'''
+  
   #= varna
   varna_obj = mru.prog_varna(appId, rep_output) 
   
@@ -450,13 +456,8 @@ if __name__ == '__main__' :
                                .map(varna_obj.run_VARNA)
   indexVis = VARNA_rdd.collect()
   ut.write_index (indexVis, rep_output, appId)
-  #===================================================================================
-  #===================================================================================
-  #===================================================================================
-  #===================================================================================
 
   
-  '''
   #= miranda
   ## in : ('miRNAseq', zipindex)
   ## out: ('miRNAseq', [[target1 and its scores], [target2 and its scores]])
@@ -469,8 +470,8 @@ if __name__ == '__main__' :
   ## out:( 'targetgene' )
   master_distinctTG = miranda_rdd.map(lambda e: [  i[0].split('.')[0] for i in e[1]  ])\
                                  .reduce(lambda a, b: a+b)
-  master_distinctTG = list(set(master_distinctTG))
-  print( master_distinctTG )
+  master_distinctTG = sorted(list(set(master_distinctTG)))
+  #print( master_distinctTG )
   #'''
 
 

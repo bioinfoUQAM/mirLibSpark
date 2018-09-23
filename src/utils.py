@@ -345,19 +345,16 @@ def writeTimeLibToFile (timeDict, outfile, appId, paramDict):
 ###########################
 def writeSummaryExpressionToFile (infiles, rep_output, appId):
   '''
-  old_data = [miRNAseq, frq, strand, chromo, posgen, pre_miRNA_seq, struc, mpScore, totalfrq, miRanda]
-  data = [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq]
+  ## in : [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq]
   '''
-
-  outfile = rep_output + appId + '_summaryFreq.trs' #= .trs is a temporary extension, such file will be transposed at the end of this function
+  #= .trs is a temporary extension, such file will be transposed at the end of this function
+  outfile = rep_output + appId + '_summaryFreq.trs' 
   outfile2 = rep_output + appId + '_summaryBinary.trs'
   #outfile3 = rep_output + appId + '_summaryGenoLoci.txt' #= outfile3 is not in a good format yet
-
 
   fh_out = open (outfile, 'w')
   fh_out2 = open (outfile2, 'w')
   #fh_out3 = open (outfile3, 'w')
-  
   
   #line_seen = []
   #for f in sorted(infiles):
@@ -368,7 +365,6 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
   #        line_seen.append(line)
   #      print >> fh_out3, line
   #fh_out3.close()
-
 
   master_predicted_distinctMiRNAs = []
   tmp_master_distinctPrecursor_infos = {}
@@ -405,8 +401,6 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
           tmp_master_distinctPrecursor_infos[key] = infos
         #################################### 
 
-
-
   keyword = '_miRNAprediction_'
   dictLibSeqFreq = {}
   for f in sorted(infiles):
@@ -424,11 +418,10 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
       if e in tmpDict.keys(): dictLibSeqFreq[libname].append(tmpDict[e])
       else: dictLibSeqFreq[libname].append(0)
 
-  seqListLine = 'miRNA\t'
-  for e in master_predicted_distinctMiRNAs:
-    seqListLine += e + '\t'
-  seqListLine = seqListLine.rstrip('\t')
-
+  seqListLine = 'miRNA\t' + '\t'.join(master_predicted_distinctMiRNAs)
+  #for e in master_predicted_distinctMiRNAs:
+  #  seqListLine += e + '\t'
+  #seqListLine = seqListLine.rstrip('\t')
 
   print >> fh_out, seqListLine
   print >> fh_out2, seqListLine
@@ -440,7 +433,6 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
     line = line.rstrip('\t')
     print >> fh_out, line
 
-
   for k in sorted(dictLibSeqFreq.keys()):
     v = dictLibSeqFreq[k]
     line = k + '\t'
@@ -450,12 +442,10 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
     line = line.rstrip('\t')
     print >> fh_out2, line
 
-  master_distinctMiRNAs_infos = []
-  for k in sorted(tmp_master_distinctPrecursor_infos.keys()):
-    v = tmp_master_distinctPrecursor_infos[k]
-    master_distinctMiRNAs_infos.append(v)
-
-
+  #master_distinctMiRNAs_infos = []
+  #for k in sorted(tmp_master_distinctPrecursor_infos.keys()):
+  #  v = tmp_master_distinctPrecursor_infos[k]
+  #  master_distinctMiRNAs_infos.append(v)
 
   fh_out.close()
   fh_out2.close()
@@ -471,7 +461,7 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
   transpose_txt(infile, outfile)
   os.remove(infile) 
 
-  return sorted(master_distinctMiRNAs_infos)
+  #return sorted(master_distinctMiRNAs_infos)
 
 
 def writeTargetsToFile (mirna_and_targets, rep_output, appId):
