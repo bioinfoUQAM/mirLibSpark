@@ -419,6 +419,17 @@ if __name__ == '__main__' :
   keyword = appId + '_miRNAprediction_'
   infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
   master_predicted_distinctMiRNAs, master_distinctPrecursor_infos = ut.writeSummaryExpressionToFile (infiles, rep_output, appId)
+  
+  libRESULTS_rdd = sc.parallelize(libRESULTS, partition) ## update
+
+  #master_predicted_distinctMiRNAs = libRESULTS_rdd.map(lambda e: e[1][0]).distinct().collect() ## update
+  #master_distinctPrecursor_infos = libRESULTS_rdd.map(lambda e: )
+
+
+
+
+
+
 
   #= master miRNA rdd
   ## ('miRNAseq', zipindex)
@@ -428,8 +439,8 @@ if __name__ == '__main__' :
 
   ##= master precursor rdd ==== work in progress ==
   distPrecursor_rdd = sc.parallelize(master_distinctPrecursor_infos, partition)\
-                        .map(lambda e: (e[0], e[1:]))#\
-                        #.join(distResultSmallRNA_rdd)#\
+                        .map(lambda e: (e[0], e[1:]))\
+                        .join(distResultSmallRNA_rdd)#\
                         #.map(mru.distPrecursor_rdd_rearrange_rule)
   print('distPrecursor_rdd', distPrecursor_rdd.collect())
   ##=====================

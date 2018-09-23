@@ -20,7 +20,7 @@ cmd = 'git pull origin printout';os.system (cmd)
 #cmd = 'git remote prune origin';os.system(cmd)
 #cmd = 'git fetch origin';os.system(cmd)
 #cmd = 'git checkout master';os.system(cmd)
-cmd = 'git branch -D broadcastparamDict';os.system(cmd)
+#cmd = 'git branch -D broadcastparamDict';os.system(cmd)
 
 
 cmd = 'free -m';os.system(cmd)
@@ -28,7 +28,6 @@ cmd = 'free -m';os.system(cmd)
 #########################################################################################
 cmd = 'time spark-submit mirLibPipeline.py ../paramfile.txt 2>/dev/null';os.system(cmd)
 #########################################################################################
-
 
 cmd = 'free -m';os.system(cmd)
 
