@@ -389,7 +389,7 @@ if __name__ == '__main__' :
                              .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)
     print('NB profile_rdd distinct: ', len(profile_rdd.groupByKey().collect()))##
     libresults = profile_rdd.collect()
-    libRESULTS =  [ inBasename, libresults]
+    libRESULTS.append( [inBasename, libresults] )
     #'''
 
 
@@ -419,7 +419,7 @@ if __name__ == '__main__' :
   
   #= in: ( lib, ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq]) )
   libRESULTS_rdd = sc.parallelize(libRESULTS, partition) ## update
-  #print('libRESULTS_rdd', libRESULTS_rdd.collect())
+  print('libRESULTS_rdd', libRESULTS_rdd.collect())
 
   #= out: miRNAseq
   #master_predicted_distinctMiRNAs = libRESULTS_rdd.map(lambda e: e[1][0]).distinct().collect() ## update
