@@ -417,17 +417,19 @@ if __name__ == '__main__' :
   infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
   master_distinctPrecursor_infos = ut.writeSummaryExpressionToFile (infiles, rep_output, appId)
   
-  #= in: ( lib, ('seq', [...]) )
+  #= in:  ( lib, ('seq', [...]) )
   #= out: ( 'seq', [...] )
   libRESULTS_rdd = sc.parallelize(libRESULTS, partition).flatMap(lambda e: e[1]) 
 
-  #= in: ( 'seq', [...] )
-  #= out:( 'seq' ) 
+  #= in:  ( 'seq', [...] )
+  #= out: ( 'seq' ) 
   master_predicted_distinctMiRNAs = libRESULTS_rdd.map(lambda e: e[0]).distinct().collect()
 
-  #= out: [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
-  #master_distinctPrecursor_infos = libRESULTS_rdd.map( ut.xrule )
-
+  #= in:  ( 'seq', [...] )  #= [...] = [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq]
+  #= out: [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq] 
+  master_distinctPrecursor_infos_rdd = libRESULTS_rdd.map( mru.distinctPrecursor_infos_rearrange_rule )
+  master_distinctPrecursor_infos = master_distinctPrecursor_infos_rdd.collect()
+  print('master_distinctPrecursor_infos:', master_distinctPrecursor_infos)
 
 
 

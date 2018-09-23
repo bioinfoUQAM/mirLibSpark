@@ -258,40 +258,6 @@ def containsOnlyOneLoop (folding):
     if m: return False
     return True
 
-''' wip 180923
-def xrule (libRESULTS):
-    newlibRESULTS = {}
-    for lib, results in libRESULTS.items() :
-      miRNAseq = elem[0]
-      frq = elem[1][0]
-      #= bowtie_result
-      nbLoc = elem[1][1]
-      strand = elem[1][2][0]
-      chromo = elem[1][2][1]
-      posChr = elem[1][2][2]
-      #= pri-miRNA
-      priSeq = elem[1][3][0] 
-      posMirPri = elem[1][3][1] 
-      priFold = elem[1][3][2] 
-      #= mircheck_result
-      mkPred = elem[1][3][3]
-      mkStart = elem[1][3][4]
-      mkStop = elem[1][3][5]  
-      #= mirdup_result
-      preSeq = elem[1][4][0]
-      posMirPre = elem[1][4][1]
-      newfbstart = int(posMirPre) + int(posMirPri) - int(mkStart) 
-      newfbstop  = int(posMirPre) + int(mkStop) - int(posMirPri) 
-      preFold = elem[1][4][2]
-      mpPred = elem[1][4][3]
-      mpScore = elem[1][4][4]
-      #= premirna_range_total_small_rna_freq
-      totalFrq =  elem[1][5]
-      
-      data = [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq]
-
-      newlibRESULTS[k] = data
-'''
 
 
 def writeToFile (results, outfile):
