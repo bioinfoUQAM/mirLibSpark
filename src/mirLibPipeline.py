@@ -434,8 +434,8 @@ if __name__ == '__main__' :
   ## out : [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
   Precursor_rdd = libRESULTS_rdd.map(mru.distinctPrecursor_infos_rearrange_rule)\
                                     .map(mru.distinctPrecursor_infos_select)
-  print('Precursor_rdd:', Precursor_rdd.collect())
-  distPrecursor_rdd = sc.parallelize (list(set(Precursor_rdd.collect())), partition)
+  #print('Precursor_rdd:', Precursor_rdd.collect())
+  distPrecursor_rdd = sc.parallelize ((set(Precursor_rdd.collect()), partition)
   
   #'''
   #= varna
