@@ -36,7 +36,6 @@ if __name__ == '__main__' :
 
   paramfile = sys.argv[1]
   paramDict = ut.readParam (paramfile)
-  for k, v in paramDict.items(): print(k, ': ', v)
 
   #= spark configuration
   appMaster = paramDict['sc_master']                #"local[*]" 
@@ -156,6 +155,8 @@ if __name__ == '__main__' :
     
   print('\n====================== mirLibSpark =========================')
   print('====================== ' + appId + ' =========================\n')
+  for k, v in paramDict.items(): print(k, ': ', v)
+  print('==============================================================\n')
   print('begin time:', datetime.datetime.now())
 
   for infile in infiles :
@@ -485,4 +486,6 @@ if __name__ == '__main__' :
 
   #os.system('rm -fr ' + rep_tmp)
 #note: shorten pipeline switch ==> replace #'''#!!# ==> '''#!!#
+
+
 
