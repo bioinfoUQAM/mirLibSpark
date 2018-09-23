@@ -6,8 +6,8 @@
 #
 #
 #  note:
-#  lines led by char(#) are omitted.
-#  spaces are not allowed.
+#  Lines led by char(#) are omitted.
+#  Spaces are not allowed, except in message.
 #
 #  note:
 #  Viridiplantae.model is better than thaliana.model in terms of prediction, 
@@ -20,11 +20,14 @@
 #  d = fastq 
 #
 #  note: adapter
-#  none or ATCG sequence
+#  A short ATCG sequence or none.
 #
 #  note:
-#  chromosomes are the folder names within bowtie_split_index folder
-#  option All is the entire genome index without split by chromosomes
+#  Chromosomes are the folder names within bowtie_split_index folder.
+#  Option All is the entire genome index without split by chromosomes.
+#
+#  note:
+#  Message option supports line break (\n).
 #
 ########################################################################
 #
