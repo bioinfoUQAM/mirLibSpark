@@ -13,7 +13,7 @@ cmd = 'git pull origin preinfosrdd';os.system (cmd)
 
 
 #cmd = 'cp ../input_samples/100.txt ../input';os.system(cmd)
-#cmd = 'rm -f ../input/100.txt';os.system(cmd)
+cmd = 'rm -f ../input/100.txt';os.system(cmd)
 
 
 
