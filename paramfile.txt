@@ -31,7 +31,7 @@
 #
 ########################################################################
 #
-message=\nwrite your message (for stdout) here line1\nline2: \nchromosomes=All\nprint libRESULTS_rdd to see what it is
+message=\nwrite your message (for stdout) here line1\nline2: \nchromosomes=All\n
 #
 ########################################################################
 #
