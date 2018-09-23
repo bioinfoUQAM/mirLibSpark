@@ -43,6 +43,10 @@ def distinctPrecursor_infos_rearrange_rule (elem):
     newelem = [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq]
     return newelem
 
+def distinctPrecursor_infos_select (elem):
+  [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq] = elem
+  newelem = [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
+  return newelem
 
 def distPrecursor_rdd_rearrange_rule (e):
   ''' defunct 180923 '''

@@ -428,8 +428,11 @@ if __name__ == '__main__' :
   #= in:  ( 'seq', [...] )  #= [...] = [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq]
   #= out: [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq] 
   master_distinctPrecursor_infos_rdd = libRESULTS_rdd.map( mru.distinctPrecursor_infos_rearrange_rule )
-  master_distinctPrecursor_infos = master_distinctPrecursor_infos_rdd.collect()
-  print('master_distinctPrecursor_infos:', master_distinctPrecursor_infos)
+  distPrecursor_rdd = master_distinctPrecursor_infos_rdd.map(mru.distinctPrecursor_infos_select)
+  
+  #master_distinctPrecursor_infos = master_distinctPrecursor_infos_rdd.collect()
+  distPrecursor = distPrecursor_rdd.collect()
+  print('distPrecursor_rdd:', distPrecursor_rdd)
 
 
 
@@ -465,7 +468,11 @@ if __name__ == '__main__' :
   #= create precursor images VARNA
   ## in : [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
   ## out: [zipindex, miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
+
+  #= new_in: [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq] 
+
   varna_obj = mru.prog_varna(appId, rep_output) # this object needs to be initiated after appId is generated
+  #distPrecursor_rdd = sc.parallelize(master_distinctPrecursor_infos, partition) ### <---------------------
   distPrecursor_rdd = sc.parallelize(master_distinctPrecursor_infos, partition) ### <---------------------
   VARNA_rdd = distPrecursor_rdd.zipWithIndex()\
                                .map(varna_obj.run_VARNA)
