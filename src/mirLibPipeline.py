@@ -116,19 +116,6 @@ if __name__ == '__main__' :
   reps = [rep_output, rep_tmp, rep_msub_jobsOut]
   ut.makedirs_reps (reps)
 
-  #= Objects for rule functions
-  dmask_obj = mru.prog_dustmasker()
-  dmask_cmd, dmask_env = dmask_obj.dmask_pipe_cmd()
-  #bowtie_obj = mru.prog_bowtie(b_index_path)
-  #bowtie_cmd, bowtie_env = bowtie_obj.Bowtie_pipe_cmd()
-  kn_obj = mru.prog_knownNonMiRNA(d_ncRNA_CDS)
-  #prec_obj = mru.extract_precurosrs(genome_path, pri_l_flank, pri_r_flank, pre_flank, chromosomeName)
-  rnafold_obj = mru.prog_RNAfold(temperature)
-  mircheck_obj = mru.prog_mirCheck(mcheck_param)
-  mirdup_obj = mru.prog_miRdup (rep_tmp, mirdup_model, mirdup_jar, path_RNAfold)
-  profile_obj = mru.prog_dominant_profile()
-  miranda_obj = mru.prog_miRanda(Max_Score_cutoff, Max_Energy_cutoff, target_file, rep_tmp, miranda_binary, Gap_Penalty)
-
   #= addFile
   sc.addFile(known_non)
   sc.addPyFile(project_path + '/src/utils.py')
@@ -146,7 +133,17 @@ if __name__ == '__main__' :
   sc.addFile(mirdup_model)
   sc.addFile(target_file)
   sc.addFile(miranda_binary)
-  
+
+  #= Objects for rule functions
+  dmask_obj = mru.prog_dustmasker()
+  dmask_cmd, dmask_env = dmask_obj.dmask_pipe_cmd()
+  kn_obj = mru.prog_knownNonMiRNA(d_ncRNA_CDS)
+  rnafold_obj = mru.prog_RNAfold(temperature)
+  mircheck_obj = mru.prog_mirCheck(mcheck_param)
+  mirdup_obj = mru.prog_miRdup (rep_tmp, mirdup_model, mirdup_jar, path_RNAfold)
+  profile_obj = mru.prog_dominant_profile()
+  miranda_obj = mru.prog_miRanda(Max_Score_cutoff, Max_Energy_cutoff, target_file, rep_tmp, miranda_binary, Gap_Penalty)
+
   #= Fetch library files in rep_input
   infiles = [f for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
   
@@ -159,7 +156,7 @@ if __name__ == '__main__' :
   print('==============================================================\n')
   print('begin time:', datetime.datetime.now())
 
-  libRESULTS = {} ## update 180923
+  libRESULTS = [] ## update 180923
   for infile in infiles :
     if infile[-1:] == '~': continue
     print ("--Processing of the library: ", infile)
@@ -392,7 +389,7 @@ if __name__ == '__main__' :
                              .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)
     print('NB profile_rdd distinct: ', len(profile_rdd.groupByKey().collect()))##
     libresults = profile_rdd.collect()
-    libRESULTS [ inBasename ] = libresults
+    libRESULTS.append( [inBasename, libresults] )
     #'''
 
 
@@ -418,13 +415,13 @@ if __name__ == '__main__' :
   #= make summary table of all libraries in one submission with expressions in the field
   keyword = appId + '_miRNAprediction_'
   infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
-  master_predicted_distinctMiRNAs, master_distinctPrecursor_infos = ut.writeSummaryExpressionToFile (infiles, rep_output, appId)
+  master_distinctPrecursor_infos = ut.writeSummaryExpressionToFile (infiles, rep_output, appId)
   
   #= in: ( lib, ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq]) )
-  #libRESULTS_rdd = sc.parallelize(libRESULTS, partition) ## update
+  libRESULTS_rdd = sc.parallelize(libRESULTS, partition).flatMap(lambda e: e[1]) 
 
   #= out: miRNAseq
-  #master_predicted_distinctMiRNAs = libRESULTS_rdd.map(lambda e: e[1][0]).distinct().collect() ## update
+  master_predicted_distinctMiRNAs = libRESULTS_rdd.map(lambda e: e[0]).distinct().collect()
 
   #= out: [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
   #master_distinctPrecursor_infos = libRESULTS_rdd.map( ut.xrule )

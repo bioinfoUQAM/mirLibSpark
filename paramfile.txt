@@ -31,7 +31,7 @@
 #
 ########################################################################
 #
-message=write your message here line1\nline2: \nbroadcast chromosomes one by one\nchromosomes=chr1,chr2,chr3,chr4,chr5,chrC,chrM\n
+message=\nwrite your message (for stdout) here line1\nline2: \nchromosomes=All\nprint libRESULTS_rdd to see what it is
 #
 ########################################################################
 #
@@ -55,9 +55,9 @@ adapter=none
 #
 #
 #====================  Ideally, do not change the following parameters since they are already tuned.
-chromosomes=chr1,chr2,chr3,chr4,chr5,chrC,chrM
+#chromosomes=chr1,chr2,chr3,chr4,chr5,chrC,chrM
 #chromosomes=chr1,chr2
-#chromosomes=All
+chromosomes=All
 bowtie_index_suffix=a_thaliana_t10
 #mirdup_model=Viridiplantae.model
 mirdup_model=thaliana.model
@@ -77,7 +77,7 @@ Max_Energy_cutoff=-15
 Gap_Penalty=-15
 #==================== Spark configuration
 sc_appname=mirLibSpark
-sc_partition=24
+sc_partition=4
 sc_mstrmemory=20g
 sc_execmemory=20g
 #==================== local mode

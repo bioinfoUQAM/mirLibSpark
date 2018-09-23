@@ -348,6 +348,7 @@ def writeTimeLibToFile (timeDict, outfile, appId, paramDict):
   
   fh_out = open (outfile, 'w')
   
+  print >> fh_out, datetime.datetime.now()
   print >> fh_out, "# Application ID " + appId +"\n"
   print >> fh_out, "Total \t"+totalTimeHMS+ "\t" + totalTimeSec
   
@@ -360,10 +361,15 @@ def writeTimeLibToFile (timeDict, outfile, appId, paramDict):
     print ("Lib "+lib+"\t"+timeLibHMS+"\t"+timeLibSec) #= stdout
   
   print >> fh_out, "\n# SPARK configuration:"
-  
   for key in paramDict :
     if key.startswith("sc_"):
       print >> fh_out, "# " + key + ": " + paramDict[key]
+
+  print >> fh_out, "\n# MirLibSpark configuration:"
+  for key in sorted(paramDict.keys()) :
+    if not key.startswith("sc_"):
+      print >> fh_out, "# " + key + ": " + paramDict[key]
+
   
   fh_out.close()
 
@@ -499,7 +505,7 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
   transpose_txt(infile, outfile)
   os.remove(infile) 
 
-  return sorted(master_predicted_distinctMiRNAs), sorted(master_distinctMiRNAs_infos)
+  return sorted(master_distinctMiRNAs_infos)
 
 
 def writeTargetsToFile (mirna_and_targets, rep_output, appId):
