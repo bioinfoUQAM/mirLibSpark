@@ -340,7 +340,7 @@ def writeToFile (results, outfile):
 
 
 def writeTimeLibToFile (timeDict, outfile, appId, paramDict):
-  import datetime
+  #import datetime
   
   totalTimeSec = reduce((lambda x,y : x + y), timeDict.values())
   totalTimeHMS = str(datetime.timedelta(seconds=totalTimeSec))
@@ -360,10 +360,15 @@ def writeTimeLibToFile (timeDict, outfile, appId, paramDict):
     print ("Lib "+lib+"\t"+timeLibHMS+"\t"+timeLibSec) #= stdout
   
   print >> fh_out, "\n# SPARK configuration:"
-  
   for key in paramDict :
     if key.startswith("sc_"):
       print >> fh_out, "# " + key + ": " + paramDict[key]
+
+  print >> fh_out, "\n# mirLibSpark configuration:"
+  for key in paramDict :
+    if not key.startswith("sc_"):
+      print >> fh_out, "# " + key + ": " + paramDict[key]
+
   
   fh_out.close()
 
