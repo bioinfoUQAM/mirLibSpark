@@ -258,7 +258,7 @@ def containsOnlyOneLoop (folding):
     if m: return False
     return True
 
-'''
+''' wip 180923
 def xrule (libRESULTS):
     newlibRESULTS = {}
     for lib, results in libRESULTS.items() :
@@ -295,9 +295,10 @@ def xrule (libRESULTS):
 
 
 def writeToFile (results, outfile):
-    ## result: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq]) 
+    ## result in: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq]) 
     fh_out = open (outfile, 'w')
 
+    ## result out:
     line = '\t'.join('miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq'.split(', ')) 
     print >> fh_out, line
 

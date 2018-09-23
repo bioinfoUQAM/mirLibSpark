@@ -155,7 +155,7 @@ if __name__ == '__main__' :
     
   print('\n====================== mirLibSpark =========================')
   print('====================== ' + appId + ' =========================\n')
-  for k, v in paramDict.items(): print(k, ': ', v)
+  #for k, v in paramDict.items(): print(k, ': ', v)
   print('==============================================================\n')
   print('begin time:', datetime.datetime.now())
 
@@ -446,12 +446,12 @@ if __name__ == '__main__' :
   ##=========================================================================
   ##=========================================================================
   ##= master precursor rdd ==== work in progress ==
-  distPrecursor_rdd = sc.parallelize(master_distinctPrecursor_infos, partition)\
-                        .map(lambda e: (e[0], e[1:]))\
-                        .join(distResultSmallRNA_rdd)\
-                        .map(lambda e: [ e[1][1], e[0]  ])
-                        #.map(mru.distPrecursor_rdd_rearrange_rule)
-  print('distPrecursor_rdd', distPrecursor_rdd.collect())
+  #distPrecursor_rdd = sc.parallelize(master_distinctPrecursor_infos, partition)\
+  #                      .map(lambda e: (e[0], e[1:]))\
+  #                      .join(distResultSmallRNA_rdd)\
+  #                      .map(lambda e: [ e[1][1], e[0]  ])
+  #                      #.map(mru.distPrecursor_rdd_rearrange_rule)
+  #print('distPrecursor_rdd', distPrecursor_rdd.collect())
   ##=========================================================================
   ##=========================================================================
   ##=========================================================================
@@ -465,7 +465,7 @@ if __name__ == '__main__' :
   ## in : [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
   ## out: [zipindex, miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
   varna_obj = mru.prog_varna(appId, rep_output) # this object needs to be initiated after appId is generated
-  #distPrecursor_rdd = sc.parallelize(master_distinctPrecursor_infos, partition) ### <---------------------
+  distPrecursor_rdd = sc.parallelize(master_distinctPrecursor_infos, partition) ### <---------------------
   VARNA_rdd = distPrecursor_rdd.zipWithIndex()\
                                .map(varna_obj.run_VARNA)
   indexVis = VARNA_rdd.collect()
