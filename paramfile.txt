@@ -28,7 +28,7 @@
 #
 ########################################################################
 #
-message=write your message here line1\nline2: \nbroadcast chromosomes one by one\nchromosomes=chr1,chr2,chr3,chr4,chr5,chrC,chrM\n100.txt
+message=write your message here line1\nline2: \nbroadcast chromosomes one by one\nchromosomes=chr1,chr2,chr3,chr4,chr5,chrC,chrM\nbroadcast paramDict
 #
 ########################################################################
 #

@@ -21,6 +21,7 @@ from __future__ import print_function
 import sys
 import os.path
 import time
+import datetime
 from os import listdir
 #
 import utils as ut
@@ -35,15 +36,7 @@ if __name__ == '__main__' :
 
   paramfile = sys.argv[1]
   paramDict = ut.readParam (paramfile)
-
-  #= Parameters and cutoffs
-  input_type = paramDict['input_type']
-  adapter = ut.tr_U_T (paramDict['adapter'])
-  project_path = paramDict['project_path'][:-1]
-  rep_input = paramDict['input_path']
-  rep_output = paramDict['output_path']
-  rep_msub_jobsOut = project_path + '/workdir/jobsOut'
-  rep_tmp = project_path + '/tmp/'                   
+  for k, v in paramDict.items(): print(k, ': ', v)
 
   #= spark configuration
   appMaster = paramDict['sc_master']                #"local[*]" 
@@ -52,6 +45,26 @@ if __name__ == '__main__' :
   execMemory = paramDict['sc_execmemory']           #"4g"
   execCores = paramDict['sc_execcores']             #2
   partition = int(paramDict['sc_partition'])
+
+  #= Spark context
+  sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, execCores)
+
+  #= Spark application ID
+  appId = str(sc.applicationId)
+
+  #= broadcast paramDict
+  broadcastVar_paramDict = sc.broadcast(paramDict)
+  paramDict = broadcastVar_paramDict.value
+
+  #= Parameters and cutoffs =========================
+  #= paths
+  input_type = paramDict['input_type']
+  adapter = ut.tr_U_T (paramDict['adapter'])
+  project_path = paramDict['project_path'][:-1]
+  rep_input = paramDict['input_path']
+  rep_output = paramDict['output_path']
+  rep_msub_jobsOut = project_path + '/workdir/jobsOut'
+  rep_tmp = project_path + '/tmp/'                   
 
   #= genome
   genome_path = paramDict['genome_path'] 
@@ -95,6 +108,7 @@ if __name__ == '__main__' :
   Max_Score_cutoff = paramDict['Max_Score_cutoff'] #= need string or buffer
   Max_Energy_cutoff = paramDict['Max_Energy_cutoff'] #= NOT WORKING YET
   Gap_Penalty = paramDict['Gap_Penalty']
+  #= end of paramDict naming =================================================================================
 
   #= EXMAMINE OPTIONS 
   ut.validate_options(paramDict)
@@ -114,15 +128,10 @@ if __name__ == '__main__' :
   mircheck_obj = mru.prog_mirCheck(mcheck_param)
   mirdup_obj = mru.prog_miRdup (rep_tmp, mirdup_model, mirdup_jar, path_RNAfold)
   profile_obj = mru.prog_dominant_profile()
-  #
   miranda_obj = mru.prog_miRanda(Max_Score_cutoff, Max_Energy_cutoff, target_file, rep_tmp, miranda_binary, Gap_Penalty)
 
-  
-  #= Spark context
-  sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, execCores)
-  #
+  #= addFile
   sc.addFile(known_non)
-  #
   sc.addPyFile(project_path + '/src/utils.py')
   sc.addPyFile(project_path + '/src/mirLibRules.py')
   sc.addFile(project_path + '/src/eval_mircheck.pl')
@@ -138,17 +147,17 @@ if __name__ == '__main__' :
   sc.addFile(mirdup_model)
   sc.addFile(target_file)
   sc.addFile(miranda_binary)
-
-  #= Spark application ID
-  appId = str(sc.applicationId)
   
   #= Fetch library files in rep_input
   infiles = [f for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
   
   #= Time processing of libraries
   timeDict = {}
-  
-  
+    
+  print('\n====================== mirLibSpark =========================')
+  print('====================== ' + appId + ' =========================\n')
+  print('begin time:', datetime.datetime.now())
+
   for infile in infiles :
     if infile[-1:] == '~': continue
     print ("--Processing of the library: ", infile)
@@ -451,6 +460,7 @@ if __name__ == '__main__' :
 
   
   #= clear caches (memory leak)
+  broadcastVar_paramDict.unpersist()
   dmask_rdd.unpersist()
   sr_short_rdd.unpersist()
   mergebowtie_rdd.unpersist()
@@ -459,6 +469,7 @@ if __name__ == '__main__' :
 
   #= end of spark context
   sc.stop() #= allow to run multiple SparkContexts
+  print('finish time:', datetime.datetime.now())
 
 
 
