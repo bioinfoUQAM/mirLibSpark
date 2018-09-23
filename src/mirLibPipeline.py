@@ -435,13 +435,14 @@ if __name__ == '__main__' :
 
   ## in: [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq] 
   ## out : [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
-  distPrecursor_rdd = master_distinctPrecursor_infos_rdd.map(mru.distinctPrecursor_infos_select)
+  distPrecursor_rdd = master_distinctPrecursor_infos_rdd.map(mru.distinctPrecursor_infos_select).distinct()
   
 
   #= varna
+  varna_obj = mru.prog_varna(appId, rep_output) 
+  
   ## in : [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
   ## out : ([miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore], zipindex)
-  varna_obj = mru.prog_varna(appId, rep_output) # this object needs to be initiated after appId is generated
   VARNA_rdd = distPrecursor_rdd.zipWithIndex()\
                                .map(varna_obj.run_VARNA)
   indexVis = VARNA_rdd.collect()
@@ -452,15 +453,16 @@ if __name__ == '__main__' :
   ## in : ('miRNAseq', zipindex)
   ## out: ('miRNAseq', [[target1 and its scores], [target2 and its scores]])
   miranda_rdd = distResultSmallRNA_rdd.map(miranda_obj.computeTargetbyMiranda)
-  master_distinctTG = miranda_rdd.map(lambda e: [  i[0].split('.')[0] for i in e[1]  ])\
-                                 .reduce(lambda a, b: a+b)
-   
   mirna_and_targets = miranda_rdd.collect()
   ut.writeTargetsToFile (mirna_and_targets, rep_output, appId)
 
 
+  ## in: ('miRNAseq', [[targetgene1 and its scores], [targetgene2 and its scores]])
+  ## out:( 'targetgene' )
+  master_distinctTG = miranda_rdd.map(lambda e: [  i[0].split('.')[0] for i in e[1]  ])\
+                                 .reduce(lambda a, b: a+b)
   master_distinctTG = list(set(master_distinctTG))
-  #print( master_distinctTG )
+  print( master_distinctTG )
   #'''
 
 
