@@ -36,7 +36,6 @@ if __name__ == '__main__' :
 
   paramfile = sys.argv[1]
   paramDict = ut.readParam (paramfile)
-  for k, v in paramDict.items(): print(k, ': ', v)
 
   #= spark configuration
   appMaster = paramDict['sc_master']                #"local[*]" 
@@ -156,13 +155,16 @@ if __name__ == '__main__' :
     
   print('\n====================== mirLibSpark =========================')
   print('====================== ' + appId + ' =========================\n')
+  #for k, v in paramDict.items(): print(k, ': ', v)
+  print('==============================================================\n')
   print('begin time:', datetime.datetime.now())
 
+  libRESULTS = {} ## update 180923
   for infile in infiles :
     if infile[-1:] == '~': continue
     print ("--Processing of the library: ", infile)
 
-    inBasename = os.path.splitext(infile)[0]
+    inBasename = os.path.splitext(infile)[0] #= lib name
     infile = rep_input+infile
     inKvfile = rep_tmp + inBasename + '.kv.txt'
 
@@ -191,7 +193,6 @@ if __name__ == '__main__' :
     ## out: ('seq', freq)
       ## note that type_a does not need to collapse nor trim.
       collapse_rdd = distFile_rdd.map(lambda line: mru.rearrange_rule(line, '\t'))#\
-                             #.distinct() ##= .distinct() might not be necessary
     else:
       if input_type == 'b': #= reads
       ## in : u'seq1', u'seq2', u'seq1'
@@ -390,7 +391,8 @@ if __name__ == '__main__' :
     profile_rdd = pre_vld_rdd.map(lambda e: profile_obj.computeProfileFrq(e, broadcastVar_bowtie_chromo_strand.value))\
                              .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)
     print('NB profile_rdd distinct: ', len(profile_rdd.groupByKey().collect()))##
-    results = profile_rdd.collect()
+    libresults = profile_rdd.collect()
+    libRESULTS [ inBasename ] = libresults
     #'''
 
 
@@ -402,7 +404,7 @@ if __name__ == '__main__' :
     #'''#!!#
     #= write results to a file
     eachLiboutFile = rep_output  +  appId + '_miRNAprediction_' + inBasename + '.txt'
-    ut.writeToFile (results, eachLiboutFile)
+    ut.writeToFile (libresults, eachLiboutFile)
     #'''
     
 
@@ -417,18 +419,47 @@ if __name__ == '__main__' :
   keyword = appId + '_miRNAprediction_'
   infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
   master_predicted_distinctMiRNAs, master_distinctPrecursor_infos = ut.writeSummaryExpressionToFile (infiles, rep_output, appId)
-
-
-
-
-  distResultSmallRNA_rdd = sc.parallelize(master_predicted_distinctMiRNAs, partition).zipWithIndex() ### <---------------------
-
-  #distPrecursor_rdd = sc.parallelize(master_distinctPrecursor_infos, partition)\
-                        #.map(lambda e: (e[0], e[1:]))\
-                        #.join(distResultSmallRNA_rdd)\
-                        #.map(mru.distPrecursor_rdd_rearrange_rule)
-  #print('distPrecursor_rdd', distPrecursor_rdd.collect())
   
+  #= in: ( lib, ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq]) )
+  #libRESULTS_rdd = sc.parallelize(libRESULTS, partition) ## update
+
+  #= out: miRNAseq
+  #master_predicted_distinctMiRNAs = libRESULTS_rdd.map(lambda e: e[1][0]).distinct().collect() ## update
+
+  #= out: [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
+  #master_distinctPrecursor_infos = libRESULTS_rdd.map( ut.xrule )
+
+
+
+
+
+
+
+  #= master miRNA rdd
+  ## ('miRNAseq', zipindex)
+  distResultSmallRNA_rdd = sc.parallelize(master_predicted_distinctMiRNAs, partition).zipWithIndex() 
+
+
+
+  ##=========================================================================
+  ##=========================================================================
+  ##=========================================================================
+  ##=========================================================================
+  ##= master precursor rdd ==== work in progress ==
+  #distPrecursor_rdd = sc.parallelize(master_distinctPrecursor_infos, partition)\
+  #                      .map(lambda e: (e[0], e[1:]))\
+  #                      .join(distResultSmallRNA_rdd)\
+  #                      .map(lambda e: [ e[1][1], e[0]  ])
+  #                      #.map(mru.distPrecursor_rdd_rearrange_rule)
+  #print('distPrecursor_rdd', distPrecursor_rdd.collect())
+  ##=========================================================================
+  ##=========================================================================
+  ##=========================================================================
+  ##=========================================================================
+
+
+
+
   #
   #= create precursor images VARNA
   ## in : [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
@@ -470,19 +501,11 @@ if __name__ == '__main__' :
   #= end of spark context
   sc.stop() #= allow to run multiple SparkContexts
   print('finish time:', datetime.datetime.now())
+  print('====================== End of ' + appId + ' =========================\n')
 
-
-
-  '''#!!#
-  ### test to initiate a new sc context ########
-  infile = outTime ##update
-  sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, execCores) ##update
-  distFile_rdd = sc.textFile("file:///" + infile, partition) ##update
-  test = distFile_rdd.collect() ##update
-  print(test) ##update
-  sc.stop() ##update
-  #'''
 
   #os.system('rm -fr ' + rep_tmp)
 #note: shorten pipeline switch ==> replace #'''#!!# ==> '''#!!#
+
+
 

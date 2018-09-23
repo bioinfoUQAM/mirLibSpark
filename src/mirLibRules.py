@@ -15,11 +15,20 @@ from operator import itemgetter
 
 
 def distPrecursor_rdd_rearrange_rule (e):
+  ''' wip 180923 '''
+  data = []
+  data.append(e[0])
+  for i in e[1]: data.append(i)
+  data.append(e[1][1])
+  return data
+
+
+  '''
   rlt = [e[0]]
   for i in range(len(e[1][:-1])):
     rlt.append(i)
   rlt.append(e[1][-1])
-  return rlt
+  return rlt'''
 
 def rearrange_rule(kv_arg, kv_sep):
   '''
