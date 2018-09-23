@@ -432,7 +432,7 @@ if __name__ == '__main__' :
   
   #master_distinctPrecursor_infos = master_distinctPrecursor_infos_rdd.collect()
   distPrecursor = distPrecursor_rdd.collect()
-  print('distPrecursor_rdd:', distPrecursor_rdd)
+  print('ln435 distPrecursor:', distPrecursor)
 
 
 
@@ -473,7 +473,6 @@ if __name__ == '__main__' :
 
   varna_obj = mru.prog_varna(appId, rep_output) # this object needs to be initiated after appId is generated
   #distPrecursor_rdd = sc.parallelize(master_distinctPrecursor_infos, partition) ### <---------------------
-  distPrecursor_rdd = sc.parallelize(master_distinctPrecursor_infos, partition) ### <---------------------
   VARNA_rdd = distPrecursor_rdd.zipWithIndex()\
                                .map(varna_obj.run_VARNA)
   indexVis = VARNA_rdd.collect()
