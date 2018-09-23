@@ -435,7 +435,6 @@ if __name__ == '__main__' :
   Precursor_rdd = libRESULTS_rdd.map(mru.distinctPrecursor_infos_rearrange_rule)\
                                     .map(mru.distinctPrecursor_infos_select)
   #print('Precursor_rdd:', Precursor_rdd.collect())
-  distPrecursor_rdd = sc.parallelize (set(Precursor_rdd.collect()), partition)
   
   #'''
   #= varna
@@ -443,7 +442,7 @@ if __name__ == '__main__' :
   
   ## in : [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
   ## out : ([miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore], zipindex)
-  VARNA_rdd = distPrecursor_rdd.zipWithIndex()\
+  VARNA_rdd = Precursor_rdd.zipWithIndex()\
                                .map(varna_obj.run_VARNA)
   indexVis = VARNA_rdd.collect()
   ut.write_index (indexVis, rep_output, appId)
