@@ -159,11 +159,12 @@ if __name__ == '__main__' :
   print('==============================================================\n')
   print('begin time:', datetime.datetime.now())
 
+  libRESULTS = {} ## update 180923
   for infile in infiles :
     if infile[-1:] == '~': continue
     print ("--Processing of the library: ", infile)
 
-    inBasename = os.path.splitext(infile)[0]
+    inBasename = os.path.splitext(infile)[0] #= lib name
     infile = rep_input+infile
     inKvfile = rep_tmp + inBasename + '.kv.txt'
 
@@ -390,7 +391,8 @@ if __name__ == '__main__' :
     profile_rdd = pre_vld_rdd.map(lambda e: profile_obj.computeProfileFrq(e, broadcastVar_bowtie_chromo_strand.value))\
                              .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)
     print('NB profile_rdd distinct: ', len(profile_rdd.groupByKey().collect()))##
-    results = profile_rdd.collect()
+    libresults = profile_rdd.collect()
+    libRESULTS [ inBasename ] = libresults
     #'''
 
 
@@ -402,7 +404,7 @@ if __name__ == '__main__' :
     #'''#!!#
     #= write results to a file
     eachLiboutFile = rep_output  +  appId + '_miRNAprediction_' + inBasename + '.txt'
-    ut.writeToFile (results, eachLiboutFile)
+    ut.writeToFile (libresults, eachLiboutFile)
     #'''
     
 
@@ -418,17 +420,23 @@ if __name__ == '__main__' :
   infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
   master_predicted_distinctMiRNAs, master_distinctPrecursor_infos = ut.writeSummaryExpressionToFile (infiles, rep_output, appId)
 
+  #= master miRNA rdd
+  ## ('miRNAseq', zipindex)
+  distResultSmallRNA_rdd = sc.parallelize(master_predicted_distinctMiRNAs, partition).zipWithIndex() 
 
 
 
-  distResultSmallRNA_rdd = sc.parallelize(master_predicted_distinctMiRNAs, partition).zipWithIndex() ### <---------------------
-
+  ##= master precursor rdd ==== work in progress ==
   distPrecursor_rdd = sc.parallelize(master_distinctPrecursor_infos, partition)\
-                        .map(lambda e: (e[0], e[1:]))\
-                        .join(distResultSmallRNA_rdd)\
-                        .map(mru.distPrecursor_rdd_rearrange_rule)
+                        .map(lambda e: (e[0], e[1:]))#\
+                        #.join(distResultSmallRNA_rdd)#\
+                        #.map(mru.distPrecursor_rdd_rearrange_rule)
   print('distPrecursor_rdd', distPrecursor_rdd.collect())
-  
+  ##=====================
+
+
+
+
   #
   #= create precursor images VARNA
   ## in : [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
