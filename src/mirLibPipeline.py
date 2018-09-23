@@ -419,10 +419,11 @@ if __name__ == '__main__' :
   
   #= in: ( lib, ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq]) )
   libRESULTS_rdd = sc.parallelize(libRESULTS, partition).flatMap(lambda e: e[1]) ## update
-  print('libRESULTS_rdd', libRESULTS_rdd.collect())
+  #print('libRESULTS_rdd', libRESULTS_rdd.collect())
 
   #= out: miRNAseq
-  #master_predicted_distinctMiRNAs = libRESULTS_rdd.map(lambda e: e[1][0]).distinct().collect() ## update
+  master_predicted_distinctMiRNAs = libRESULTS_rdd.map(lambda e: e[0]).distinct().collect() ## update
+  print(master_predicted_distinctMiRNAs)
 
   #= out: [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
   #master_distinctPrecursor_infos = libRESULTS_rdd.map( ut.xrule )
