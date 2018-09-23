@@ -448,7 +448,7 @@ if __name__ == '__main__' :
   VARNA_rdd = distPrecursor_rdd.zipWithIndex()\
                                .map(varna_obj.run_VARNA)
   indexVis = VARNA_rdd.collect()
-  ut.write_index (indexVis, rep_output, appId)'''
+  ut.write_index (indexVis, rep_output, appId)
 
 
   #= miranda
