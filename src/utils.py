@@ -348,6 +348,7 @@ def writeTimeLibToFile (timeDict, outfile, appId, paramDict):
   
   fh_out = open (outfile, 'w')
   
+  print >> fh_out, datetime.datetime.now()
   print >> fh_out, "# Application ID " + appId +"\n"
   print >> fh_out, "Total \t"+totalTimeHMS+ "\t" + totalTimeSec
   
@@ -364,7 +365,7 @@ def writeTimeLibToFile (timeDict, outfile, appId, paramDict):
     if key.startswith("sc_"):
       print >> fh_out, "# " + key + ": " + paramDict[key]
 
-  print >> fh_out, "\n# mirLibSpark configuration:"
+  print >> fh_out, "\n# MirLibSpark configuration:"
   for key in paramDict :
     if not key.startswith("sc_"):
       print >> fh_out, "# " + key + ": " + paramDict[key]
