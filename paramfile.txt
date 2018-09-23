@@ -31,7 +31,7 @@
 #
 ########################################################################
 #
-message=\nwrite your message here line1\nline2: \nbroadcast chromosomes one by one\nchromosomes=All\nprint libRESULTS_rdd to see what it is
+message=\nwrite your message here line1\nline2: \nchromosomes=All\nprint libRESULTS_rdd to see what it is
 #
 ########################################################################
 #
