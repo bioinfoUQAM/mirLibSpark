@@ -258,7 +258,7 @@ if __name__ == '__main__' :
       bowtie_rdd = dmask_rdd.map(lambda e: " "+e)\
                             .pipe(bowtie_cmd, bowtie_env)\
                             .map(bowtie_obj.bowtie_rearrange_map)\
-                            .reduceByKey(lambda a, b: a+b)\
+                            .groupByKey()\
                             .map(lambda e: (e[0], [len(list(e[1])), list(e[1])]))
       #print('NB bowtie_rdd: ', len(bowtie_rdd.collect()))##################################################
       #================================================================================================================
