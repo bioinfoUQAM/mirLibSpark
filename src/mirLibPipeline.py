@@ -418,7 +418,7 @@ if __name__ == '__main__' :
   master_predicted_distinctMiRNAs, master_distinctPrecursor_infos = ut.writeSummaryExpressionToFile (infiles, rep_output, appId)
   
   #= in: ( lib, ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq]) )
-  libRESULTS_rdd = sc.parallelize(libRESULTS, partition) ## update
+  libRESULTS_rdd = sc.parallelize(libRESULTS, partition).flatMap(lambda e: e[1]) ## update
   print('libRESULTS_rdd', libRESULTS_rdd.collect())
 
   #= out: miRNAseq
