@@ -340,7 +340,7 @@ def writeToFile (results, outfile):
 
 
 def writeTimeLibToFile (timeDict, outfile, appId, paramDict):
-  #import datetime
+  import datetime
   
   totalTimeSec = reduce((lambda x,y : x + y), timeDict.values())
   totalTimeHMS = str(datetime.timedelta(seconds=totalTimeSec))
