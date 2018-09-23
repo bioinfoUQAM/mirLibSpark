@@ -1,34 +1,35 @@
 import os
 
 
-cmd = 'python purge.py'
-os.system (cmd)
 
-cmd = 'git pull origin broadcastparamDict'
-os.system (cmd)
+#cmd = 'python purge.py';os.system (cmd)
 
-
-
-#cmd = 'cp ../input_samples/fake_a3.txt ../input'
-cmd = 'rm -fr ../input/fake_a3.txt'
-os.system(cmd)
-
-cmd = 'cp ../input_samples/100.txt ../input'
-#cmd = 'rm -f ../input/100.txt'
-os.system(cmd)
-
-
-cmd = 'git remote prune origin'
-os.system(cmd)
-#cmd = 'git branch -D test'
-#os.system(cmd)
+cmd = 'git pull origin broadcastchr';os.system (cmd)
 
 
 
-cmd = 'time spark-submit mirLibPipeline.py ../paramfile.txt 2>/dev/null'
-os.system(cmd)
+#cmd = 'cp ../input_samples/fake_a3.txt ../input';os.system(cmd)
+cmd = 'rm -fr ../input/fake_a3.txt';os.system(cmd)
 
 
+#cmd = 'cp ../input_samples/100.txt ../input';os.system(cmd)
+cmd = 'rm -f ../input/100.txt';os.system(cmd)
+
+
+
+cmd = 'git remote prune origin';os.system(cmd)
+#cmd = 'git branch -D test';os.system(cmd)
+
+
+
+cmd = 'free -m';os.system(cmd)
+
+#########################################################################################
+cmd = 'time spark-submit mirLibPipeline.py ../paramfile.txt 2>/dev/null';os.system(cmd)
+#########################################################################################
+
+
+cmd = 'free -m';os.system(cmd)
 
 
 
@@ -142,4 +143,6 @@ os.system(cmd)
 #  outfile = infile.replace ('chr', 'Chr')
 #  cmd = 'mv ' + infile + ' ' + outfile
 #  os.system(cmd)
+
+
 
