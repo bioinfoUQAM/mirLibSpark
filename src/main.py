@@ -4,7 +4,7 @@ import os
 
 #cmd = 'python purge.py';os.system (cmd)
 
-cmd = 'git pull origin broadcastchr';os.system (cmd)
+cmd = 'git pull origin broadcastparamDict';os.system (cmd)
 
 
 

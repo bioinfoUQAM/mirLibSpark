@@ -36,6 +36,7 @@ if __name__ == '__main__' :
 
   paramfile = sys.argv[1]
   paramDict = ut.readParam (paramfile)
+  for k, v in paramDict.items(): print(k, ': ', v)
 
   #= spark configuration
   appMaster = paramDict['sc_master']                #"local[*]" 
