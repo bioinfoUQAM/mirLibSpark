@@ -420,10 +420,14 @@ if __name__ == '__main__' :
   infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
   master_predicted_distinctMiRNAs, master_distinctPrecursor_infos = ut.writeSummaryExpressionToFile (infiles, rep_output, appId)
   
+  #= in: ( lib, ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq]) )
   libRESULTS_rdd = sc.parallelize(libRESULTS, partition) ## update
 
-  #master_predicted_distinctMiRNAs = libRESULTS_rdd.map(lambda e: e[1][0]).distinct().collect() ## update
-  #master_distinctPrecursor_infos = libRESULTS_rdd.map(lambda e: )
+  #= out: miRNAseq
+  master_predicted_distinctMiRNAs = libRESULTS_rdd.map(lambda e: e[1][0]).distinct().collect() ## update
+
+  #= out: [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
+  #master_distinctPrecursor_infos = libRESULTS_rdd.map( ut.xrule )
 
 
 
@@ -437,13 +441,21 @@ if __name__ == '__main__' :
 
 
 
+  ##=========================================================================
+  ##=========================================================================
+  ##=========================================================================
+  ##=========================================================================
   ##= master precursor rdd ==== work in progress ==
   distPrecursor_rdd = sc.parallelize(master_distinctPrecursor_infos, partition)\
                         .map(lambda e: (e[0], e[1:]))\
-                        .join(distResultSmallRNA_rdd)#\
+                        .join(distResultSmallRNA_rdd)\
+                        .map(lambda e: [ e[1][1], e[0], x for x in e[1:-1]  ])
                         #.map(mru.distPrecursor_rdd_rearrange_rule)
   print('distPrecursor_rdd', distPrecursor_rdd.collect())
-  ##=====================
+  ##=========================================================================
+  ##=========================================================================
+  ##=========================================================================
+  ##=========================================================================
 
 
 
