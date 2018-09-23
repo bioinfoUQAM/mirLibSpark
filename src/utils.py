@@ -366,7 +366,7 @@ def writeTimeLibToFile (timeDict, outfile, appId, paramDict):
       print >> fh_out, "# " + key + ": " + paramDict[key]
 
   print >> fh_out, "\n# MirLibSpark configuration:"
-  for key in paramDict :
+  for key in sorted(paramDict.keys()) :
     if not key.startswith("sc_"):
       print >> fh_out, "# " + key + ": " + paramDict[key]
 
