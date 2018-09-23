@@ -501,6 +501,8 @@ if __name__ == '__main__' :
   #= end of spark context
   sc.stop() #= allow to run multiple SparkContexts
   print('finish time:', datetime.datetime.now())
+  print('====================== End of ' + appId + ' =========================\n')
+
 
 
 
