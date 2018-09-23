@@ -417,10 +417,12 @@ if __name__ == '__main__' :
   infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
   master_distinctPrecursor_infos = ut.writeSummaryExpressionToFile (infiles, rep_output, appId)
   
-  #= in: ( lib, ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq]) )
+  #= in: ( lib, ('seq', [...]) )
+  #= out: ( 'seq', [...] )
   libRESULTS_rdd = sc.parallelize(libRESULTS, partition).flatMap(lambda e: e[1]) 
 
-  #= out: miRNAseq
+  #= in: ( 'seq', [...] )
+  #= out:( 'seq' ) 
   master_predicted_distinctMiRNAs = libRESULTS_rdd.map(lambda e: e[0]).distinct().collect()
 
   #= out: [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
