@@ -13,9 +13,43 @@ import os
 import utils as ut
 from operator import itemgetter
 
+def distinctPrecursor_infos_rearrange_rule (elem):
+    miRNAseq = elem[0]
+    frq = elem[1][0]
+    #= bowtie_result
+    nbLoc = elem[1][1]
+    strand = elem[1][2][0]
+    chromo = elem[1][2][1]
+    posChr = elem[1][2][2]
+    #= pri-miRNA
+    priSeq = elem[1][3][0] 
+    posMirPri = elem[1][3][1] 
+    priFold = elem[1][3][2] 
+    #= mircheck_result
+    mkPred = elem[1][3][3]
+    mkStart = elem[1][3][4]
+    mkStop = elem[1][3][5]  
+    #= mirdup_result
+    preSeq = elem[1][4][0]
+    posMirPre = elem[1][4][1]
+    newfbstart = int(posMirPre) + int(posMirPri) - int(mkStart) 
+    newfbstop  = int(posMirPre) + int(mkStop) - int(posMirPri) 
+    preFold = elem[1][4][2]
+    mpPred = elem[1][4][3]
+    mpScore = elem[1][4][4]
+    #= premirna_range_total_small_rna_freq
+    totalFrq =  elem[1][5]
+    
+    newelem = [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq]
+    return newelem
+
+def distinctPrecursor_infos_select (elem):
+  [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq] = elem
+  newelem = [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
+  return newelem
 
 def distPrecursor_rdd_rearrange_rule (e):
-  ''' wip 180923 '''
+  ''' defunct 180923 '''
   data = []
   data.append(e[0])
   for i in e[1]: data.append(i)
@@ -564,7 +598,7 @@ class prog_varna ():
     [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore] = e[0]
     uid = str(e[1]).zfill(4)
     miRNApos = str(int(posMirPre)) + '-' + str(int(posMirPre) + len(miRNAseq)-1) 
-    title = self.appId + '_' + uid + '_' + chromo + '_' + posChr
+    title = self.appId + '_' + uid + '_' + chromo + '_' + str(posChr)
     filename = self.rep_output + title
     self.run_VARNA_prog (preSeq, preFold, miRNApos, title, filename) 
     e[0].insert(0, e[1])
