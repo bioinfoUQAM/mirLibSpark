@@ -429,11 +429,15 @@ if __name__ == '__main__' :
   ## out: ('miRNAseq', zipindex)
   distResultSmallRNA_rdd = master_predicted_distinctMiRNAs_rdd.zipWithIndex() 
 
+  #===================================================================================
+  #===================================================================================
+  #===================================================================================
+  #===================================================================================
   ## in:  ( 'seq', [...] ) 
   ## mid: [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq] 
   ## out : [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
   Precursor_rdd = libRESULTS_rdd.map(mru.distinctPrecursor_infos_rearrange_rule)\
-                                    .map(mru.distinctPrecursor_infos_select)
+                                .map(mru.distinctPrecursor_infos_select)
   #print('Precursor_rdd:', Precursor_rdd.collect())
   
   #'''
@@ -446,8 +450,13 @@ if __name__ == '__main__' :
                                .map(varna_obj.run_VARNA)
   indexVis = VARNA_rdd.collect()
   ut.write_index (indexVis, rep_output, appId)
+  #===================================================================================
+  #===================================================================================
+  #===================================================================================
+  #===================================================================================
 
-
+  
+  '''
   #= miranda
   ## in : ('miRNAseq', zipindex)
   ## out: ('miRNAseq', [[target1 and its scores], [target2 and its scores]])
