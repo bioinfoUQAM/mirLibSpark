@@ -423,18 +423,18 @@ if __name__ == '__main__' :
 
   distResultSmallRNA_rdd = sc.parallelize(master_predicted_distinctMiRNAs, partition).zipWithIndex() ### <---------------------
 
-  #distPrecursor_rdd = sc.parallelize(master_distinctPrecursor_infos, partition)\
-                        #.map(lambda e: (e[0], e[1:]))\
-                        #.join(distResultSmallRNA_rdd)\
-                        #.map(mru.distPrecursor_rdd_rearrange_rule)
-  #print('distPrecursor_rdd', distPrecursor_rdd.collect())
+  distPrecursor_rdd = sc.parallelize(master_distinctPrecursor_infos, partition)\
+                        .map(lambda e: (e[0], e[1:]))\
+                        .join(distResultSmallRNA_rdd)\
+                        .map(mru.distPrecursor_rdd_rearrange_rule)
+  print('distPrecursor_rdd', distPrecursor_rdd.collect())
   
   #
   #= create precursor images VARNA
   ## in : [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
   ## out: [zipindex, miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
   varna_obj = mru.prog_varna(appId, rep_output) # this object needs to be initiated after appId is generated
-  distPrecursor_rdd = sc.parallelize(master_distinctPrecursor_infos, partition) ### <---------------------
+  #distPrecursor_rdd = sc.parallelize(master_distinctPrecursor_infos, partition) ### <---------------------
   VARNA_rdd = distPrecursor_rdd.zipWithIndex()\
                                .map(varna_obj.run_VARNA)
   indexVis = VARNA_rdd.collect()
