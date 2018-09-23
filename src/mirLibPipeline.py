@@ -192,7 +192,6 @@ if __name__ == '__main__' :
     ## out: ('seq', freq)
       ## note that type_a does not need to collapse nor trim.
       collapse_rdd = distFile_rdd.map(lambda line: mru.rearrange_rule(line, '\t'))#\
-                             #.distinct() ##= .distinct() might not be necessary
     else:
       if input_type == 'b': #= reads
       ## in : u'seq1', u'seq2', u'seq1'
@@ -259,7 +258,7 @@ if __name__ == '__main__' :
       bowtie_rdd = dmask_rdd.map(lambda e: " "+e)\
                             .pipe(bowtie_cmd, bowtie_env)\
                             .map(bowtie_obj.bowtie_rearrange_map)\
-                            .groupByKey()\
+                            .reduceByKey()\
                             .map(lambda e: (e[0], [len(list(e[1])), list(e[1])]))
       #print('NB bowtie_rdd: ', len(bowtie_rdd.collect()))##################################################
       #================================================================================================================
