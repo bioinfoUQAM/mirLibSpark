@@ -415,64 +415,33 @@ if __name__ == '__main__' :
   #= make summary table of all libraries in one submission with expressions in the field
   keyword = appId + '_miRNAprediction_'
   infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
-  master_distinctPrecursor_infos = ut.writeSummaryExpressionToFile (infiles, rep_output, appId)
+  #master_distinctPrecursor_infos = ut.writeSummaryExpressionToFile (infiles, rep_output, appId) #= tmp masking 180923
   
-  #= in:  ( lib, ('seq', [...]) )
-  #= out: ( 'seq', [...] )
+  ## in:  ( lib, ('seq', [...]) )
+  ## out: ( 'seq', [...] )
   libRESULTS_rdd = sc.parallelize(libRESULTS, partition).flatMap(lambda e: e[1]) 
 
-  #= in:  ( 'seq', [...] )
-  #= out: ( 'seq' ) 
-  master_predicted_distinctMiRNAs = libRESULTS_rdd.map(lambda e: e[0]).distinct().collect()
+  ## in:  ( 'seq', [...] )
+  ## out: ( 'seq' ) 
+  master_predicted_distinctMiRNAs_rdd = libRESULTS_rdd.map(lambda e: e[0]).distinct()
 
-  #= in:  ( 'seq', [...] )  #= [...] = [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq]
-  #= out: [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq] 
+  ## in:  ( 'seq' ) 
+  ## out: ('miRNAseq', zipindex)
+  distResultSmallRNA_rdd = master_predicted_distinctMiRNAs_rdd.zipWithIndex() 
+
+  ## in:  ( 'seq', [...] )  
+  ## out: [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq] 
   master_distinctPrecursor_infos_rdd = libRESULTS_rdd.map( mru.distinctPrecursor_infos_rearrange_rule )
+
+  ## in: [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq] 
+  ## out : [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
   distPrecursor_rdd = master_distinctPrecursor_infos_rdd.map(mru.distinctPrecursor_infos_select)
   
-  #master_distinctPrecursor_infos = master_distinctPrecursor_infos_rdd.collect()
-  distPrecursor = distPrecursor_rdd.collect()
-  print('ln435 distPrecursor:', distPrecursor)
 
-
-
-
-
-
-  #= master miRNA rdd
-  ## ('miRNAseq', zipindex)
-  distResultSmallRNA_rdd = sc.parallelize(master_predicted_distinctMiRNAs, partition).zipWithIndex() 
-
-
-
-  ##=========================================================================
-  ##=========================================================================
-  ##=========================================================================
-  ##=========================================================================
-  ##= master precursor rdd ==== work in progress ==
-  #distPrecursor_rdd = sc.parallelize(master_distinctPrecursor_infos, partition)\
-  #                      .map(lambda e: (e[0], e[1:]))\
-  #                      .join(distResultSmallRNA_rdd)\
-  #                      .map(lambda e: [ e[1][1], e[0]  ])
-  #                      #.map(mru.distPrecursor_rdd_rearrange_rule)
-  #print('distPrecursor_rdd', distPrecursor_rdd.collect())
-  ##=========================================================================
-  ##=========================================================================
-  ##=========================================================================
-  ##=========================================================================
-
-
-
-
-  #
-  #= create precursor images VARNA
+  #= varna
   ## in : [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
-  ## out: [zipindex, miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
-
-  #= new_in: [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq] 
-
+  ## out : ([miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore], zipindex)
   varna_obj = mru.prog_varna(appId, rep_output) # this object needs to be initiated after appId is generated
-  #distPrecursor_rdd = sc.parallelize(master_distinctPrecursor_infos, partition) ### <---------------------
   VARNA_rdd = distPrecursor_rdd.zipWithIndex()\
                                .map(varna_obj.run_VARNA)
   indexVis = VARNA_rdd.collect()
@@ -485,8 +454,7 @@ if __name__ == '__main__' :
   miranda_rdd = distResultSmallRNA_rdd.map(miranda_obj.computeTargetbyMiranda)
   master_distinctTG = miranda_rdd.map(lambda e: [  i[0].split('.')[0] for i in e[1]  ])\
                                  .reduce(lambda a, b: a+b)
-  
-  
+   
   mirna_and_targets = miranda_rdd.collect()
   ut.writeTargetsToFile (mirna_and_targets, rep_output, appId)
 
