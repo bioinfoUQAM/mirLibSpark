@@ -435,7 +435,7 @@ if __name__ == '__main__' :
   Precursor_rdd = libRESULTS_rdd.map(mru.distinctPrecursor_infos_rearrange_rule)\
                                     .map(mru.distinctPrecursor_infos_select)
   #print('Precursor_rdd:', Precursor_rdd.collect())
-  distPrecursor_rdd = sc.parallelize ((set(Precursor_rdd.collect()), partition)
+  distPrecursor_rdd = sc.parallelize (set(Precursor_rdd.collect()), partition)
   
   #'''
   #= varna
