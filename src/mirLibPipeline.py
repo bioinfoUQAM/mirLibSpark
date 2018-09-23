@@ -156,7 +156,7 @@ if __name__ == '__main__' :
   print('==============================================================\n')
   print('begin time:', datetime.datetime.now())
 
-  libRESULTS = {} ## update 180923
+  libRESULTS = [] ## update 180923
   for infile in infiles :
     if infile[-1:] == '~': continue
     print ("--Processing of the library: ", infile)
@@ -389,7 +389,7 @@ if __name__ == '__main__' :
                              .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)
     print('NB profile_rdd distinct: ', len(profile_rdd.groupByKey().collect()))##
     libresults = profile_rdd.collect()
-    libRESULTS [ inBasename ] = libresults
+    libRESULTS =  [ inBasename, libresults]
     #'''
 
 
