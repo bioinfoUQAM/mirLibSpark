@@ -429,17 +429,14 @@ if __name__ == '__main__' :
   ## out: ('miRNAseq', zipindex)
   distResultSmallRNA_rdd = master_predicted_distinctMiRNAs_rdd.zipWithIndex() 
 
-  ## in:  ( 'seq', [...] )  
-  ## out: [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq] 
-  rawPrecursor_infos_rdd = libRESULTS_rdd.map( mru.distinctPrecursor_infos_rearrange_rule )
-  #print('rawPrecursor_infos_rdd:', rawPrecursor_infos_rdd.collect())
-
-  ## in: [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq] 
+  ## in:  ( 'seq', [...] ) 
+  ## mid: [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq] 
   ## out : [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
-  distPrecursor_rdd = rawPrecursor_infos_rdd.map(mru.distinctPrecursor_infos_select).distinct()
+  distPrecursor_rdd = libRESULTS_rdd.map( mru.distinctPrecursor_infos_rearrange_rule )\
+                                    .map(mru.distinctPrecursor_infos_select)#.distinct()
   print('distPrecursor_rdd:', distPrecursor_rdd.collect())
   
-  '''
+  #'''
   #= varna
   varna_obj = mru.prog_varna(appId, rep_output) 
   
