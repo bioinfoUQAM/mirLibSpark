@@ -449,7 +449,7 @@ if __name__ == '__main__' :
   distPrecursor_rdd = sc.parallelize(master_distinctPrecursor_infos, partition)\
                         .map(lambda e: (e[0], e[1:]))\
                         .join(distResultSmallRNA_rdd)\
-                        .map(lambda e: [ e[1][1], e[0], x for x in e[1:-1]  ])
+                        .map(lambda e: [ e[1][1], e[0]  ])
                         #.map(mru.distPrecursor_rdd_rearrange_rule)
   print('distPrecursor_rdd', distPrecursor_rdd.collect())
   ##=========================================================================
