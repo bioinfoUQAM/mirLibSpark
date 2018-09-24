@@ -418,13 +418,8 @@ if __name__ == '__main__' :
   #===================================================================================
   #'''#!!#
   #= make summary table of all libraries in one submission with expressions in the field
-  ## in:  ( lib, ('seq', [...]) )
-  ## out: ( lib, ('seq', freq))
-  libRESULTS_freq_rdd = sc.parallelize(libRESULTS, partition)\
-                          .flatMap(mru.xrule).groupByKey()
-  print('libRESULTS_freq_rdd:')
-  for i in libRESULTS_freq_rdd.collect(): print(i)
 
+  ut.xfile (libRESULTS, rep_output, appId)
 
 
 
