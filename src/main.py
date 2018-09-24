@@ -4,12 +4,12 @@ import os
 
 #cmd = 'python purge.py';os.system (cmd)
 
-#cmd = 'git pull origin test';os.system (cmd)
+cmd = 'git pull origin tgkegg';os.system (cmd)
 
 
 
 #cmd = 'cp ../input_samples/fake_a3.txt ../input';os.system(cmd)
-#cmd = 'rm -fr ../input/fake_a3.txt';os.system(cmd)
+cmd = 'rm -fr ../input/fake_a3.txt';os.system(cmd)
 
 
 #cmd = 'cp ../input_samples/100.txt ../input';os.system(cmd)
@@ -17,7 +17,7 @@ import os
 
 
 
-#cmd = 'git remote prune origin';os.system(cmd)
+cmd = 'git remote prune origin';os.system(cmd)
 #cmd = 'git fetch origin';os.system(cmd)
 #cmd = 'git checkout master';os.system(cmd)
 #cmd = 'git branch -D printout';os.system(cmd)
