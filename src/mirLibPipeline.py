@@ -411,8 +411,9 @@ if __name__ == '__main__' :
   #= make summary table of all libraries in one submission with expressions in the field
   keyword = appId + '_miRNAprediction_'
   infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
-  ut.writeSummaryExpressionToFile (infiles, rep_output, appId)
-  
+  master_distinctPrecursor_infos = ut.writeSummaryExpressionToFile (infiles, rep_output, appId)
+  broadcastVar_Precursor = sc.broadcast(master_distinctPrecursor_infos)   
+
   #'''
   ## in:  ( lib, ('seq', [...]) )
   ## out: ( 'seq', [...] )
@@ -430,8 +431,9 @@ if __name__ == '__main__' :
   ## in:  ( 'seq', [...] ) 
   ## mid: [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq] 
   ## out : [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
-  Precursor_rdd = libRESULTS_rdd.map(mru.distinctPrecursor_infos_rearrange_rule)\
-                                .map(mru.distinctPrecursor_infos_select)
+  #Precursor_rdd = libRESULTS_rdd.map(mru.distinctPrecursor_infos_rearrange_rule)\
+  #                              .map(mru.distinctPrecursor_infos_select)
+  Precursor_rdd = sc.parallelize(broadcastVar_Precursor.value, partition)
   #print('Precursor_rdd:', Precursor_rdd.collect())
   
   
@@ -461,7 +463,7 @@ if __name__ == '__main__' :
   master_distinctTG = sorted(list(set(master_distinctTG)))
   #print( master_distinctTG )
   #'''
-
+  print('test end of pipeline', datetime.datetime.now())
 
   
   #= clear caches (memory leak)
@@ -472,6 +474,7 @@ if __name__ == '__main__' :
   mergeChromosomesResults_rdd.unpersist()
   broadcastVar_bowtie_chromo_strand.unpersist()
   broadcastVar_libRESULTS.unpersist()
+  broadcastVar_Precursor.unpersist()
 
   #= end of spark context
   sc.stop() #= allow to run multiple SparkContexts

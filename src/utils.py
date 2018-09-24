@@ -444,10 +444,10 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
     line = line.rstrip('\t')
     print >> fh_out2, line
 
-  #master_distinctMiRNAs_infos = []
-  #for k in sorted(tmp_master_distinctPrecursor_infos.keys()):
-  #  v = tmp_master_distinctPrecursor_infos[k]
-  #  master_distinctMiRNAs_infos.append(v)
+  master_distinctPrecursor_infos = []
+  for k in sorted(tmp_master_distinctPrecursor_infos.keys()):
+    v = tmp_master_distinctPrecursor_infos[k]
+    master_distinctPrecursor_infos.append(v)
 
   fh_out.close()
   fh_out2.close()
@@ -464,6 +464,7 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
   os.remove(infile) 
 
   #return master_predicted_distinctMiRNAs #sorted(master_distinctMiRNAs_infos)
+  return sorted(master_distinctPrecursor_infos)
 
 
 def writeTargetsToFile (mirna_and_targets, rep_output, appId):
