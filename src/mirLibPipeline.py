@@ -401,7 +401,7 @@ if __name__ == '__main__' :
     #'''#!!#
     #= write results to a file
     eachLiboutFile = rep_output  +  appId + '_miRNAprediction_' + inBasename + '.txt'
-    ut.writeToFile (libresults, eachLiboutFile)
+    #ut.writeToFile (libresults, eachLiboutFile)
     #'''
     
 
@@ -409,7 +409,7 @@ if __name__ == '__main__' :
 
   #= print executions time  to a file
   outTime = rep_output + appId + '_time.txt'
-  ut.writeTimeLibToFile (timeDict, outTime, appId, paramDict)
+  #ut.writeTimeLibToFile (timeDict, outTime, appId, paramDict)
 
 
   #===================================================================================
@@ -423,9 +423,9 @@ if __name__ == '__main__' :
 
 
 
-  keyword = appId + '_miRNAprediction_'
-  infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
-  ut.writeSummaryExpressionToFile (infiles, rep_output, appId)
+  #keyword = appId + '_miRNAprediction_'
+  #infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
+  #ut.writeSummaryExpressionToFile (infiles, rep_output, appId)
   #===================================================================================
   #===================================================================================
   #===================================================================================

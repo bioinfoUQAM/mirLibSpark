@@ -20,8 +20,7 @@ cmd = 'rm -f ../input/100.txt';os.system(cmd)
 cmd = 'git remote prune origin';os.system(cmd)
 #cmd = 'git fetch origin';os.system(cmd)
 #cmd = 'git checkout master';os.system(cmd)
-cmd = 'git branch -D printout';os.system(cmd)
-cmd = 'git branch -D preinfosrdd';os.system(cmd)
+#cmd = 'git branch -D printout';os.system(cmd)
 
 
 cmd = 'free -m';os.system(cmd)
