@@ -13,17 +13,6 @@ import os
 import utils as ut
 from operator import itemgetter
 
-def xrule(e):
-  libname = e[0]
-  elems = e[1] #('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq])
-  shortResults = [] #[libname, seq, freq]
-  for e in elems:
-    seq = e[0]
-    freq = e[1][0]
-    shortResults.append( libname, [ seq, freq ] )
-  return shortResults
-    
-
 def distinctPrecursor_infos_rearrange_rule (elem):
     miRNAseq = elem[0]
     frq = elem[1][0]

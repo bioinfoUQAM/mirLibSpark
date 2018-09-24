@@ -406,7 +406,6 @@ if __name__ == '__main__' :
   outTime = rep_output + appId + '_time.txt'
   ut.writeTimeLibToFile (timeDict, outTime, appId, paramDict)
 
-
   #'''#!!#
   #= make summary table of all libraries in one submission with expressions in the field
   keyword = appId + '_miRNAprediction_'
@@ -431,11 +430,7 @@ if __name__ == '__main__' :
   ## in:  ( 'seq', [...] ) 
   ## mid: [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq] 
   ## out : [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
-  #Precursor_rdd = libRESULTS_rdd.map(mru.distinctPrecursor_infos_rearrange_rule)\
-  #                              .map(mru.distinctPrecursor_infos_select)
   Precursor_rdd = sc.parallelize(broadcastVar_Precursor.value, partition)
-  #print('Precursor_rdd:', Precursor_rdd.collect())
-  
   
   #= varna
   varna_obj = mru.prog_varna(appId, rep_output) 
