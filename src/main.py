@@ -4,7 +4,7 @@ import os
 
 #cmd = 'python purge.py';os.system (cmd)
 
-cmd = 'git pull origin preinfosrdd';os.system (cmd)
+#cmd = 'git pull origin test';os.system (cmd)
 
 
 
@@ -13,14 +13,14 @@ cmd = 'git pull origin preinfosrdd';os.system (cmd)
 
 
 #cmd = 'cp ../input_samples/100.txt ../input';os.system(cmd)
-cmd = 'rm -f ../input/100.txt';os.system(cmd)
+#cmd = 'rm -f ../input/100.txt';os.system(cmd)
 
 
 
 #cmd = 'git remote prune origin';os.system(cmd)
 #cmd = 'git fetch origin';os.system(cmd)
 #cmd = 'git checkout master';os.system(cmd)
-#cmd = 'git branch -D test';os.system(cmd)
+#cmd = 'git branch -D printout';os.system(cmd)
 
 
 cmd = 'free -m';os.system(cmd)

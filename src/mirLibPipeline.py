@@ -391,9 +391,7 @@ if __name__ == '__main__' :
     libresults = profile_rdd.collect()
     libRESULTS.append( [inBasename, libresults] )
     #'''
-
-
-    
+   
     endLib = time.time() 
     timeDict[inBasename] = endLib - startLib
     print ("  End of the processing     ", end="\n")
@@ -403,9 +401,6 @@ if __name__ == '__main__' :
     eachLiboutFile = rep_output  +  appId + '_miRNAprediction_' + inBasename + '.txt'
     ut.writeToFile (libresults, eachLiboutFile)
     #'''
-    
-
-
 
   #= print executions time  to a file
   outTime = rep_output + appId + '_time.txt'
@@ -415,16 +410,19 @@ if __name__ == '__main__' :
   #= make summary table of all libraries in one submission with expressions in the field
   keyword = appId + '_miRNAprediction_'
   infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
-  #master_distinctPrecursor_infos = ut.writeSummaryExpressionToFile (infiles, rep_output, appId) #= tmp masking 180923
-  
+  master_distinctPrecursor_infos = ut.writeSummaryExpressionToFile (infiles, rep_output, appId)
+  broadcastVar_Precursor = sc.broadcast(master_distinctPrecursor_infos)   
+
+  #'''
   ## in:  ( lib, ('seq', [...]) )
   ## out: ( 'seq', [...] )
-  libRESULTS_rdd = sc.parallelize(libRESULTS, partition).flatMap(lambda e: e[1]) 
+  broadcastVar_libRESULTS = sc.broadcast(libRESULTS)  
+  libRESULTS_rdd = sc.parallelize(broadcastVar_libRESULTS.value, partition).flatMap(lambda e: e[1]) 
 
   ## in:  ( 'seq', [...] )
   ## out: ( 'seq' ) 
   master_predicted_distinctMiRNAs_rdd = libRESULTS_rdd.map(lambda e: e[0]).distinct()
-
+  
   ## in:  ( 'seq' ) 
   ## out: ('miRNAseq', zipindex)
   distResultSmallRNA_rdd = master_predicted_distinctMiRNAs_rdd.zipWithIndex() 
@@ -432,11 +430,8 @@ if __name__ == '__main__' :
   ## in:  ( 'seq', [...] ) 
   ## mid: [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq] 
   ## out : [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
-  Precursor_rdd = libRESULTS_rdd.map(mru.distinctPrecursor_infos_rearrange_rule)\
-                                    .map(mru.distinctPrecursor_infos_select)
-  #print('Precursor_rdd:', Precursor_rdd.collect())
+  Precursor_rdd = sc.parallelize(broadcastVar_Precursor.value, partition)
   
-  #'''
   #= varna
   varna_obj = mru.prog_varna(appId, rep_output) 
   
@@ -447,7 +442,7 @@ if __name__ == '__main__' :
   indexVis = VARNA_rdd.collect()
   ut.write_index (indexVis, rep_output, appId)
 
-
+  
   #= miranda
   ## in : ('miRNAseq', zipindex)
   ## out: ('miRNAseq', [[target1 and its scores], [target2 and its scores]])
@@ -460,10 +455,10 @@ if __name__ == '__main__' :
   ## out:( 'targetgene' )
   master_distinctTG = miranda_rdd.map(lambda e: [  i[0].split('.')[0] for i in e[1]  ])\
                                  .reduce(lambda a, b: a+b)
-  master_distinctTG = list(set(master_distinctTG))
-  print( master_distinctTG )
+  master_distinctTG = sorted(list(set(master_distinctTG)))
+  #print( master_distinctTG )
   #'''
-
+  print('test end of pipeline', datetime.datetime.now())
 
   
   #= clear caches (memory leak)
@@ -473,6 +468,8 @@ if __name__ == '__main__' :
   mergebowtie_rdd.unpersist()
   mergeChromosomesResults_rdd.unpersist()
   broadcastVar_bowtie_chromo_strand.unpersist()
+  broadcastVar_libRESULTS.unpersist()
+  broadcastVar_Precursor.unpersist()
 
   #= end of spark context
   sc.stop() #= allow to run multiple SparkContexts
