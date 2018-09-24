@@ -419,21 +419,16 @@ if __name__ == '__main__' :
   ## in:  ( 'seq', [...] )
   ## out: ( 'seq' ) 
   master_predicted_distinctMiRNAs_rdd = libRESULTS_rdd.map(lambda e: e[0]).distinct()
-  master_predicted_distinctMiRNAs = sorted(master_predicted_distinctMiRNAs_rdd.collect())
+
   #===================================================================================
   #===================================================================================
   #===================================================================================
   #===================================================================================
   #'''#!!#
   #= make summary table of all libraries in one submission with expressions in the field
-
-  ut.xfile (libRESULTS, master_predicted_distinctMiRNAs, rep_output, appId)
-
-
-
-  #keyword = appId + '_miRNAprediction_'
-  #infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
-  #ut.writeSummaryExpressionToFile (infiles, rep_output, appId)
+  keyword = appId + '_miRNAprediction_'
+  infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
+  ut.writeSummaryExpressionToFile (infiles, rep_output, appId)
   #===================================================================================
   #===================================================================================
   #===================================================================================
