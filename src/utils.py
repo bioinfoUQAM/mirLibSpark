@@ -350,6 +350,7 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
   '''
   ## in : [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq]
   '''
+  keyword = '_miRNAprediction_'
   #= .trs is a temporary extension, such file will be transposed at the end of this function
   outfile = rep_output + appId + '_summaryFreq.trs' 
   outfile2 = rep_output + appId + '_summaryBinary.trs'
@@ -373,8 +374,10 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
   tmp_master_distinctPrecursor_infos = {}
   for f in sorted(infiles):
     with open (rep_output + f, 'r') as fh:
-      fh.readline()
-      for line in fh:
+      ###======================
+      DATA = list(set(fh.readlines()[1:]))
+      ###======================
+      for line in DATA:
         data = line.rstrip('\n').split('\t')
         ########################################## 
         miRNAseq = data[0]
@@ -404,7 +407,6 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
           tmp_master_distinctPrecursor_infos[key] = infos
         #################################### 
 
-  keyword = '_miRNAprediction_'
   dictLibSeqFreq = {}
   for f in sorted(infiles):
     libname = f.split(keyword)[1][:-4]
@@ -422,9 +424,6 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
       else: dictLibSeqFreq[libname].append(0)
 
   seqListLine = 'miRNA\t' + '\t'.join(master_predicted_distinctMiRNAs)
-  #for e in master_predicted_distinctMiRNAs:
-  #  seqListLine += e + '\t'
-  #seqListLine = seqListLine.rstrip('\t')
 
   print >> fh_out, seqListLine
   print >> fh_out2, seqListLine
@@ -464,7 +463,7 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
   transpose_txt(infile, outfile)
   os.remove(infile) 
 
-  #return sorted(master_distinctMiRNAs_infos)
+  #return master_predicted_distinctMiRNAs #sorted(master_distinctMiRNAs_infos)
 
 
 def writeTargetsToFile (mirna_and_targets, rep_output, appId):

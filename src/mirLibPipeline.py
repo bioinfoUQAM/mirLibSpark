@@ -406,21 +406,23 @@ if __name__ == '__main__' :
   outTime = rep_output + appId + '_time.txt'
   ut.writeTimeLibToFile (timeDict, outTime, appId, paramDict)
 
+
   #'''#!!#
   #= make summary table of all libraries in one submission with expressions in the field
   keyword = appId + '_miRNAprediction_'
   infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
   ut.writeSummaryExpressionToFile (infiles, rep_output, appId)
   
-  '''
+  #'''
   ## in:  ( lib, ('seq', [...]) )
   ## out: ( 'seq', [...] )
-  libRESULTS_rdd = sc.parallelize(libRESULTS, partition).flatMap(lambda e: e[1]) 
+  broadcastVar_libRESULTS = sc.broadcast(libRESULTS)  
+  libRESULTS_rdd = sc.parallelize(broadcastVar_libRESULTS.value, partition).flatMap(lambda e: e[1]) 
 
   ## in:  ( 'seq', [...] )
   ## out: ( 'seq' ) 
   master_predicted_distinctMiRNAs_rdd = libRESULTS_rdd.map(lambda e: e[0]).distinct()
-
+  
   ## in:  ( 'seq' ) 
   ## out: ('miRNAseq', zipindex)
   distResultSmallRNA_rdd = master_predicted_distinctMiRNAs_rdd.zipWithIndex() 
@@ -469,6 +471,7 @@ if __name__ == '__main__' :
   mergebowtie_rdd.unpersist()
   mergeChromosomesResults_rdd.unpersist()
   broadcastVar_bowtie_chromo_strand.unpersist()
+  broadcastVar_libRESULTS.unpersist()
 
   #= end of spark context
   sc.stop() #= allow to run multiple SparkContexts
