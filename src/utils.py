@@ -19,7 +19,10 @@ def xfile (libRESULTS, rep_output, appId):
     libname = lib[0]
     data = lib[1]
     print >>fh_out, libname
-    for i in data: print >>fh_out, i
+    for i in data: 
+      seq = i[0]
+      freq = i[1][0]
+      print >>fh_out, seq, freq
 
   fh_out.close()
   
