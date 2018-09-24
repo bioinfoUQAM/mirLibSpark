@@ -422,7 +422,7 @@ if __name__ == '__main__' :
   ## out: ( lib, ('seq', freq))
   libRESULTS_freq_rdd = sc.parallelize(libRESULTS, partition)\
                           .flatMap(mru.xrule)
-  print('libRESULTS_freq_rdd:', libRESULTS_freq_rdd)
+  print('libRESULTS_freq_rdd:', libRESULTS_freq_rdd.collect())
 
 
 
