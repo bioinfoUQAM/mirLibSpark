@@ -19,7 +19,7 @@ def xfile (libRESULTS, rep_output, appId):
     libname = lib[0]
     data = lib[1]
     print >>fh_out, libname
-    for i in data: print(i)
+    for i in data: print >>fh_out, i
 
   fh_out.close()
   
