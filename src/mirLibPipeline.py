@@ -391,9 +391,7 @@ if __name__ == '__main__' :
     libresults = profile_rdd.collect()
     libRESULTS.append( [inBasename, libresults] )
     #'''
-
-
-    
+   
     endLib = time.time() 
     timeDict[inBasename] = endLib - startLib
     print ("  End of the processing     ", end="\n")
@@ -401,17 +399,20 @@ if __name__ == '__main__' :
     #'''#!!#
     #= write results to a file
     eachLiboutFile = rep_output  +  appId + '_miRNAprediction_' + inBasename + '.txt'
-    #ut.writeToFile (libresults, eachLiboutFile)
+    ut.writeToFile (libresults, eachLiboutFile)
     #'''
-    
-
-
 
   #= print executions time  to a file
   outTime = rep_output + appId + '_time.txt'
-  #ut.writeTimeLibToFile (timeDict, outTime, appId, paramDict)
+  ut.writeTimeLibToFile (timeDict, outTime, appId, paramDict)
 
-
+  #'''#!!#
+  #= make summary table of all libraries in one submission with expressions in the field
+  keyword = appId + '_miRNAprediction_'
+  infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
+  ut.writeSummaryExpressionToFile (infiles, rep_output, appId)
+  
+  '''
   ## in:  ( lib, ('seq', [...]) )
   ## out: ( 'seq', [...] )
   libRESULTS_rdd = sc.parallelize(libRESULTS, partition).flatMap(lambda e: e[1]) 
@@ -419,23 +420,6 @@ if __name__ == '__main__' :
   ## in:  ( 'seq', [...] )
   ## out: ( 'seq' ) 
   master_predicted_distinctMiRNAs_rdd = libRESULTS_rdd.map(lambda e: e[0]).distinct()
-
-  #===================================================================================
-  #===================================================================================
-  #===================================================================================
-  #===================================================================================
-  #'''#!!#
-  #= make summary table of all libraries in one submission with expressions in the field
-  keyword = appId + '_miRNAprediction_'
-  infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
-  ut.writeSummaryExpressionToFile (infiles, rep_output, appId)
-  #===================================================================================
-  #===================================================================================
-  #===================================================================================
-  #===================================================================================
-  
-  '''
-
 
   ## in:  ( 'seq' ) 
   ## out: ('miRNAseq', zipindex)
