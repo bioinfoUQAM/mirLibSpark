@@ -20,7 +20,7 @@ def xrule(e):
   for e in elems:
     seq = e[0]
     freq = e[1][0]
-    shortResults.append( [[libname, seq], freq] )
+    shortResults.append( [ libname, seq, freq ] )
   return shortResults
     
 
