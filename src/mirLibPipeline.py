@@ -412,6 +412,14 @@ if __name__ == '__main__' :
   #ut.writeTimeLibToFile (timeDict, outTime, appId, paramDict)
 
 
+  ## in:  ( lib, ('seq', [...]) )
+  ## out: ( 'seq', [...] )
+  libRESULTS_rdd = sc.parallelize(libRESULTS, partition).flatMap(lambda e: e[1]) 
+
+  ## in:  ( 'seq', [...] )
+  ## out: ( 'seq' ) 
+  master_predicted_distinctMiRNAs_rdd = libRESULTS_rdd.map(lambda e: e[0]).distinct()
+  master_predicted_distinctMiRNAs = sorteed(master_predicted_distinctMiRNAs_rdd.collect())
   #===================================================================================
   #===================================================================================
   #===================================================================================
@@ -419,7 +427,7 @@ if __name__ == '__main__' :
   #'''#!!#
   #= make summary table of all libraries in one submission with expressions in the field
 
-  ut.xfile (libRESULTS, rep_output, appId)
+  ut.xfile (libRESULTS, master_predicted_distinctMiRNAs, rep_output, appId)
 
 
 
@@ -432,13 +440,7 @@ if __name__ == '__main__' :
   #===================================================================================
   
   '''
-  ## in:  ( lib, ('seq', [...]) )
-  ## out: ( 'seq', [...] )
-  libRESULTS_rdd = sc.parallelize(libRESULTS, partition).flatMap(lambda e: e[1]) 
 
-  ## in:  ( 'seq', [...] )
-  ## out: ( 'seq' ) 
-  master_predicted_distinctMiRNAs_rdd = libRESULTS_rdd.map(lambda e: e[0]).distinct()
 
   ## in:  ( 'seq' ) 
   ## out: ('miRNAseq', zipindex)

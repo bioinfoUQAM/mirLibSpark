@@ -12,19 +12,7 @@ import re
 import subprocess
 import sys
 
-def xfile (libRESULTS, rep_output, appId):
-  outfile = rep_output + appId + '_summaryFreq.test.txt'
-  fh_out = open (outfile, 'w')
-  for lib in libRESULTS:
-    libname = lib[0]
-    data = lib[1]
-    print >>fh_out, libname
-    for i in data: 
-      seq = i[0]
-      freq = i[1][0]
-      print >>fh_out, seq, freq
 
-  fh_out.close()
   
 
 def validate_options(paramDict):
@@ -358,6 +346,51 @@ def writeTimeLibToFile (timeDict, outfile, appId, paramDict):
 ###########################
 ## WORK IN PROGRESS
 ###########################
+def xfile (libRESULTS, master_predicted_distinctMiRNAs, rep_output, appId):
+  outfile = rep_output + appId + '_summaryFreq.test.txt'
+  fh_out = open (outfile, 'w')
+  for lib in libRESULTS:
+    libname = lib[0]
+    data = lib[1]
+    print >>fh_out, libname
+    for i in data: 
+      seq = i[0]
+      freq = i[1][0]
+      print >>fh_out, seq, freq
+  ############################################################
+  #keyword = '_miRNAprediction_'
+  dictLibSeqFreq = {}
+  #for f in sorted(infiles):
+    #libname = f.split(keyword)[1][:-4]
+  for lib in libRESULTS:
+    libname = lib[0]
+    data = lib[1]
+
+    dictLibSeqFreq[libname] = []
+    tmpDict = {}
+    #with open (rep_output + f, 'r') as fh:
+    #  fh.readline()
+    #  for line in fh:
+        #data = line.rstrip('\n').split('\t')
+    miRNAseq = data[0]
+    freq = int(data[1])
+    tmpDict[miRNAseq] = freq
+    for e in master_predicted_distinctMiRNAs:
+      if e in tmpDict.keys(): dictLibSeqFreq[libname].append(tmpDict[e])
+      else: dictLibSeqFreq[libname].append(0)
+  #################################################################
+  seqListLine = 'miRNA\t' + '\t'.join(master_predicted_distinctMiRNAs)
+  print >> fh_out, seqListLine
+  for k in sorted(dictLibSeqFreq.keys()):
+    v = dictLibSeqFreq[k]
+    line = k + '\t'
+    for i in v: line += str(i) + '\t'
+    line = line.rstrip('\t')
+    print >> fh_out, line
+
+  fh_out.close()
+
+
 def writeSummaryExpressionToFile (infiles, rep_output, appId):
   '''
   ## in : [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq]
