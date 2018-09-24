@@ -15,8 +15,11 @@ import sys
 def xfile (libRESULTS, rep_output, appId):
   outfile = rep_output + appId + '_summaryFreq.test.txt'
   fh_out = open (outfile, 'w')
-  for libname in libRESULTS:
+  for lib in libRESULTS:
+    libname = lib[0]
+    data = lib[1]
     print >>fh_out, libname
+    for i in data: print(i)
 
   fh_out.close()
   
