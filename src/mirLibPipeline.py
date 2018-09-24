@@ -419,7 +419,7 @@ if __name__ == '__main__' :
   ## in:  ( 'seq', [...] )
   ## out: ( 'seq' ) 
   master_predicted_distinctMiRNAs_rdd = libRESULTS_rdd.map(lambda e: e[0]).distinct()
-  master_predicted_distinctMiRNAs = sorteed(master_predicted_distinctMiRNAs_rdd.collect())
+  master_predicted_distinctMiRNAs = sorted(master_predicted_distinctMiRNAs_rdd.collect())
   #===================================================================================
   #===================================================================================
   #===================================================================================
