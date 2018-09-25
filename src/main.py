@@ -4,7 +4,7 @@ import os
 
 #cmd = 'python purge.py';os.system (cmd)
 
-cmd = 'git pull origin tgkegg';os.system (cmd)
+cmd = 'git pull origin tgkegg2nd';os.system (cmd)
 
 
 
@@ -20,7 +20,8 @@ cmd = 'rm -fr ../input/fake_a3.txt';os.system(cmd)
 cmd = 'git remote prune origin';os.system(cmd)
 #cmd = 'git fetch origin';os.system(cmd)
 #cmd = 'git checkout master';os.system(cmd)
-#cmd = 'git branch -D printout';os.system(cmd)
+cmd = 'git branch -D tgkegg';os.system(cmd)
+cmd = 'git branch';os.system(cmd)
 
 
 cmd = 'free -m';os.system(cmd)
