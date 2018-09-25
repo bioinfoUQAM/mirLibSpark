@@ -149,6 +149,9 @@ if __name__ == '__main__' :
   
   #= Time processing of libraries
   timeDict = {}
+
+  #== test checkpoint()
+  sc.setCheckpointDir(rep_output)
     
   print('\n====================== mirLibSpark =========================')
   print('====================== ' + appId + ' =========================\n')
@@ -354,7 +357,7 @@ if __name__ == '__main__' :
       #================================================================================================================
       #================================================================================================================
       #================================================================================================================
-      mergeChromosomesResults_rdd = mergeChromosomesResults_rdd.union(premir_rdd).persist().checkpoint('hdfs:///' + inBasename + '.checkpoint')
+      mergeChromosomesResults_rdd = mergeChromosomesResults_rdd.union(premir_rdd).persist().checkpoint()
       broadcastVar_genome.unpersist()
     #print('mergeChromosomesResults: ', len(mergeChromosomesResults_rdd.collect()))######## 
     #180921 fake_a.txt takes 42 secs to run till this line (All chromo)
