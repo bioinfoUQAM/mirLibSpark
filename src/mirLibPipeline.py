@@ -158,7 +158,7 @@ if __name__ == '__main__' :
   #for k, v in paramDict.items(): print(k, ': ', v)
   print('==============================================================\n')
   print('begin time:', datetime.datetime.now())
-
+  '''
   libRESULTS = [] ## update 180923
   for infile in infiles :
     if infile[-1:] == '~': continue
@@ -282,7 +282,6 @@ if __name__ == '__main__' :
     broadcastVar_bowtie_chromo_strand = sc.broadcast(dict_bowtie_chromo_strand) #= get the value by broadcastVar.value
 
 
-    #'''#!!#
     #= Filtering miRNA low frequency
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
@@ -393,30 +392,25 @@ if __name__ == '__main__' :
     print('NB profile_rdd distinct: ', len(profile_rdd.groupByKey().collect()))##
     libresults = profile_rdd.collect()
     libRESULTS.append( [inBasename, libresults] )
-    #'''
    
     endLib = time.time() 
     timeDict[inBasename] = endLib - startLib
     print ("  End of the processing     ", end="\n")
 
-    #'''#!!#
     #= write results to a file
     eachLiboutFile = rep_output  +  appId + '_miRNAprediction_' + inBasename + '.txt'
     ut.writeToFile (libresults, eachLiboutFile)
-    #'''
 
   #= print executions time  to a file
   outTime = rep_output + appId + '_time.txt'
   ut.writeTimeLibToFile (timeDict, outTime, appId, paramDict)
 
-  #'''#!!#
   #= make summary table of all libraries in one submission with expressions in the field
   keyword = appId + '_miRNAprediction_'
   infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
   master_distinctPrecursor_infos = ut.writeSummaryExpressionToFile (infiles, rep_output, appId)
   broadcastVar_Precursor = sc.broadcast(master_distinctPrecursor_infos)   
 
-  #'''
   ## in:  ( lib, ('seq', [...]) )
   ## out: ( 'seq', [...] )
   broadcastVar_libRESULTS = sc.broadcast(libRESULTS)  
@@ -460,7 +454,6 @@ if __name__ == '__main__' :
                                  .reduce(lambda a, b: a+b)
   master_distinctTG = sorted(list(set(master_distinctTG)))
   #print( master_distinctTG )
-  #'''
   print('test end of pipeline', datetime.datetime.now())
 
   
@@ -473,6 +466,8 @@ if __name__ == '__main__' :
   broadcastVar_bowtie_chromo_strand.unpersist()
   broadcastVar_libRESULTS.unpersist()
   broadcastVar_Precursor.unpersist()
+
+  '''
 
   #= end of spark context
   sc.stop() #= allow to run multiple SparkContexts
