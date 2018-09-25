@@ -354,7 +354,7 @@ if __name__ == '__main__' :
       #================================================================================================================
       #================================================================================================================
       #================================================================================================================
-      mergeChromosomesResults_rdd = mergeChromosomesResults_rdd.union(premir_rdd).persist()
+      mergeChromosomesResults_rdd = mergeChromosomesResults_rdd.union(premir_rdd).persist().checkpoint('hdfs:///' + inBasename + '.checkpoint')
       broadcastVar_genome.unpersist()
     #print('mergeChromosomesResults: ', len(mergeChromosomesResults_rdd.collect()))######## 
     #180921 fake_a.txt takes 42 secs to run till this line (All chromo)

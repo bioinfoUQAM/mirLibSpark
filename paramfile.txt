@@ -31,7 +31,7 @@
 #
 ########################################################################
 #
-message=\nwrite your message (for stdout) here line1\nline2: \nchromosomes=All\nwork on annotate target genes with KEGG or GO
+message=\nwrite your message (for stdout) here line1\nline2: \nchromosomes=All\nwork on annotate target genes with KEGG or GO\nstudy checkpoint()
 #
 ########################################################################
 #
