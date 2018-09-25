@@ -1,0 +1,268 @@
+AGGTGGAATACTTGAAGAAGA	ko04075	Plant hormone signal transduction
+GCGGCTCTCTGGTGTTCAAGC	ko04144	Endocytosis
+GCGGCTCTGTGGTGTTCAAGC	ko04016	MAPK signaling pathway - plant
+GCGGCTCTGTGGTGTTCAAGC	ko04075	Plant hormone signal transduction
+TTGTCTCTCAAGTTGCTTGGA	ko05020	Prion diseases
+TTGTCTCTCAAGTTGCTTGGA	ko04112	Cell cycle - Caulobacter
+TTGTCTCTCAAGTTGCTTGGA	ko04212	Longevity regulating pathway - worm
+TTGTCTCTCAAGTTGCTTGGA	ko04142	Lysosome
+TAAACCTTCACAAATTCCCTTG	ko05202	Transcriptional misregulation in cancer
+TAAACCTTCACAAATTCCCTTG	ko05322	Systemic lupus erythematosus
+TAAACCTTCACAAATTCCCTTG	ko05034	Alcoholism
+TTGCAGGTTTGAGGTCTAAGT	ko04075	Plant hormone signal transduction
+TTGCAGGTTTGAGGTCTAAGT	ko04974	Protein digestion and absorption
+TTGCAGGTTTGAGGTCTAAGT	ko04614	Renin-angiotensin system
+TTTGAGGTCTAAGTGGAGAAT	ko04626	Plant-pathogen interaction
+TTTGAGGTCTAAGTGGAGAAT	ko04075	Plant hormone signal transduction
+TTTGAGGTCTAAGTAGAGAAT	ko03440	Homologous recombination
+TTTGAGGTCTAAGTAGAGAAT	ko00100	Steroid biosynthesis
+TTTGAGGTCTAATTGGAGAAT	ko03015	mRNA surveillance pathway
+TTTGAGGTCTAATTGGAGAAT	ko03040	Spliceosome
+TTTGAGGTCTAATTGGAGAAT	ko04340	Hedgehog signaling pathway
+TTTGAGGTCTAATTGGAGAAT	ko04341	Hedgehog signaling pathway - fly
+TTAGACCTGCAAACATATTTC	ko00195	Photosynthesis
+TGTTCGCTTAGACCTTAGACC	ko03040	Spliceosome
+TGTTCGCTTAGACCTTAGACC	ko04142	Lysosome
+TGTTCGCTTAGACCTTAGACC	ko04612	Antigen processing and presentation
+TTAGACCTTAGACCTTCAAAC	ko05014	Amyotrophic lateral sclerosis (ALS)
+TCTAGATGACAATATGATGCT	ko04624	Toll and Imd signaling pathway
+TCTAGATGACAATATGATGCT	ko04013	MAPK signaling pathway - fly
+TCTAGATGACAATATGATGCT	ko04141	Protein processing in endoplasmic reticulum
+TCTAGATGACAATATGATGCT	ko04120	Ubiquitin mediated proteolysis
+TCAAGCATCATATCATGGACA	ko04626	Plant-pathogen interaction
+TCAAGCATCATGTCATGGACA	ko04626	Plant-pathogen interaction
+TCAAGCATCATGTCATGGACAC	ko04626	Plant-pathogen interaction
+ACAAAACCTTCAGCTATCCATC	ko04626	Plant-pathogen interaction
+TAATCTTCTGGAAATATGCTTA	ko04626	Plant-pathogen interaction
+ACTGGTTGGATCATGCTTCTG	ko04626	Plant-pathogen interaction
+TTTATGAGCTCATTGAAGTAACT	ko03050	Proteasome
+TTTATGAGCTCATTGAAGTAAC	ko03050	Proteasome
+TTTACGAGCTCATTGAAGTAAA	ko04626	Plant-pathogen interaction
+TAGAAGGTTAGAAGATTAAGC	ko04626	Plant-pathogen interaction
+GGAATGTTGTCTGGTTCAAGG	ko03040	Spliceosome
+CTTAGTATGAAATTCTGATC	ko00051	Fructose and mannose metabolism
+CTTAGTATGAAATTCTGATC	ko04152	AMPK signaling pathway
+CTTAGTATGAAATTCTGATC	ko04066	HIF-1 signaling pathway
+TGAGAAAGGACTGCATCATC	ko04626	Plant-pathogen interaction
+AGTTCCAGACGATGCAGGCCT	ko03018	RNA degradation
+TGCATCATCTCGAACTCGTCG	ko04626	Plant-pathogen interaction
+CCATGATGAGGTCGTTCAACC	ko00500	Starch and sucrose metabolism
+CCATGATGAGGTCGTTCAACC	ko00460	Cyanoamino acid metabolism
+CCATGATGAGGTCGTTCAACC	ko00940	Phenylpropanoid biosynthesis
+TTTAGGCACTCGTCAGTGACC	ko04075	Plant hormone signal transduction
+TTTAGGCACTCGTCAGTGACC	ko00909	Sesquiterpenoid and triterpenoid biosynthesis
+TTGAGGCACTCGTCAGTGACG	ko00062	Fatty acid elongation
+TGAGAAGGTAGATCATAATAGC	ko04626	Plant-pathogen interaction
+TAATAAACAAGTCTTTAGATG	ko04626	Plant-pathogen interaction
+TAATAAACATGTCTTCAGATG	ko04626	Plant-pathogen interaction
+CCATTTGAAGACTAGTTTATT	ko04626	Plant-pathogen interaction
+CGGCAAGCTAGAGACAGCAAC	ko00600	Sphingolipid metabolism
+CGGCAAGCTAGAGACAGCAAC	ko04626	Plant-pathogen interaction
+ATCAGGAGAGATGACACCGAC	ko04626	Plant-pathogen interaction
+ATCAGGAGAGATGACACCGAC	ko00380	Tryptophan metabolism
+AGAGCGTCCTTCAGTCCACTC	ko00030	Pentose phosphate pathway
+AGAGCGTCCTTCAGTCCACTC	ko03022	Basal transcription factors
+AGAGCGTCCTTCAGTCCACTC	ko05168	Herpes simplex infection
+AGGTCATGCTGGAGTTTCATC	ko00906	Carotenoid biosynthesis
+AGGTCATGCTGGAGTTTCATC	ko04624	Toll and Imd signaling pathway
+AGGTCATGCTGGAGTTTCATC	ko04141	Protein processing in endoplasmic reticulum
+AGGTCATGCTGGAGTTTCATC	ko04120	Ubiquitin mediated proteolysis
+AGGTCATGCTGGAGTTTCATC	ko04013	MAPK signaling pathway - fly
+CCCGCCTTGCACCAAGTGAAT	ko04141	Protein processing in endoplasmic reticulum
+ACCTGCAGTTGGGCCAATGAC	ko01200	Carbon metabolism
+ACCTGCAGTTGGGCCAATGAC	ko05230	Central carbon metabolism in cancer
+ACCTGCAGTTGGGCCAATGAC	ko00230	Purine metabolism
+ACCTGCAGTTGGGCCAATGAC	ko00620	Pyruvate metabolism
+ACCTGCAGTTGGGCCAATGAC	ko03440	Homologous recombination
+ACCTGCAGTTGGGCCAATGAC	ko04922	Glucagon signaling pathway
+ACCTGCAGTTGGGCCAATGAC	ko01230	Biosynthesis of amino acids
+ACCTGCAGTTGGGCCAATGAC	ko04930	Type II diabetes mellitus
+ACCTGCAGTTGGGCCAATGAC	ko00010	Glycolysis / Gluconeogenesis
+ACCTGCAGTTGGGCCAATGAC	ko03460	Fanconi anemia pathway
+ACCTGCAGTTGGGCCAATGAC	ko05203	Viral carcinogenesis
+TTCCAAAGGGATCGCATTGAT	ko04075	Plant hormone signal transduction
+GGTCAAGAAAGCTGTGGGAAG	ko04626	Plant-pathogen interaction
+GGTCAAGAAAGCTGTGGGAAG	ko05145	Toxoplasmosis
+GGTCAAGAAAGCTGTGGGAAG	ko03040	Spliceosome
+TTCCACAGCTTTCTTGAACTG	ko03022	Basal transcription factors
+TTCCACAGCTTTCTTGAACTG	ko05168	Herpes simplex infection
+TTCCACAGCTTTCTTGAACTT	ko03022	Basal transcription factors
+TTCCACAGCTTTCTTGAACTT	ko05168	Herpes simplex infection
+TGCCAAAGGAGAGTTGCCCTG	ko04213	Longevity regulating pathway - multiple species
+TGCCAAAGGAGAGTTGCCCTG	ko04120	Ubiquitin mediated proteolysis
+TGAACCTTGGGGAAAAGCCGCAT	ko04144	Endocytosis
+TGAACCTTGGGGAAAAGCCGCAT	ko04915	Estrogen signaling pathway
+TGAACCTTGGGGAAAAGCCGCAT	ko05134	Legionellosis
+TGAACCTTGGGGAAAAGCCGCAT	ko05162	Measles
+TGAACCTTGGGGAAAAGCCGCAT	ko04141	Protein processing in endoplasmic reticulum
+TGAACCTTGGGGAAAAGCCGCAT	ko05169	Epstein-Barr virus infection
+TGAACCTTGGGGAAAAGCCGCAT	ko03040	Spliceosome
+TGAACCTTGGGGAAAAGCCGCAT	ko04010	MAPK signaling pathway
+TGAACCTTGGGGAAAAGCCGCAT	ko04213	Longevity regulating pathway - multiple species
+TGAACCTTGGGGAAAAGCCGCAT	ko04612	Antigen processing and presentation
+TGAACCTTGGGGAAAAGCCGCAT	ko05145	Toxoplasmosis
+TGAACCTTGGGGAAAAGCCGCAT	ko05164	Influenza A
+ATCGTTCTGGGTGAATAGGCC	ko05169	Epstein-Barr virus infection
+ATCGTTCTGGGTGAATAGGCC	ko04068	FoxO signaling pathway
+ATCGTTCTGGGTGAATAGGCC	ko05168	Herpes simplex infection
+ATCGTTCTGGGTGAATAGGCC	ko00909	Sesquiterpenoid and triterpenoid biosynthesis
+ATCGTTCTGGGTGAATAGGCC	ko05203	Viral carcinogenesis
+TACCACGACTGTCATTAAGCA	ko04152	AMPK signaling pathway
+TACCACGACTGTCATTAAGCA	ko00710	Carbon fixation in photosynthetic organisms
+TACCACGACTGTCATTAAGCA	ko01200	Carbon metabolism
+TACCACGACTGTCATTAAGCA	ko03040	Spliceosome
+TACCACGACTGTCATTAAGCA	ko04921	Oxytocin signaling pathway
+GTAGGATGGCCGGTGCTATGG	ko04626	Plant-pathogen interaction
+GTAGGATGGCCGGTGCTATGG	ko05134	Legionellosis
+CTTGAACTTCTCCATAGCATC	ko00940	Phenylpropanoid biosynthesis
+GTAGGATGGCTGGTGCTATGG	ko04144	Endocytosis
+CAGAACCAGAATGAGTAGCTC	ko04626	Plant-pathogen interaction
+TGGACGAGGATGTGCAACTGC	ko04341	Hedgehog signaling pathway - fly
+TGGACGAGGATGTGCAACTGC	ko04340	Hedgehog signaling pathway
+TGGACGAGGATGTGCAGCTGC	ko04075	Plant hormone signal transduction
+TGGACGAGGATGTGCAGCTGC	ko04340	Hedgehog signaling pathway
+TGGACGAGGATGTGCAGCTGC	ko04341	Hedgehog signaling pathway - fly
+TTTAAAACTTTGACTTGGAAC	ko04146	Peroxisome
+TTTAAAACTTTGACTTGGAAC	ko01200	Carbon metabolism
+TTTAAAACTTTGACTTGGAAC	ko00630	Glyoxylate and dicarboxylate metabolism
+CTTGCTGCGTTGTTTGGGTCT	ko04150	mTOR signaling pathway
+CTTGCTGCGTTGTTTGGGTCT	ko04151	PI3K-Akt signaling pathway
+TCGCCGCGATTGTTTGGGTCT	ko03040	Spliceosome
+TTCCTTTGATTATTTGATAGCG	ko04626	Plant-pathogen interaction
+TTTGTCCGGAAATACTTGTTC	ko00100	Steroid biosynthesis
+CGCGGCTCCGTCGACTGGTGC	ko00565	Ether lipid metabolism
+CGCGGCTCCGTCGACTGGTGC	ko00562	Inositol phosphate metabolism
+CGCGGCTCCGTCGACTGGTGC	ko04919	Thyroid hormone signaling pathway
+CGCGGCTCCGTCGACTGGTGC	ko00564	Glycerophospholipid metabolism
+CGCGGCTCCGTCGACTGGTGC	ko02024	Quorum sensing
+TCTTCCGCGATCATCATGACC	ko04016	MAPK signaling pathway - plant
+TCTTCCGCGATCATCATGACC	ko04075	Plant hormone signal transduction
+TTTCGTGCCGGATTATCATTTC	ko01230	Biosynthesis of amino acids
+TTTCGTGCCGGATTATCATTTC	ko00260	"Glycine, serine and threonine metabolism"
+GAATTCTACGGTGGAAAGCTC	ko03008	Ribosome biogenesis in eukaryotes
+GAATTCTACGGTGGAAAGCTC	ko03010	Ribosome
+GAATTCTACGGTGGAAAACTC	ko03010	Ribosome
+AGACATATACAGTTTGGGTGTT	ko03018	RNA degradation
+AGACATATACAGTTTGGGTGTT	ko00380	Tryptophan metabolism
+CATATTGTTCACTTGGACCTA	ko03013	RNA transport
+CATATTGTTCACTTGGACCTA	ko04150	mTOR signaling pathway
+CATATTGTTCACTTGGACCTA	ko04141	Protein processing in endoplasmic reticulum
+TTATTCACTTGGACCTAAAACC	ko03040	Spliceosome
+TATATCACCGGTCACATTCAAG	ko04626	Plant-pathogen interaction
+ACCGGTCACATTCAAGTCAGAC	ko00220	Arginine biosynthesis
+ACCGGTCACATTCAAGTCAGAC	ko01210	2-Oxocarboxylic acid metabolism
+ACCGGTCACATTCAAGTCAGAC	ko00514	Other types of O-glycan biosynthesis
+ACCGGTCACATTCAAGTCAGAC	ko01230	Biosynthesis of amino acids
+ACCGGTCACATTCAAGTCAGAC	ko04931	Insulin resistance
+TATAAGACATGTTGGAAAGCT	ko04152	AMPK signaling pathway
+TATAAGACATGTTGGAAAGCT	ko01200	Carbon metabolism
+TATAAGACATGTTGGAAAGCT	ko05230	Central carbon metabolism in cancer
+TATAAGACATGTTGGAAAGCT	ko00680	Methane metabolism
+TATAAGACATGTTGGAAAGCT	ko01230	Biosynthesis of amino acids
+TATAAGACATGTTGGAAAGCT	ko00010	Glycolysis / Gluconeogenesis
+TATAAGACATGTTGGAAAGCT	ko00052	Galactose metabolism
+TATAAGACATGTTGGAAAGCT	ko03018	RNA degradation
+TATAAGACATGTTGGAAAGCT	ko00030	Pentose phosphate pathway
+TATAAGACATGTTGGAAAGCT	ko00051	Fructose and mannose metabolism
+TACCGAAAATAGCTGACTTTG	ko00100	Steroid biosynthesis
+TATACCAAAGATTGCTCTGCTT	ko03040	Spliceosome
+TATACCAAAGATTGCTCTGCTT	ko00910	Nitrogen metabolism
+ATACCAAAGATTGCTCTGCTT	ko00910	Nitrogen metabolism
+TATACCAAAGACTGCTCTGCTT	ko04141	Protein processing in endoplasmic reticulum
+GCACGAAAGTACTTTGAGAGAC	ko00982	Drug metabolism - cytochrome P450
+TTCGAGTGAGAGGCTGAATGTT	ko03013	RNA transport
+TTCGAGTGAGAGGCTGAATGTT	ko00900	Terpenoid backbone biosynthesis
+TTCGAGTGAGAGGCTGAATGTT	ko03015	mRNA surveillance pathway
+TTCGAGTGAGAGGCTGAATGTT	ko00960	"Tropane, piperidine and pyridine alkaloid biosynthesis"
+TTCGAGTGAGAGGCTGAATGTT	ko03040	Spliceosome
+CATCGGGTTATTTGGCACCAG	ko04120	Ubiquitin mediated proteolysis
+ACCATTGATGAGCTTTGAGAGA	ko04152	AMPK signaling pathway
+TTTGTGAGGGCTTATATTACC	ko04626	Plant-pathogen interaction
+TTTGTGAGGGCTTATATTACC	ko04016	MAPK signaling pathway - plant
+CCCTCGCACCGCGCTCTTCTT	ko00760	Nicotinate and nicotinamide metabolism
+CCCTCGCACCGCGCTCTTCTT	ko00240	Pyrimidine metabolism
+CGAGCACCACCTCTCAGGCTG	ko04919	Thyroid hormone signaling pathway
+TGTAGACGAGCTCAGGGAGGA	ko03440	Homologous recombination
+TGTAGACGAGCTCAGGGAGGA	ko01212	Fatty acid metabolism
+TGTAGACGAGCTCAGGGAGGA	ko00071	Fatty acid degradation
+TGTAGACGAGCTCAGGGAGGA	ko00592	alpha-Linolenic acid metabolism
+GATAGGGAAACTGACATGCCT	ko04145	Phagosome
+GATAGGGAAACTGACATGCCT	ko00562	Inositol phosphate metabolism
+GATAGGGAAACTGACATGCCT	ko04070	Phosphatidylinositol signaling system
+GATAGGGAAACTGACATGCCT	ko04810	Regulation of actin cytoskeleton
+GATAGGGAAACTGACATGCCT	ko04626	Plant-pathogen interaction
+TGCTCCATATCATGTACTGTA	ko04626	Plant-pathogen interaction
+TCCCCGAGCTCAAATGACCCT	ko05224	Breast cancer
+TCCCCGAGCTCAAATGACCCT	ko05222	Small cell lung cancer
+TCCCCGAGCTCAAATGACCCT	ko04510	Focal adhesion
+TCCCCGAGCTCAAATGACCCT	ko05214	Glioma
+TCCCCGAGCTCAAATGACCCT	ko04150	mTOR signaling pathway
+TCCCCGAGCTCAAATGACCCT	ko05161	Hepatitis B
+TCCCCGAGCTCAAATGACCCT	ko04151	PI3K-Akt signaling pathway
+TCCCCGAGCTCAAATGACCCT	ko04931	Insulin resistance
+TCCCCGAGCTCAAATGACCCT	ko04070	Phosphatidylinositol signaling system
+TCCCCGAGCTCAAATGACCCT	ko05213	Endometrial cancer
+TCCCCGAGCTCAAATGACCCT	ko04115	p53 signaling pathway
+TCCCCGAGCTCAAATGACCCT	ko04071	Sphingolipid signaling pathway
+TCCCCGAGCTCAAATGACCCT	ko00562	Inositol phosphate metabolism
+TCCCCGAGCTCAAATGACCCT	ko04212	Longevity regulating pathway - worm
+TCCCCGAGCTCAAATGACCCT	ko01521	EGFR tyrosine kinase inhibitor resistance
+TCCCCGAGCTCAAATGACCCT	ko05215	Prostate cancer
+TCCCCGAGCTCAAATGACCCT	ko05200	Pathways in cancer
+TCCCCGAGCTCAAATGACCCT	ko05230	Central carbon metabolism in cancer
+TCCCCGAGCTCAAATGACCCT	ko05206	MicroRNAs in cancer
+TCCCCGAGCTCAAATGACCCT	ko05218	Melanoma
+TCCCCGAGCTCAAATGACCCT	ko04068	FoxO signaling pathway
+ATGGCACAAGTTTGCGAGGAC	ko04626	Plant-pathogen interaction
+AGACGAGAAAGGAGTGGAACAC	ko04626	Plant-pathogen interaction
+AGACGAGAAAGGAGTGGAACAC	ko03015	mRNA surveillance pathway
+AGACGAGAAAGGAGTGGAACAC	ko04120	Ubiquitin mediated proteolysis
+CCCGGCATCCCTCTTGAGCCC	ko05020	Prion diseases
+CCCGGCATCCCTCTTGAGCCC	ko00910	Nitrogen metabolism
+ACCGATGATGACTCCCTCGCC	ko03040	Spliceosome
+CTGTACAGCCTCAACAGGGGC	ko04626	Plant-pathogen interaction
+CTGTACAGCCTCAACAGGGGC	ko05145	Toxoplasmosis
+CTGTACAGCCTCAACAGGGGC	ko00380	Tryptophan metabolism
+ATAGATGCCGGTGTCAACTAC	ko00902	Monoterpenoid biosynthesis
+AAGAACCACTCTCACGCACCGAAA	ko00904	Diterpenoid biosynthesis
+TCCGTAGAAGAGACAAAACCCT	ko03013	RNA transport
+TCCGTAGAAGAGACAAAACCCT	ko03015	mRNA surveillance pathway
+AGACGTATTGTTAGCCTCGCC	ko04626	Plant-pathogen interaction
+AGACGTATTGTTAGCCTCGCC	ko00908	Zeatin biosynthesis
+TCAAGAATCATGTCATGGACA	ko04626	Plant-pathogen interaction
+CGAATTGTTTGTCAAGCTCCGCCT	ko04152	AMPK signaling pathway
+CGAATTGTTTGTCAAGCTCCGCCT	ko03015	mRNA surveillance pathway
+CGAATTGTTTGTCAAGCTCCGCCT	ko04261	Adrenergic signaling in cardiomyocytes
+CGAATTGTTTGTCAAGCTCCGCCT	ko04728	Dopaminergic synapse
+CGAATTGTTTGTCAAGCTCCGCCT	ko04114	Oocyte meiosis
+CGAATTGTTTGTCAAGCTCCGCCT	ko04113	Meiosis - yeast
+CGAATTGTTTGTCAAGCTCCGCCT	ko04151	PI3K-Akt signaling pathway
+CGAATTGTTTGTCAAGCTCCGCCT	ko04071	Sphingolipid signaling pathway
+TTATAGGAAAATTCTGCGAGCACC	ko03022	Basal transcription factors
+TTATAGGAAAATTCTGCGAGCACC	ko03420	Nucleotide excision repair
+CAACAATACGTCCGATGGTGT	ko03040	Spliceosome
+CAACAATACGTCCGATGGTGT	ko00970	Aminoacyl-tRNA biosynthesis
+GTATCAACTCTCATCATGGCGGCC	ko00563	Glycosylphosphatidylinositol (GPI)-anchor biosynthesis
+AATTGAGATGTAGAACAACTA	ko03040	Spliceosome
+AATTGAGATGTAGAACAACTA	ko00970	Aminoacyl-tRNA biosynthesis
+CCAACGATCGGTGACAGAGAA	ko00410	beta-Alanine metabolism
+CCAACGATCGGTGACAGAGAA	ko00330	Arginine and proline metabolism
+ACGACTGGGTTGTTTGCTCGT	ko00062	Fatty acid elongation
+ACGACTGGGTTGTTTGCTCGT	ko00190	Oxidative phosphorylation
+ACGACTGGGTTGTTTGCTCGT	ko05110	Vibrio cholerae infection
+ACGACTGGGTTGTTTGCTCGT	ko04145	Phagosome
+ACGACTGGGTTGTTTGCTCGT	ko04142	Lysosome
+ACGACTGGGTTGTTTGCTCGT	ko05120	Epithelial cell signaling in Helicobacter pylori infection
+ACGACTGGGTTGTTTGCTCGT	ko05323	Rheumatoid arthritis
+ACGACTGGGTTGTTTGCTCGT	ko04966	Collecting duct acid secretion
+ACGACTGGGTTGTTTGCTCGT	ko04721	Synaptic vesicle cycle
+ACGACTGGGTTGTTTGCTCGT	ko05152	Tuberculosis
+AAGCGAATCGGATAATGAGCCACT	ko00195	Photosynthesis
+AGTACCGGAGACGTTAGATCAATC	ko00906	Carotenoid biosynthesis
+TTTCCTTGACTCGTAGCTGCAGA	ko04211	Longevity regulating pathway
+TTTCCTTGACTCGTAGCTGCAGA	ko00310	Lysine degradation
+GCTCGGCTACATCTCTGAAGTGGA	ko03018	RNA degradation
+GCTCGGCTACATCTCTGAAGTGGA	ko04130	SNARE interactions in vesicular transport
+TTCGGAACCAATGGACACAAACAC	ko04142	Lysosome
+TTCGGAACCAATGGACACAAACAC	ko04380	Osteoclast differentiation
+TTCGGAACCAATGGACACAAACAC	ko05323	Rheumatoid arthritis
