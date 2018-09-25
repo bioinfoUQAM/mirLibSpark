@@ -507,7 +507,7 @@ def write_html (DATA, rep_output, appId):
   l='<div GenomicPre><h2>miRNAs and their genomic precursors</h2><table>';print >> fh_out, l
   l='  <tr>';print >> fh_out, l
   l='    <th>Serial</th>';print >> fh_out, l
-  l='    <th>NewID</th>';print >> fh_out, l
+  #l='    <th>NewID</th>';print >> fh_out, l
   l='    <th>image</th>';print >> fh_out, l
   l='    <th>miRNA.pre-miRNA.Structure</th>';print >> fh_out, l
   l='    <th>Coordination</th>';print >> fh_out, l
@@ -531,7 +531,7 @@ def write_html (DATA, rep_output, appId):
   
     l='  <tr>';print >> fh_out, l
     l="    <td rowspan=3 style='width: 120px;'><strong>"+ serial + "</strong></td>";print >> fh_out, l
-    l="    <td rowspan=3 style='width: 120px;'>"+newid+"</td>";print >> fh_out, l
+    #l="    <td rowspan=3 style='width: 120px;'>"+newid+"</td>";print >> fh_out, l
     l="    <td rowspan=3 > <a href="+ path + " target='_blank'><img class='heightSet' src="+ path + " alt='Struture'></a></td>";print >> fh_out, l
     l="    <td style='width: 400px;'>"+ mirna + "</td>";print >> fh_out, l
     l="    <td>"+ chromo + ":"+ poschromo + " ["+ strand + "] </td>";print >> fh_out, l

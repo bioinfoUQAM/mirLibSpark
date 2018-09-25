@@ -31,7 +31,7 @@
 #
 ########################################################################
 #
-message=\nwrite your message (for stdout) here line1\nline2: \nchromosomes=All\nwork on ln 418: writeSummaryExpressionToFile
+message=\nwrite your message (for stdout) here line1\nline2: \nchromosomes=All\nwork on annotate target genes with KEGG or GO\nstudy enrichment --> training\n  kn_obj = mru.prog_knownNonMiRNA(broadcastVar_d_ncRNA_CDS.value)
 #
 ########################################################################
 #
