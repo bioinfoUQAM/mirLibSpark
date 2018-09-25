@@ -34,9 +34,15 @@ cmd = 'free -m';os.system(cmd)
 
 
 
-
-
-
+#= to study spark
+#myfile = sc.textFile("file://file-path")
+#myfile.saveAsTexFile("new-location")
+#
+#checkpoint()
+#
+# spark functions
+#https://spark.apache.org/docs/0.6.0/api/core/spark/SparkContext.html
+#https://spark.apache.org/docs/latest/configuration.html
 
 
 

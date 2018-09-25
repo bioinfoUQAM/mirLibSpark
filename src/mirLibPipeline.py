@@ -82,6 +82,8 @@ if __name__ == '__main__' :
   #= file and list of known non miRNA
   known_non = paramDict['known_non_file'] 
   d_ncRNA_CDS = ut.get_nonMirna_coors (known_non) #= nb = 198736
+  broadcastVar_d_ncRNA_CDS = sc.broadcast(d_ncRNA_CDS)
+
 
   #= RNAfold
   path_RNAfold = project_path + '/lib/'
@@ -117,7 +119,7 @@ if __name__ == '__main__' :
   ut.makedirs_reps (reps)
 
   #= addFile
-  sc.addFile(known_non)
+  #sc.addFile(known_non)
   sc.addPyFile(project_path + '/src/utils.py')
   sc.addPyFile(project_path + '/src/mirLibRules.py')
   sc.addFile(project_path + '/src/eval_mircheck.pl')
@@ -137,7 +139,7 @@ if __name__ == '__main__' :
   #= Objects for rule functions
   dmask_obj = mru.prog_dustmasker()
   dmask_cmd, dmask_env = dmask_obj.dmask_pipe_cmd()
-  kn_obj = mru.prog_knownNonMiRNA(d_ncRNA_CDS)
+  kn_obj = mru.prog_knownNonMiRNA(broadcastVar_d_ncRNA_CDS.value)
   rnafold_obj = mru.prog_RNAfold(temperature)
   mircheck_obj = mru.prog_mirCheck(mcheck_param)
   mirdup_obj = mru.prog_miRdup (rep_tmp, mirdup_model, mirdup_jar, path_RNAfold)
@@ -158,7 +160,7 @@ if __name__ == '__main__' :
   #for k, v in paramDict.items(): print(k, ': ', v)
   print('==============================================================\n')
   print('begin time:', datetime.datetime.now())
-  '''
+  #'''
   libRESULTS = [] ## update 180923
   for infile in infiles :
     if infile[-1:] == '~': continue
@@ -467,7 +469,7 @@ if __name__ == '__main__' :
   broadcastVar_libRESULTS.unpersist()
   broadcastVar_Precursor.unpersist()
 
-  '''
+  #'''
 
   #= end of spark context
   sc.stop() #= allow to run multiple SparkContexts
