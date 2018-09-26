@@ -11,7 +11,7 @@ This is a refactoring version 2018-09-25
 WIP
 
 
-How ref1 was created?
+How Res1 was created?
 
 '''
 
@@ -27,9 +27,9 @@ if not os.path.exists(rep_output): os.makedirs(rep_output)####180925
 
 
 #= ref files
-ref2 = '../dbs/TAE/GOKEGG/ref2_miRNA_GOKEGG_functions.txt'
+Res2 = '../dbs/TAE/GOKEGG/Res2_miRNA_GOKEGG_functions.txt'
 ref3 = '../dbs/TAE/GOKEGG/ref3_GOcode_description.txt'
-ref4 = '../dbs/TAE/GOKEGG/ref4_Pathwaycode_description.txt'
+ref2 = '../dbs/TAE/GOKEGG/ref2_Pathwaycode_description.txt'
 #= diff files
 rep_diff_y2010 = '../enrichment_training/dif_files/y2010/'
 #rep_diff_y2010 = '../dif_files/y2010/'
@@ -38,7 +38,7 @@ infiles  = [rep_diff_y2010 + f for f in os.listdir(rep_diff_y2010) if os.path.is
 #infiles += [rep_diff_y2013 + f for f in os.listdir(rep_diff_y2013) if os.path.isfile(os.path.join(rep_diff_y2013, f))]
 #
 #= DATA
-infile = ref2
+infile = Res2
 with open (infile, 'r') as fh: DATA = [x.rstrip('\n').split('\t') for x in fh.readlines()]
 ids = DATA[0][1:]
 field_to_look = [ x for x in range (1, len(ids)+ 1) ]
@@ -51,7 +51,7 @@ d_GOorPathway_desc = {}
 infile = ref3 #=GO
 with open (infile, 'r') as fh: data = [x.rstrip('\n').split('\t') for x in fh.readlines()]
 for i in data: d_GOorPathway_desc[i[0]] = i[1]
-infile = ref4 #= KEGG pathways
+infile = ref2 #= KEGG pathways
 with open (infile, 'r') as fh: data = [x.rstrip('\n').split('\t') for x in fh.readlines()]
 for i in data: d_GOorPathway_desc[i[0]] = i[1]
 
