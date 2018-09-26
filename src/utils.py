@@ -473,9 +473,32 @@ def writeTargetsToFile (mirna_and_targets, rep_output, appId):
   '''
   outfile = rep_output + appId + '_mirna_and_targets.txt'
   fh_out = open (outfile, 'w')
+  outfile2 = rep_output + appId + '_mirna_and_formattedTargets.txt'
+  fh_out2 = open (outfile2, 'w')
+
   for i in mirna_and_targets:
     print >> fh_out, i[0], i[1], str(i[2]).zfill(4)
+
+    mirnaseq = i[0]
+    mirna_uindex = i[2]
+    targetcollect = []
+    score = 1000000000000
+    count = 0
+    for t in i[1]:
+      target_miranda = t.strip('\'').split('\', \'')
+      target = target_miranda[0].split('.')[0]
+      score_cur = int(target_miranda[1].split('.')[0])
+      if score_cur < score:
+        count += 1
+        score = score_cur
+      if count < 6 and target not in targetcollect:
+        targetcollect.append( target + ' ('+ str(score_cur) +')' )
+    data = [mirnaseq, targetcollect[0], ','.join(targetcollect)]
+    line = '\t'.join(data)
+    print >> fh_out2, line
+
   fh_out.close()
+  fh_out2.close()
 
 #############################
 #############################
