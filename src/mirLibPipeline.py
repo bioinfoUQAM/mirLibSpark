@@ -36,6 +36,9 @@ if __name__ == '__main__' :
 
   paramfile = sys.argv[1]
   paramDict = ut.readParam (paramfile)
+  #= EXMAMINE OPTIONS 
+  ut.validate_options(paramDict)
+
 
   #= spark configuration
   appMaster = paramDict['sc_master']                #"local[*]" 
@@ -109,10 +112,8 @@ if __name__ == '__main__' :
   Max_Score_cutoff = paramDict['Max_Score_cutoff'] #= need string or buffer
   Max_Energy_cutoff = paramDict['Max_Energy_cutoff'] #= NOT WORKING YET
   Gap_Penalty = paramDict['Gap_Penalty']
+  nbTargets = paramDict['nbTargets']
   #= end of paramDict naming =================================================================================
-
-  #= EXMAMINE OPTIONS 
-  ut.validate_options(paramDict)
 
   #= make required folders if not exist
   reps = [rep_output, rep_tmp, rep_msub_jobsOut]

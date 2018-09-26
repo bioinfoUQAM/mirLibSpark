@@ -75,6 +75,7 @@ mcheck_param=def
 Max_Score_cutoff=170
 Max_Energy_cutoff=-15
 Gap_Penalty=-15
+nbTargets=100
 #==================== Spark configuration
 sc_appname=mirLibSpark
 sc_partition=4
