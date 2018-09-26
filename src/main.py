@@ -12,7 +12,7 @@ cmd = 'git pull origin tgkegg2nd';os.system (cmd)
 cmd = 'rm -fr ../input/fake_a3.txt';os.system(cmd)
 
 
-#cmd = 'cp ../input_samples/100.txt ../input';os.system(cmd)
+cmd = 'cp ../input_samples/100.txt ../input';os.system(cmd)
 #cmd = 'rm -f ../input/100.txt';os.system(cmd)
 
 
@@ -20,7 +20,7 @@ cmd = 'rm -fr ../input/fake_a3.txt';os.system(cmd)
 cmd = 'git remote prune origin';os.system(cmd)
 #cmd = 'git fetch origin';os.system(cmd)
 #cmd = 'git checkout master';os.system(cmd)
-cmd = 'git branch -D tgkegg';os.system(cmd)
+#cmd = 'git branch -D tgkegg';os.system(cmd)
 cmd = 'git branch';os.system(cmd)
 
 
