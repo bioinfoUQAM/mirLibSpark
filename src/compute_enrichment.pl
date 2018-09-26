@@ -79,9 +79,8 @@ my %unirefs = &getUnirefList(\@$tfiles,\@$tCases);
 
 ###############################################################################
 # Compute frequencies and pvalues
-# note: mask the following two lines to avoid re-computation when adjusting the plots
-&computeEnrichment (\$GOSFILE,\%unirefs, $tCases,\$DISTFLE);  # $tCases is a already a reference
-&computePvalues ($GOSFILE, $DISTFLE, $PVALFLE, $pvalue_type);
+#&computeEnrichment (\$GOSFILE,\%unirefs, $tCases,\$DISTFLE);  # $tCases is a already a reference
+#&computePvalues ($GOSFILE, $DISTFLE, $PVALFLE, $pvalue_type);
 ###############################################################################
 
 # Plot the heatmaps ###########################################################

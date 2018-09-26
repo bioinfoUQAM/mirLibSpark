@@ -5,7 +5,7 @@ Chao-Jung Wu
 import os
 
 
-cmd = 'git pull origin tgkegg';os.system (cmd)
+#cmd = 'git pull origin tgkegg';os.system (cmd)
 
 
 
@@ -17,8 +17,9 @@ cmd = 'git pull origin tgkegg';os.system (cmd)
 #= 2: lower comulative
 #= ex: cmd = 'perl compute_enrichment.pl ../output/preXLOC_GO/namecode.txt ../output/preXLOC_GO/output_comput_enrich 1';os.system(cmd)
 keyword = 'top5scoredTG_pathways'
-cmd = 'mkdir ' + keyword ;os.system(cmd)
-cmd = 'perl compute_enrichment.pl output/'+ keyword +'/namecode.txt output/'+ keyword +'/output_comput_enrich 1';os.system(cmd)
+#cmd = 'mkdir ' + keyword ;os.system(cmd)
+cmd = 'perl compute_enrichment.pl ../output/'+ keyword +'/namecode.txt ../output/'+ keyword +'/output_comput_enrich 1';print(cmd)
+#os.system(cmd)
 #========================================
 
 

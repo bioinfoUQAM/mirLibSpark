@@ -1,0 +1,366 @@
+ko04978	Mineral absorption	Organismal Systems; Digestive system
+ko00942	Anthocyanin biosynthesis	Metabolism; Biosynthesis of other secondary metabolites
+ko00140	Steroid hormone biosynthesis	Metabolism; Lipid metabolism
+ko05169	Epstein-Barr virus infection	Human Diseases; Infectious diseases
+ko05218	Melanoma	Human Diseases; Cancers
+ko00902	Monoterpenoid biosynthesis	Metabolism; Metabolism of terpenoids and polyketides
+ko00514	Other types of O-glycan biosynthesis	Metabolism; Glycan biosynthesis and metabolism
+ko00220	Arginine biosynthesis	Metabolism; Amino acid metabolism
+ko05145	Toxoplasmosis	Human Diseases; Infectious diseases
+ko00984	Steroid degradation	Metabolism; Xenobiotics biodegradation and metabolism
+ko04923	Regulation of lipolysis in adipocytes	Organismal Systems; Endocrine system
+ko00053	Ascorbate and aldarate metabolism	Metabolism; Carbohydrate metabolism
+ko00250	"Alanine, aspartate and glutamate metabolism"	Metabolism; Amino acid metabolism
+ko04114	Oocyte meiosis	Cellular Processes; Cell growth and death
+ko04711	Circadian rhythm - fly	Organismal Systems; Environmental adaptation
+ko04013	MAPK signaling pathway - fly	Environmental Information Processing; Signal transduction
+ko05152	Tuberculosis	Human Diseases; Infectious diseases
+ko04911	Insulin secretion	Organismal Systems; Endocrine system
+ko05214	Glioma	Human Diseases; Cancers
+--	--	--
+ko01230	Biosynthesis of amino acids	Metabolism; Overview
+ko05203	Viral carcinogenesis	Human Diseases; Cancers
+ko00532	Glycosaminoglycan biosynthesis - chondroitin sulfate / dermatan sulfate	Metabolism; Glycan biosynthesis and metabolism
+ko00281	Geraniol degradation	Metabolism; Metabolism of terpenoids and polyketides
+ko05161	Hepatitis B	Human Diseases; Infectious diseases
+ko02026	Biofilm formation - Escherichia coli	Cellular Processes; Cellular community - prokaryotes
+ko04341	Hedgehog signaling pathway - fly	Environmental Information Processing; Signal transduction
+ko04139	Mitophagy - yeast	Cellular Processes; Transport and catabolism
+ko04614	Renin-angiotensin system	Organismal Systems; Endocrine system
+ko00910	Nitrogen metabolism	Metabolism; Energy metabolism
+ko00072	Synthesis and degradation of ketone bodies	Metabolism; Lipid metabolism
+ko05213	Endometrial cancer	Human Diseases; Cancers
+ko04011	MAPK signaling pathway - yeast	Environmental Information Processing; Signal transduction
+ko05146	Amoebiasis	Human Diseases; Infectious diseases
+ko00903	Limonene and pinene degradation	Metabolism; Metabolism of terpenoids and polyketides
+ko05323	Rheumatoid arthritis	Human Diseases; Immune diseases
+ko00401	Novobiocin biosynthesis	Metabolism; Biosynthesis of other secondary metabolites
+ko00400	"Phenylalanine, tyrosine and tryptophan biosynthesis"	Metabolism; Amino acid metabolism
+ko05111	Biofilm formation - Vibrio cholerae	Cellular Processes; Cellular community - prokaryotes
+ko00531	Glycosaminoglycan degradation	Metabolism; Glycan biosynthesis and metabolism
+ko04520	Adherens junction	Cellular Processes; Cellular community - eukaryotes
+ko04723	Retrograde endocannabinoid signaling	Organismal Systems; Nervous system
+ko05200	Pathways in cancer	Human Diseases; Cancers
+ko05034	Alcoholism	Human Diseases; Substance dependence
+ko04151	PI3K-Akt signaling pathway	Environmental Information Processing; Signal transduction
+ko05162	Measles	Human Diseases; Infectious diseases
+ko04066	HIF-1 signaling pathway	Environmental Information Processing; Signal transduction
+ko04970	Salivary secretion	Organismal Systems; Digestive system
+ko05032	Morphine addiction	Human Diseases; Substance dependence
+ko05160	Hepatitis C	Human Diseases; Infectious diseases
+ko05230	Central carbon metabolism in cancer	Human Diseases; Cancers
+ko04016	MAPK signaling pathway - plant	Environmental Information Processing; Signal transduction
+ko00680	Methane metabolism	Metabolism; Energy metabolism
+ko05134	Legionellosis	Human Diseases; Infectious diseases
+ko03420	Nucleotide excision repair	Genetic Information Processing; Replication and repair
+ko04510	Focal adhesion	Cellular Processes; Cellular community - eukaryotes
+ko00604	Glycosphingolipid biosynthesis - ganglio series	Metabolism; Glycan biosynthesis and metabolism
+ko04916	Melanogenesis	Organismal Systems; Endocrine system
+ko00071	Fatty acid degradation	Metabolism; Lipid metabolism
+ko04140	Autophagy	Cellular Processes; Transport and catabolism
+ko03460	Fanconi anemia pathway	Genetic Information Processing; Replication and repair
+ko05110	Vibrio cholerae infection	Human Diseases; Infectious diseases
+ko00770	Pantothenate and CoA biosynthesis	Metabolism; Metabolism of cofactors and vitamins
+ko04620	Toll-like receptor signaling pathway	Organismal Systems; Immune system
+ko00196	Photosynthesis - antenna proteins	Metabolism; Energy metabolism
+ko05166	HTLV-I infection	Human Diseases; Infectious diseases
+ko05340	Primary immunodeficiency	Human Diseases; Immune diseases
+ko00590	Arachidonic acid metabolism	Metabolism; Lipid metabolism
+ko04024	cAMP signaling pathway	Environmental Information Processing; Signal transduction
+ko02025	Biofilm formation - Pseudomonas aeruginosa	Cellular Processes; Cellular community - prokaryotes
+ko00330	Arginine and proline metabolism	Metabolism; Amino acid metabolism
+ko05322	Systemic lupus erythematosus	Human Diseases; Immune diseases
+ko00363	Bisphenol degradation	Metabolism; Xenobiotics biodegradation and metabolism
+ko05132	Salmonella infection	Human Diseases; Infectious diseases
+ko00240	Pyrimidine metabolism	Metabolism; Nucleotide metabolism
+ko00640	Propanoate metabolism	Metabolism; Carbohydrate metabolism
+ko05016	Huntington's disease	Human Diseases; Neurodegenerative diseases
+ko05231	Choline metabolism in cancer	Human Diseases; Cancers
+ko04962	Vasopressin-regulated water reabsorption	Organismal Systems; Excretory system
+ko00592	alpha-Linolenic acid metabolism	Metabolism; Lipid metabolism
+ko01523	Antifolate resistance	Human Diseases; Drug resistance
+ko05216	Thyroid cancer	Human Diseases; Cancers
+ko00450	Selenocompound metabolism	Metabolism; Metabolism of other amino acids
+ko00561	Glycerolipid metabolism	Metabolism; Lipid metabolism
+ko03030	DNA replication	Genetic Information Processing; Replication and repair
+ko04919	Thyroid hormone signaling pathway	Organismal Systems; Endocrine system
+ko04915	Estrogen signaling pathway	Organismal Systems; Endocrine system
+ko00740	Riboflavin metabolism	Metabolism; Metabolism of cofactors and vitamins
+ko04020	Calcium signaling pathway	Environmental Information Processing; Signal transduction
+ko04530	Tight junction	Cellular Processes; Cellular community - eukaryotes
+ko00410	beta-Alanine metabolism	Metabolism; Metabolism of other amino acids
+ko04150	mTOR signaling pathway	Environmental Information Processing; Signal transduction
+ko04370	VEGF signaling pathway	Environmental Information Processing; Signal transduction
+ko00260	"Glycine, serine and threonine metabolism"	Metabolism; Amino acid metabolism
+ko04270	Vascular smooth muscle contraction	Organismal Systems; Circulatory system
+ko03020	RNA polymerase	Genetic Information Processing; Transcription
+ko04611	Platelet activation	Organismal Systems; Immune system
+ko04664	Fc epsilon RI signaling pathway	Organismal Systems; Immune system
+ko00195	Photosynthesis	Metabolism; Energy metabolism
+ko00920	Sulfur metabolism	Metabolism; Energy metabolism
+ko00960	"Tropane, piperidine and pyridine alkaloid biosynthesis"	Metabolism; Biosynthesis of other secondary metabolites
+ko00710	Carbon fixation in photosynthetic organisms	Metabolism; Energy metabolism
+ko04014	Ras signaling pathway	Environmental Information Processing; Signal transduction
+ko04612	Antigen processing and presentation	Organismal Systems; Immune system
+ko05222	Small cell lung cancer	Human Diseases; Cancers
+ko04212	Longevity regulating pathway - worm	Organismal Systems; Aging
+ko05212	Pancreatic cancer	Human Diseases; Cancers
+ko00402	Benzoxazinoid biosynthesis	Metabolism; Biosynthesis of other secondary metabolites
+ko04966	Collecting duct acid secretion	Organismal Systems; Excretory system
+ko00790	Folate biosynthesis	Metabolism; Metabolism of cofactors and vitamins
+ko00660	C5-Branched dibasic acid metabolism	Metabolism; Carbohydrate metabolism
+ko04112	Cell cycle - Caulobacter	Cellular Processes; Cell growth and death
+ko03008	Ribosome biogenesis in eukaryotes	Genetic Information Processing; Translation
+ko00966	Glucosinolate biosynthesis	Metabolism; Biosynthesis of other secondary metabolites
+ko01053	Biosynthesis of siderophore group nonribosomal peptides	Metabolism; Metabolism of terpenoids and polyketides
+ko04111	Cell cycle - yeast	Cellular Processes; Cell growth and death
+ko05010	Alzheimer's disease	Human Diseases; Neurodegenerative diseases
+ko04622	RIG-I-like receptor signaling pathway	Organismal Systems; Immune system
+ko05168	Herpes simplex infection	Human Diseases; Infectious diseases
+ko04668	TNF signaling pathway	Environmental Information Processing; Signal transduction
+ko04022	cGMP-PKG signaling pathway	Environmental Information Processing; Signal transduction
+ko00564	Glycerophospholipid metabolism	Metabolism; Lipid metabolism
+ko03430	Mismatch repair	Genetic Information Processing; Replication and repair
+ko00603	Glycosphingolipid biosynthesis - globo and isoglobo series	Metabolism; Glycan biosynthesis and metabolism
+ko04070	Phosphatidylinositol signaling system	Environmental Information Processing; Signal transduction
+ko05221	Acute myeloid leukemia	Human Diseases; Cancers
+ko03018	RNA degradation	"Genetic Information Processing; Folding, sorting and degradation"
+ko01210	2-Oxocarboxylic acid metabolism	Metabolism; Overview
+ko00350	Tyrosine metabolism	Metabolism; Amino acid metabolism
+ko00254	Aflatoxin biosynthesis	Metabolism; Biosynthesis of other secondary metabolites
+ko04120	Ubiquitin mediated proteolysis	"Genetic Information Processing; Folding, sorting and degradation"
+ko00965	Betalain biosynthesis	Metabolism; Biosynthesis of other secondary metabolites
+ko04113	Meiosis - yeast	Cellular Processes; Cell growth and death
+ko04930	Type II diabetes mellitus	Human Diseases; Endocrine and metabolic diseases
+ko04624	Toll and Imd signaling pathway	Organismal Systems; Immune system
+ko02020	Two-component system	Environmental Information Processing; Signal transduction
+ko05130	Pathogenic Escherichia coli infection	Human Diseases; Infectious diseases
+ko05416	Viral myocarditis	Human Diseases; Cardiovascular diseases
+ko00230	Purine metabolism	Metabolism; Nucleotide metabolism
+ko04931	Insulin resistance	Human Diseases; Endocrine and metabolic diseases
+ko04666	Fc gamma R-mediated phagocytosis	Organismal Systems; Immune system
+ko00950	Isoquinoline alkaloid biosynthesis	Metabolism; Biosynthesis of other secondary metabolites
+ko04720	Long-term potentiation	Organismal Systems; Nervous system
+ko04976	Bile secretion	Organismal Systems; Digestive system
+ko04146	Peroxisome	Cellular Processes; Transport and catabolism
+ko03050	Proteasome	"Genetic Information Processing; Folding, sorting and degradation"
+ko04940	Type I diabetes mellitus	Human Diseases; Endocrine and metabolic diseases
+ko04810	Regulation of actin cytoskeleton	Cellular Processes; Cell motility
+ko04964	Proximal tubule bicarbonate reclamation	Organismal Systems; Excretory system
+ko04712	Circadian rhythm - plant	Organismal Systems; Environmental adaptation
+ko04973	Carbohydrate digestion and absorption	Organismal Systems; Digestive system
+ko04920	Adipocytokine signaling pathway	Organismal Systems; Endocrine system
+ko04064	NF-kappa B signaling pathway	Environmental Information Processing; Signal transduction
+ko05202	Transcriptional misregulation in cancer	Human Diseases; Cancers
+ko04261	Adrenergic signaling in cardiomyocytes	Organismal Systems; Circulatory system
+ko00643	Styrene degradation	Metabolism; Xenobiotics biodegradation and metabolism
+ko00130	Ubiquinone and other terpenoid-quinone biosynthesis	Metabolism; Metabolism of cofactors and vitamins
+ko04071	Sphingolipid signaling pathway	Environmental Information Processing; Signal transduction
+ko05143	African trypanosomiasis	Human Diseases; Infectious diseases
+ko04918	Thyroid hormone synthesis	Organismal Systems; Endocrine system
+ko00650	Butanoate metabolism	Metabolism; Carbohydrate metabolism
+ko00909	Sesquiterpenoid and triterpenoid biosynthesis	Metabolism; Metabolism of terpenoids and polyketides
+ko04971	Gastric acid secretion	Organismal Systems; Digestive system
+ko02024	Quorum sensing	Cellular Processes; Cellular community - prokaryotes
+ko00730	Thiamine metabolism	Metabolism; Metabolism of cofactors and vitamins
+ko00620	Pyruvate metabolism	Metabolism; Carbohydrate metabolism
+ko04072	Phospholipase D signaling pathway	Environmental Information Processing; Signal transduction
+ko04330	Notch signaling pathway	Environmental Information Processing; Signal transduction
+ko05133	Pertussis	Human Diseases; Infectious diseases
+ko01502	Vancomycin resistance	Human Diseases; Drug resistance
+ko00970	Aminoacyl-tRNA biosynthesis	Genetic Information Processing; Translation
+ko00627	Aminobenzoate degradation	Metabolism; Xenobiotics biodegradation and metabolism
+ko04550	Signaling pathways regulating pluripotency of stem cells	Cellular Processes; Cellular community - eukaryotes
+ko04211	Longevity regulating pathway	Organismal Systems; Aging
+ko03450	Non-homologous end-joining	Genetic Information Processing; Replication and repair
+ko04670	Leukocyte transendothelial migration	Organismal Systems; Immune system
+ko00565	Ether lipid metabolism	Metabolism; Lipid metabolism
+ko04630	Jak-STAT signaling pathway	Environmental Information Processing; Signal transduction
+ko04010	MAPK signaling pathway	Environmental Information Processing; Signal transduction
+ko00830	Retinol metabolism	Metabolism; Metabolism of cofactors and vitamins
+ko00440	Phosphonate and phosphinate metabolism	Metabolism; Metabolism of other amino acids
+ko02010	ABC transporters	Environmental Information Processing; Membrane transport
+ko03070	Bacterial secretion system	Environmental Information Processing; Membrane transport
+ko05205	Proteoglycans in cancer	Human Diseases; Cancers
+ko05217	Basal cell carcinoma	Human Diseases; Cancers
+ko04659	Th17 cell differentiation	Organismal Systems; Immune system
+ko04130	SNARE interactions in vesicular transport	"Genetic Information Processing; Folding, sorting and degradation"
+ko04626	Plant-pathogen interaction	Organismal Systems; Environmental adaptation
+ko05142	Chagas disease "American trypanosomiasis"	Human Diseases; Infectious diseases
+ko00052	Galactose metabolism	Metabolism; Carbohydrate metabolism
+ko01522	Endocrine resistance	Human Diseases; Drug resistance
+ko04660	T cell receptor signaling pathway	Organismal Systems; Immune system
+ko05014	Amyotrophic lateral sclerosis "ALS"	Human Diseases; Neurodegenerative diseases
+ko04215	Apoptosis - multiple species	Cellular Processes; Cell growth and death
+ko00471	D-Glutamine and D-glutamate metabolism	Metabolism; Metabolism of other amino acids
+ko04015	Rap1 signaling pathway	Environmental Information Processing; Signal transduction
+ko04144	Endocytosis	Cellular Processes; Transport and catabolism
+ko01200	Carbon metabolism	Metabolism; Overview
+ko01051	Biosynthesis of ansamycins	Metabolism; Metabolism of terpenoids and polyketides
+ko04110	Cell cycle	Cellular Processes; Cell growth and death
+ko01040	Biosynthesis of unsaturated fatty acids	Metabolism; Lipid metabolism
+ko04725	Cholinergic synapse	Organismal Systems; Nervous system
+ko00430	Taurine and hypotaurine metabolism	Metabolism; Metabolism of other amino acids
+ko04917	Prolactin signaling pathway	Organismal Systems; Endocrine system
+ko05020	Prion diseases	Human Diseases; Neurodegenerative diseases
+ko00901	Indole alkaloid biosynthesis	Metabolism; Biosynthesis of other secondary metabolites
+ko05215	Prostate cancer	Human Diseases; Cancers
+ko00983	Drug metabolism - other enzymes	Metabolism; Xenobiotics biodegradation and metabolism
+ko05210	Colorectal cancer	Human Diseases; Cancers
+ko05414	Dilated cardiomyopathy	Human Diseases; Cardiovascular diseases
+ko00982	Drug metabolism - cytochrome P450	Metabolism; Xenobiotics biodegradation and metabolism
+ko04728	Dopaminergic synapse	Organismal Systems; Nervous system
+ko03013	RNA transport	Genetic Information Processing; Translation
+ko00630	Glyoxylate and dicarboxylate metabolism	Metabolism; Carbohydrate metabolism
+ko04350	TGF-beta signaling pathway	Environmental Information Processing; Signal transduction
+ko04724	Glutamatergic synapse	Organismal Systems; Nervous system
+ko04012	ErbB signaling pathway	Environmental Information Processing; Signal transduction
+ko00460	Cyanoamino acid metabolism	Metabolism; Metabolism of other amino acids
+ko03040	Spliceosome	Genetic Information Processing; Transcription
+ko00480	Glutathione metabolism	Metabolism; Metabolism of other amino acids
+ko03060	Protein export	"Genetic Information Processing; Folding, sorting and degradation"
+ko05224	Breast cancer	Human Diseases; Cancers
+ko04910	Insulin signaling pathway	Organismal Systems; Endocrine system
+ko04740	Olfactory transduction	Organismal Systems; Sensory system
+ko04340	Hedgehog signaling pathway	Environmental Information Processing; Signal transduction
+ko04972	Pancreatic secretion	Organismal Systems; Digestive system
+ko00550	Peptidoglycan biosynthesis	Metabolism; Glycan biosynthesis and metabolism
+ko00473	D-Alanine metabolism	Metabolism; Metabolism of other amino acids
+ko00521	Streptomycin biosynthesis	Metabolism; Biosynthesis of other secondary metabolites
+ko00030	Pentose phosphate pathway	Metabolism; Carbohydrate metabolism
+ko03015	mRNA surveillance pathway	Genetic Information Processing; Translation
+ko00563	Glycosylphosphatidylinositol "GPI"-anchor biosynthesis	Metabolism; Glycan biosynthesis and metabolism
+ko04310	Wnt signaling pathway	Environmental Information Processing; Signal transduction
+ko00940	Phenylpropanoid biosynthesis	Metabolism; Biosynthesis of other secondary metabolites
+ko00040	Pentose and glucuronate interconversions	Metabolism; Carbohydrate metabolism
+ko00062	Fatty acid elongation	Metabolism; Lipid metabolism
+ko04745	Phototransduction - fly	Organismal Systems; Sensory system
+ko04141	Protein processing in endoplasmic reticulum	"Genetic Information Processing; Folding, sorting and degradation"
+ko00523	Polyketide sugar unit biosynthesis	Metabolism; Metabolism of terpenoids and polyketides
+ko00904	Diterpenoid biosynthesis	Metabolism; Metabolism of terpenoids and polyketides
+ko04977	Vitamin digestion and absorption	Organismal Systems; Digestive system
+ko04380	Osteoclast differentiation	Organismal Systems; Development
+ko00362	Benzoate degradation	Metabolism; Xenobiotics biodegradation and metabolism
+ko00626	Naphthalene degradation	Metabolism; Xenobiotics biodegradation and metabolism
+ko00900	Terpenoid backbone biosynthesis	Metabolism; Metabolism of terpenoids and polyketides
+ko04213	Longevity regulating pathway - multiple species	Organismal Systems; Aging
+ko00190	Oxidative phosphorylation	Metabolism; Energy metabolism
+ko04391	Hippo signaling pathway - fly	Environmental Information Processing; Signal transduction
+ko00280	Valine, leucine and isoleucine degradation	Metabolism; Amino acid metabolism
+ko04068	FoxO signaling pathway	Environmental Information Processing; Signal transduction
+ko00562	Inositol phosphate metabolism	Metabolism; Carbohydrate metabolism
+ko00051	Fructose and mannose metabolism	Metabolism; Carbohydrate metabolism
+ko04145	Phagosome	Cellular Processes; Transport and catabolism
+ko04961	Endocrine and other factor-regulated calcium reabsorption	Organismal Systems; Excretory system
+ko04152	AMPK signaling pathway	Environmental Information Processing; Signal transduction
+ko03022	Basal transcription factors	Genetic Information Processing; Transcription
+ko04392	Hippo signaling pathway -multiple species	Environmental Information Processing; Signal transduction
+ko05223	Non-small cell lung cancer	Human Diseases; Cancers
+ko05120	Epithelial cell signaling in Helicobacter pylori infection	Human Diseases; Infectious diseases
+ko04913	Ovarian steroidogenesis	Organismal Systems; Endocrine system
+ko00515	Mannose type O-glycan biosynthesis	Metabolism; Glycan biosynthesis and metabolism
+ko00300	Lysine biosynthesis	Metabolism; Amino acid metabolism
+ko00981	Insect hormone biosynthesis	Metabolism; Metabolism of terpenoids and polyketides
+ko00511	Other glycan degradation	Metabolism; Glycan biosynthesis and metabolism
+ko04320	Dorso-ventral axis formation	Organismal Systems; Development
+ko00945	"Stilbenoid, diarylheptanoid and gingerol biosynthesis"	Metabolism; Biosynthesis of other secondary metabolites
+ko04658	Th1 and Th2 cell differentiation	Organismal Systems; Immune system
+ko04115	p53 signaling pathway	Cellular Processes; Cell growth and death
+ko00073	"Cutin, suberine and wax biosynthesis"	Metabolism; Lipid metabolism
+ko00941	Flavonoid biosynthesis	Metabolism; Biosynthesis of other secondary metabolites
+ko00943	Isoflavonoid biosynthesis	Metabolism; Biosynthesis of other secondary metabolites
+ko04921	Oxytocin signaling pathway	Organismal Systems; Endocrine system
+ko05164	Influenza A	Human Diseases; Infectious diseases
+ko00310	Lysine degradation	Metabolism; Amino acid metabolism
+ko04710	Circadian rhythm	Organismal Systems; Environmental adaptation
+ko00520	Amino sugar and nucleotide sugar metabolism	Metabolism; Carbohydrate metabolism
+ko00860	Porphyrin and chlorophyll metabolism	Metabolism; Metabolism of cofactors and vitamins
+ko00524	"Neomycin, kanamycin and gentamicin biosynthesis"	Metabolism; Biosynthesis of other secondary metabolites
+ko04623	Cytosolic DNA-sensing pathway	Organismal Systems; Immune system
+ko04650	Natural killer cell mediated cytotoxicity	Organismal Systems; Immune system
+ko00361	Chlorocyclohexane and chlorobenzene degradation	Metabolism; Xenobiotics biodegradation and metabolism
+ko04360	Axon guidance	Organismal Systems; Development
+ko00270	Cysteine and methionine metabolism	Metabolism; Amino acid metabolism
+ko05219	Bladder cancer	Human Diseases; Cancers
+ko05410	Hypertrophic cardiomyopathy "HCM"	Human Diseases; Cardiovascular diseases
+ko03320	PPAR signaling pathway	Organismal Systems; Endocrine system
+ko03010	Ribosome	Genetic Information Processing; Translation
+ko05220	Chronic myeloid leukemia	Human Diseases; Cancers
+ko04744	Phototransduction	Organismal Systems; Sensory system
+ko00625	Chloroalkane and chloroalkene degradation	Metabolism; Xenobiotics biodegradation and metabolism
+ko04390	Hippo signaling pathway	Environmental Information Processing; Signal transduction
+ko01524	Platinum drug resistance	Human Diseases; Drug resistance
+ko00290	"Valine, leucine and isoleucine biosynthesis"	Metabolism; Amino acid metabolism
+ko00980	Metabolism of xenobiotics by cytochrome P450	Metabolism; Xenobiotics biodegradation and metabolism
+ko00261	Monobactam biosynthesis	Metabolism; Biosynthesis of other secondary metabolites
+ko05031	Amphetamine addiction	Human Diseases; Substance dependence
+ko04075	Plant hormone signal transduction	Environmental Information Processing; Signal transduction
+ko04062	Chemokine signaling pathway	Organismal Systems; Immune system
+ko04914	Progesterone-mediated oocyte maturation	Organismal Systems; Endocrine system
+ko00908	Zeatin biosynthesis	Metabolism; Metabolism of terpenoids and polyketides
+ko04260	Cardiac muscle contraction	Organismal Systems; Circulatory system
+ko05206	MicroRNAs in cancer	Human Diseases; Cancers
+ko04214	Apoptosis - fly	Cellular Processes; Cell growth and death
+ko04657	IL-17 signaling pathway	Organismal Systems; Immune system
+ko00500	Starch and sucrose metabolism	Metabolism; Carbohydrate metabolism
+ko00720	Carbon fixation pathways in prokaryotes	Metabolism; Energy metabolism
+ko01503	Cationic antimicrobial peptide "CAMP" resistance	Human Diseases; Drug resistance
+ko05012	Parkinson's disease	Human Diseases; Neurodegenerative diseases
+ko03440	Homologous recombination	Genetic Information Processing; Replication and repair
+ko00540	Lipopolysaccharide biosynthesis	Metabolism; Glycan biosynthesis and metabolism
+ko04621	NOD-like receptor signaling pathway	Organismal Systems; Immune system
+ko00944	Flavone and flavonol biosynthesis	Metabolism; Biosynthesis of other secondary metabolites
+ko05211	Renal cell carcinoma	Human Diseases; Cancers
+ko00360	Phenylalanine metabolism	Metabolism; Amino acid metabolism
+ko04925	Aldosterone synthesis and secretion	Organismal Systems; Endocrine system
+ko00380	Tryptophan metabolism	Metabolism; Amino acid metabolism
+ko05100	Bacterial invasion of epithelial cells	Human Diseases; Infectious diseases
+ko05033	Nicotine addiction	Human Diseases; Substance dependence
+ko00100	Steroid biosynthesis	Metabolism; Lipid metabolism
+ko04924	Renin secretion	Organismal Systems; Endocrine system
+ko04922	Glucagon signaling pathway	Organismal Systems; Endocrine system
+ko00513	Various types of N-glycan biosynthesis	Metabolism; Glycan biosynthesis and metabolism
+ko04726	Serotonergic synapse	Organismal Systems; Nervous system
+ko04721	Synaptic vesicle cycle	Organismal Systems; Nervous system
+ko04730	Long-term depression	Organismal Systems; Nervous system
+ko04932	Non-alcoholic fatty liver disease "NAFLD"	Human Diseases; Endocrine and metabolic diseases
+ko04933	AGE-RAGE signaling pathway in diabetic complications	Human Diseases; Endocrine and metabolic diseases
+ko00120	Primary bile acid biosynthesis	Metabolism; Lipid metabolism
+ko04122	Sulfur relay system	"Genetic Information Processing; Folding, sorting and degradation"
+ko00750	Vitamin B6 metabolism	Metabolism; Metabolism of cofactors and vitamins
+ko04722	Neurotrophin signaling pathway	Organismal Systems; Nervous system
+ko00061	Fatty acid biosynthesis	Metabolism; Lipid metabolism
+ko00905	Brassinosteroid biosynthesis	Metabolism; Metabolism of terpenoids and polyketides
+ko00624	Polycyclic aromatic hydrocarbon degradation	Metabolism; Xenobiotics biodegradation and metabolism
+ko03410	Base excision repair	Genetic Information Processing; Replication and repair
+ko00670	One carbon pool by folate	Metabolism; Metabolism of cofactors and vitamins
+ko00510	N-Glycan biosynthesis	Metabolism; Glycan biosynthesis and metabolism
+ko05204	Chemical carcinogenesis	Human Diseases; Cancers
+ko04142	Lysosome	Cellular Processes; Transport and catabolism
+ko04742	Taste transduction	Organismal Systems; Sensory system
+ko00780	Biotin metabolism	Metabolism; Metabolism of cofactors and vitamins
+ko00600	Sphingolipid metabolism	Metabolism; Lipid metabolism
+ko00534	Glycosaminoglycan biosynthesis - heparan sulfate / heparin	Metabolism; Glycan biosynthesis and metabolism
+ko05131	Shigellosis	Human Diseases; Infectious diseases
+ko00591	Linoleic acid metabolism	Metabolism; Lipid metabolism
+ko04713	Circadian entrainment	Organismal Systems; Environmental adaptation
+ko04210	Apoptosis	Cellular Processes; Cell growth and death
+ko04750	Inflammatory mediator regulation of TRP channels	Organismal Systems; Sensory system
+ko01521	EGFR tyrosine kinase inhibitor resistance	Human Diseases; Drug resistance
+ko00906	Carotenoid biosynthesis	Metabolism; Metabolism of terpenoids and polyketides
+ko00760	Nicotinate and nicotinamide metabolism	Metabolism; Metabolism of cofactors and vitamins
+ko04912	GnRH signaling pathway	Organismal Systems; Endocrine system
+ko04662	B cell receptor signaling pathway	Organismal Systems; Immune system
+ko01220	Degradation of aromatic compounds	Metabolism; Overview
+ko00340	Histidine metabolism	Metabolism; Amino acid metabolism
+ko01212	Fatty acid metabolism	Metabolism; Overview
+ko04974	Protein digestion and absorption	Organismal Systems; Digestive system
+ko04960	Aldosterone-regulated sodium reabsorption	Organismal Systems; Excretory system
+ko00785	Lipoic acid metabolism	Metabolism; Metabolism of cofactors and vitamins
+ko04540	Gap junction	Cellular Processes; Cellular community - eukaryotes
+ko00020	Citrate cycle "TCA cycle"	Metabolism; Carbohydrate metabolism
+ko00010	Glycolysis / Gluconeogenesis	Metabolism; Carbohydrate metabolism
+ko05140	Leishmaniasis	Human Diseases; Infectious diseases
+ko00232	Caffeine metabolism	Metabolism; Biosynthesis of other secondary metabolites
+ko04975	Fat digestion and absorption	Organismal Systems; Digestive system
+ko04727	GABAergic synapse	Organismal Systems; Nervous system
