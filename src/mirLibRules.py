@@ -499,7 +499,7 @@ class prog_miRanda ():
     #= targets are sorted from highest total scores to lowest total scores
     target_results = sorted(target_results, key=itemgetter(1), reverse=True)
     #= only the top 15 targets are curated for report
-    if len(target_results) > nbTargets: target_results = target_results[:nbTargets]
+    if len(target_results) > self.nbTargets: target_results = target_results[:self.nbTargets]
     self.dict_seq_target[miRNAseq] = target_results
     return [e[0], target_results, e[1]]
 
