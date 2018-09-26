@@ -63,7 +63,7 @@ bowtie_index_suffix=a_thaliana_t10
 mirdup_model=thaliana.model
 #==================== 
 limit_s_freq=10
-limit_m_freq=100
+limit_m_freq=200
 limit_len=18
 limit_nbLoc=15
 pri_l_flank=500
