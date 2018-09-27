@@ -550,7 +550,7 @@ def annotate_target_genes_with_KEGGpathway (gene_vs_pathway_file, rep_output, ap
     mirna = i[0]
     data = [mirna]
     for method in i[1:]: #=method = top1, top5scored
-      genes = j.split(',')
+      genes = method.split(',')
       geneAnnotation = []
       for g in genes:
         g = g.split(' (')[0].split('.')[0]

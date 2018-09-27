@@ -469,7 +469,7 @@ if __name__ == '__main__' :
 
 
 
-  print('test end of pipeline', datetime.datetime.now())
+  #print('test end of pipeline', datetime.datetime.now())
 
   
   #= clear caches (memory leak)
