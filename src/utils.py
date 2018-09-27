@@ -485,19 +485,18 @@ def writeTargetsToFile (mirna_and_targets, rep_output, appId):
     mirnaseq = i[0]
     mirna_uindex = i[2]
     targetcollect = []
+    seen = []
     score = 1000000000000
     count = 0
     for t in i[1]:
-      #target_miranda = t.strip('\'').split('\', \'')
-      #target = target_miranda[0].split('.')[0]
-      #score_cur = int(target_miranda[1].split('.')[0])
       target = t[0].split('.')[0]
       score_cur = t[1]
       if score_cur < score:
         count += 1
         score = score_cur
-      if count < (topKscored +1) and target not in targetcollect:
+      if count < (topKscored +1) and target not in seen:
         targetcollect.append( target + ' ('+ str(score_cur) +')' )
+        seen.append(target)
     #data = [mirnaseq, targetcollect[0], ','.join(targetcollect)]
     data = [mirnaseq, ','.join(targetcollect)]
     line = '\t'.join(data)
