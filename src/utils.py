@@ -514,7 +514,7 @@ def __charge_gene_vs_pathway_file (infile):
     else: d_gene_pathway[gene] += ',' + p
   return d_gene_pathway
 
-def annotate_target_genes_with_KEGGpathway (gene_vs_pathway_file, rep_output, appId):
+def __annotate_target_genes_with_KEGGpathway (gene_vs_pathway_file, rep_output, appId):
   d_gene_pathway = __charge_gene_vs_pathway_file (gene_vs_pathway_file)
   infile = rep_output + appId + '_mirna_and_topscoredTargets.txt'
   outfile = rep_output + appId + '_mirna_and_topscoredTargetsKEGGpathway.txt'
@@ -534,6 +534,31 @@ def annotate_target_genes_with_KEGGpathway (gene_vs_pathway_file, rep_output, ap
           geneAnnotation.append(p)
       data.append( ','.join(geneAnnotation) )
     newDATA.append(data)
+  for i in newDATA:
+    line = '\t'.join(i)
+    print >> fh_out, line
+  fh_out.close()
+
+def annotate_target_genes_with_KEGGpathway (gene_vs_pathway_file, rep_output, appId):
+  d_gene_pathway = __charge_gene_vs_pathway_file (gene_vs_pathway_file)
+  infile = rep_output + appId + '_mirna_and_topscoredTargets.txt'
+  outfile = rep_output + appId + '_mirna_and_topscoredTargetsKEGGpathway.txt'
+  fh_out = open (outfile, 'w')
+  newDATA = []
+  with open (infile) as fh: DATA = [x.rstrip('\n').split('\t') for x in fh.readlines()]
+  for i in DATA:
+    mirna = i[0]
+    data = [mirna]
+    for method in i[1:]: #=method = top1, top5scored
+      genes = j.split(',')
+      geneAnnotation = []
+      for g in genes:
+        g = g.split(' (')[0].split('.')[0]
+        if g in d_gene_pathway.keys(): 
+          p = d_gene_pathway[g]
+          geneAnnotation.append(p)
+      data.append( ','.join(geneAnnotation) )
+      newDATA.append(data)
   for i in newDATA:
     line = '\t'.join(i)
     print >> fh_out, line
