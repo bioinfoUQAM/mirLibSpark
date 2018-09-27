@@ -4,7 +4,7 @@ import os
 
 #cmd = 'python purge.py';os.system (cmd)
 
-cmd = 'git pull origin utilspython3';os.system (cmd)
+#cmd = 'git pull origin refactor';os.system (cmd)
 
 
 
@@ -17,8 +17,12 @@ cmd = 'rm -f ../input/100.txt';os.system(cmd)
 
 
 
+#cmd = 'git add -f ../output/*';os.system(cmd)
+#cmd = 'git commit -m "save a copy of output"';os.system(cmd)
+#cmd = 'git push origin refactor';os.system(cmd)
+
 cmd = 'git remote prune origin';os.system(cmd)
-cmd = 'git branch -D utilspython3';os.system(cmd)
+#cmd = 'git branch -D utilspython3';os.system(cmd)
 #cmd = 'git branch';os.system(cmd)
 #cmd = 'git fetch origin';os.system(cmd)
 #cmd = 'git checkout master';os.system(cmd)
@@ -49,12 +53,10 @@ cmd = 'free -m';os.system(cmd)
 
 
 
-#cmd = 'mv ../output/* ../output_depo/'
-#os.system(cmd)
+#cmd = 'mv ../output/* ../output_depo/';os.system(cmd)
 
 
-#cmd = 'free -m' #= to check memory
-#os.system(cmd)
+#cmd = 'free -m' #= to check memory;os.system(cmd)
 
 
 
@@ -69,7 +71,8 @@ cmd = 'free -m';os.system(cmd)
 #  cmd = 'git branch -D ' + b
 #  os.system(cmd)
 
-
+#= download zip
+#cmd = 'curl -O http://remote-server-IP/file.zip';os.system(cmd)
 
 
 
