@@ -31,7 +31,7 @@
 #
 ########################################################################
 #
-message=\nwrite your message (for stdout) here line1\nline2: \nchromosomes=All\nwork on annotate target genes with KEGG or GO\nstudy enrichment --> training\n  kn_obj = mru.prog_knownNonMiRNA(broadcastVar_d_ncRNA_CDS.value)
+message=\nwrite your message (for stdout) here line1\nline2: \nchromosomes=All\nwork on annotate target genes with KEGG or GO\nstudy enrichment --> training\nnbTarget=100
 #
 ########################################################################
 #
@@ -39,13 +39,14 @@ message=\nwrite your message (for stdout) here line1\nline2: \nchromosomes=All\n
 #
 #==================== Absolute paths in user's computer, please modify this string: /home/cloudera/workspace/
 project_path=/home/cloudera/workspace/mirLibSpark/
-genome_path=/home/cloudera/workspace/mirLibSpark/dbs/ATH/Genome/
 input_path=/home/cloudera/workspace/mirLibSpark/input/
 output_path=/home/cloudera/workspace/mirLibSpark/output/
-b_index_path=/home/cloudera/workspace/mirLibSpark/dbs/ATH/bowtie_split_index/
-known_non_file=/home/cloudera/workspace/mirLibSpark/dbs/ATH/TAIR10_ncRNA_CDS.gff
-target_file=/home/cloudera/workspace/mirLibSpark/dbs/ATH/TAIR10_cdna_20101214_updated.fasta
 #
+genome_path=/home/cloudera/workspace/mirLibSpark/dbs/ATH/Genome/
+b_index_path=/home/cloudera/workspace/mirLibSpark/dbs/ATH/bowtie_split_index/
+target_file=/home/cloudera/workspace/mirLibSpark/dbs/ATH/TAIR10_cdna_20101214_updated.fasta
+known_non_file=/home/cloudera/workspace/mirLibSpark/dbs/ATH/TAIR10_ncRNA_CDS.gff
+gene_vs_pathway_file=/home/cloudera/workspace/mirLibSpark/dbs/ATH/ath_gene_vs_pathway.txt
 #
 #
 #==================== User needs to define
@@ -56,7 +57,6 @@ adapter=none
 #
 #====================  Ideally, do not change the following parameters since they are already tuned.
 #chromosomes=chr1,chr2,chr3,chr4,chr5,chrC,chrM
-#chromosomes=chr1,chr2
 chromosomes=All
 bowtie_index_suffix=a_thaliana_t10
 #mirdup_model=Viridiplantae.model
@@ -75,6 +75,7 @@ mcheck_param=def
 Max_Score_cutoff=170
 Max_Energy_cutoff=-15
 Gap_Penalty=-15
+nbTargets=100
 #==================== Spark configuration
 sc_appname=mirLibSpark
 sc_partition=4

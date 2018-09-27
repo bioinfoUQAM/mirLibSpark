@@ -36,6 +36,9 @@ if __name__ == '__main__' :
 
   paramfile = sys.argv[1]
   paramDict = ut.readParam (paramfile)
+  #= EXMAMINE OPTIONS 
+  ut.validate_options(paramDict)
+
 
   #= spark configuration
   appMaster = paramDict['sc_master']                #"local[*]" 
@@ -49,7 +52,8 @@ if __name__ == '__main__' :
   sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, execCores)
 
   #= Spark application ID
-  appId = str(sc.applicationId)
+  broadcastVar_appId = sc.broadcast(str(sc.applicationId))
+  appId = broadcastVar_appId.value
 
   #= broadcast paramDict
   broadcastVar_paramDict = sc.broadcast(paramDict)
@@ -109,10 +113,11 @@ if __name__ == '__main__' :
   Max_Score_cutoff = paramDict['Max_Score_cutoff'] #= need string or buffer
   Max_Energy_cutoff = paramDict['Max_Energy_cutoff'] #= NOT WORKING YET
   Gap_Penalty = paramDict['Gap_Penalty']
-  #= end of paramDict naming =================================================================================
+  nbTargets = paramDict['nbTargets']
 
-  #= EXMAMINE OPTIONS 
-  ut.validate_options(paramDict)
+  #= KEGG annotation
+  gene_vs_pathway_file =  paramDict['gene_vs_pathway_file']
+  #= end of paramDict naming =================================================================================
 
   #= make required folders if not exist
   reps = [rep_output, rep_tmp, rep_msub_jobsOut]
@@ -144,7 +149,7 @@ if __name__ == '__main__' :
   mircheck_obj = mru.prog_mirCheck(mcheck_param)
   mirdup_obj = mru.prog_miRdup (rep_tmp, mirdup_model, mirdup_jar, path_RNAfold)
   profile_obj = mru.prog_dominant_profile()
-  miranda_obj = mru.prog_miRanda(Max_Score_cutoff, Max_Energy_cutoff, target_file, rep_tmp, miranda_binary, Gap_Penalty)
+  miranda_obj = mru.prog_miRanda(Max_Score_cutoff, Max_Energy_cutoff, target_file, rep_tmp, miranda_binary, Gap_Penalty, nbTargets)
 
   #= Fetch library files in rep_input
   infiles = [f for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
@@ -426,13 +431,14 @@ if __name__ == '__main__' :
   ## out: ('miRNAseq', zipindex)
   distResultSmallRNA_rdd = master_predicted_distinctMiRNAs_rdd.zipWithIndex() 
 
+  '''
+  #= varna
+  varna_obj = mru.prog_varna(appId, rep_output) 
+
   ## in:  ( 'seq', [...] ) 
   ## mid: [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq] 
   ## out : [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
   Precursor_rdd = sc.parallelize(broadcastVar_Precursor.value, partition)
-  
-  #= varna
-  varna_obj = mru.prog_varna(appId, rep_output) 
   
   ## in : [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
   ## out : ([miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore], zipindex)
@@ -440,7 +446,7 @@ if __name__ == '__main__' :
                                .map(varna_obj.run_VARNA)
   indexVis = VARNA_rdd.collect()
   ut.write_index (indexVis, rep_output, appId)
-
+  '''
   
   #= miranda
   ## in : ('miRNAseq', zipindex)
@@ -449,17 +455,25 @@ if __name__ == '__main__' :
   mirna_and_targets = miranda_rdd.collect()
   ut.writeTargetsToFile (mirna_and_targets, rep_output, appId)
 
-
+  '''
   ## in: ('miRNAseq', [[targetgene1 and its scores], [targetgene2 and its scores]])
   ## out:( 'targetgene' )
   master_distinctTG = miranda_rdd.map(lambda e: [  i[0].split('.')[0] for i in e[1]  ])\
                                  .reduce(lambda a, b: a+b)
   master_distinctTG = sorted(list(set(master_distinctTG)))
-  #print( master_distinctTG )
-  print('test end of pipeline', datetime.datetime.now())
+  print( master_distinctTG )
+  '''
+
+  #= KEGG annotation
+  ut.annotate_target_genes_with_KEGGpathway (gene_vs_pathway_file, rep_output, appId)
+
+
+
+  #print('test end of pipeline', datetime.datetime.now())
 
   
   #= clear caches (memory leak)
+  broadcastVar_appId.unpersist()
   broadcastVar_paramDict.unpersist()
   dmask_rdd.unpersist()
   sr_short_rdd.unpersist()

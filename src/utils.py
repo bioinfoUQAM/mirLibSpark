@@ -271,7 +271,7 @@ def writeToFile (results, outfile):
     line = '\t'.join('miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq'.split(', ')) 
     print >> fh_out, line
 
-
+    seen = []
     for elem in results :
       miRNAseq = elem[0]
       frq = elem[1][0]
@@ -299,7 +299,9 @@ def writeToFile (results, outfile):
       #= premirna_range_total_small_rna_freq
       totalFrq =  elem[1][5]
       
-
+      seeing = ''.join([str(x) for x in [miRNAseq, strand, chromo, posChr, mkPred, len(preSeq), posMirPre, newfbstart, newfbstop, mpPred, mpScore]])
+      if seeing in seen: continue
+      else: seen.append(seeing)
       #data = [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, preSeq, posMirPre, preFold, mpPred, mpScore, totalFrq]
       data = [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq] ##update
 
@@ -473,9 +475,75 @@ def writeTargetsToFile (mirna_and_targets, rep_output, appId):
   '''
   outfile = rep_output + appId + '_mirna_and_targets.txt'
   fh_out = open (outfile, 'w')
+  outfile2 = rep_output + appId + '_mirna_and_topscoredTargets.txt'
+  fh_out2 = open (outfile2, 'w')
+  topKscored = 5
+
   for i in mirna_and_targets:
     print >> fh_out, i[0], i[1], str(i[2]).zfill(4)
+
+    mirnaseq = i[0]
+    mirna_uindex = i[2]
+    targetcollect = []
+    seen = []
+    score = 1000000000000
+    count = 0
+    for t in i[1]:
+      target = t[0].split('.')[0]
+      score_cur = t[1]
+      if score_cur < score:
+        count += 1
+        score = score_cur
+      if count < (topKscored +1) and target not in seen:
+        targetcollect.append( target + ' ('+ str(score_cur) +')' )
+        seen.append(target)
+    #data = [mirnaseq, targetcollect[0], ','.join(targetcollect)]
+    data = [mirnaseq, ','.join(targetcollect)]
+    line = '\t'.join(data)
+    print >> fh_out2, line
+
   fh_out.close()
+  fh_out2.close()
+
+def __charge_gene_vs_pathway_file (infile):
+  d_gene_pathway = {} # {'gene': 'p1,p2,p3'}
+  with open (infile) as fh: DATA = [x.rstrip('\n').split('\t') for x in fh.readlines()]
+  for i in DATA:
+    gene = i[0]
+    p = i[1]
+    if gene not in d_gene_pathway.keys(): d_gene_pathway[gene] = p
+    else: d_gene_pathway[gene] += ',' + p
+  return d_gene_pathway
+
+def annotate_target_genes_with_KEGGpathway (gene_vs_pathway_file, rep_output, appId):
+  d_gene_pathway = __charge_gene_vs_pathway_file (gene_vs_pathway_file)
+  infile = rep_output + appId + '_mirna_and_topscoredTargets.txt'
+  outfile = rep_output + appId + '_mirna_and_topscoredTargetsKEGGpathway.txt'
+  fh_out = open (outfile, 'w')
+  newDATA = []
+  with open (infile) as fh: DATA = [x.rstrip('\n').split('\t') for x in fh.readlines()]
+  for i in DATA:
+    mirna = i[0]
+    data = [mirna]
+    for method in i[1:]: #=method = top1, top5scored
+      genes = method.split(',')
+      geneAnnotation = []
+      for g in genes:
+        g = g.split(' (')[0].split('.')[0]
+        if g in d_gene_pathway.keys(): 
+          p = d_gene_pathway[g]
+          geneAnnotation.append(p)
+      data.append( ','.join(geneAnnotation) )
+    newDATA.append(data)
+  for i in newDATA:
+    line = '\t'.join(i)
+    print >> fh_out, line
+    #print (line, file=fh_out)
+  fh_out.close()
+
+
+
+
 
 #############################
 #############################

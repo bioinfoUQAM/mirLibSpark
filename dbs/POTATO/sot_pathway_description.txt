@@ -1,0 +1,134 @@
+sot00010	Glycolysis / Gluconeogenesis
+sot00020	Citrate cycle (TCA cycle)
+sot00030	Pentose phosphate pathway
+sot00040	Pentose and glucuronate interconversions
+sot00051	Fructose and mannose metabolism
+sot00052	Galactose metabolism
+sot00053	Ascorbate and aldarate metabolism
+sot00061	Fatty acid biosynthesis
+sot00062	Fatty acid elongation
+sot00071	Fatty acid degradation
+sot00072	Synthesis and degradation of ketone bodies
+sot00073	Cutin, suberine and wax biosynthesis
+sot00100	Steroid biosynthesis
+sot00130	Ubiquinone and other terpenoid-quinone biosynthesis
+sot00190	Oxidative phosphorylation
+sot00195	Photosynthesis
+sot00196	Photosynthesis
+sot00220	Arginine biosynthesis
+sot00230	Purine metabolism
+sot00232	Caffeine metabolism
+sot00240	Pyrimidine metabolism
+sot00250	Alanine, aspartate and glutamate metabolism
+sot00260	Glycine, serine and threonine metabolism
+sot00261	Monobactam biosynthesis
+sot00270	Cysteine and methionine metabolism
+sot00280	Valine, leucine and isoleucine degradation
+sot00290	Valine, leucine and isoleucine biosynthesis
+sot00300	Lysine biosynthesis
+sot00310	Lysine degradation
+sot00330	Arginine and proline metabolism
+sot00340	Histidine metabolism
+sot00350	Tyrosine metabolism
+sot00360	Phenylalanine metabolism
+sot00380	Tryptophan metabolism
+sot00400	Phenylalanine, tyrosine and tryptophan biosynthesis
+sot00410	beta-Alanine metabolism
+sot00430	Taurine and hypotaurine metabolism
+sot00440	Phosphonate and phosphinate metabolism
+sot00450	Selenocompound metabolism
+sot00460	Cyanoamino acid metabolism
+sot00480	Glutathione metabolism
+sot00500	Starch and sucrose metabolism
+sot00510	N-Glycan biosynthesis
+sot00511	Other glycan degradation
+sot00514	Other types of O-glycan biosynthesis
+sot00520	Amino sugar and nucleotide sugar metabolism
+sot00531	Glycosaminoglycan degradation
+sot00561	Glycerolipid metabolism
+sot00562	Inositol phosphate metabolism
+sot00563	Glycosylphosphatidylinositol (GPI)-anchor biosynthesis
+sot00564	Glycerophospholipid metabolism
+sot00565	Ether lipid metabolism
+sot00590	Arachidonic acid metabolism
+sot00591	Linoleic acid metabolism
+sot00592	alpha-Linolenic acid metabolism
+sot00600	Sphingolipid metabolism
+sot00601	Glycosphingolipid biosynthesis
+sot00603	Glycosphingolipid biosynthesis
+sot00604	Glycosphingolipid biosynthesis
+sot00620	Pyruvate metabolism
+sot00630	Glyoxylate and dicarboxylate metabolism
+sot00640	Propanoate metabolism
+sot00650	Butanoate metabolism
+sot00660	C5-Branched dibasic acid metabolism
+sot00670	One carbon pool by folate
+sot00710	Carbon fixation in photosynthetic organisms
+sot00730	Thiamine metabolism
+sot00740	Riboflavin metabolism
+sot00750	Vitamin B6 metabolism
+sot00760	Nicotinate and nicotinamide metabolism
+sot00770	Pantothenate and CoA biosynthesis
+sot00780	Biotin metabolism
+sot00785	Lipoic acid metabolism
+sot00790	Folate biosynthesis
+sot00860	Porphyrin and chlorophyll metabolism
+sot00900	Terpenoid backbone biosynthesis
+sot00901	Indole alkaloid biosynthesis
+sot00902	Monoterpenoid biosynthesis
+sot00904	Diterpenoid biosynthesis
+sot00905	Brassinosteroid biosynthesis
+sot00906	Carotenoid biosynthesis
+sot00908	Zeatin biosynthesis
+sot00909	Sesquiterpenoid and triterpenoid biosynthesis
+sot00910	Nitrogen metabolism
+sot00920	Sulfur metabolism
+sot00940	Phenylpropanoid biosynthesis
+sot00941	Flavonoid biosynthesis
+sot00942	Anthocyanin biosynthesis
+sot00944	Flavone and flavonol biosynthesis
+sot00945	Stilbenoid, diarylheptanoid and gingerol biosynthesis
+sot00950	Isoquinoline alkaloid biosynthesis
+sot00960	Tropane, piperidine and pyridine alkaloid biosynthesis
+sot00965	Betalain biosynthesis
+sot00966	Glucosinolate biosynthesis
+sot00970	Aminoacyl-tRNA biosynthesis
+sot01040	Biosynthesis of unsaturated fatty acids
+sot01100	Metabolic pathways
+sot01110	Biosynthesis of secondary metabolites
+sot01200	Carbon metabolism
+sot01210	2-Oxocarboxylic acid metabolism
+sot01212	Fatty acid metabolism
+sot01230	Biosynthesis of amino acids
+sot01502	Vancomycin resistance
+sot02010	ABC transporters
+sot03008	Ribosome biogenesis in eukaryotes
+sot03010	Ribosome
+sot03013	RNA transport
+sot03015	mRNA surveillance pathway
+sot03018	RNA degradation
+sot03020	RNA polymerase
+sot03022	Basal transcription factors
+sot03030	DNA replication
+sot03040	Spliceosome
+sot03050	Proteasome
+sot03060	Protein export
+sot03410	Base excision repair
+sot03420	Nucleotide excision repair
+sot03430	Mismatch repair
+sot03440	Homologous recombination
+sot03450	Non-homologous end-joining
+sot04016	MAPK signaling pathway
+sot04070	Phosphatidylinositol signaling system
+sot04075	Plant hormone signal transduction
+sot04120	Ubiquitin mediated proteolysis
+sot04122	Sulfur relay system
+sot04130	SNARE interactions in vesicular transport
+sot04136	Autophagy
+sot04141	Protein processing in endoplasmic reticulum
+sot04144	Endocytosis
+sot04145	Phagosome
+sot04146	Peroxisome
+sot04626	Plant-pathogen interaction
+sot04712	Circadian rhythm
+sot04933	AGE-RAGE signaling pathway in diabetic complications

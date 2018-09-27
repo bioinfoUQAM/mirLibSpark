@@ -442,17 +442,17 @@ class prog_dominant_profile () :
 
 
 class prog_miRanda ():
-  def __init__ (self, Max_Score_cutoff, Max_Energy_cutoff, target_file, rep_tmp, miranda_exe, Gap_Penalty):
+  def __init__ (self, Max_Score_cutoff, Max_Energy_cutoff, target_file, rep_tmp, miranda_exe, Gap_Penalty, nbTargets):
     self.env = os.environ
 
     #== variables ==
     self.Max_Score_cutoff = Max_Score_cutoff
     self.Max_Energy_cutoff = Max_Energy_cutoff
     self.Gap_Penalty = Gap_Penalty
-
     self.target_file = target_file
     self.rep_tmp = rep_tmp
     self.miranda_exe = miranda_exe
+    self.nbTargets = nbTargets
 
     self.dict_seq_target = {}
 
@@ -464,6 +464,7 @@ class prog_miRanda ():
 
     ## NOTE before disable miranda (170714): need to modify the code to use options such as -sc, -en, -go, -ge, -quiet
     '''
+    #nbTargets = 15 #= names are like this atg1234.1, atg1234.2, so even collected 2 targets, in fact there is only 1. This needs to clean up later.
 
     miRNAseq = e[0]
 
@@ -498,7 +499,7 @@ class prog_miRanda ():
     #= targets are sorted from highest total scores to lowest total scores
     target_results = sorted(target_results, key=itemgetter(1), reverse=True)
     #= only the top 15 targets are curated for report
-    if len(target_results) > 15: target_results = target_results[:15]
+    if len(target_results) > self.nbTargets: target_results = target_results[:self.nbTargets]
     self.dict_seq_target[miRNAseq] = target_results
     return [e[0], target_results, e[1]]
 
