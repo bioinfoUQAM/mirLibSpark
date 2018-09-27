@@ -518,7 +518,7 @@ def __charge_gene_vs_pathway_file (infile):
 
 def annotate_target_genes_with_KEGGpathway (gene_vs_pathway_file, rep_output, appId):
   d_gene_pathway = __charge_gene_vs_pathway_file (gene_vs_pathway_file)
-  infile = rep_output + appId + '_mirna_and_top5scoredTargets.txt'
+  infile = rep_output + appId + '_mirna_and_topscoredTargets.txt'
   outfile = rep_output + appId + '_mirna_and_topscoredTargetsKEGGpathway.txt'
   fh_out = open (outfile, 'w')
   newDATA = []
