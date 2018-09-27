@@ -510,8 +510,8 @@ def __charge_gene_vs_pathway_file (infile):
   for i in DATA:
     gene = i[0]
     p = i[1]
-    if gene not in d_gene_pathway.keys(): d_gene_pathway[gene] = p
-    else: d_gene_pathway[gene] += ',' + p
+    if gene not in d_gene_pathway.keys(): d_gene_pathway[gene] = p.split(' (')[0]
+    else: d_gene_pathway[gene] += ',' + p.split(' (')[0]
   return d_gene_pathway
 
 def annotate_target_genes_with_KEGGpathway (gene_vs_pathway_file, rep_output, appId):
@@ -528,7 +528,7 @@ def annotate_target_genes_with_KEGGpathway (gene_vs_pathway_file, rep_output, ap
       genes = j.split(',')
       geneAnnotation = []
       for g in genes: 
-        p = d_gene_pathway[g].split(' (')[0]
+        p = d_gene_pathway[g]
         geneAnnotation.append(p)
       data.append( ','.join(geneAnnotation) )
     newDATA.append(data)
