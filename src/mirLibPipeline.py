@@ -431,20 +431,21 @@ if __name__ == '__main__' :
   ## out: ('miRNAseq', zipindex)
   distResultSmallRNA_rdd = master_predicted_distinctMiRNAs_rdd.zipWithIndex() 
 
+
+  #= varna
+  varna_obj = mru.prog_varna(appId, rep_output) 
+
   ## in:  ( 'seq', [...] ) 
   ## mid: [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq] 
   ## out : [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
   Precursor_rdd = sc.parallelize(broadcastVar_Precursor.value, partition)
   
-  #= varna
-  varna_obj = mru.prog_varna(appId, rep_output) 
-  
   ## in : [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
   ## out : ([miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore], zipindex)
   VARNA_rdd = Precursor_rdd.zipWithIndex()\
                                .map(varna_obj.run_VARNA)
-  indexVis = VARNA_rdd.collect()
-  ut.write_index (indexVis, rep_output, appId)
+  #indexVis = VARNA_rdd.collect()
+  #ut.write_index (indexVis, rep_output, appId)
 
   
   #= miranda
@@ -457,9 +458,9 @@ if __name__ == '__main__' :
 
   ## in: ('miRNAseq', [[targetgene1 and its scores], [targetgene2 and its scores]])
   ## out:( 'targetgene' )
-  master_distinctTG = miranda_rdd.map(lambda e: [  i[0].split('.')[0] for i in e[1]  ])\
+  #master_distinctTG = miranda_rdd.map(lambda e: [  i[0].split('.')[0] for i in e[1]  ])\
                                  .reduce(lambda a, b: a+b)
-  master_distinctTG = sorted(list(set(master_distinctTG)))
+  #master_distinctTG = sorted(list(set(master_distinctTG)))
   #print( master_distinctTG )
 
   #= KEGG annotation
