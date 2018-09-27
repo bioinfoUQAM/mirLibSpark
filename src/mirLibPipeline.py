@@ -124,7 +124,6 @@ if __name__ == '__main__' :
   ut.makedirs_reps (reps)
 
   #= addFile
-  #sc.addFile(known_non)
   sc.addPyFile(project_path + '/src/utils.py')
   sc.addPyFile(project_path + '/src/mirLibRules.py')
   sc.addFile(project_path + '/src/eval_mircheck.pl')
@@ -166,7 +165,7 @@ if __name__ == '__main__' :
   print('==============================================================\n')
   print('begin time:', datetime.datetime.now())
   #'''
-  libRESULTS = [] ## update 180923
+  libRESULTS = [] 
   for infile in infiles :
     if infile[-1:] == '~': continue
     print ("--Processing of the library: ", infile)
@@ -174,14 +173,12 @@ if __name__ == '__main__' :
     inBasename = os.path.splitext(infile)[0] #= lib name
     infile = rep_input+infile
     inKvfile = rep_tmp + inBasename + '.kv.txt'
-
-    # hdfsFile = inBasename + '.hkv.txt'
+    # hdfsFile = inBasename + '.hkv.txt' #= spark will take care of textFile() and pass it through hdfs, so no need this line
 
     if input_type == 'd': #= fastq
       ut.convert_fastq_file_to_KeyValue(infile, inKvfile)
       infile = inKvfile
       
-    #
     print ("  Start of the processing...", end="\n")
     startLib = time.time()
     
@@ -192,7 +189,7 @@ if __name__ == '__main__' :
     ##      (c) u'>name1\nseq1', u'>name2\nseq2', u'>name3\nseq1',
     ##      (d) u'seq\tquality'
     distFile_rdd = sc.textFile("file:///" + infile, partition) #= partition is 2 if not set 
-    #print('NB distFile_rdd: ', len(distFile_rdd.collect()))#
+    print('NB distFile_rdd: ', distFile_rdd.count())#
 
     #= Unify different input formats to "seq freq" elements
     if input_type == 'a': #= raw
@@ -431,7 +428,7 @@ if __name__ == '__main__' :
   ## out: ('miRNAseq', zipindex)
   distResultSmallRNA_rdd = master_predicted_distinctMiRNAs_rdd.zipWithIndex() 
 
-  '''
+  #'''
   #= varna
   varna_obj = mru.prog_varna(appId, rep_output) 
 
@@ -446,7 +443,7 @@ if __name__ == '__main__' :
                                .map(varna_obj.run_VARNA)
   indexVis = VARNA_rdd.collect()
   ut.write_index (indexVis, rep_output, appId)
-  '''
+  #'''
   
   #= miranda
   ## in : ('miRNAseq', zipindex)
@@ -455,14 +452,14 @@ if __name__ == '__main__' :
   mirna_and_targets = miranda_rdd.collect()
   ut.writeTargetsToFile (mirna_and_targets, rep_output, appId)
 
-  '''
+  #'''
   ## in: ('miRNAseq', [[targetgene1 and its scores], [targetgene2 and its scores]])
   ## out:( 'targetgene' )
   master_distinctTG = miranda_rdd.map(lambda e: [  i[0].split('.')[0] for i in e[1]  ])\
                                  .reduce(lambda a, b: a+b)
   master_distinctTG = sorted(list(set(master_distinctTG)))
   print( master_distinctTG )
-  '''
+  #'''
 
   #= KEGG annotation
   ut.annotate_target_genes_with_KEGGpathway (gene_vs_pathway_file, rep_output, appId)
@@ -479,6 +476,7 @@ if __name__ == '__main__' :
   sr_short_rdd.unpersist()
   mergebowtie_rdd.unpersist()
   mergeChromosomesResults_rdd.unpersist()
+  broadcastVar_d_ncRNA_CDS.unpersist()
   broadcastVar_bowtie_chromo_strand.unpersist()
   broadcastVar_libRESULTS.unpersist()
   broadcastVar_Precursor.unpersist()
@@ -492,7 +490,6 @@ if __name__ == '__main__' :
 
 
   #os.system('rm -fr ' + rep_tmp)
-#note: shorten pipeline switch ==> replace #'''#!!# ==> '''#!!#
 
 
 
