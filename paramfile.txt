@@ -42,11 +42,11 @@ project_path=/home/cloudera/workspace/mirLibSpark/
 input_path=/home/cloudera/workspace/mirLibSpark/input/
 output_path=/home/cloudera/workspace/mirLibSpark/output/
 #
-genome_path=/home/cloudera/workspace/mirLibSpark/dbs/ATH/Genome/
-b_index_path=/home/cloudera/workspace/mirLibSpark/dbs/ATH/bowtie_split_index/
-target_file=/home/cloudera/workspace/mirLibSpark/dbs/ATH/TAIR10_cdna_20101214_updated.fasta
-known_non_file=/home/cloudera/workspace/mirLibSpark/dbs/ATH/TAIR10_ncRNA_CDS.gff
-gene_vs_pathway_file=/home/cloudera/workspace/mirLibSpark/dbs/ATH/ath_gene_vs_pathway.txt
+genome_path=/home/cloudera/workspace/mirLibSpark/dbs/ATH_TAIR10/Genome/
+b_index_path=/home/cloudera/workspace/mirLibSpark/dbs/ATH_TAIR10/bowtie_split_index/
+target_file=/home/cloudera/workspace/mirLibSpark/dbs/ATH_TAIR10/TAIR10_cdna_20101214_updated.fasta
+known_non_file=/home/cloudera/workspace/mirLibSpark/dbs/ATH_TAIR10/TAIR10_ncRNA_CDS.gff
+gene_vs_pathway_file=/home/cloudera/workspace/mirLibSpark/dbs/ATH_TAIR10/ath_gene_vs_pathway.txt
 #
 #
 #==================== User needs to define

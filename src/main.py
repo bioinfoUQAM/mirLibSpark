@@ -49,12 +49,10 @@ cmd = 'free -m';os.system(cmd)
 
 
 
-#cmd = 'mv ../output/* ../output_depo/'
-#os.system(cmd)
+#cmd = 'mv ../output/* ../output_depo/';os.system(cmd)
 
 
-#cmd = 'free -m' #= to check memory
-#os.system(cmd)
+#cmd = 'free -m' #= to check memory;os.system(cmd)
 
 
 
@@ -69,7 +67,8 @@ cmd = 'free -m';os.system(cmd)
 #  cmd = 'git branch -D ' + b
 #  os.system(cmd)
 
-
+#= download zip
+#cmd = 'curl -O http://remote-server-IP/file.zip';os.system(cmd)
 
 
 
