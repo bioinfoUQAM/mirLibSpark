@@ -534,8 +534,8 @@ def annotate_target_genes_with_KEGGpathway (gene_vs_pathway_file, rep_output, ap
           geneAnnotation.append(p)
       data.append( ','.join(geneAnnotation) )
     newDATA.append(data)
-  for k, v in newDATA.items():
-    line = k + '\t' + '\t'.join(v)
+  for i in newDATA:
+    line = '\t'.join(v)
     print >> fh_out, line
   fh_out.close()
 
