@@ -33,7 +33,6 @@ def transpose_txt(infile, outfile):
             print(y+'\t', end='', file=fho)
             #print >>fho, y+'\t', # the comma in the final signals not to print a new line in python2.x
         print('', file=fho)
-        #print >>fho, ''
 		
 def makedirs_reps (reps):
   for rep in reps:
@@ -82,7 +81,6 @@ def covert_fasta_to_KeyValue(infile, outfile):
       dict_sRNA[key] = value
   fh_out = open (outfile, 'w')
   for k, v in dict_sRNA.items():
-      #print >>fh_out, k + ':' + v
       print (k + ':' + v, file=fh_out)
   fh_out.close()
 
@@ -102,7 +100,6 @@ def convert_seq_freq_file_to_KeyValue(infile, outfile, v_sep):
     #= check if the read was treated before (redundancy)
     if data[0] not in dict_sRNA:
       dict_sRNA[data[0]] = 1
-      #print >>fh_out, value
       print (value, file=fh_out)
       
   fh.close()
@@ -124,11 +121,9 @@ def convert_fastq_file_to_KeyValue(infile, outfile):
       continue
     elif i == 2:
       seq = line.rstrip('\n')
-      #print >>fh_out, seq
       i += 1
     else:
       quality = line.rstrip('\n')
-      #print >>fh_out, seq + '\t' + quality
       print (seq + '\t' + quality, file=fh_out)
       i = 1
       continue
@@ -270,7 +265,6 @@ def writeToFile (results, outfile):
 
     ## result out:
     line = '\t'.join('miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq'.split(', ')) 
-    #print >> fh_out, line
     print(line, file=fh_out)
 
     seen = []
@@ -304,11 +298,9 @@ def writeToFile (results, outfile):
       seeing = ''.join([str(x) for x in [miRNAseq, strand, chromo, posChr, mkPred, len(preSeq), posMirPre, newfbstart, newfbstop, mpPred, mpScore]])
       if seeing in seen: continue
       else: seen.append(seeing)
-      #data = [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, preSeq, posMirPre, preFold, mpPred, mpScore, totalFrq]
-      data = [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq] ##update
+      data = [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq] 
 
       line = '\t'.join([str(d) for d in data])
-      #print >> fh_out, line
       print(line, file=fh_out)
     fh_out.close()
 
@@ -321,41 +313,28 @@ def writeTimeLibToFile (timeDict, outfile, appId, paramDict):
   totalTimeSec = format(totalTimeSec, '.3f')
   
   fh_out = open (outfile, 'w')
-  
-  #print >> fh_out, datetime.datetime.now()
   print(datetime.datetime.now(), file=fh_out)
-
-  #print >> fh_out, "# Application ID " + appId +"\n"
   print("# Application ID " + appId +"\n", file=fh_out)
-
-  #print >> fh_out, "Total \t"+totalTimeHMS+ "\t" + totalTimeSec
   print("Total \t"+totalTimeHMS+ "\t" + totalTimeSec, file=fh_out)
-
 
   for lib in timeDict :
     timeLibSec = timeDict[lib]
     timeLibHMS = str(datetime.timedelta(seconds=timeLibSec))
     timeLibSec = format(timeLibSec, '.3f')
-    
-    #print >> fh_out, "Lib "+lib+"\t"+timeLibHMS+"\t"+timeLibSec
     print("Lib "+lib+"\t"+timeLibHMS+"\t"+timeLibSec, file=fh_out)
     print ("Lib "+lib+"\t"+timeLibHMS+"\t"+timeLibSec) #= stdout
   
-  #print >> fh_out, "\n# SPARK configuration:"
   print("\n# SPARK configuration:", file=fh_out)
 
   for key in paramDict :
     if key.startswith("sc_"):
-      #print >> fh_out, "# " + key + ": " + paramDict[key]
       print("# " + key + ": " + paramDict[key], file=fh_out)
 
 
-  #print >> fh_out, "\n# MirLibSpark configuration:"
   print("\n# MirLibSpark configuration:", file=fh_out)
 
   for key in sorted(paramDict.keys()) :
     if not key.startswith("sc_"):
-      #print >> fh_out, "# " + key + ": " + paramDict[key]
       print("# " + key + ": " + paramDict[key], file=fh_out)
 
 
@@ -445,10 +424,7 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
 
   seqListLine = 'miRNA\t' + '\t'.join(master_predicted_distinctMiRNAs)
 
-  #print >> fh_out, seqListLine
   print(seqListLine, file=fh_out)
-
-  #print >> fh_out2, seqListLine
   print(seqListLine, file=fh_out2)
 
   for k in sorted(dictLibSeqFreq.keys()):
@@ -456,7 +432,6 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
     line = k + '\t'
     for i in v: line += str(i) + '\t'
     line = line.rstrip('\t')
-    #print >> fh_out, line
     print(line, file=fh_out)
 
 
@@ -467,7 +442,6 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
       if i > 0: i = 1
       line += str(i) + '\t'
     line = line.rstrip('\t')
-    #print >> fh_out2, line
     print(line, file=fh_out2)
 
 
@@ -505,7 +479,6 @@ def writeTargetsToFile (mirna_and_targets, rep_output, appId):
   topKscored = 5
 
   for i in mirna_and_targets:
-    #print >> fh_out, i[0], i[1], str(i[2]).zfill(4)
     print(i[0], i[1], str(i[2]).zfill(4), file=fh_out2)
 
 
@@ -527,7 +500,6 @@ def writeTargetsToFile (mirna_and_targets, rep_output, appId):
     #data = [mirnaseq, targetcollect[0], ','.join(targetcollect)]
     data = [mirnaseq, ','.join(targetcollect)]
     line = '\t'.join(data)
-    #print >> fh_out2, line
     print(line, file=fh_out2)
 
 
@@ -566,7 +538,6 @@ def annotate_target_genes_with_KEGGpathway (gene_vs_pathway_file, rep_output, ap
     newDATA.append(data)
   for i in newDATA:
     line = '\t'.join(i)
-    #print >> fh_out, line
     print(line, file=fh_out)
 
   fh_out.close()
@@ -584,7 +555,6 @@ def write_index (data, rep_output, appId):
   for i in data:
     i[0] = str(i[0]).zfill(4)
     line = '\t'.join( [str(x) for x in i] )
-    #print >> fh_out, line
     print(line, file=fh_out)
 
   fh_out.close()
@@ -596,23 +566,6 @@ def write_html (DATA, rep_output, appId):
   infile = rep_output + appId + '_precursorindex.txt'
   outfile = rep_output + appId +'_precursorindex.html'
   fh_out=open(outfile,'w')
-  '''
-  l='<html>\n<head>\n<style>';print >> fh_out, l
-  l='table{\nfont-family:arial,sans-serif;\nborder-collapse:collapse;\nwidth:90%;\nmargin:auto;\n}';print >> fh_out, l
-  l='td,th{\nborder:1pxsolid#dddddd;\ntext-align:left;\npadding:8px;\nmax-width:200px;\nword-break:break-all;\n}';print >> fh_out, l
-  l='tr:nth-child(even){background-color:#dddddd;}';print >> fh_out, l
-  l='img.heightSet{max-width:100px;max-height:200px;}';print >> fh_out, l
-  l='img:hover{box-shadow:002px1pxrgba(0,140,186,0.5);}';print >> fh_out, l
-  l='</style></head><body>';print >> fh_out, l
-  l='<div GenomicPre><h2>miRNAs and their genomic precursors</h2><table>';print >> fh_out, l
-  l='  <tr>';print >> fh_out, l
-  l='    <th>Serial</th>';print >> fh_out, l
-  #l='    <th>NewID</th>';print >> fh_out, l
-  l='    <th>image</th>';print >> fh_out, l
-  l='    <th>miRNA.pre-miRNA.Structure</th>';print >> fh_out, l
-  l='    <th>Coordination</th>';print >> fh_out, l
-  l='  </tr>';print >> fh_out, l
-  '''
 
   l='<html>\n<head>\n<style>';print(l, file=fh_out)
   l='table{\nfont-family:arial,sans-serif;\nborder-collapse:collapse;\nwidth:90%;\nmargin:auto;\n}';print(l, file=fh_out)
@@ -645,26 +598,6 @@ def write_html (DATA, rep_output, appId):
     strand = i[2]
  
     path = rep_output + appId + '_' + serial.zfill(4) + '_' + chromo + '_' + poschromo + '.jpg'
-    '''
-    l='  <tr>';print >> fh_out, l
-    l="    <td rowspan=3 style='width: 120px;'><strong>"+ serial + "</strong></td>";print >> fh_out, l
-    #l="    <td rowspan=3 style='width: 120px;'>"+newid+"</td>";print >> fh_out, l
-    l="    <td rowspan=3 > <a href="+ path + " target='_blank'><img class='heightSet' src="+ path + " alt='Struture'></a></td>";print >> fh_out, l
-    l="    <td style='width: 400px;'>"+ mirna + "</td>";print >> fh_out, l
-    l="    <td>"+ chromo + ":"+ poschromo + " ["+ strand + "] </td>";print >> fh_out, l
-    l="  </tr>";print >> fh_out, l
-    l="  <tr>";print >> fh_out, l
-    l="    <td colspan=2 style='font-family:monospace'>"+ preseq + "</td>";print >> fh_out, l
-    l="  </tr>";print >> fh_out, l
-    l="  <tr>";print >> fh_out, l
-    l="    <td colspan=2 style='font-family:monospace'>"+ structure + "</td>";print >> fh_out, l
-    l="  </tr>";print >> fh_out, l
-  ## loop end
-  
-  l="</table></div>";print >> fh_out, l
-  l="</body></html>";print >> fh_out, l
-  '''
-
 
     l='  <tr>';print(l, file=fh_out)
     l="    <td rowspan=3 style='width: 120px;'><strong>"+ serial + "</strong></td>";print(l, file=fh_out)
