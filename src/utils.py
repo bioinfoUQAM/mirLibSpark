@@ -487,9 +487,11 @@ def writeTargetsToFile (mirna_and_targets, rep_output, appId):
     score = 1000000000000
     count = 0
     for t in i[1]:
-      target_miranda = t.strip('\'').split('\', \'')
-      target = target_miranda[0].split('.')[0]
-      score_cur = int(target_miranda[1].split('.')[0])
+      #target_miranda = t.strip('\'').split('\', \'')
+      #target = target_miranda[0].split('.')[0]
+      #score_cur = int(target_miranda[1].split('.')[0])
+      target = t[0]
+      score_cur = t[1]
       if score_cur < score:
         count += 1
         score = score_cur
