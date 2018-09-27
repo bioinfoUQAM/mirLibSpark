@@ -529,8 +529,9 @@ def annotate_target_genes_with_KEGGpathway (gene_vs_pathway_file, rep_output, ap
       geneAnnotation = []
       for g in genes:
         g = g.split(' (')[0].split('.')[0]
-        p = d_gene_pathway[g]
-        geneAnnotation.append(p)
+        if g in d_gene_pathway.keys(): 
+          p = d_gene_pathway[g]
+          geneAnnotation.append(p)
       data.append( ','.join(geneAnnotation) )
     newDATA.append(data)
   for k, v in newDATA.items():
