@@ -4,7 +4,7 @@ import os
 
 #cmd = 'python purge.py';os.system (cmd)
 
-cmd = 'git pull origin refactor';os.system (cmd)
+#cmd = 'git pull origin refactor';os.system (cmd)
 
 
 
@@ -17,9 +17,9 @@ cmd = 'rm -f ../input/100.txt';os.system(cmd)
 
 
 
-cmd = 'git add -f ../output/*';os.system(cmd)
-cmd = 'git commit -m "save a copy of output"';os.system(cmd)
-cmd = 'git push origin refactor';os.system(cmd)
+#cmd = 'git add -f ../output/*';os.system(cmd)
+#cmd = 'git commit -m "save a copy of output"';os.system(cmd)
+#cmd = 'git push origin refactor';os.system(cmd)
 
 cmd = 'git remote prune origin';os.system(cmd)
 #cmd = 'git branch -D utilspython3';os.system(cmd)
