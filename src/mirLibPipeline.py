@@ -431,7 +431,7 @@ if __name__ == '__main__' :
   ## out: ('miRNAseq', zipindex)
   distResultSmallRNA_rdd = master_predicted_distinctMiRNAs_rdd.zipWithIndex() 
 
-
+  '''
   #= varna
   varna_obj = mru.prog_varna(appId, rep_output) 
 
@@ -444,9 +444,9 @@ if __name__ == '__main__' :
   ## out : ([miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore], zipindex)
   VARNA_rdd = Precursor_rdd.zipWithIndex()\
                                .map(varna_obj.run_VARNA)
-  #indexVis = VARNA_rdd.collect()
-  #ut.write_index (indexVis, rep_output, appId)
-
+  indexVis = VARNA_rdd.collect()
+  ut.write_index (indexVis, rep_output, appId)
+  '''
   
   #= miranda
   ## in : ('miRNAseq', zipindex)
@@ -455,13 +455,14 @@ if __name__ == '__main__' :
   mirna_and_targets = miranda_rdd.collect()
   ut.writeTargetsToFile (mirna_and_targets, rep_output, appId)
 
-
+  '''
   ## in: ('miRNAseq', [[targetgene1 and its scores], [targetgene2 and its scores]])
   ## out:( 'targetgene' )
-  #master_distinctTG = miranda_rdd.map(lambda e: [  i[0].split('.')[0] for i in e[1]  ])\
+  master_distinctTG = miranda_rdd.map(lambda e: [  i[0].split('.')[0] for i in e[1]  ])\
                                  .reduce(lambda a, b: a+b)
-  #master_distinctTG = sorted(list(set(master_distinctTG)))
-  #print( master_distinctTG )
+  master_distinctTG = sorted(list(set(master_distinctTG)))
+  print( master_distinctTG )
+  '''
 
   #= KEGG annotation
   ut.annotate_target_genes_with_KEGGpathway (gene_vs_pathway_file, rep_output, appId)
