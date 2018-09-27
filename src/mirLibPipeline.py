@@ -52,7 +52,8 @@ if __name__ == '__main__' :
   sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, execCores)
 
   #= Spark application ID
-  appId = str(sc.applicationId)
+  broadcastVar_appId = sc.broadcast(str(sc.applicationId))
+  appId = broadcastVar_appId.value
 
   #= broadcast paramDict
   broadcastVar_paramDict = sc.broadcast(paramDict)
@@ -113,6 +114,9 @@ if __name__ == '__main__' :
   Max_Energy_cutoff = paramDict['Max_Energy_cutoff'] #= NOT WORKING YET
   Gap_Penalty = paramDict['Gap_Penalty']
   nbTargets = paramDict['nbTargets']
+
+  #= KEGG annotation
+  gene_vs_pathway_file =  paramDict['gene_vs_pathway_file']
   #= end of paramDict naming =================================================================================
 
   #= make required folders if not exist
@@ -457,10 +461,17 @@ if __name__ == '__main__' :
                                  .reduce(lambda a, b: a+b)
   master_distinctTG = sorted(list(set(master_distinctTG)))
   #print( master_distinctTG )
+
+  #= KEGG annotation
+  ut.annotate_target_genes_with_KEGGpathway (gene_vs_pathway_file, rep_output, appId)
+
+
+
   print('test end of pipeline', datetime.datetime.now())
 
   
   #= clear caches (memory leak)
+  broadcastVar_appId.unpersist()
   broadcastVar_paramDict.unpersist()
   dmask_rdd.unpersist()
   sr_short_rdd.unpersist()
