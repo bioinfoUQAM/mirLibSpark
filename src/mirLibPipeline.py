@@ -464,10 +464,6 @@ if __name__ == '__main__' :
   #= KEGG annotation
   ut.annotate_target_genes_with_KEGGpathway (gene_vs_pathway_file, rep_output, appId)
 
-
-
-  #print('test end of pipeline', datetime.datetime.now())
-
   
   #= clear caches (memory leak)
   broadcastVar_appId.unpersist()
