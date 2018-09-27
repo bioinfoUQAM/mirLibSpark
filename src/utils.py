@@ -492,7 +492,7 @@ def writeTargetsToFile (mirna_and_targets, rep_output, appId):
         count += 1
         score = score_cur
       if count < (topKscored +1) and target not in seen:
-        targetcollect.append( target + ' ('+ str(score_cur) +')' )
+        targetcollect.append( target + ' ('+ str(score_cur).split('.')[0] +')' )
         seen.append(target)
     #data = [mirnaseq, targetcollect[0], ','.join(targetcollect)]
     data = [mirnaseq, ','.join(targetcollect)]

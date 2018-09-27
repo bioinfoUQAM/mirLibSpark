@@ -160,9 +160,9 @@ if __name__ == '__main__' :
   #sc.setCheckpointDir(rep_output)
     
   print('\n====================== mirLibSpark =========================')
-  print('====================== ' + appId + ' =========================\n')
+  print('====================== ' + appId + ' ==================\n')
   #for k, v in paramDict.items(): print(k, ': ', v)
-  print('==============================================================\n')
+  print('============================================================\n')
   print('begin time:', datetime.datetime.now())
   #'''
   libRESULTS = [] 
@@ -482,7 +482,7 @@ if __name__ == '__main__' :
   #= end of spark context
   sc.stop() #= allow to run multiple SparkContexts
   print('finish time:', datetime.datetime.now())
-  print('====================== End of ' + appId + ' =========================\n')
+  print('====================== End of ' + appId + ' =============\n')
 
 
   #os.system('rm -fr ' + rep_tmp)
