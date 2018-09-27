@@ -646,8 +646,4 @@ def get_nonMirna_list (infile, genome_path):
       l_non_miRNA.append(seq)
   return l_non_miRNA
 
-def createFile_KnownNonMiRNA_from_TAIR10data (infile = 'TAIR10_GFF3_genes.gff', outfile = 'TAIR10_ncRNA_CDS.gff'):
-  ''' this function is not used in the pipeline, but users may use it to obtain their own KnonNonMiRNA from TAIR '''
-  os.system("grep -E 'CDS|rRNA|snoRNA|snRNA|tRNA' " + infile + ' > ' + outfile)
-
 
