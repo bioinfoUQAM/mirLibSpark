@@ -271,7 +271,7 @@ def writeToFile (results, outfile):
     line = '\t'.join('miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq'.split(', ')) 
     print >> fh_out, line
 
-
+    seen = []
     for elem in results :
       miRNAseq = elem[0]
       frq = elem[1][0]
@@ -299,7 +299,9 @@ def writeToFile (results, outfile):
       #= premirna_range_total_small_rna_freq
       totalFrq =  elem[1][5]
       
-
+      seeing = ''.join([str(x) for x in [miRNAseq, strand, chromo, posChr, mkPred, len(preSeq), posMirPre, newfbstart, newfbstop, mpPred, mpScore]])
+      if seeing in seen: continue
+      else: seen.append(seeing)
       #data = [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, preSeq, posMirPre, preFold, mpPred, mpScore, totalFrq]
       data = [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq] ##update
 
