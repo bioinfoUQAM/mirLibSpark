@@ -30,7 +30,7 @@ def transpose_txt(infile, outfile):
     fho = open (outfile, 'w')
     for x in zip(*lis):
         for y in x:
-            print(y+'\t', end='', file=fho, flush=True)
+            print(y+'\t', end='', file=fho)
             #print >>fho, y+'\t', # the comma in the final signals not to print a new line in python2.x
         print('', file=fho)
         #print >>fho, ''
