@@ -189,7 +189,7 @@ if __name__ == '__main__' :
     ##      (c) u'>name1\nseq1', u'>name2\nseq2', u'>name3\nseq1',
     ##      (d) u'seq\tquality'
     distFile_rdd = sc.textFile("file:///" + infile, partition) #= partition is 2 if not set 
-    print('NB distFile_rdd: ', distFile_rdd.count())#
+    #print('NB distFile_rdd: ', distFile_rdd.count())#
 
     #= Unify different input formats to "seq freq" elements
     if input_type == 'a': #= raw
@@ -227,13 +227,13 @@ if __name__ == '__main__' :
     ## in : ('seq', freq)
     ## out: ('seq', freq)
     sr_low_rdd = collapse_rdd.filter(lambda e: int(e[1]) > limit_srna_freq)
-    #print('NB sr_low_rdd: ', len(sr_low_rdd.collect()))####################################################
+    #print('NB sr_low_rdd: ', sr_low_rdd.count())####################################################
     
     #= Filtering short length
     ## in : ('seq', freq)
     ## out: ('seq', freq)
     sr_short_rdd = sr_low_rdd.filter(lambda e: len(e[0]) > limit_len).persist()  # TO KEEP IT
-    #print('NB sr_short_rdd: ', len(sr_short_rdd.collect()))###################################################
+    #print('NB sr_short_rdd: ', sr_short_rdd.count())###################################################
     
     #= Filtering with DustMasker
     ## in : ('seq', freq)
@@ -243,7 +243,7 @@ if __name__ == '__main__' :
                             .filter(lambda e: e.isupper() and not e.startswith('>'))\
                             .map(lambda e: str(e.rstrip()))\
                             .persist()
-    #print('NB dmask_rdd: ', len(dmask_rdd.collect()))############################################
+    #print('NB dmask_rdd: ', dmask_rdd.count())############################################
 
     mergebowtie_rdd = sc.emptyRDD()
     for i in range(len(chromosomes)):
@@ -277,7 +277,7 @@ if __name__ == '__main__' :
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     bowFrq_rdd = mergebowtie_rdd.join(sr_short_rdd)\
                            .map(bowtie_obj.bowtie_freq_rearrange_rule)
-    #print('NB bowFrq_rdd: ', len(bowFrq_rdd.collect()))############################################ 
+    #print('NB bowFrq_rdd: ', bowFrq_rdd.count())############################################ 
     #180921 fake_a.txt takes 17 secs till this step, option chromo=All
     #180921 100.txt takes 23 secs till this step, option chromo=All
 
@@ -290,21 +290,21 @@ if __name__ == '__main__' :
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     mr_low_rdd = bowFrq_rdd.filter(lambda e: e[1][0] > limit_mrna_freq)
-    #print('NB mr_low_rdd: ', len(mr_low_rdd.collect()))##################################################
+    #print('NB mr_low_rdd: ', mr_low_rdd.count())##################################################
     
     #= Filtering high nbLocations and zero location
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     nbLoc_rdd = mr_low_rdd.filter(lambda e: e[1][1] > 0 and e[1][1] < limit_nbLoc)
-    #print('NB nbLoc_rdd: ', len(nbLoc_rdd.collect()))###################################################
+    #print('NB nbLoc_rdd: ', nbLoc_rdd.count())###################################################
     
     
     #= Flatmap the RDD
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr])
     flat_rdd = nbLoc_rdd.flatMap(mru.flatmap_mappings)
-    #print('NB flat_rdd distinct (this step flats elements): ', len(flat_rdd.groupByKey().collect()))##################
-    #print('NB flat_rdd not distinct: ', len(flat_rdd.collect()))##################
+    #print('NB flat_rdd distinct (this step flats elements): ', flat_rdd.groupByKey().count())##################
+    #print('NB flat_rdd not distinct: ', flat_rdd.count())##################
 
     ###############################
     ## Filtering known non-miRNA ##
@@ -313,7 +313,7 @@ if __name__ == '__main__' :
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr])
     #excluKnownNon_rdd = flat_rdd.repartition(100).filter(kn_obj.knFilterByCoor)
     excluKnownNon_rdd = flat_rdd.filter(kn_obj.knFilterByCoor)
-    #print('excluKnownNon_rdd distinct: ', len(excluKnownNon_rdd.groupByKey().collect()))########
+    #print('excluKnownNon_rdd distinct: ', excluKnownNon_rdd.groupByKey().count())########
     
 
     mergeChromosomesResults_rdd = sc.emptyRDD()
@@ -343,7 +343,7 @@ if __name__ == '__main__' :
       ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
       pri_vld_rdd = pri_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 3))\
                                 .filter(lambda e: any(e[1][3]))
-      #print('NB pri_vld_rdd distinct (mircheck): ', len(pri_vld_rdd.groupByKey().collect()))##
+      #print('NB pri_vld_rdd distinct (mircheck): ', pri_vld_rdd.groupByKey().count())##
 
       #= Filtering structure with branched loop
       ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
@@ -362,7 +362,7 @@ if __name__ == '__main__' :
       #================================================================================================================
       mergeChromosomesResults_rdd = mergeChromosomesResults_rdd.union(premir_rdd).persist()#.checkpoint()
       broadcastVar_genome.unpersist()
-    #print('mergeChromosomesResults: ', len(mergeChromosomesResults_rdd.collect()))######## 
+    #print('mergeChromosomesResults: ', mergeChromosomesResults_rdd.count())######## 
     #180921 fake_a.txt takes 42 secs to run till this line (All chromo)
     #180921 fake_a.txt takes 307 secs to run till this line (split chromo)
 
@@ -377,7 +377,7 @@ if __name__ == '__main__' :
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mkPred','mkStart','mkStop']])
     #pre_vld_rdd0 = pre_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 4))\
                               #.filter(lambda e: any(e[1][4]))
-    #print('NB pre_vld_rdd0 distinct (mircheck II): (', len(pre_vld_rdd0.groupByKey().collect()), ')')
+    #print('NB pre_vld_rdd0 distinct (mircheck II): (', pre_vld_rdd0.groupByKey().count()), ')')
 
     #= Validating pre-mirna with miRdup zipWithUniqueId
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold']])
@@ -385,7 +385,7 @@ if __name__ == '__main__' :
     pre_vld_rdd = pre_fold_rdd.zipWithIndex()\
                               .map(mirdup_obj.run_miRdup)\
                               .filter(lambda e: e[1][4][3] == "true")
-    #print('NB pre_vld_rdd distinct (mirdup): ', len(pre_vld_rdd.groupByKey().collect()))##
+    #print('NB pre_vld_rdd distinct (mirdup): ', pre_vld_rdd.groupByKey().count())##
 
     
     #= Filtering by expression profile (< 20%)
@@ -393,7 +393,7 @@ if __name__ == '__main__' :
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq])
     profile_rdd = pre_vld_rdd.map(lambda e: profile_obj.computeProfileFrq(e, broadcastVar_bowtie_chromo_strand.value))\
                              .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)
-    print('NB profile_rdd distinct: ', len(profile_rdd.groupByKey().collect()))##
+    print('NB profile_rdd distinct: ', profile_rdd.groupByKey().count())##
     libresults = profile_rdd.collect()
     libRESULTS.append( [inBasename, libresults] )
    
