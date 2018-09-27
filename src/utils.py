@@ -477,7 +477,7 @@ def writeTargetsToFile (mirna_and_targets, rep_output, appId):
   topKscored = 5
 
   for i in mirna_and_targets:
-    print(i[0], i[1], str(i[2]).zfill(4), file=fh_out2)
+    print(i[0], i[1], str(i[2]).zfill(4), file=fh_out)
 
     mirnaseq = i[0]
     mirna_uindex = i[2]
