@@ -452,7 +452,7 @@ if __name__ == '__main__' :
   mirna_and_targets = miranda_rdd.collect()
   ut.writeTargetsToFile (mirna_and_targets, rep_output, appId)
 
-  #'''
+  ''' ## I dont know what is the use of this, maybe there is no use...
   ## in: ('miRNAseq', [[targetgene1 and its scores], [targetgene2 and its scores]])
   ## out:( 'targetgene' )
   master_distinctTG = miranda_rdd.map(lambda e: [  i[0].split('.')[0] for i in e[1]  ])\
