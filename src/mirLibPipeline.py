@@ -52,8 +52,7 @@ if __name__ == '__main__' :
   sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, execCores)
 
   #= Spark application ID
-  broadcastVar_appId = sc.broadcast(str(sc.applicationId))
-  appId = broadcastVar_appId.value
+  appId = str(sc.applicationId)
 
   #= broadcast paramDict
   broadcastVar_paramDict = sc.broadcast(paramDict)
@@ -466,7 +465,6 @@ if __name__ == '__main__' :
 
   
   #= clear caches (memory leak)
-  broadcastVar_appId.unpersist()
   broadcastVar_paramDict.unpersist()
   dmask_rdd.unpersist()
   sr_short_rdd.unpersist()
