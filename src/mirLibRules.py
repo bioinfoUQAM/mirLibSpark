@@ -4,10 +4,7 @@ author: M.A.Remita
 author: Chao-Jung Wu
 date: 2017-03-28
 version: 1.00.02
-
-
 '''
-
 import subprocess as sbp
 import os
 import utils as ut
@@ -48,26 +45,10 @@ def distinctPrecursor_infos_select (elem):
   newelem = [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
   return newelem
 
-def distPrecursor_rdd_rearrange_rule (e):
-  ''' defunct 180923 '''
-  data = []
-  data.append(e[0])
-  for i in e[1]: data.append(i)
-  data.append(e[1][1])
-  return data
-
-
-  '''
-  rlt = [e[0]]
-  for i in range(len(e[1][:-1])):
-    rlt.append(i)
-  rlt.append(e[1][-1])
-  return rlt'''
-
 def rearrange_rule(kv_arg, kv_sep):
   '''
-  in : u'seq\tfreq'
-  out: ('seq', freq)
+  ## in : u'seq\tfreq'
+  ## out: ('seq', freq)
   '''
   tab = kv_arg.split(kv_sep)
   return (str(tab[0]), int(tab[1]))
@@ -75,7 +56,7 @@ def rearrange_rule(kv_arg, kv_sep):
 def rearrange_sam_rule(line):
   data = line.rstrip('\n').split('\t')
   chromo = data[2]
-  posChr = int(data[3]) - 1 #= because Dr Diallo's file is not zero based
+  posChr = int(data[3]) - 1 #= because SAM file is not zero based
   strand = data[4]
   if strand == '1': strand = '+'
   else: strand = '-'
@@ -125,10 +106,6 @@ class prog_bowtie ():
 
   def __init__(self, b_index):
     self.bowtie_index = b_index
-    
-    #= The object has to be initialized in the driver program 
-    #= to permit the capture of its env variables and pass them 
-    #= to the subprocess in the worker nodes
     self.env = os.environ
 
   def run_bowtie(self, seq):
@@ -464,8 +441,8 @@ class prog_miRanda ():
 
     ## NOTE before disable miranda (170714): need to modify the code to use options such as -sc, -en, -go, -ge, -quiet
     '''
-    #nbTargets = 15 #= names are like this atg1234.1, atg1234.2, so even collected 2 targets, in fact there is only 1. This needs to clean up later.
-
+    #= names are like this atg1234.1, atg1234.2, so even collected 2 targets, in fact there is only 1. 
+    #= This kind of duplicate has been resolved.
     miRNAseq = e[0]
 
 
@@ -488,9 +465,9 @@ class prog_miRanda ():
     #= because the first 30ish lines contain only program description
       if i[:3] == '>>x': 
         #= isTargteet == [Seq1, Seq2, Tot_Score, Tot_Energy, Max_Score, Max_Energy, Strand, Len1, Len2, Positions]
+        #= Seq2 is the name of target gene; Seq1 is the entry miRNA
         target_result = i.split('\t') 
         target_results.append(target_result[1:])
-        #target_results.append([target_result[1], target_result[9]]) #= only record gene and positions
 
     #= target_results == [[target1], [target2], ...]
     #= [['AT1G51370.2', '306.00', '-36.41', '153.00', '-20.70', '1', '23', '1118', ' 20 698']]
@@ -519,7 +496,6 @@ class prog_miRdup ():
     '''
     java -jar ../lib/miRdup_1.4/miRdup.jar -v ../lib/miRdup_1.4/testFiles/julie_sequencesToValidate2.txt -c ../lib/miRdup_1.4//model/Viridiplantae.model -r /usr/local/bin/
     '''
-
     tmp_file  = self.rep_tmp + 'mdup_'+ str(e[1]) +'.txt'
     pred_file = tmp_file+"."+self.modelName+".miRdup.txt"
     
@@ -618,9 +594,9 @@ if __name__ == '__main__' :
    #bowtie = prog_bowtie(values_sep, keyval_sep, b_index)
    #print(bowtie.run_bowtie('ATACGATCCAAGACGAGTCTCAAT'))
    mirCheck = prog_mirCheck(values_sep, keyval_sep)
-   #print mirCheck.run_mirCheck('test')
+   #print (mirCheck.run_mirCheck('test'))
    mirCheck.mirCheck_map_rule('test')
-   print mirCheck.mirCheck_filter_rule('test')
+   print (mirCheck.mirCheck_filter_rule('test'))
 
 '''
 http://stackoverflow.com/questions/30010939/python-subprocess-popen-error-no-such-file-or-directory

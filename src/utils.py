@@ -5,15 +5,15 @@ author: M.A.Remita
 date: 2017-03-25
 update: 2018-09-18
 version: 1.00.01
-'''
 
+support python3 print syntax
+'''
+from __future__ import print_function
 import os
 import re
 import subprocess
 import sys
 
-
-  
 
 def validate_options(paramDict):
   '''
@@ -32,10 +32,9 @@ def transpose_txt(infile, outfile):
     fho = open (outfile, 'w')
     for x in zip(*lis):
         for y in x:
-            #print(y+'\t', end='', file=fho, flush=True)
-            print >>fho, y+'\t', # the comma in the final signals not to print a new line in python2.x
-        #print('', file=fho)
-        print >>fho, ''
+            print(y+'\t', end='', file=fho)
+            #print >>fho, y+'\t', # the comma in the final signals not to print a new line in python2.x
+        print('', file=fho)
 		
 def makedirs_reps (reps):
   for rep in reps:
@@ -54,7 +53,7 @@ def pyspark_configuration(appMaster, appName, masterMemory, execMemory, execCore
   from pyspark import SparkConf, SparkContext
   myConf = SparkConf()
   myConf.setMaster(appMaster) #= 'local[2] or local[*]'
-  myConf.setAppName(appName)  #= 'mirLibHadoop'
+  myConf.setAppName(appName)  #= 'mirLibSpark'
   myConf.set("spark.driver.memory", masterMemory)
   myConf.set("spark.executor.memory", execMemory) #= '4g'
   myConf.set("spark.cores.max", execCores) 
@@ -64,16 +63,20 @@ def pyspark_configuration(appMaster, appName, masterMemory, execMemory, execCore
   #             "spark.default.parallelism"
   return SparkContext(conf = myConf)
 
-# Convert a file to hadoop file
-# defunct
 def convertTOhadoop(rfile, hdfsFile):
+  '''
+  Convert a file to hadoop file
+  defunct
+  '''
   print('if pre-existing in hdfs, the file would be deleted before the re-distribution of a new file with the same name.\n')
   os.system('hadoop fs -rm ' + hdfsFile) # force delete any pre-existing file in hdfs with the same name.
   os.system('hadoop fs -copyFromLocal ' + rfile + ' ' + hdfsFile)
 
-# Convert a fasta file into a key value file
-# defunct
 def covert_fasta_to_KeyValue(infile, outfile):
+  '''
+  Convert a fasta file into a key value file
+  defunct
+  '''
   fh = open (infile, 'r')
   DATA = fh.readlines()
   fh.close()
@@ -84,12 +87,14 @@ def covert_fasta_to_KeyValue(infile, outfile):
       dict_sRNA[key] = value
   fh_out = open (outfile, 'w')
   for k, v in dict_sRNA.items():
-      print >>fh_out, k + ':' + v
+      print (k + ':' + v, file=fh_out)
   fh_out.close()
 
-#= Convert a seq abundance file into a key value file
-# defunct
 def convert_seq_freq_file_to_KeyValue(infile, outfile, v_sep):
+  '''
+  Convert a seq abundance file into a key value file
+  defunct
+  '''
   fh = open (infile, 'r')
   fh_out = open (outfile, 'w')
 
@@ -103,7 +108,7 @@ def convert_seq_freq_file_to_KeyValue(infile, outfile, v_sep):
     #= check if the read was treated before (redundancy)
     if data[0] not in dict_sRNA:
       dict_sRNA[data[0]] = 1
-      print >>fh_out, value
+      print (value, file=fh_out)
       
   fh.close()
   fh_out.close()
@@ -124,11 +129,10 @@ def convert_fastq_file_to_KeyValue(infile, outfile):
       continue
     elif i == 2:
       seq = line.rstrip('\n')
-      #print >>fh_out, seq
       i += 1
     else:
       quality = line.rstrip('\n')
-      print >>fh_out, seq + '\t' + quality
+      print (seq + '\t' + quality, file=fh_out)
       i = 1
       continue
   fh.close()
@@ -168,7 +172,7 @@ def tr_U_T (seq):
   trantab = maketrans("U", "T")
   return seq.translate(trantab)
 
-#
+
 def getChromosomeName (file):
   desc = ""
   with open(file, "r") as fh:
@@ -186,11 +190,10 @@ def getFastaSeq (file):
     for line in fh :
       if not line.startswith(">"):
         seq = seq + line.rstrip("\n")
-  
   fh.close()
   return seq
 
-def getGenome_ (genome_path, file_ext):
+def getGenome__ (genome_path, file_ext):
   ''' defunct '''
   genome = dict()
   
@@ -204,29 +207,28 @@ def getGenome_ (genome_path, file_ext):
   return genome
 
 def getGenome (genome_path, file_ext, chromosomeName):
+  '''
+  modified version of original getGenome__()
+  this new function can take in either All as the entire genome, or one chromosome at a time.
+  this is a measure for reducing memory use
+  '''
   genome = dict()
-  
   if chromosomeName == 'All':
     files = [each for each in os.listdir(genome_path) if each.endswith(file_ext)]
   else:
     files = [ chromosomeName + file_ext]
-
   for namefile in files :
     file = genome_path+namefile
     chr = getChromosomeName(file)
     sequence = getFastaSeq(file)
     genome[chr] = sequence
-    
   return genome
-
 
 def readParam (paramfile, sep = '='):
   paramDict = {}
-  
   fh = open (paramfile, 'r')
   DATA = fh.readlines()
   fh.close()
-  
   for line in DATA:
     if line.startswith('message'): 
       msg = line.rstrip('\r\n')[8:].split('\\n')
@@ -234,7 +236,6 @@ def readParam (paramfile, sep = '='):
     elif not line.startswith("#"):
       data = line.rstrip('\r\n').split(sep)
       paramDict[data[0]] = data[1]
-  
   return paramDict
 
 def containsOnlyOneLoop (folding):
@@ -264,12 +265,12 @@ def containsOnlyOneLoop (folding):
 
 
 def writeToFile (results, outfile):
-    ## result in: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq]) 
+    ## in: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq]) 
     fh_out = open (outfile, 'w')
 
-    ## result out:
+    ## out:
     line = '\t'.join('miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq'.split(', ')) 
-    print >> fh_out, line
+    print(line, file=fh_out)
 
     seen = []
     for elem in results :
@@ -302,11 +303,10 @@ def writeToFile (results, outfile):
       seeing = ''.join([str(x) for x in [miRNAseq, strand, chromo, posChr, mkPred, len(preSeq), posMirPre, newfbstart, newfbstop, mpPred, mpScore]])
       if seeing in seen: continue
       else: seen.append(seeing)
-      #data = [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, preSeq, posMirPre, preFold, mpPred, mpScore, totalFrq]
-      data = [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq] ##update
+      data = [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq] 
 
       line = '\t'.join([str(d) for d in data])
-      print >> fh_out, line
+      print(line, file=fh_out)
     fh_out.close()
 
 
@@ -318,35 +318,34 @@ def writeTimeLibToFile (timeDict, outfile, appId, paramDict):
   totalTimeSec = format(totalTimeSec, '.3f')
   
   fh_out = open (outfile, 'w')
-  
-  print >> fh_out, datetime.datetime.now()
-  print >> fh_out, "# Application ID " + appId +"\n"
-  print >> fh_out, "Total \t"+totalTimeHMS+ "\t" + totalTimeSec
-  
+  print(datetime.datetime.now(), file=fh_out)
+  print("# Application ID " + appId +"\n", file=fh_out)
+  print("Total \t"+totalTimeHMS+ "\t" + totalTimeSec, file=fh_out)
+
   for lib in timeDict :
     timeLibSec = timeDict[lib]
     timeLibHMS = str(datetime.timedelta(seconds=timeLibSec))
     timeLibSec = format(timeLibSec, '.3f')
-    
-    print >> fh_out, "Lib "+lib+"\t"+timeLibHMS+"\t"+timeLibSec
+    print("Lib "+lib+"\t"+timeLibHMS+"\t"+timeLibSec, file=fh_out)
     print ("Lib "+lib+"\t"+timeLibHMS+"\t"+timeLibSec) #= stdout
   
-  print >> fh_out, "\n# SPARK configuration:"
+  print("\n# SPARK configuration:", file=fh_out)
+
   for key in paramDict :
     if key.startswith("sc_"):
-      print >> fh_out, "# " + key + ": " + paramDict[key]
+      print("# " + key + ": " + paramDict[key], file=fh_out)
 
-  print >> fh_out, "\n# MirLibSpark configuration:"
+  print("\n# MirLibSpark configuration:", file=fh_out)
+
   for key in sorted(paramDict.keys()) :
     if not key.startswith("sc_"):
-      print >> fh_out, "# " + key + ": " + paramDict[key]
-
-  
+      print("# " + key + ": " + paramDict[key], file=fh_out)
+ 
   fh_out.close()
 
 
 ###########################
-## WORK IN PROGRESS
+## WORK IN PROGRESS ==> precursor geno loci summary
 ###########################
 def writeSummaryExpressionToFile (infiles, rep_output, appId):
   '''
@@ -426,16 +425,15 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
       else: dictLibSeqFreq[libname].append(0)
 
   seqListLine = 'miRNA\t' + '\t'.join(master_predicted_distinctMiRNAs)
-
-  print >> fh_out, seqListLine
-  print >> fh_out2, seqListLine
+  print(seqListLine, file=fh_out)
+  print(seqListLine, file=fh_out2)
 
   for k in sorted(dictLibSeqFreq.keys()):
     v = dictLibSeqFreq[k]
     line = k + '\t'
     for i in v: line += str(i) + '\t'
     line = line.rstrip('\t')
-    print >> fh_out, line
+    print(line, file=fh_out)
 
   for k in sorted(dictLibSeqFreq.keys()):
     v = dictLibSeqFreq[k]
@@ -444,7 +442,7 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
       if i > 0: i = 1
       line += str(i) + '\t'
     line = line.rstrip('\t')
-    print >> fh_out2, line
+    print(line, file=fh_out2)
 
   master_distinctPrecursor_infos = []
   for k in sorted(tmp_master_distinctPrecursor_infos.keys()):
@@ -470,9 +468,8 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
 
 
 def writeTargetsToFile (mirna_and_targets, rep_output, appId):
-  '''
-  targets = [miRNAseq, [targets], mirnazipindex]
-  '''
+  ## in:  [miRNAseq, [targets], mirnazipindex]
+  ## out: [miRNAseq, t1,t2,t3,t4]
   outfile = rep_output + appId + '_mirna_and_targets.txt'
   fh_out = open (outfile, 'w')
   outfile2 = rep_output + appId + '_mirna_and_topscoredTargets.txt'
@@ -480,7 +477,7 @@ def writeTargetsToFile (mirna_and_targets, rep_output, appId):
   topKscored = 5
 
   for i in mirna_and_targets:
-    print >> fh_out, i[0], i[1], str(i[2]).zfill(4)
+    print(i[0], i[1], str(i[2]).zfill(4), file=fh_out)
 
     mirnaseq = i[0]
     mirna_uindex = i[2]
@@ -495,12 +492,12 @@ def writeTargetsToFile (mirna_and_targets, rep_output, appId):
         count += 1
         score = score_cur
       if count < (topKscored +1) and target not in seen:
-        targetcollect.append( target + ' ('+ str(score_cur) +')' )
+        targetcollect.append( target + ' ('+ str(score_cur).split('.')[0] +')' )
         seen.append(target)
     #data = [mirnaseq, targetcollect[0], ','.join(targetcollect)]
     data = [mirnaseq, ','.join(targetcollect)]
     line = '\t'.join(data)
-    print >> fh_out2, line
+    print(line, file=fh_out2)
 
   fh_out.close()
   fh_out2.close()
@@ -537,16 +534,9 @@ def annotate_target_genes_with_KEGGpathway (gene_vs_pathway_file, rep_output, ap
     newDATA.append(data)
   for i in newDATA:
     line = '\t'.join(i)
-    print >> fh_out, line
-    #print (line, file=fh_out)
+    print(line, file=fh_out)
   fh_out.close()
 
-
-
-
-
-#############################
-#############################
 def write_index (data, rep_output, appId):
   #=serial, miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore
   outfile = rep_output + appId + '_precursorindex.txt'
@@ -554,32 +544,30 @@ def write_index (data, rep_output, appId):
   for i in data:
     i[0] = str(i[0]).zfill(4)
     line = '\t'.join( [str(x) for x in i] )
-    print >> fh_out, line
+    print(line, file=fh_out)
   fh_out.close()
-  write_html (data, rep_output, appId)
+  __write_html (data, rep_output, appId)
 
-
-def write_html (DATA, rep_output, appId):
+def __write_html (DATA, rep_output, appId):
   #=serial, miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore
   infile = rep_output + appId + '_precursorindex.txt'
   outfile = rep_output + appId +'_precursorindex.html'
   fh_out=open(outfile,'w')
 
-  l='<html>\n<head>\n<style>';print >> fh_out, l
-  l='table{\nfont-family:arial,sans-serif;\nborder-collapse:collapse;\nwidth:90%;\nmargin:auto;\n}';print >> fh_out, l
-  l='td,th{\nborder:1pxsolid#dddddd;\ntext-align:left;\npadding:8px;\nmax-width:200px;\nword-break:break-all;\n}';print >> fh_out, l
-  l='tr:nth-child(even){background-color:#dddddd;}';print >> fh_out, l
-  l='img.heightSet{max-width:100px;max-height:200px;}';print >> fh_out, l
-  l='img:hover{box-shadow:002px1pxrgba(0,140,186,0.5);}';print >> fh_out, l
-  l='</style></head><body>';print >> fh_out, l
-  l='<div GenomicPre><h2>miRNAs and their genomic precursors</h2><table>';print >> fh_out, l
-  l='  <tr>';print >> fh_out, l
-  l='    <th>Serial</th>';print >> fh_out, l
-  #l='    <th>NewID</th>';print >> fh_out, l
-  l='    <th>image</th>';print >> fh_out, l
-  l='    <th>miRNA.pre-miRNA.Structure</th>';print >> fh_out, l
-  l='    <th>Coordination</th>';print >> fh_out, l
-  l='  </tr>';print >> fh_out, l
+  l='<html>\n<head>\n<style>';print(l, file=fh_out)
+  l='table{\nfont-family:arial,sans-serif;\nborder-collapse:collapse;\nwidth:90%;\nmargin:auto;\n}';print(l, file=fh_out)
+  l='td,th{\nborder:1pxsolid#dddddd;\ntext-align:left;\npadding:8px;\nmax-width:200px;\nword-break:break-all;\n}';print(l, file=fh_out)
+  l='tr:nth-child(even){background-color:#dddddd;}';print(l, file=fh_out)
+  l='img.heightSet{max-width:100px;max-height:200px;}';print(l, file=fh_out)
+  l='img:hover{box-shadow:002px1pxrgba(0,140,186,0.5);}';print(l, file=fh_out)
+  l='</style></head><body>';print(l, file=fh_out)
+  l='<div GenomicPre><h2>miRNAs and their genomic precursors</h2><table>';print(l, file=fh_out)
+  l='  <tr>';print(l, file=fh_out)
+  l='    <th>Serial</th>';print(l, file=fh_out)
+  #l='    <th>NewID</th>';print(l, file=fh_out)
+  l='    <th>miRNA.pre-miRNA.Structure</th>';print(l, file=fh_out)
+  l='    <th>Coordination</th>';print(l, file=fh_out)
+  l='  </tr>';print(l, file=fh_out)
 
   ## loop start
   for i in DATA:
@@ -596,40 +584,30 @@ def write_html (DATA, rep_output, appId):
     strand = i[2]
  
     path = rep_output + appId + '_' + serial.zfill(4) + '_' + chromo + '_' + poschromo + '.jpg'
-  
-    l='  <tr>';print >> fh_out, l
-    l="    <td rowspan=3 style='width: 120px;'><strong>"+ serial + "</strong></td>";print >> fh_out, l
-    #l="    <td rowspan=3 style='width: 120px;'>"+newid+"</td>";print >> fh_out, l
-    l="    <td rowspan=3 > <a href="+ path + " target='_blank'><img class='heightSet' src="+ path + " alt='Struture'></a></td>";print >> fh_out, l
-    l="    <td style='width: 400px;'>"+ mirna + "</td>";print >> fh_out, l
-    l="    <td>"+ chromo + ":"+ poschromo + " ["+ strand + "] </td>";print >> fh_out, l
-    l="  </tr>";print >> fh_out, l
-    l="  <tr>";print >> fh_out, l
-    l="    <td colspan=2 style='font-family:monospace'>"+ preseq + "</td>";print >> fh_out, l
-    l="  </tr>";print >> fh_out, l
-    l="  <tr>";print >> fh_out, l
-    l="    <td colspan=2 style='font-family:monospace'>"+ structure + "</td>";print >> fh_out, l
-    l="  </tr>";print >> fh_out, l
+
+    l='  <tr>';print(l, file=fh_out)
+    l="    <td rowspan=3 style='width: 120px;'><strong>"+ serial + "</strong></td>";print(l, file=fh_out)
+    #l="    <td rowspan=3 style='width: 120px;'>"+newid+"</td>";print(l, file=fh_out)
+    l="    <td rowspan=3 > <a href="+ path + " target='_blank'><img class='heightSet' src="+ path + " alt='Struture'></a></td>";print(l, file=fh_out)
+    l="    <td style='width: 400px;'>"+ mirna + "</td>";print(l, file=fh_out)
+    l="    <td>"+ chromo + ":"+ poschromo + " ["+ strand + "] </td>";print(l, file=fh_out)
+    l="  </tr>";print(l, file=fh_out)
+    l="  <tr>";print(l, file=fh_out)
+    l="    <td colspan=2 style='font-family:monospace'>"+ preseq + "</td>";print(l, file=fh_out)
+    l="  </tr>";print(l, file=fh_out)
+    l="  <tr>";print(l, file=fh_out)
+    l="    <td colspan=2 style='font-family:monospace'>"+ structure + "</td>";print(l, file=fh_out)
+    l="  </tr>";print(l, file=fh_out)
   ## loop end
   
-  l="</table></div>";print >> fh_out, l
-  l="</body></html>";print >> fh_out, l
+  l="</table></div>";print(l, file=fh_out)
+  l="</body></html>";print(l, file=fh_out)
 
   fh_out.close()
 
-
-
-
-
-
-
-
-
 # source : https://stackoverflow.com/questions/2257441/random-string-generation-with-upper-case-letters-and-digits-in-python/23728630#23728630
 def randomStrGen (n):
-  import string
-  import random
-  
+  import string, random
   return ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(n))
 
 def get_nonMirna_coors (infile):
@@ -649,7 +627,7 @@ def get_nonMirna_coors (infile):
   return d_ncRNA_CDS
 
 def get_nonMirna_list (infile, genome_path):
-  # defunct
+  ''' defunct '''
   genome = ut.getGenome (genome_path, file_ext, 'All') #= genome[chr] = sequence
   #infile = '../dbs/TAIR10_ncRNA_CDS.gff'
   l_non_miRNA = [] #= ['TGGATTTATGAAAGACGAACAACTGCGAAA']
@@ -668,11 +646,8 @@ def get_nonMirna_list (infile, genome_path):
       l_non_miRNA.append(seq)
   return l_non_miRNA
 
-
 def createFile_KnownNonMiRNA_from_TAIR10data (infile = 'TAIR10_GFF3_genes.gff', outfile = 'TAIR10_ncRNA_CDS.gff'):
-  '''
-  this function is not used in the pipeline, but users may use it to obtain their own KnonNonMiRNA from TAIR
-  '''
+  ''' this function is not used in the pipeline, but users may use it to obtain their own KnonNonMiRNA from TAIR '''
   os.system("grep -E 'CDS|rRNA|snoRNA|snRNA|tRNA' " + infile + ' > ' + outfile)
 
 
