@@ -475,7 +475,7 @@ def writeTargetsToFile (mirna_and_targets, rep_output, appId):
   '''
   outfile = rep_output + appId + '_mirna_and_targets.txt'
   fh_out = open (outfile, 'w')
-  outfile2 = rep_output + appId + '_mirna_and_top5scoredTargets.txt'
+  outfile2 = rep_output + appId + '_mirna_and_topscoredTargets.txt'
   fh_out2 = open (outfile2, 'w')
 
   for i in mirna_and_targets:
@@ -516,8 +516,8 @@ def __charge_gene_vs_pathway_file (infile):
 
 def annotate_target_genes_with_KEGGpathway (gene_vs_pathway_file, rep_output, appId):
   d_gene_pathway = __charge_gene_vs_pathway_file (gene_vs_pathway_file)
-  infile = rep_output + appId + '_mirna_and_top5scoredTargets.txt'
-  outfile = rep_output + appId + '_mirna_and_top5scoredTargetsKEGGpathway.txt'
+  infile = rep_output + appId + '_mirna_and_topscoredTargets.txt'
+  outfile = rep_output + appId + '_mirna_and_topscoredTargetsKEGGpathway.txt'
   fh_out = open (outfile, 'w')
   newDATA = []
   with open (infile) as fh: DATA = [x.rstrip('\n').split('\t') for x in fh.readlines()]
@@ -535,7 +535,7 @@ def annotate_target_genes_with_KEGGpathway (gene_vs_pathway_file, rep_output, ap
       data.append( ','.join(geneAnnotation) )
     newDATA.append(data)
   for i in newDATA:
-    line = '\t'.join(v)
+    line = '\t'.join(i)
     print >> fh_out, line
   fh_out.close()
 
