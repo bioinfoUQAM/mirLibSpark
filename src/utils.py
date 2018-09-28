@@ -652,7 +652,7 @@ def read_diffguide (infile):
   with open (infile, 'r') as fh: diffguide = [x.rstrip('\n').split('->') for x in fh.readlines()]
   return diffguide
 
-def __fake_diff_output (a, b, rep, appId, infile):
+def __fake_diff_output (a, b, rep, appId):
   #rep = '../output/'
   #appId = 'local-1538031347138'
   infile = rep + appId + '_summaryFreq.txt'
