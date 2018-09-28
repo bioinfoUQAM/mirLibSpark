@@ -162,7 +162,7 @@ if __name__ == '__main__' :
   #sc.setCheckpointDir(rep_output)
     
   print('\n====================== mirLibSpark =========================')
-  print('====================== ' + appId + ' ==================\n')
+  print('====================== ' + appId + ' =================')
   #for k, v in paramDict.items(): print(k, ': ', v)
   print('============================================================\n')
   print('begin time:', datetime.datetime.now())
@@ -414,13 +414,14 @@ if __name__ == '__main__' :
   #= make summary table of all libraries in one submission with expressions in the field
   keyword = appId + '_miRNAprediction_'
   infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
-  master_distinctPrecursor_infos = ut.writeSummaryExpressionToFile (infiles, rep_output, appId)
-  broadcastVar_Precursor = sc.broadcast(master_distinctPrecursor_infos)   
+  Precursor = ut.writeSummaryExpressionToFile (infiles, rep_output, appId)
+  #broadcastVar_Precursor = sc.broadcast(Precursor)   
 
   ## in:  ( lib, ('seq', [...]) )
   ## out: ( 'seq', [...] )
-  broadcastVar_libRESULTS = sc.broadcast(libRESULTS)  
-  libRESULTS_rdd = sc.parallelize(broadcastVar_libRESULTS.value, partition).flatMap(lambda e: e[1]) 
+  #broadcastVar_libRESULTS = sc.broadcast(libRESULTS)  
+  #libRESULTS_rdd = sc.parallelize(broadcastVar_libRESULTS.value, partition).flatMap(lambda e: e[1]) 
+  libRESULTS_rdd = sc.parallelize(libRESULTS, partition).flatMap(lambda e: e[1]) 
 
   ## in:  ( 'seq', [...] )
   ## out: ( 'seq' ) 
@@ -437,7 +438,8 @@ if __name__ == '__main__' :
   ## in:  ( 'seq', [...] ) 
   ## mid: [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq] 
   ## out : [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
-  Precursor_rdd = sc.parallelize(broadcastVar_Precursor.value, partition)
+  #Precursor_rdd = sc.parallelize(broadcastVar_Precursor.value, partition)
+  Precursor_rdd = sc.parallelize(Precursor, partition)
   
   ## in : [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
   ## out : ([miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore], zipindex)
@@ -480,8 +482,8 @@ if __name__ == '__main__' :
   mergeChromosomesResults_rdd.unpersist()
   broadcastVar_d_ncRNA_CDS.unpersist()
   broadcastVar_bowtie_chromo_strand.unpersist()
-  broadcastVar_libRESULTS.unpersist()
-  broadcastVar_Precursor.unpersist()
+  #broadcastVar_libRESULTS.unpersist()
+  #broadcastVar_Precursor.unpersist()
 
   #'''
 
