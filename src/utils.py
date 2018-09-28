@@ -650,7 +650,7 @@ def read_diffguide (infile):
   #= a / b = numerator / denominator
   #= [[numerator, denominator], [numerator, denominator], ...]
   with open (infile, 'r') as fh: diffguide = [x.rstrip('\n').split('->') for x in fh.readlines()]
-  return diffguide
+  return diffguide[1:]
 
 def __fake_diff_output (a, b, rep, appId):
   #rep = '../output/'
