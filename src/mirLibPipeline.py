@@ -170,7 +170,7 @@ if __name__ == '__main__' :
   #for k, v in paramDict.items(): print(k, ': ', v)
   print('============================================================\n')
   print('begin time:', datetime.datetime.now())
-  '''
+  #'''
   libRESULTS = [] 
   for infile in infiles :
     if infile[-1:] == '~': continue
@@ -488,7 +488,7 @@ if __name__ == '__main__' :
   #broadcastVar_libRESULTS.unpersist()
   #broadcastVar_Precursor.unpersist()
 
-  #'''
+  '''
 
   #= end of spark context
   sc.stop() #= allow to run multiple SparkContexts
@@ -497,7 +497,7 @@ if __name__ == '__main__' :
   #===============================================================================================================
   #===============================================================================================================
   #===============================================================================================================
-  appId = 'local-1538104298842'
+  #appId = 'local-1538104298842'
 
   #= diff analysis # 180927 wip
   diffguide = ut.read_diffguide(diffguide_file)
