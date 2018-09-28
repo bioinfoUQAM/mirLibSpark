@@ -138,13 +138,39 @@ def convert_fastq_file_to_KeyValue(infile, outfile):
   fh.close()
   fh_out.close()
 
-def trim_adapter (seq, ad):
+def find_str(s, char):
+    ''' zero based indexing '''
+    index = 0
+    if char in s:
+        c = char[0]
+        for ch in s:
+            if ch == c:
+                if s[index:index+len(char)] == char:
+                    return index
+            index += 1
+    return -1000
+
+'''
+#ORIGINAL FUNCTION
+'''
+def trim_adapter__ (seq, ad):
   while len(ad) > 0:
     len_ad = len(ad)
     if seq[-len_ad:] == ad:
       seq = seq[:-len_ad]
       return seq
     ad = ad[:-1]
+  return seq
+
+'''
+#NEW FUNCTION
+'''
+def trim_adapter (seq, ad):
+  while len(ad) > 0:
+    len_ad = len(ad)
+    pos = find_str(seq, ad)
+    if pos > 0: return seq[:pos]
+    else: ad = ad[:-1]
   return seq
 
 def getRevComp (seq):

@@ -214,7 +214,7 @@ if __name__ == '__main__' :
 
     #= trim adapters
       if not adapter == 'none':
-        trim_adapter_rdd = input_rdd.map(lambda e: trim_adapter (e, adapter))
+        trim_adapter_rdd = input_rdd.map(lambda e: ut.trim_adapter (e, adapter))
       else: trim_adapter_rdd = input_rdd
       
     #= colapse seq and calculate frequency
@@ -302,8 +302,8 @@ if __name__ == '__main__' :
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr])
     flat_rdd = nbLoc_rdd.flatMap(mru.flatmap_mappings)
-    #print('NB flat_rdd distinct (this step flats elements): ', flat_rdd.groupByKey().count())##################
-    #print('NB flat_rdd not distinct: ', flat_rdd.count())##################
+    print('NB flat_rdd distinct (this step flats elements): ', flat_rdd.groupByKey().count())##################
+    print('NB flat_rdd not distinct: ', flat_rdd.count())##################
 
     ###############################
     ## Filtering known non-miRNA ##
@@ -353,8 +353,8 @@ if __name__ == '__main__' :
       #= Extraction of the pre-miRNA
       ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
       ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop'], ['preSeq',posMirPre]])
-      premir_rdd = one_loop_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3)) ## use one-loop rule
-      #premir_rdd = pri_vld_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3)) ## ignore one-loop rule
+      #premir_rdd = one_loop_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3)) ## use one-loop rule
+      premir_rdd = pri_vld_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3)) ## ignore one-loop rule
       #================================================================================================================
       #================================================================================================================
       #================================================================================================================
@@ -364,7 +364,7 @@ if __name__ == '__main__' :
     #print('mergeChromosomesResults: ', mergeChromosomesResults_rdd.count())######## 
     #180921 fake_a.txt takes 42 secs to run till this line (All chromo)
     #180921 fake_a.txt takes 307 secs to run till this line (split chromo)
-
+    
     
     #= pre-miRNA folding
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre]])
@@ -392,9 +392,9 @@ if __name__ == '__main__' :
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq])
     profile_rdd = pre_vld_rdd.map(lambda e: profile_obj.computeProfileFrq(e, broadcastVar_bowtie_chromo_strand.value))\
                              .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)
-    print('NB profile_rdd distinct: ', profile_rdd.groupByKey().count())##
-    libresults = profile_rdd.collect()
-    libRESULTS.append( [inBasename, libresults] )
+    #print('NB profile_rdd distinct: ', profile_rdd.groupByKey().count())##
+    #libresults = profile_rdd.collect()
+    #libRESULTS.append( [inBasename, libresults] )
    
     endLib = time.time() 
     timeDict[inBasename] = endLib - startLib
@@ -402,12 +402,13 @@ if __name__ == '__main__' :
 
     #= write results to a file
     eachLiboutFile = rep_output  +  appId + '_miRNAprediction_' + inBasename + '.txt'
-    ut.writeToFile (libresults, eachLiboutFile)
+    #ut.writeToFile (libresults, eachLiboutFile)
 
   #= print executions time  to a file
   outTime = rep_output + appId + '_time.txt'
   ut.writeTimeLibToFile (timeDict, outTime, appId, paramDict)
 
+  '''
   #= make summary table of all libraries in one submission with expressions in the field
   keyword = appId + '_miRNAprediction_'
   infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
@@ -427,7 +428,6 @@ if __name__ == '__main__' :
   ## out: ('miRNAseq', zipindex)
   distResultSmallRNA_rdd = master_predicted_distinctMiRNAs_rdd.zipWithIndex() 
 
-  #'''
   #= varna
   varna_obj = mru.prog_varna(appId, rep_output) 
 
@@ -442,7 +442,6 @@ if __name__ == '__main__' :
                                .map(varna_obj.run_VARNA)
   indexVis = VARNA_rdd.collect()
   ut.write_index (indexVis, rep_output, appId)
-  #'''
   
   #= miranda
   ## in : ('miRNAseq', zipindex)
@@ -450,18 +449,18 @@ if __name__ == '__main__' :
   miranda_rdd = distResultSmallRNA_rdd.map(miranda_obj.computeTargetbyMiranda)
   mirna_and_targets = miranda_rdd.collect()
   ut.writeTargetsToFile (mirna_and_targets, rep_output, appId)
-
-  ''' ## I dont know what is the use of this, maybe there is no use...
+  
+  ## I dont know what is the use of this, maybe there is no use...
   ## in: ('miRNAseq', [[targetgene1 and its scores], [targetgene2 and its scores]])
   ## out:( 'targetgene' )
   master_distinctTG = miranda_rdd.map(lambda e: [  i[0].split('.')[0] for i in e[1]  ])\
                                  .reduce(lambda a, b: a+b)
   master_distinctTG = sorted(list(set(master_distinctTG)))
   print( master_distinctTG )
-  #'''
+
 
   #= KEGG annotation
-  ut.annotate_target_genes_with_KEGGpathway (gene_vs_pathway_file, rep_output, appId)
+  #ut.annotate_target_genes_with_KEGGpathway (gene_vs_pathway_file, rep_output, appId)
 
   
   #= clear caches (memory leak)

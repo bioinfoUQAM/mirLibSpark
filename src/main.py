@@ -31,7 +31,10 @@ cmd = 'git remote prune origin';os.system(cmd)
 cmd = 'free -m';os.system(cmd)
 
 #########################################################################################
-cmd = 'time spark-submit mirLibPipeline.py ../paramfile.txt 2>/dev/null';os.system(cmd)
+#cmd = 'time spark-submit mirLibPipeline.py ../paramfile.txt 2>/dev/null';os.system(cmd)
+#########################################################################################
+#########################################################################################
+cmd = 'time spark-submit mirLibPipeline.py ../paramfile_jean.txt 2>/dev/null';os.system(cmd)
 #########################################################################################
 
 cmd = 'free -m';os.system(cmd)
@@ -51,14 +54,13 @@ cmd = 'free -m';os.system(cmd)
 
 
 
-
-
+#cmd = 'sudo mount -t vboxsf VM_Share /home/cloudera/vm_share/';os.system(cmd)
 #cmd = 'mv ../output/* ../output_depo/';os.system(cmd)
 
 
-#cmd = 'free -m' #= to check memory;os.system(cmd)
+#cmd = 'free -m';os.system(cmd)#= to check memory
 
-
+#cmd = 'bowtie-build -f XLOC_126981_6D_REVCOMP.fasta XLOC_126981_6D_REVCOMP';os.system(cmd)
 
 #branches = 'athsettings, bowtiesplit, format_vis_input, format_vis_inputs, genomeextract, include_Dustmasker, include_RNAfold, include_bowtie, smooth, smooth_pipevarna, test, varna'.split(', ')
 #for b in branches:
