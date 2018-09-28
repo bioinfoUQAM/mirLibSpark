@@ -467,7 +467,7 @@ if __name__ == '__main__' :
 
   #= diff analysis # 180927 wip
   diffguide = ut.read_diffguide(diffguide_file)
-  diff_output = ut.diff_output(diffguide, rep, appId)
+  diff_output = ut.diff_output(diffguide, rep_output, appId)
 
 
   #= KEGG annotation
