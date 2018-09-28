@@ -514,7 +514,7 @@ if __name__ == '__main__' :
   print('test ln 514')  
 
   #infiles  = [ f for f in listdir(rep_output) if ( os.path.isfile(os.path.join(rep_output, f) and f.split('_')[1] == 'diff'))]
-  infiles = [f for f in listdir(rep_output) if os.path.isfile(os.path.join(rep_output, f))]
+  infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.split('_')[1] == 'diff')]
 
   for infile in infiles:
     print(infile)
