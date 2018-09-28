@@ -226,13 +226,13 @@ if __name__ == '__main__' :
     ## in : ('seq', freq)
     ## out: ('seq', freq)
     sr_low_rdd = collapse_rdd.filter(lambda e: int(e[1]) > limit_srna_freq)
-    print('NB sr_low_rdd: ', sr_low_rdd.count())####################################################
+    #print('NB sr_low_rdd: ', sr_low_rdd.count())####################################################
     
     #= Filtering short length
     ## in : ('seq', freq)
     ## out: ('seq', freq)
     sr_short_rdd = sr_low_rdd.filter(lambda e: len(e[0]) > limit_len).persist()  # TO KEEP IT
-    print('NB sr_short_rdd: ', sr_short_rdd.count())###################################################
+    #print('NB sr_short_rdd: ', sr_short_rdd.count())###################################################
     
     #= Filtering with DustMasker
     ## in : ('seq', freq)
@@ -271,6 +271,7 @@ if __name__ == '__main__' :
       #================================================================================================================
       mergebowtie_rdd = mergebowtie_rdd.union(bowtie_rdd).persist()
 
+    print('NB mergebowtie_rdd: ', mergebowtie_rdd.count())############################################
     #= Getting the expression value for each reads
     ## in : ('seq', [nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
@@ -289,22 +290,24 @@ if __name__ == '__main__' :
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     mr_low_rdd = bowFrq_rdd.filter(lambda e: e[1][0] > limit_mrna_freq)
-    print('NB mr_low_rdd: ', mr_low_rdd.count())##################################################
+    #print('NB mr_low_rdd: ', mr_low_rdd.count())##################################################
     
     #= Filtering high nbLocations and zero location
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     nbLoc_rdd = mr_low_rdd.filter(lambda e: e[1][1] > 0 and e[1][1] < limit_nbLoc)
-    print('NB nbLoc_rdd: ', nbLoc_rdd.count())###################################################
+    #print('NB nbLoc_rdd: ', nbLoc_rdd.count())###################################################
     
     
     #= Flatmap the RDD
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr])
     flat_rdd = nbLoc_rdd.flatMap(mru.flatmap_mappings)
-    print('NB flat_rdd distinct (this step flats elements): ', flat_rdd.groupByKey().count())##################
+    #print('NB flat_rdd distinct (this step flats elements): ', flat_rdd.groupByKey().count())##################
     print('NB flat_rdd not distinct: ', flat_rdd.count())##################
+    print('flat_rdd not distinct: \n', flat_rdd.collect())###############
 
+    '''
     ###############################
     ## Filtering known non-miRNA ##
     ###############################
@@ -408,7 +411,7 @@ if __name__ == '__main__' :
   outTime = rep_output + appId + '_time.txt'
   ut.writeTimeLibToFile (timeDict, outTime, appId, paramDict)
 
-  '''
+  
   #= make summary table of all libraries in one submission with expressions in the field
   keyword = appId + '_miRNAprediction_'
   infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]

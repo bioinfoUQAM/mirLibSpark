@@ -62,9 +62,9 @@ bowtie_index_suffix=XLOC_126981_6D_REVCOMP
 #mirdup_model=Viridiplantae.model
 mirdup_model=thaliana.model
 #==================== 
-limit_s_freq=1
-limit_m_freq=1
-limit_len=18
+limit_s_freq=0
+limit_m_freq=0
+limit_len=17
 limit_nbLoc=15
 pri_l_flank=500
 pri_r_flank=200

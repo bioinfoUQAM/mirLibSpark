@@ -166,7 +166,12 @@ def trim_adapter__ (seq, ad):
 #NEW FUNCTION
 '''
 def trim_adapter (seq, ad):
-  while len(ad) > 0:
+  '''
+  example:  adapter ad =                  TGGAATTCTCGGGTGCCAAGGAACTC
+            seq =        NTACCGATCTGAGCCATTGGAATTCTCGGGTGCCAAGGAACTCCAGTCACN
+            return =     NTACCGATCTGAGCCAT
+  '''
+  while len(ad) > 6:
     len_ad = len(ad)
     pos = find_str(seq, ad)
     if pos > 0: return seq[:pos]
