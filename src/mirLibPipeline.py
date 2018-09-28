@@ -119,6 +119,10 @@ if __name__ == '__main__' :
 
   #= KEGG annotation
   gene_vs_pathway_file =  paramDict['gene_vs_pathway_file']
+
+  #= enrichment analysis
+  pathway_description_file = paramDict['pathway_description_file']
+
   #= end of paramDict naming =================================================================================
 
   #= make required folders if not exist
@@ -166,7 +170,7 @@ if __name__ == '__main__' :
   #for k, v in paramDict.items(): print(k, ': ', v)
   print('============================================================\n')
   print('begin time:', datetime.datetime.now())
-  #'''
+  '''
   libRESULTS = [] 
   for infile in infiles :
     if infile[-1:] == '~': continue
@@ -431,7 +435,7 @@ if __name__ == '__main__' :
   ## out: ('miRNAseq', zipindex)
   distResultSmallRNA_rdd = master_predicted_distinctMiRNAs_rdd.zipWithIndex() 
 
-  #'''
+  
   #= varna
   varna_obj = mru.prog_varna(appId, rep_output) 
 
@@ -447,7 +451,7 @@ if __name__ == '__main__' :
                                .map(varna_obj.run_VARNA)
   indexVis = VARNA_rdd.collect()
   ut.write_index (indexVis, rep_output, appId)
-  #'''
+  
   
   #= miranda
   ## in : ('miRNAseq', zipindex)
@@ -455,6 +459,7 @@ if __name__ == '__main__' :
   miranda_rdd = distResultSmallRNA_rdd.map(miranda_obj.computeTargetbyMiranda)
   mirna_and_targets = miranda_rdd.collect()
   ut.writeTargetsToFile (mirna_and_targets, rep_output, appId)
+  #'''
 
   ''' ## I dont know what is the use of this, maybe there is no use...
   ## in: ('miRNAseq', [[targetgene1 and its scores], [targetgene2 and its scores]])
@@ -465,13 +470,12 @@ if __name__ == '__main__' :
   print( master_distinctTG )
   #'''
 
-  #= diff analysis # 180927 wip
-  diffguide = ut.read_diffguide(diffguide_file)
-  diff_output = ut.diff_output(diffguide, rep_output, appId)
+
+  #===============================================================================================================
+  # to be put back here
+  #===============================================================================================================
 
 
-  #= KEGG annotation
-  ut.annotate_target_genes_with_KEGGpathway (gene_vs_pathway_file, rep_output, appId)
 
   
   #= clear caches (memory leak)
@@ -489,6 +493,38 @@ if __name__ == '__main__' :
 
   #= end of spark context
   sc.stop() #= allow to run multiple SparkContexts
+
+  #===============================================================================================================
+  #===============================================================================================================
+  #===============================================================================================================
+  #===============================================================================================================
+  appId = 'local-1538104298842'
+
+  #= diff analysis # 180927 wip
+  diffguide = ut.read_diffguide(diffguide_file)
+  diff_output = ut.diff_output(diffguide, rep_output, appId)
+
+  #= KEGG annotation
+  ut.annotate_target_genes_with_KEGGpathway (gene_vs_pathway_file, rep_output, appId)
+
+
+  #= KEGG enrichment analysis # 180927 wip
+  dict_pathway_description = ut.dictPathwayDescription (pathway_description_file)
+  list_mirna_and_topscoredTargetsKEGGpathway = ut.readFile(rep_output + appId + '_mirna_and_topscoredTargetsKEGGpathway.txt')### wip
+  
+  
+  infiles  = [rep + f for f in os.listdir(rep) if os.path.isfile(os.path.join(rep, f) and f.split('_')[1] == 'diff')]
+  for infile in infiles:
+    ut.input_for_enrichment_analysis (infile, dict_pathway_description, list_mirna_and_topscoredTargetsKEGGpathway)
+
+
+  #===============================================================================================================
+  #===============================================================================================================
+  #===============================================================================================================
+  #===============================================================================================================
+
+
+
   print('finish time:', datetime.datetime.now())
   print('====================== End of ' + appId + ' =============\n')
 
