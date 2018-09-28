@@ -649,7 +649,7 @@ def get_nonMirna_list (infile, genome_path):
 def read_diffguide (infile):
   #= a / b = numerator / denominator
   #= [[numerator, denominator], [numerator, denominator], ...]
-  with open (infile, 'r') as fh: diffguide = [x.rstrip('\n').split('\t') for x in fh.readlines()]
+  with open (infile, 'r') as fh: diffguide = [x.rstrip('\n').split('->') for x in fh.readlines()]
   return diffguide
 
 def __fake_diff_output (a, b, rep, appId, infile):
