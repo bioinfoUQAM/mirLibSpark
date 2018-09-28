@@ -170,7 +170,7 @@ if __name__ == '__main__' :
   #for k, v in paramDict.items(): print(k, ': ', v)
   print('============================================================\n')
   print('begin time:', datetime.datetime.now())
-  #'''
+  '''
   libRESULTS = [] 
   for infile in infiles :
     if infile[-1:] == '~': continue
@@ -497,7 +497,7 @@ if __name__ == '__main__' :
   #===============================================================================================================
   #===============================================================================================================
   #===============================================================================================================
-  #appId = 'local-1538104298842'
+  appId = 'local-1538110614002'
 
   #= diff analysis # 180927 wip
   diffguide = ut.read_diffguide(diffguide_file)
@@ -511,7 +511,7 @@ if __name__ == '__main__' :
   dict_pathway_description = ut.dictPathwayDescription (pathway_description_file)
   list_mirna_and_topscoredTargetsKEGGpathway = ut.readFile(rep_output + appId + '_mirna_and_topscoredTargetsKEGGpathway.txt')### wip
   
-  
+  print('test ln 514')  
   infiles  = [rep_output + f for f in os.listdir(rep_output) if os.path.isfile(os.path.join(rep_output, f) and f.split('_')[1] == 'diff')]
   for infile in infiles:
     ut.input_for_enrichment_analysis (infile, dict_pathway_description, list_mirna_and_topscoredTargetsKEGGpathway)
