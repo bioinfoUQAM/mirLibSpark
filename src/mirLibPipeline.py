@@ -114,6 +114,9 @@ if __name__ == '__main__' :
   Gap_Penalty = paramDict['Gap_Penalty']
   nbTargets = paramDict['nbTargets']
 
+  #= differential analysis
+  diffguide_file = paramDict['diffguide_file']
+
   #= KEGG annotation
   gene_vs_pathway_file =  paramDict['gene_vs_pathway_file']
   #= end of paramDict naming =================================================================================
@@ -459,6 +462,11 @@ if __name__ == '__main__' :
   master_distinctTG = sorted(list(set(master_distinctTG)))
   print( master_distinctTG )
   #'''
+
+  #= diff analysis # 180927 wip
+  diffguide = ut.read_diffguide(diffguide_file)
+  diff_output = ut.diff_output(diffguide, rep, appId)
+
 
   #= KEGG annotation
   ut.annotate_target_genes_with_KEGGpathway (gene_vs_pathway_file, rep_output, appId)

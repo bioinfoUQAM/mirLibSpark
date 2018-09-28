@@ -646,4 +646,51 @@ def get_nonMirna_list (infile, genome_path):
       l_non_miRNA.append(seq)
   return l_non_miRNA
 
+def read_diffguide (infile):
+  #= a / b = numerator / denominator
+  #= [[numerator, denominator], [numerator, denominator], ...]
+  with open (infile, 'r') as fh: diffguide = [x.rstrip('\n').split('\t') for x in fh.readlines()]
+  return diffguide
 
+def __fake_diff_output (a, b, rep, appId, infile):
+  #rep = '../output/'
+  #appId = 'local-1538031347138'
+  infile = rep + appId + '_summaryFreq.txt'
+
+  #= a/b: a: numerator, b: denominator
+  #a = 'fake_a3'
+  #b = 'fake_a'
+  outfile = rep + appId + '_diff_' + a + '_' + b + '.txt'
+  fh_out = open (outfile, 'w')
+  with open (infile, 'r') as fh: DATA = [x.rstrip('\n').split('\t') for x in fh.readlines()]
+
+  #= out: Sequence	Iso8S_y2010_2	Iso8S_y2010_1	Fold_change	Z_score	p_value	BH_p_value	Diff_exp
+  for i in range( len(DATA[0]) ):
+    if DATA[0][i] == a: index_a = i
+    if DATA[0][i] == b: index_b = i
+  
+  line = '\t'.join(  ('Sequence,' + a + ',' + b + ',Fold_change,Z_score,p_value,BH_p_value,Diff_exp').split(',')  )
+  print(line, file=fh_out)
+
+  for i in DATA[1:]:
+    seq = i[0]
+    a = int(i[index_a])
+    b = int(i[index_b])
+
+    foldchange = ( a + 1 ) / ( b + 1 )
+    Z_score = '0.01fake'
+    p_value = '0.01fake'
+    BH_p_value = '0.01fake'
+    if foldchange > 2: Diff_exp_fake = 'UP'
+    elif foldchange < 0.2: Diff_exp_fake = 'DOWN'
+    else: Diff_exp_fake = 'NO'
+  
+    line = '\t'.join(  [seq, str(a), str(b), str(foldchange), Z_score, p_value, BH_p_value, Diff_exp_fake] )
+    print(line, file=fh_out)
+
+  fh_out.close()
+
+
+def diff_output (diffguide, rep, appId):
+  for i in diffguide:
+    __fake_diff_output (i[0], i[1], rep, appId)

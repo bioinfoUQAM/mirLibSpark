@@ -41,6 +41,7 @@ message=\nwrite your message (for stdout) here line1\nline2: \nchromosomes=All\n
 project_path=/home/cloudera/workspace/mirLibSpark/
 input_path=/home/cloudera/workspace/mirLibSpark/input/
 output_path=/home/cloudera/workspace/mirLibSpark/output/
+diffguide_file=/home/cloudera/workspace/mirLibSpark/diffguide.txt
 #
 genome_path=/home/cloudera/workspace/mirLibSpark/dbs/ATH_TAIR10/Genome/
 b_index_path=/home/cloudera/workspace/mirLibSpark/dbs/ATH_TAIR10/bowtie_split_index/
