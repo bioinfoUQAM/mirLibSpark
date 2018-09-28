@@ -4,7 +4,7 @@ import os
 
 #cmd = 'python purge.py';os.system (cmd)
 
-#cmd = 'git pull origin refactor';os.system (cmd)
+cmd = 'git pull origin formatdiffout';os.system (cmd)
 
 
 
