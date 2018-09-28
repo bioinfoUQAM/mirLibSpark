@@ -682,7 +682,7 @@ def __fake_diff_output (a, b, rep, appId):
     p_value = '0.01fake'
     BH_p_value = '0.01fake'
     if foldchange > 2: Diff_exp_fake = 'UP'
-    elif foldchange < 0.2: Diff_exp_fake = 'DOWN'
+    elif foldchange < 0.5: Diff_exp_fake = 'DOWN'
     else: Diff_exp_fake = 'NO'
   
     line = '\t'.join(  [seq, str(a), str(b), str(foldchange), Z_score, p_value, BH_p_value, Diff_exp_fake] )
