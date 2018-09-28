@@ -305,8 +305,13 @@ if __name__ == '__main__' :
     flat_rdd = nbLoc_rdd.flatMap(mru.flatmap_mappings)
     #print('NB flat_rdd distinct (this step flats elements): ', flat_rdd.groupByKey().count())##################
     print('NB flat_rdd not distinct: ', flat_rdd.count())##################
-    print('flat_rdd not distinct: \n', flat_rdd.collect())###############
+    #print('flat_rdd not distinct: \n', flat_rdd.collect())###############
 
+    outfile = '../outputJEAN/' + appId + '_sRNAloci.txt'
+    fh_out = open (outfile, 'w')
+    for i in flat_rdd.collect():
+      print(i, file=fh_out)
+    fh_out.close()
     '''
     ###############################
     ## Filtering known non-miRNA ##

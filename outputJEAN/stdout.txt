@@ -22,3 +22,9 @@ flat_rdd not distinct:
 finish time: 2018-09-28 13:31:25.239251
 ====================== End of local-1538166075098 =============
 
+
+paste time:
+real	10m13.862s
+user	1m48.785s
+sys	0m20.752s
+
