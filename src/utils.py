@@ -699,7 +699,7 @@ def dictPathwayDescription (infile):
   #= {ko04978: Mineral absorption	Organismal Systems}, {GO:0006351: transcription, DNA-templated}
   d_pathway_desc = {}
   with open (infile, 'r') as fh: data = [x.rstrip('\n').split('\t') for x in fh.readlines()]
-    for i in data: d_pathway_desc[i[0]] = i[1]
+  for i in data: d_pathway_desc[i[0]] = i[1]
   return d_pathway_desc
 
 
