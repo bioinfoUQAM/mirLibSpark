@@ -33,7 +33,7 @@ for m in mappings:
   if strd == '+': strd = 'p'
   else: strd = 'n'
   posch= m[5]
-  line = '.'*int(posch) + srna + '_' + freq + '_' + strd + '_' + str(len(srna))
+  line = str(posch).zfill(4) + '.'*int(posch) + srna + '_' + freq + '_' + strd + '_' + str(len(srna))
   print(line)
-print(genseq)
+print('....' + genseq)
 
