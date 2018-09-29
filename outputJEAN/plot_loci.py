@@ -25,6 +25,7 @@ with open (genome_seq_file, 'r') as fh: genseq = [x.rstrip('\n').split('\t') for
 
 with open (sRNAmappings_file, 'r') as fh: mappings = [x.rstrip('\n').split('\t') for x in fh.readlines()]
 
+newdata = []
 for m in mappings: 
   srna = m[0]
   freq = m[1]
@@ -34,6 +35,10 @@ for m in mappings:
   else: strd = 'n'
   posch= m[5]
   line = str(posch).zfill(4) + '.'*int(posch) + srna + '_' + freq + '_' + strd + '_' + str(len(srna))
+  newdata.append(line)
+
+newdata = sorted(newdata)
+for line in newdata:
   print(line)
 print('....' + genseq)
 
