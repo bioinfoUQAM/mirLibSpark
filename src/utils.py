@@ -707,9 +707,25 @@ def diff_output (diffguide, rep, appId):
   for i in diffguide:
     __fake_diff_output (i[0], i[1], rep, appId)
 
+
+
+def __write_namecodefile (folder, ID):
+  outfile = folder + '/namecode.txt'
+  with open (outfile, 'w') as fh:
+  print('background_' + ID + '\tbackground' , file = fh)
+  print('Norstar_dif_2_1_1013\tNorstar_210' , file = fh)
+
+
+  fh.close()
+
+    
+
 def input_for_enrichment_analysis (infile, dict_pathway_description, list_mirna_and_topscoredTargetsKEGGpathway):
   '''
   '''
   diffKey = 'UP DOWN'.split()
-
+  ID = 'topscoredTargetsKEGGpathway'
+  folder = rep_output + ID
+  if not os.path.exists(folder): os.makedirs(folder)
+  __write_namecodefile (folder, ID)
 

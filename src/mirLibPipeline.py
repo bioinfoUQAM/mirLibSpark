@@ -513,14 +513,12 @@ if __name__ == '__main__' :
   
   print('test ln 514')  
 
-  #infiles  = [ f for f in listdir(rep_output) if ( os.path.isfile(os.path.join(rep_output, f) and f.split('_')[1] == 'diff'))]
   infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.split('_')[1] == 'diff')]
 
   for infile in infiles:
     print(infile)
     ut.input_for_enrichment_analysis (infile, dict_pathway_description, list_mirna_and_topscoredTargetsKEGGpathway)
 
-  #infiles = [f for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
 
   #===============================================================================================================
   #===============================================================================================================
