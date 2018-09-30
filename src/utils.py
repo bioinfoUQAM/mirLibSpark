@@ -720,9 +720,8 @@ def __write_namecodefile (folder, ID, diff_outs):
   with open (outfile, 'w') as fh:
     print('background_' + ID + '\tbackground' , file = fh)
     for i in diff_outs:
-      print(i , file = fh)
-
-
+      base = isplit('_diff_')[1]
+      print(i + '\t' + base , file = fh)
   fh.close()
 
     

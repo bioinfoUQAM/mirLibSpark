@@ -485,12 +485,11 @@ if __name__ == '__main__' :
   mergeChromosomesResults_rdd.unpersist()
   broadcastVar_d_ncRNA_CDS.unpersist()
   broadcastVar_bowtie_chromo_strand.unpersist()
-  #broadcastVar_libRESULTS.unpersist()
-  #broadcastVar_Precursor.unpersist()
 
   '''
 
   #= end of spark context
+  broadcastVar_paramDict.unpersist()
   sc.stop() #= allow to run multiple SparkContexts
 
   #===============================================================================================================
