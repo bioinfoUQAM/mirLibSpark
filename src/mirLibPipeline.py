@@ -68,6 +68,22 @@ if __name__ == '__main__' :
   rep_msub_jobsOut = project_path + '/workdir/jobsOut'
   rep_tmp = project_path + '/tmp/'                   
 
+  #= Fetch library files in rep_input
+  infiles = [f for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
+  diffguide, neededInfiles = ut.read_diffguide(diffguide_file)
+
+  #========================================================
+  #========================================================
+  testInfiles = [f.split('.') for f in infiles]
+  for infile in neededInfiles:
+    if infile not in testInfiles: 
+      print('error 167')
+      sys.stderr.write('Three arguments required\nUsage: spark-submit mirLibPipeline.py <path to paramfile> 2>/dev/null\n')
+      sys.exit()
+  #========================================================
+  #========================================================
+
+
   #= genome
   genome_path = paramDict['genome_path'] 
 
@@ -155,18 +171,6 @@ if __name__ == '__main__' :
   mirdup_obj = mru.prog_miRdup (rep_tmp, mirdup_model, mirdup_jar, path_RNAfold)
   profile_obj = mru.prog_dominant_profile()
   miranda_obj = mru.prog_miRanda(Max_Score_cutoff, Max_Energy_cutoff, target_file, rep_tmp, miranda_binary, Gap_Penalty, nbTargets)
-
-  #= Fetch library files in rep_input
-  infiles = [f for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
-  diffguide, neededInfiles = ut.read_diffguide(diffguide_file)
-
-  #========================================================
-  #========================================================
-  testInfiles = [f.split('.') for f in infiles]
-  for infile in neededInfiles:
-    if infile not in testInfiles: print('error 167')
-  #========================================================
-  #========================================================
 
   #= Time processing of libraries
   timeDict = {}
