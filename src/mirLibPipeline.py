@@ -68,22 +68,7 @@ if __name__ == '__main__' :
   rep_input = paramDict['input_path']
   rep_output = paramDict['output_path']
   rep_msub_jobsOut = project_path + '/workdir/jobsOut'
-  rep_tmp = project_path + '/tmp/' 
-  
-  ##= Fetch library files in rep_input
-  #infiles = [f for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
-  #diffguide_file = paramDict['diffguide_file']
-  #diffguide, neededInfiles = ut.read_diffguide(diffguide_file)
-
-  #= verify if input folder contain all files requisted by diffguide file
-  #perform_differnatial_analysis = paramDict['perform_differnatial_analysis']
-  #if perform_differnatial_analysis == 'yes':
-  #  testInfiles = [f.split('.')[0] for f in infiles]
-  #  for infile in neededInfiles:
-  #    if infile not in testInfiles: 
-  #      sys.stderr.write('One or more input files requested by diffguide_file are not provided in the input folder.\nExit the program.')
-  #      sys.exit()
-    
+  rep_tmp = project_path + '/tmp/'     
 
   #= genome
   genome_path = paramDict['genome_path'] 
