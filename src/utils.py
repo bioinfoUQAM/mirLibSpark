@@ -536,7 +536,8 @@ def annotate_target_genes_with_KEGGpathway (gene_vs_pathway_file, rep_output, ap
     line = '\t'.join(i)
     print(line, file=fh_out)
   fh_out.close()
-
+  return newDATA 
+  
 def write_index (data, rep_output, appId):
   #=serial, miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore
   outfile = rep_output + appId + '_precursorindex.txt'
@@ -645,5 +646,138 @@ def get_nonMirna_list (infile, genome_path):
         seq = ut.getRevComp (seq)
       l_non_miRNA.append(seq)
   return l_non_miRNA
+
+def read_diffguide (infile):
+  #= a / b = numerator / denominator
+  #= [[numerator, denominator], [numerator, denominator], ...]
+  with open (infile, 'r') as fh: diffguide = [x.rstrip('\n').split('->') for x in fh.readlines()]
+  needed_infilenames = []
+  for i in diffguide[1:]:
+    name1 = i[0]
+    name2 = i[1]
+    if name1 not in needed_infilenames: needed_infilenames.append(name1)
+    if name2 not in needed_infilenames: needed_infilenames.append(name2)
+  return diffguide[1:], needed_infilenames
+
+def __fake_diff_output (a, b, rep, appId):
+  #rep = '../output/'
+  #appId = 'local-1538031347138'
+  infile = rep + appId + '_summaryFreq.txt'
+
+  #= a/b: a: numerator, b: denominator
+  #a = 'fake_a3'
+  #b = 'fake_a'
+  outfile = rep + appId + '_diff_' + a + '_' + b + '.txt'
+  fh_out = open (outfile, 'w')
+  with open (infile, 'r') as fh: DATA = [x.rstrip('\n').split('\t') for x in fh.readlines()]
+
+  #= out: Sequence	Iso8S_y2010_2	Iso8S_y2010_1	Fold_change	Z_score	p_value	BH_p_value	Diff_exp
+  for i in range( len(DATA[0]) ):
+    if DATA[0][i] == a: index_a = i
+    if DATA[0][i] == b: index_b = i
+  
+  line = '\t'.join(  ('Sequence,' + a + ',' + b + ',Fold_change,Z_score,p_value,BH_p_value,Diff_exp').split(',')  )
+  print(line, file=fh_out)
+
+  for i in DATA[1:]:
+    seq = i[0]
+    a = int(i[index_a])
+    b = int(i[index_b])
+
+    foldchange = ( a + 1 ) / ( b + 1 )
+    Z_score = '0.01fake'
+    p_value = '0.01fake'
+    BH_p_value = '0.01fake'
+    if foldchange > 2: Diff_exp_fake = 'UP'
+    elif foldchange < 0.5: Diff_exp_fake = 'DOWN'
+    else: Diff_exp_fake = 'NO'
+  
+    line = '\t'.join(  [seq, str(a), str(b), str(foldchange), Z_score, p_value, BH_p_value, Diff_exp_fake] )
+    print(line, file=fh_out)
+
+  fh_out.close()
+
+
+def diff_output (diffguide, rep, appId):
+  diff_outs = []
+  for i in diffguide:
+    __fake_diff_output (i[0], i[1], rep, appId)
+    diff_outs.append( appId + '_diff_' + i[0] + '_' + i[1] )
+  return diff_outs
+
+
+def readFile (infile):
+  with open (infile, 'r') as fh: data = [x.rstrip('\n').split('\t') for x in fh.readlines()]
+  return data
+
+
+
+
+def __dictPathwayDescription (infile):
+  #= {ko04978: Mineral absorption	Organismal Systems}, {GO:0006351: transcription, DNA-templated}
+  d_pathway_desc = {}
+  with open (infile, 'r') as fh: data = [x.rstrip('\n').split('\t') for x in fh.readlines()]
+  for i in data: d_pathway_desc[i[0]] = i[1]
+  return d_pathway_desc
+
+def __write_namecodefile (folder, ID, diff_outs):
+  outfile = folder + '/namecode.txt'
+  with open (outfile, 'w') as fh:
+    print('background_' + ID + '\tbackground' , file = fh)
+    for i in diff_outs:
+      base = i.split('_diff_')[1]
+      print(i + '\t' + base , file = fh)
+  fh.close()
+
+def __create_background (outfile, list_mirna_and_topscoredTargetsKEGGpathway, dict_pathway_description):
+  fh_out = open (outfile, 'w')
+  for i in list_mirna_and_topscoredTargetsKEGGpathway:
+    mirna = i[0]
+    pathways = i[1].split(',')
+    for p in pathways:
+      if p in dict_pathway_description.keys():
+        desc = dict_pathway_description[p]
+      else: desc = 'to be retrived from KEGG'
+      line = '\t'.join( [mirna, p, desc])
+      print(line, file=fh_out)
+  fh_out.close()
+
+def __create_diff_annotation (rep_output, diff_outs, list_mirna_and_topscoredTargetsKEGGpathway, folder):
+  dict_mirna_pathways = {}
+  for i in list_mirna_and_topscoredTargetsKEGGpathway:
+    mirna = i[0]
+    pathways = i[1].split(',')
+    dict_mirna_pathways[mirna] = pathways
+  
+  for infile in diff_outs:
+    fh_out = open (folder + '/' + infile, 'w')
+    infile = rep_output + infile + '.txt'
+    with open (infile, 'r') as fh: data = [x.rstrip('\n').split('\t') for x in fh.readlines()][1:]
+    for i in data:
+      mirna = i[0]
+      UPorDOWN = i[7]
+      if UPorDOWN == 'NO': continue
+      pathways = dict_mirna_pathways[mirna]
+      for p in pathways:
+        line = '\t'.join( [mirna, p])
+        print(line, file=fh_out)
+    fh_out.close()
+
+def input_for_enrichment_analysis (diff_outs, pathway_description_file, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId):
+  '''
+  '''
+  dict_pathway_description = __dictPathwayDescription (pathway_description_file)
+
+  diffKey = 'UP DOWN'.split()
+  ID = appId + '_topscoredTargetsKEGGpathway'
+  folder = rep_output + ID
+  if not os.path.exists(folder): os.makedirs(folder)
+  __write_namecodefile (folder, ID, diff_outs)
+  
+  outfile = folder + '/background_' + ID
+  __create_background (outfile, list_mirna_and_topscoredTargetsKEGGpathway, dict_pathway_description)
+  __create_diff_annotation (rep_output, diff_outs, list_mirna_and_topscoredTargetsKEGGpathway, folder)
+
+
 
 

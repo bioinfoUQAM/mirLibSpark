@@ -4,16 +4,22 @@ import os
 
 #cmd = 'python purge.py';os.system (cmd)
 
-#cmd = 'git pull origin refactor';os.system (cmd)
+cmd = 'git pull origin formatdiffout';os.system (cmd)
 
-
+cmd = 'cp ../input_samples/fake_a.txt ../input';os.system(cmd)
+#cmd = 'rm -fr ../input/fake_a.txt';os.system(cmd)
 
 cmd = 'cp ../input_samples/fake_a3.txt ../input';os.system(cmd)
 #cmd = 'rm -fr ../input/fake_a3.txt';os.system(cmd)
 
+cmd = 'cp ../input_samples/fake_a5.txt ../input';os.system(cmd)
+#cmd = 'rm -fr ../input/fake_a5.txt';os.system(cmd)
 
 #cmd = 'cp ../input_samples/100.txt ../input';os.system(cmd)
 cmd = 'rm -f ../input/100.txt';os.system(cmd)
+
+#cmd = 'mv ../input_samples/11w2013_t2_1.fasta ../input';os.system(cmd)
+#cmd = 'mv ../input/11w2013_t2_1.fasta ../input_samples';os.system(cmd)
 
 
 
@@ -21,8 +27,8 @@ cmd = 'rm -f ../input/100.txt';os.system(cmd)
 #cmd = 'git commit -m "save a copy of output"';os.system(cmd)
 #cmd = 'git push origin refactor';os.system(cmd)
 
+#cmd = 'git branch -D refactor';os.system(cmd)
 cmd = 'git remote prune origin';os.system(cmd)
-#cmd = 'git branch -D utilspython3';os.system(cmd)
 #cmd = 'git branch';os.system(cmd)
 #cmd = 'git fetch origin';os.system(cmd)
 #cmd = 'git checkout master';os.system(cmd)

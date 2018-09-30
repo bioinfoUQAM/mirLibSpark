@@ -66,7 +66,19 @@ if __name__ == '__main__' :
   rep_input = paramDict['input_path']
   rep_output = paramDict['output_path']
   rep_msub_jobsOut = project_path + '/workdir/jobsOut'
-  rep_tmp = project_path + '/tmp/'                   
+  rep_tmp = project_path + '/tmp/' 
+  
+  #= Fetch library files in rep_input
+  infiles = [f for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
+  diffguide_file = paramDict['diffguide_file']
+  diffguide, neededInfiles = ut.read_diffguide(diffguide_file)
+
+  #= verify if input folder contain all files requisted by diffguide file
+  testInfiles = [f.split('.')[0] for f in infiles]
+  for infile in neededInfiles:
+    if infile not in testInfiles: 
+      sys.stderr.write('One or more input files requested by diffguide_file are not provided in the input folder.\nExit the program.')
+      sys.exit()
 
   #= genome
   genome_path = paramDict['genome_path'] 
@@ -116,6 +128,10 @@ if __name__ == '__main__' :
 
   #= KEGG annotation
   gene_vs_pathway_file =  paramDict['gene_vs_pathway_file']
+
+  #= enrichment analysis
+  pathway_description_file = paramDict['pathway_description_file']
+
   #= end of paramDict naming =================================================================================
 
   #= make required folders if not exist
@@ -149,9 +165,6 @@ if __name__ == '__main__' :
   profile_obj = mru.prog_dominant_profile()
   miranda_obj = mru.prog_miRanda(Max_Score_cutoff, Max_Energy_cutoff, target_file, rep_tmp, miranda_binary, Gap_Penalty, nbTargets)
 
-  #= Fetch library files in rep_input
-  infiles = [f for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
-  
   #= Time processing of libraries
   timeDict = {}
 
@@ -159,7 +172,7 @@ if __name__ == '__main__' :
   #sc.setCheckpointDir(rep_output)
     
   print('\n====================== mirLibSpark =========================')
-  print('====================== ' + appId + ' ==================\n')
+  print('====================== ' + appId + ' =================')
   #for k, v in paramDict.items(): print(k, ': ', v)
   print('============================================================\n')
   print('begin time:', datetime.datetime.now())
@@ -411,13 +424,14 @@ if __name__ == '__main__' :
   #= make summary table of all libraries in one submission with expressions in the field
   keyword = appId + '_miRNAprediction_'
   infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
-  master_distinctPrecursor_infos = ut.writeSummaryExpressionToFile (infiles, rep_output, appId)
-  broadcastVar_Precursor = sc.broadcast(master_distinctPrecursor_infos)   
+  Precursor = ut.writeSummaryExpressionToFile (infiles, rep_output, appId)
+  #broadcastVar_Precursor = sc.broadcast(Precursor)   
 
   ## in:  ( lib, ('seq', [...]) )
   ## out: ( 'seq', [...] )
-  broadcastVar_libRESULTS = sc.broadcast(libRESULTS)  
-  libRESULTS_rdd = sc.parallelize(broadcastVar_libRESULTS.value, partition).flatMap(lambda e: e[1]) 
+  #broadcastVar_libRESULTS = sc.broadcast(libRESULTS)  
+  #libRESULTS_rdd = sc.parallelize(broadcastVar_libRESULTS.value, partition).flatMap(lambda e: e[1]) 
+  libRESULTS_rdd = sc.parallelize(libRESULTS, partition).flatMap(lambda e: e[1]) 
 
   ## in:  ( 'seq', [...] )
   ## out: ( 'seq' ) 
@@ -427,14 +441,15 @@ if __name__ == '__main__' :
   ## out: ('miRNAseq', zipindex)
   distResultSmallRNA_rdd = master_predicted_distinctMiRNAs_rdd.zipWithIndex() 
 
-  #'''
+  
   #= varna
   varna_obj = mru.prog_varna(appId, rep_output) 
 
   ## in:  ( 'seq', [...] ) 
   ## mid: [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq] 
   ## out : [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
-  Precursor_rdd = sc.parallelize(broadcastVar_Precursor.value, partition)
+  #Precursor_rdd = sc.parallelize(broadcastVar_Precursor.value, partition)
+  Precursor_rdd = sc.parallelize(Precursor, partition)
   
   ## in : [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
   ## out : ([miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore], zipindex)
@@ -442,7 +457,7 @@ if __name__ == '__main__' :
                                .map(varna_obj.run_VARNA)
   indexVis = VARNA_rdd.collect()
   ut.write_index (indexVis, rep_output, appId)
-  #'''
+  
   
   #= miranda
   ## in : ('miRNAseq', zipindex)
@@ -450,18 +465,17 @@ if __name__ == '__main__' :
   miranda_rdd = distResultSmallRNA_rdd.map(miranda_obj.computeTargetbyMiranda)
   mirna_and_targets = miranda_rdd.collect()
   ut.writeTargetsToFile (mirna_and_targets, rep_output, appId)
-
-  ''' ## I dont know what is the use of this, maybe there is no use...
-  ## in: ('miRNAseq', [[targetgene1 and its scores], [targetgene2 and its scores]])
-  ## out:( 'targetgene' )
-  master_distinctTG = miranda_rdd.map(lambda e: [  i[0].split('.')[0] for i in e[1]  ])\
-                                 .reduce(lambda a, b: a+b)
-  master_distinctTG = sorted(list(set(master_distinctTG)))
-  print( master_distinctTG )
   #'''
 
-  #= KEGG annotation
-  ut.annotate_target_genes_with_KEGGpathway (gene_vs_pathway_file, rep_output, appId)
+  ## I dont know what is the use of this, maybe there is no use...
+  ## in: ('miRNAseq', [[targetgene1 and its scores], [targetgene2 and its scores]])
+  ## out:( 'targetgene' )
+  #master_distinctTG = miranda_rdd.map(lambda e: [  i[0].split('.')[0] for i in e[1]  ])\
+  #                               .reduce(lambda a, b: a+b)
+  #master_distinctTG = sorted(list(set(master_distinctTG)))
+  #print( master_distinctTG )
+
+
 
   
   #= clear caches (memory leak)
@@ -472,13 +486,39 @@ if __name__ == '__main__' :
   mergeChromosomesResults_rdd.unpersist()
   broadcastVar_d_ncRNA_CDS.unpersist()
   broadcastVar_bowtie_chromo_strand.unpersist()
-  broadcastVar_libRESULTS.unpersist()
-  broadcastVar_Precursor.unpersist()
 
   #'''
 
   #= end of spark context
+  #broadcastVar_paramDict.unpersist()
+  #broadcastVar_d_ncRNA_CDS.unpersist()
+
   sc.stop() #= allow to run multiple SparkContexts
+
+  #===============================================================================================================
+  #===============================================================================================================
+  #===============================================================================================================
+  #===============================================================================================================
+  #appId = 'local-1538110614002'
+
+  #= diff analysis # 180927 wip
+  diff_outs = ut.diff_output(diffguide, rep_output, appId)
+
+  #= KEGG annotation
+  list_mirna_and_topscoredTargetsKEGGpathway = ut.annotate_target_genes_with_KEGGpathway (gene_vs_pathway_file, rep_output, appId)
+
+
+  #= KEGG enrichment analysis 
+  ut.input_for_enrichment_analysis (diff_outs, pathway_description_file, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId)
+
+
+  #===============================================================================================================
+  #===============================================================================================================
+  #===============================================================================================================
+  #===============================================================================================================
+
+
+
   print('finish time:', datetime.datetime.now())
   print('====================== End of ' + appId + ' =============\n')
 
