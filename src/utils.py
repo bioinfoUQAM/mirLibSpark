@@ -690,6 +690,15 @@ def __fake_diff_output (a, b, rep, appId):
 
   fh_out.close()
 
+
+def diff_output (diffguide, rep, appId):
+  diff_outs = []
+  for i in diffguide:
+    __fake_diff_output (i[0], i[1], rep, appId)
+    diff_outs.append( appId + '_diff_' + i[0] + '_' + i[1] )
+  return diff_outs
+
+
 def readFile (infile):
   with open (infile, 'r') as fh: data = [x.rstrip('\n').split('\t') for x in fh.readlines()]
   return data
@@ -703,29 +712,27 @@ def dictPathwayDescription (infile):
   return d_pathway_desc
 
 
-def diff_output (diffguide, rep, appId):
-  for i in diffguide:
-    __fake_diff_output (i[0], i[1], rep, appId)
 
 
 
-def __write_namecodefile (folder, ID):
+def __write_namecodefile (folder, ID, diff_outs):
   outfile = folder + '/namecode.txt'
   with open (outfile, 'w') as fh:
     print('background_' + ID + '\tbackground' , file = fh)
-    print('Norstar_dif_2_1_1013\tNorstar_210' , file = fh)
+    for i in diff_outs:
+      print(i , file = fh)
 
 
   fh.close()
 
     
 
-def input_for_enrichment_analysis (infile, dict_pathway_description, list_mirna_and_topscoredTargetsKEGGpathway, rep_output):
+def input_for_enrichment_analysis (infile, dict_pathway_description, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, diff_outs):
   '''
   '''
   diffKey = 'UP DOWN'.split()
   ID = 'topscoredTargetsKEGGpathway'
   folder = rep_output + ID
   if not os.path.exists(folder): os.makedirs(folder)
-  __write_namecodefile (folder, ID)
+  __write_namecodefile (folder, ID, diff_outs)
 

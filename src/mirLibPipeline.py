@@ -501,7 +501,7 @@ if __name__ == '__main__' :
 
   #= diff analysis # 180927 wip
   diffguide = ut.read_diffguide(diffguide_file)
-  diff_output = ut.diff_output(diffguide, rep_output, appId)
+  diff_outs = ut.diff_output(diffguide, rep_output, appId)
 
   #= KEGG annotation
   ut.annotate_target_genes_with_KEGGpathway (gene_vs_pathway_file, rep_output, appId)
@@ -517,7 +517,7 @@ if __name__ == '__main__' :
 
   for infile in infiles:
     print(infile)
-    ut.input_for_enrichment_analysis (infile, dict_pathway_description, list_mirna_and_topscoredTargetsKEGGpathway, rep_output)
+    ut.input_for_enrichment_analysis (infile, dict_pathway_description, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, diff_outs)
 
 
   #===============================================================================================================
