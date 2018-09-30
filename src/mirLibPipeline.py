@@ -520,7 +520,7 @@ if __name__ == '__main__' :
     diff_outs = ut.diff_output(diffguide, rep_output, appId)
 
 
-  if perform_KEGGpathways_enrichment_analysis= paramDict['perform_KEGGpathways_enrichment_analysis'] == 'yes':
+  if perform_KEGGpathways_enrichment_analysis == 'yes':
     #= KEGG annotation
     list_mirna_and_topscoredTargetsKEGGpathway = ut.annotate_target_genes_with_KEGGpathway (gene_vs_pathway_file, rep_output, appId)
 
