@@ -748,7 +748,6 @@ def input_for_enrichment_analysis (diff_files, dict_pathway_description, list_mi
   __write_namecodefile (folder, ID, diff_outs)
   
   outfile = folder + '/background_' + ID
-  infile =   outfile = rep_output + appId + '_mirna_and_topscoredTargetsKEGGpathway.txt'
   __create_background (outfile, list_mirna_and_topscoredTargetsKEGGpathway, dict_pathway_description)
 
 
