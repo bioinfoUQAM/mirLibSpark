@@ -738,11 +738,11 @@ def __create_background (outfile, list_mirna_and_topscoredTargetsKEGGpathway, di
       print(line, file=fh_out)
   fh_out.close()
 
-def input_for_enrichment_analysis (diff_files, dict_pathway_description, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, diff_outs):
+def input_for_enrichment_analysis (diff_files, dict_pathway_description, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId, diff_outs):
   '''
   '''
   diffKey = 'UP DOWN'.split()
-  ID = 'topscoredTargetsKEGGpathway'
+  ID = appId + '_topscoredTargetsKEGGpathway'
   folder = rep_output + ID
   if not os.path.exists(folder): os.makedirs(folder)
   __write_namecodefile (folder, ID, diff_outs)

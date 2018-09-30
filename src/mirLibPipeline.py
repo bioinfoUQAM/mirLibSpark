@@ -516,7 +516,7 @@ if __name__ == '__main__' :
 
   #for infile in infiles:
   #  print(infile)
-  ut.input_for_enrichment_analysis (diff_outs, dict_pathway_description, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, diff_outs)
+  ut.input_for_enrichment_analysis (diff_outs, dict_pathway_description, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId, diff_outs)
 
 
   #===============================================================================================================
