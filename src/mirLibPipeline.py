@@ -76,7 +76,7 @@ if __name__ == '__main__' :
   #========================================================
   #========================================================
   print(neededInfiles)
-  testInfiles = [f.split('.') for f in infiles]
+  testInfiles = [f.split('.')[0] for f in infiles]
   for infile in neededInfiles:
     print(infile)
     if infile not in testInfiles: 
