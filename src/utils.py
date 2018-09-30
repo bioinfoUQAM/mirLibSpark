@@ -738,7 +738,7 @@ def __create_background (outfile, list_mirna_and_topscoredTargetsKEGGpathway, di
       print(line, file=fh_out)
   fh_out.close()
 
-def __create_diff_annotation (rep_output, diff_outs, list_mirna_and_topscoredTargetsKEGGpathway, fold):
+def __create_diff_annotation (rep_output, diff_outs, list_mirna_and_topscoredTargetsKEGGpathway, folder):
   dict_mirna_pathways = {}
   for i in list_mirna_and_topscoredTargetsKEGGpathway:
     mirna = i[0]
@@ -746,8 +746,8 @@ def __create_diff_annotation (rep_output, diff_outs, list_mirna_and_topscoredTar
     dict_mirna_pathways[mirna] = pathways
   
   for infile in diff_outs:
-    fh_out = open (fold + infile, 'w')
-    infile = rep_output + infile
+    fh_out = open (folder + infile, 'w')
+    infile = rep_output + infile + '.txt'
     with open (infile, 'r') as fh: data = [x.rstrip('\n').split('\t') for x in fh.readlines()][1:]
     for i in data:
       mirna = i[0]
