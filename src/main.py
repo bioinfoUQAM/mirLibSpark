@@ -4,7 +4,14 @@ import os
 
 #cmd = 'python purge.py';os.system (cmd)
 
-cmd = 'git pull origin formatdiffout';os.system (cmd)
+cmd = 'git pull origin test';os.system (cmd)
+
+#cmd = 'git branch -D formatdiffout';os.system(cmd)
+cmd = 'git remote prune origin';os.system(cmd)
+#cmd = 'git branch';os.system(cmd)
+#cmd = 'git fetch origin';os.system(cmd)
+#cmd = 'git checkout master';os.system(cmd)
+
 
 cmd = 'cp ../input_samples/fake_a.txt ../input';os.system(cmd)
 #cmd = 'rm -fr ../input/fake_a.txt';os.system(cmd)
@@ -27,17 +34,12 @@ cmd = 'rm -f ../input/100.txt';os.system(cmd)
 #cmd = 'git commit -m "save a copy of output"';os.system(cmd)
 #cmd = 'git push origin refactor';os.system(cmd)
 
-#cmd = 'git branch -D refactor';os.system(cmd)
-cmd = 'git remote prune origin';os.system(cmd)
-#cmd = 'git branch';os.system(cmd)
-#cmd = 'git fetch origin';os.system(cmd)
-#cmd = 'git checkout master';os.system(cmd)
 
 
 cmd = 'free -m';os.system(cmd)
 
 #########################################################################################
-cmd = 'time spark-submit mirLibPipeline.py ../paramfile.txt 2>/dev/null';os.system(cmd)
+cmd = 'time spark-submit mirLibPipeline.py ../paramfile_ATH_TAIR10.txt 2>/dev/null';os.system(cmd)
 #########################################################################################
 
 cmd = 'free -m';os.system(cmd)
