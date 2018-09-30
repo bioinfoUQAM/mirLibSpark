@@ -712,8 +712,8 @@ def diff_output (diffguide, rep, appId):
 def __write_namecodefile (folder, ID):
   outfile = folder + '/namecode.txt'
   with open (outfile, 'w') as fh:
-  print('background_' + ID + '\tbackground' , file = fh)
-  print('Norstar_dif_2_1_1013\tNorstar_210' , file = fh)
+    print('background_' + ID + '\tbackground' , file = fh)
+    print('Norstar_dif_2_1_1013\tNorstar_210' , file = fh)
 
 
   fh.close()
