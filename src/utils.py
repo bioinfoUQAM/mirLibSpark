@@ -755,10 +755,7 @@ def __create_diff_annotation (rep_output, diff_outs, list_mirna_and_topscoredTar
       if UPorDOWN == 'NO': continue
       pathways = dict_mirna_pathways[mirna]
       for p in pathways:
-        if p in dict_pathway_description.keys():
-          desc = dict_pathway_description[p]
-        else: desc = 'to be retrived from KEGG'
-        line = '\t'.join( [mirna, p, desc])
+        line = '\t'.join( [mirna, p])
         print(line, file=fh_out)
     fh_out.close()
 
