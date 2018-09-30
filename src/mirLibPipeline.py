@@ -78,8 +78,7 @@ if __name__ == '__main__' :
   testInfiles = [f.split('.') for f in infiles]
   for infile in neededInfiles:
     if infile not in testInfiles: 
-      print('error 167')
-      sys.stderr.write('Three arguments required\nUsage: spark-submit mirLibPipeline.py <path to paramfile> 2>/dev/null\n')
+      sys.stderr.write('One or more input files requested by diffguide_file are not provided in the input folder.\nExit the program.')
       sys.exit()
   #========================================================
   #========================================================
