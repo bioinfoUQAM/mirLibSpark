@@ -38,7 +38,7 @@ if __name__ == '__main__' :
   paramfile = sys.argv[1]
   paramDict = ut.readParam (paramfile)
   #= EXMAMINE OPTIONS 
-  print('Verifying options ...')
+  print('\nVerifying parameters ...')
   ut.validate_options(paramDict)
 
 
