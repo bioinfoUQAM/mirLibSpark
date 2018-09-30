@@ -746,7 +746,7 @@ def __create_diff_annotation (rep_output, diff_outs, list_mirna_and_topscoredTar
     dict_mirna_pathways[mirna] = pathways
   
   for infile in diff_outs:
-    fh_out = open (folder + infile, 'w')
+    fh_out = open (folder + '/' + infile, 'w')
     infile = rep_output + infile + '.txt'
     with open (infile, 'r') as fh: data = [x.rstrip('\n').split('\t') for x in fh.readlines()][1:]
     for i in data:
