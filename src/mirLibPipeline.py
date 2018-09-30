@@ -232,7 +232,7 @@ if __name__ == '__main__' :
     ## in : ('seq', freq)
     ## out: ('seq', freq)
     sr_short_rdd = sr_low_rdd.filter(lambda e: len(e[0]) > limit_len).persist()  # TO KEEP IT
-    #print('NB sr_short_rdd: ', sr_short_rdd.count())###################################################
+    print('NB sr_short_rdd: ', sr_short_rdd.count())###################################################
     
     #= Filtering with DustMasker
     ## in : ('seq', freq)
