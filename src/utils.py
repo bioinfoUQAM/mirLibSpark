@@ -705,16 +705,14 @@ def readFile (infile):
   return data
 
 
-def dictPathwayDescription (infile):
+
+
+def __dictPathwayDescription (infile):
   #= {ko04978: Mineral absorption	Organismal Systems}, {GO:0006351: transcription, DNA-templated}
   d_pathway_desc = {}
   with open (infile, 'r') as fh: data = [x.rstrip('\n').split('\t') for x in fh.readlines()]
   for i in data: d_pathway_desc[i[0]] = i[1]
   return d_pathway_desc
-
-
-
-
 
 def __write_namecodefile (folder, ID, diff_outs):
   outfile = folder + '/namecode.txt'
@@ -759,9 +757,11 @@ def __create_diff_annotation (rep_output, diff_outs, list_mirna_and_topscoredTar
         print(line, file=fh_out)
     fh_out.close()
 
-def input_for_enrichment_analysis (diff_outs, dict_pathway_description, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId):
+def input_for_enrichment_analysis (diff_outs, pathway_description_file, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId):
   '''
   '''
+  dict_pathway_description = __dictPathwayDescription (pathway_description_file)
+
   diffKey = 'UP DOWN'.split()
   ID = appId + '_topscoredTargetsKEGGpathway'
   folder = rep_output + ID

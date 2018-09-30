@@ -509,16 +509,9 @@ if __name__ == '__main__' :
 
 
   #= KEGG enrichment analysis # 180927 wip
-  dict_pathway_description = ut.dictPathwayDescription (pathway_description_file)
-  #list_mirna_and_topscoredTargetsKEGGpathway = ut.readFile(rep_output + appId + '_mirna_and_topscoredTargetsKEGGpathway.txt')### wip
-  
-  print('test ln 514')  
-
-  #infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.split('_')[1] == 'diff')]
-
-  #for infile in infiles:
-  #  print(infile)
-  ut.input_for_enrichment_analysis (diff_outs, dict_pathway_description, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId)
+  #dict_pathway_description = ut.dictPathwayDescription (pathway_description_file)
+  #ut.input_for_enrichment_analysis (diff_outs, dict_pathway_description, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId)
+  ut.input_for_enrichment_analysis (diff_outs, pathway_description_file, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId)
 
 
   #===============================================================================================================
