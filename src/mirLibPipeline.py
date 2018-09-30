@@ -34,9 +34,11 @@ if __name__ == '__main__' :
     sys.stderr.write('Three arguments required\nUsage: spark-submit mirLibPipeline.py <path to paramfile> 2>/dev/null\n')
     sys.exit()
 
+
   paramfile = sys.argv[1]
   paramDict = ut.readParam (paramfile)
   #= EXMAMINE OPTIONS 
+  print('Verifying options ...')
   ut.validate_options(paramDict)
 
 
