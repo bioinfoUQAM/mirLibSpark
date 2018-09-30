@@ -25,6 +25,9 @@ def validate_options(paramDict):
   '''
   input_type = paramDict['input_type']
   adapter = paramDict['adapter']
+  rep_input = paramDict['input_path']
+  diffguide_file = paramDict['diffguide_file']
+
 
   if input_type == 'a' and not adapter == 'none':
     sys.stderr.write("The adapter option must be 'none' for the input_type_a.")
@@ -33,7 +36,6 @@ def validate_options(paramDict):
 
   #= verify if input folder contain all files requisted by diffguide file
   infiles = [f for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
-  diffguide_file = paramDict['diffguide_file']
   diffguide, neededInfiles = read_diffguide(diffguide_file)
   perform_differnatial_analysis = paramDict['perform_differnatial_analysis']
   if perform_differnatial_analysis == 'yes':
