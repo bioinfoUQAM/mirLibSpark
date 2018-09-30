@@ -536,7 +536,8 @@ def annotate_target_genes_with_KEGGpathway (gene_vs_pathway_file, rep_output, ap
     line = '\t'.join(i)
     print(line, file=fh_out)
   fh_out.close()
-
+  return newDATA 
+  
 def write_index (data, rep_output, appId):
   #=serial, miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore
   outfile = rep_output + appId + '_precursorindex.txt'
@@ -724,9 +725,20 @@ def __write_namecodefile (folder, ID, diff_outs):
       print(i + '\t' + base , file = fh)
   fh.close()
 
-    
+def __create_background (outfile, list_mirna_and_topscoredTargetsKEGGpathway, dict_pathway_description):
+  fh_out = open (outfile, 'w')
+  for i in list_mirna_and_topscoredTargetsKEGGpathway:
+    mirna = i[0]
+    pathways = i[1].split(',')
+    for p in pathways:
+      if p in dict_pathway_description.keys():
+        desc = dict_pathway_description[p]
+      else: desc = 'to be retrived from KEGG'
+      line = '\t'.join( [mirna, p, desc])
+      print(line, file=fh_out)
+  fh_out.close()
 
-def input_for_enrichment_analysis (infile, dict_pathway_description, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, diff_outs):
+def input_for_enrichment_analysis (diff_files, dict_pathway_description, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, diff_outs):
   '''
   '''
   diffKey = 'UP DOWN'.split()
@@ -734,4 +746,9 @@ def input_for_enrichment_analysis (infile, dict_pathway_description, list_mirna_
   folder = rep_output + ID
   if not os.path.exists(folder): os.makedirs(folder)
   __write_namecodefile (folder, ID, diff_outs)
+  
+  outfile = folder + '/background_' + ID
+  infile =   outfile = rep_output + appId + '_mirna_and_topscoredTargetsKEGGpathway.txt'
+  __create_background (outfile, list_mirna_and_topscoredTargetsKEGGpathway, dict_pathway_description)
+
 

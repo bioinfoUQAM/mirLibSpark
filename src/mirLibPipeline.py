@@ -503,20 +503,20 @@ if __name__ == '__main__' :
   diff_outs = ut.diff_output(diffguide, rep_output, appId)
 
   #= KEGG annotation
-  ut.annotate_target_genes_with_KEGGpathway (gene_vs_pathway_file, rep_output, appId)
+  list_mirna_and_topscoredTargetsKEGGpathway = ut.annotate_target_genes_with_KEGGpathway (gene_vs_pathway_file, rep_output, appId)
 
 
   #= KEGG enrichment analysis # 180927 wip
   dict_pathway_description = ut.dictPathwayDescription (pathway_description_file)
-  list_mirna_and_topscoredTargetsKEGGpathway = ut.readFile(rep_output + appId + '_mirna_and_topscoredTargetsKEGGpathway.txt')### wip
+  #list_mirna_and_topscoredTargetsKEGGpathway = ut.readFile(rep_output + appId + '_mirna_and_topscoredTargetsKEGGpathway.txt')### wip
   
   print('test ln 514')  
 
-  infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.split('_')[1] == 'diff')]
+  #infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.split('_')[1] == 'diff')]
 
-  for infile in infiles:
-    print(infile)
-    ut.input_for_enrichment_analysis (infile, dict_pathway_description, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, diff_outs)
+  #for infile in infiles:
+  #  print(infile)
+  ut.input_for_enrichment_analysis (diff_outs, dict_pathway_description, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, diff_outs)
 
 
   #===============================================================================================================

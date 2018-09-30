@@ -31,7 +31,7 @@
 #
 ########################################################################
 #
-message=\nwrite your message (for stdout) here line1\nline2: \nchromosomes=All\nformatting diff out so that can do enrichment
+message=\nwrite your message (for stdout) here line1\nline2: \nchromosomes=All\nformatting diff out so that can do enrichment\nnamecode is good now
 #
 ########################################################################
 #
