@@ -41,7 +41,7 @@ message=\nwrite your message (for stdout) here line1\nline2: \nchromosomes=All\n
 project_path=/home/cloudera/workspace/mirLibSpark/
 input_path=/home/cloudera/workspace/mirLibSpark/input/
 output_path=/home/cloudera/workspace/mirLibSpark/output/
-perform_differnatial_analysis=yes
+perform_differnatial_analysis=no
 perform_KEGGpathways_enrichment_analysis=yes
 diffguide_file=/home/cloudera/workspace/mirLibSpark/diffguide.txt
 #

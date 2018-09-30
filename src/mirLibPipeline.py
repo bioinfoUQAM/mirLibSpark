@@ -130,12 +130,14 @@ if __name__ == '__main__' :
   nbTargets = paramDict['nbTargets']
 
   #= differentail analysis
+  perform_differnatial_analysis = paramDict['perform_differnatial_analysis']
   diffguide_file = paramDict['diffguide_file']
 
   #= KEGG annotation
   gene_vs_pathway_file =  paramDict['gene_vs_pathway_file']
 
   #= enrichment analysis
+  perform_KEGGpathways_enrichment_analysis= paramDict['perform_KEGGpathways_enrichment_analysis']
   pathway_description_file = paramDict['pathway_description_file']
 
   #= end of paramDict naming =================================================================================

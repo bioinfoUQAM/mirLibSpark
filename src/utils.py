@@ -27,17 +27,24 @@ def validate_options(paramDict):
   adapter = paramDict['adapter']
   rep_input = paramDict['input_path']
   diffguide_file = paramDict['diffguide_file']
+  perform_differnatial_analysis = paramDict['perform_differnatial_analysis']
+  perform_KEGGpathways_enrichment_analysis= paramDict['perform_KEGGpathways_enrichment_analysis']
+
 
 
   if input_type == 'a' and not adapter == 'none':
-    sys.stderr.write("The adapter option must be 'none' for the input_type_a.")
+    sys.stderr.write("The adapter option must be 'none' for the input_type_a.\nExit the program.")
     sys.exit()
+
+  if perform_KEGGpathways_enrichment_analysis == 'yes' and perform_differnatial_analysis == 'no':
+    sys.stderr.write("KEGG pathway enrichment analysis must be done after differential expression analysis.\nExit the program.")
+    sys.exit()
+
 
 
   #= verify if input folder contain all files requisted by diffguide file
   infiles = [f for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
   diffguide, neededInfiles = read_diffguide(diffguide_file)
-  perform_differnatial_analysis = paramDict['perform_differnatial_analysis']
   if perform_differnatial_analysis == 'yes':
     testInfiles = [f.split('.')[0] for f in infiles]
     for infile in neededInfiles:
