@@ -68,17 +68,20 @@ if __name__ == '__main__' :
   rep_msub_jobsOut = project_path + '/workdir/jobsOut'
   rep_tmp = project_path + '/tmp/' 
   
-  #= Fetch library files in rep_input
-  infiles = [f for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
-  diffguide_file = paramDict['diffguide_file']
-  diffguide, neededInfiles = ut.read_diffguide(diffguide_file)
+  ##= Fetch library files in rep_input
+  #infiles = [f for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
+  #diffguide_file = paramDict['diffguide_file']
+  #diffguide, neededInfiles = ut.read_diffguide(diffguide_file)
 
   #= verify if input folder contain all files requisted by diffguide file
-  testInfiles = [f.split('.')[0] for f in infiles]
-  for infile in neededInfiles:
-    if infile not in testInfiles: 
-      sys.stderr.write('One or more input files requested by diffguide_file are not provided in the input folder.\nExit the program.')
-      sys.exit()
+  #perform_differnatial_analysis = paramDict['perform_differnatial_analysis']
+  #if perform_differnatial_analysis == 'yes':
+  #  testInfiles = [f.split('.')[0] for f in infiles]
+  #  for infile in neededInfiles:
+  #    if infile not in testInfiles: 
+  #      sys.stderr.write('One or more input files requested by diffguide_file are not provided in the input folder.\nExit the program.')
+  #      sys.exit()
+    
 
   #= genome
   genome_path = paramDict['genome_path'] 
@@ -126,6 +129,9 @@ if __name__ == '__main__' :
   Gap_Penalty = paramDict['Gap_Penalty']
   nbTargets = paramDict['nbTargets']
 
+  #= differentail analysis
+  diffguide_file = paramDict['diffguide_file']
+
   #= KEGG annotation
   gene_vs_pathway_file =  paramDict['gene_vs_pathway_file']
 
@@ -164,6 +170,10 @@ if __name__ == '__main__' :
   mirdup_obj = mru.prog_miRdup (rep_tmp, mirdup_model, mirdup_jar, path_RNAfold)
   profile_obj = mru.prog_dominant_profile()
   miranda_obj = mru.prog_miRanda(Max_Score_cutoff, Max_Energy_cutoff, target_file, rep_tmp, miranda_binary, Gap_Penalty, nbTargets)
+
+
+  #= Fetch library files in rep_input
+  infiles = [f for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
 
   #= Time processing of libraries
   timeDict = {}
@@ -501,8 +511,9 @@ if __name__ == '__main__' :
   #===============================================================================================================
   #appId = 'local-1538110614002'
 
-  #= diff analysis # 180927 wip
-  diff_outs = ut.diff_output(diffguide, rep_output, appId)
+  #= diff analysis 
+  if perform_differnatial_analysis == 'yes':
+    diff_outs = ut.diff_output(diffguide, rep_output, appId)
 
   #= KEGG annotation
   list_mirna_and_topscoredTargetsKEGGpathway = ut.annotate_target_genes_with_KEGGpathway (gene_vs_pathway_file, rep_output, appId)

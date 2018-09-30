@@ -26,6 +26,20 @@ def validate_options(paramDict):
     sys.stderr.write("The adapter option must be 'none' for the input_type_a.")
     sys.exit()
 
+
+  #= verify if input folder contain all files requisted by diffguide file
+  infiles = [f for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
+  diffguide_file = paramDict['diffguide_file']
+  diffguide, neededInfiles = read_diffguide(diffguide_file)
+  perform_differnatial_analysis = paramDict['perform_differnatial_analysis']
+  if perform_differnatial_analysis == 'yes':
+    testInfiles = [f.split('.')[0] for f in infiles]
+    for infile in neededInfiles:
+      if infile not in testInfiles: 
+        sys.stderr.write('One or more input files requested by diffguide_file are not provided in the input folder.\nExit the program.')
+        sys.exit()
+
+
 def transpose_txt(infile, outfile):
     with open(infile, 'r') as f:
         lis = [x.rstrip('\n').split('\t') for x in f]
