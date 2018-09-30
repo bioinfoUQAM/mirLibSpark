@@ -738,7 +738,31 @@ def __create_background (outfile, list_mirna_and_topscoredTargetsKEGGpathway, di
       print(line, file=fh_out)
   fh_out.close()
 
-def input_for_enrichment_analysis (diff_files, dict_pathway_description, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId, diff_outs):
+def __create_diff_annotation (rep_output, diff_outs, list_mirna_and_topscoredTargetsKEGGpathway, fold):
+  dict_mirna_pathways = {}
+  for i in list_mirna_and_topscoredTargetsKEGGpathway:
+    mirna = i[0]
+    pathways = i[1].split(',')
+    dict_mirna_pathways[mirna] = pathways
+  
+  for infile in diff_outs:
+    fh_out = open (fold + infile, 'w')
+    infile = rep_outout + infile
+    with open (infile, 'r') as fh: data = [x.rstrip('\n').split('\t') for x in fh.readlines()][1:]
+    for i in data:
+      mirna = i[0]
+      UPorDOWN = i[7]
+      if UPorDOWN == 'NO': continue
+      pathways = dict_mirna_pathways[mirna]
+      for p in pathways:
+        if p in dict_pathway_description.keys():
+          desc = dict_pathway_description[p]
+        else: desc = 'to be retrived from KEGG'
+        line = '\t'.join( [mirna, p, desc])
+        print(line, file=fh_out)
+    fh_out.close()
+
+def input_for_enrichment_analysis (diff_outs, dict_pathway_description, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId):
   '''
   '''
   diffKey = 'UP DOWN'.split()
@@ -749,5 +773,8 @@ def input_for_enrichment_analysis (diff_files, dict_pathway_description, list_mi
   
   outfile = folder + '/background_' + ID
   __create_background (outfile, list_mirna_and_topscoredTargetsKEGGpathway, dict_pathway_description)
+  __create_diff_annotation (rep_output, diff_outs, list_mirna_and_topscoredTargetsKEGGpathway, folder)
+
+
 
 
