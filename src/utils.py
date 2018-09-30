@@ -747,7 +747,7 @@ def __create_diff_annotation (rep_output, diff_outs, list_mirna_and_topscoredTar
   
   for infile in diff_outs:
     fh_out = open (fold + infile, 'w')
-    infile = rep_outout + infile
+    infile = rep_output + infile
     with open (infile, 'r') as fh: data = [x.rstrip('\n').split('\t') for x in fh.readlines()][1:]
     for i in data:
       mirna = i[0]
