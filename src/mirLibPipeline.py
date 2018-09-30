@@ -75,8 +75,10 @@ if __name__ == '__main__' :
 
   #========================================================
   #========================================================
+  print(neededInfiles)
   testInfiles = [f.split('.') for f in infiles]
   for infile in neededInfiles:
+    print(infile)
     if infile not in testInfiles: 
       sys.stderr.write('One or more input files requested by diffguide_file are not provided in the input folder.\nExit the program.')
       sys.exit()
@@ -478,11 +480,6 @@ if __name__ == '__main__' :
   #                               .reduce(lambda a, b: a+b)
   #master_distinctTG = sorted(list(set(master_distinctTG)))
   #print( master_distinctTG )
-
-
-  #===============================================================================================================
-  # to be put back here
-  #===============================================================================================================
 
 
 

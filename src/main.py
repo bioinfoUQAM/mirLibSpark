@@ -6,7 +6,7 @@ import os
 
 cmd = 'git pull origin formatdiffout';os.system (cmd)
 
-#cmd = 'cp ../input_samples/fake_a.txt ../input';os.system(cmd)
+cmd = 'cp ../input_samples/fake_a.txt ../input';os.system(cmd)
 #cmd = 'rm -fr ../input/fake_a.txt';os.system(cmd)
 
 cmd = 'cp ../input_samples/fake_a3.txt ../input';os.system(cmd)
