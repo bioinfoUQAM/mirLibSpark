@@ -14,6 +14,10 @@ import re
 import subprocess
 import sys
 
+import os.path
+from os import listdir
+
+
 
 def validate_options(paramDict):
   '''
