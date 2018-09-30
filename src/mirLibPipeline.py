@@ -519,12 +519,13 @@ if __name__ == '__main__' :
   if perform_differnatial_analysis == 'yes':
     diff_outs = ut.diff_output(diffguide, rep_output, appId)
 
-  #= KEGG annotation
-  list_mirna_and_topscoredTargetsKEGGpathway = ut.annotate_target_genes_with_KEGGpathway (gene_vs_pathway_file, rep_output, appId)
 
+  if perform_KEGGpathways_enrichment_analysis= paramDict['perform_KEGGpathways_enrichment_analysis'] == 'yes':
+    #= KEGG annotation
+    list_mirna_and_topscoredTargetsKEGGpathway = ut.annotate_target_genes_with_KEGGpathway (gene_vs_pathway_file, rep_output, appId)
 
-  #= KEGG enrichment analysis 
-  ut.input_for_enrichment_analysis (diff_outs, pathway_description_file, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId)
+    #= KEGG enrichment analysis 
+    ut.input_for_enrichment_analysis (diff_outs, pathway_description_file, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId)
 
 
   #===============================================================================================================
