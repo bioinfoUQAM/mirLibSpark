@@ -66,10 +66,11 @@ if __name__ == '__main__' :
   rep_input = paramDict['input_path']
   rep_output = paramDict['output_path']
   rep_msub_jobsOut = project_path + '/workdir/jobsOut'
-  rep_tmp = project_path + '/tmp/'                   
-
+  rep_tmp = project_path + '/tmp/' 
+  
   #= Fetch library files in rep_input
   infiles = [f for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
+  diffguide_file = paramDict['diffguide_file']
   diffguide, neededInfiles = ut.read_diffguide(diffguide_file)
 
   #========================================================
@@ -129,9 +130,6 @@ if __name__ == '__main__' :
   Max_Energy_cutoff = paramDict['Max_Energy_cutoff'] #= NOT WORKING YET
   Gap_Penalty = paramDict['Gap_Penalty']
   nbTargets = paramDict['nbTargets']
-
-  #= differential analysis
-  diffguide_file = paramDict['diffguide_file']
 
   #= KEGG annotation
   gene_vs_pathway_file =  paramDict['gene_vs_pathway_file']
