@@ -720,7 +720,7 @@ def __write_namecodefile (folder, ID):
 
     
 
-def input_for_enrichment_analysis (infile, dict_pathway_description, list_mirna_and_topscoredTargetsKEGGpathway):
+def input_for_enrichment_analysis (infile, dict_pathway_description, list_mirna_and_topscoredTargetsKEGGpathway, rep_output):
   '''
   '''
   diffKey = 'UP DOWN'.split()
