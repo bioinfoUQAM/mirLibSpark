@@ -170,7 +170,7 @@ if __name__ == '__main__' :
   #for k, v in paramDict.items(): print(k, ': ', v)
   print('============================================================\n')
   print('begin time:', datetime.datetime.now())
-  '''
+  #'''
   libRESULTS = [] 
   for infile in infiles :
     if infile[-1:] == '~': continue
@@ -467,7 +467,7 @@ if __name__ == '__main__' :
   master_distinctTG = miranda_rdd.map(lambda e: [  i[0].split('.')[0] for i in e[1]  ])\
                                  .reduce(lambda a, b: a+b)
   master_distinctTG = sorted(list(set(master_distinctTG)))
-  print( master_distinctTG )
+  print( master_distinctTG )'''
 
 
   #===============================================================================================================
@@ -486,11 +486,11 @@ if __name__ == '__main__' :
   broadcastVar_d_ncRNA_CDS.unpersist()
   broadcastVar_bowtie_chromo_strand.unpersist()
 
-  '''
+  #'''
 
   #= end of spark context
-  broadcastVar_paramDict.unpersist()
-  broadcastVar_d_ncRNA_CDS.unpersist()
+  #broadcastVar_paramDict.unpersist()
+  #broadcastVar_d_ncRNA_CDS.unpersist()
 
   sc.stop() #= allow to run multiple SparkContexts
 
@@ -498,7 +498,7 @@ if __name__ == '__main__' :
   #===============================================================================================================
   #===============================================================================================================
   #===============================================================================================================
-  appId = 'local-1538110614002'
+  #appId = 'local-1538110614002'
 
   #= diff analysis # 180927 wip
   diffguide = ut.read_diffguide(diffguide_file)
@@ -508,9 +508,7 @@ if __name__ == '__main__' :
   list_mirna_and_topscoredTargetsKEGGpathway = ut.annotate_target_genes_with_KEGGpathway (gene_vs_pathway_file, rep_output, appId)
 
 
-  #= KEGG enrichment analysis # 180927 wip
-  #dict_pathway_description = ut.dictPathwayDescription (pathway_description_file)
-  #ut.input_for_enrichment_analysis (diff_outs, dict_pathway_description, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId)
+  #= KEGG enrichment analysis 
   ut.input_for_enrichment_analysis (diff_outs, pathway_description_file, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId)
 
 
