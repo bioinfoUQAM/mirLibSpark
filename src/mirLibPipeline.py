@@ -73,18 +73,12 @@ if __name__ == '__main__' :
   diffguide_file = paramDict['diffguide_file']
   diffguide, neededInfiles = ut.read_diffguide(diffguide_file)
 
-  #========================================================
-  #========================================================
-  print(neededInfiles)
+  #= verify if input folder contain all files requisted by diffguide file
   testInfiles = [f.split('.')[0] for f in infiles]
   for infile in neededInfiles:
-    print(infile)
     if infile not in testInfiles: 
       sys.stderr.write('One or more input files requested by diffguide_file are not provided in the input folder.\nExit the program.')
       sys.exit()
-  #========================================================
-  #========================================================
-
 
   #= genome
   genome_path = paramDict['genome_path'] 
