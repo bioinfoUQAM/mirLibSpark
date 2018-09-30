@@ -651,7 +651,13 @@ def read_diffguide (infile):
   #= a / b = numerator / denominator
   #= [[numerator, denominator], [numerator, denominator], ...]
   with open (infile, 'r') as fh: diffguide = [x.rstrip('\n').split('->') for x in fh.readlines()]
-  return diffguide[1:]
+  needed_infilenames = []
+  for i in diffguide[1:]:
+    name1 = i[0]
+    name2 = i[1]
+    if name1 not in needed_infilenames: needed_infilenames.append(name1)
+    if name2 not in needed_infilenames: needed_infilenames.append(name2)
+  return diffguide[1:], needed_infilenames
 
 def __fake_diff_output (a, b, rep, appId):
   #rep = '../output/'

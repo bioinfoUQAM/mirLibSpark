@@ -158,7 +158,16 @@ if __name__ == '__main__' :
 
   #= Fetch library files in rep_input
   infiles = [f for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
-  
+  diffguide, neededInfiles = ut.read_diffguide(diffguide_file)
+
+  #========================================================
+  #========================================================
+  testInfiles = [f.split('.') for f in infiles]
+  for infile in neededInfiles:
+    if infile not in testInfiles: print('error 167')
+  #========================================================
+  #========================================================
+
   #= Time processing of libraries
   timeDict = {}
 
@@ -461,13 +470,13 @@ if __name__ == '__main__' :
   ut.writeTargetsToFile (mirna_and_targets, rep_output, appId)
   #'''
 
-  ''' ## I dont know what is the use of this, maybe there is no use...
+  ## I dont know what is the use of this, maybe there is no use...
   ## in: ('miRNAseq', [[targetgene1 and its scores], [targetgene2 and its scores]])
   ## out:( 'targetgene' )
-  master_distinctTG = miranda_rdd.map(lambda e: [  i[0].split('.')[0] for i in e[1]  ])\
-                                 .reduce(lambda a, b: a+b)
-  master_distinctTG = sorted(list(set(master_distinctTG)))
-  print( master_distinctTG )'''
+  #master_distinctTG = miranda_rdd.map(lambda e: [  i[0].split('.')[0] for i in e[1]  ])\
+  #                               .reduce(lambda a, b: a+b)
+  #master_distinctTG = sorted(list(set(master_distinctTG)))
+  #print( master_distinctTG )
 
 
   #===============================================================================================================
@@ -501,7 +510,6 @@ if __name__ == '__main__' :
   #appId = 'local-1538110614002'
 
   #= diff analysis # 180927 wip
-  diffguide = ut.read_diffguide(diffguide_file)
   diff_outs = ut.diff_output(diffguide, rep_output, appId)
 
   #= KEGG annotation
