@@ -17,6 +17,9 @@ cmd = 'cp ../input_samples/fake_a5.txt ../input';os.system(cmd)
 #cmd = 'cp ../input_samples/100.txt ../input';os.system(cmd)
 cmd = 'rm -f ../input/100.txt';os.system(cmd)
 
+#cmd = 'mv ../input_samples/11w2013_t2_1.fasta ../input';os.system(cmd)
+cmd = 'mv ../input/11w2013_t2_1.fasta';os.system(cmd)
+
 
 
 #cmd = 'git add -f ../output/*';os.system(cmd)
