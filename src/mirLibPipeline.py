@@ -517,6 +517,7 @@ if __name__ == '__main__' :
 
   #= diff analysis 
   if perform_differnatial_analysis == 'yes':
+    diffguide, _ = read_diffguide(diffguide_file)
     diff_outs = ut.diff_output(diffguide, rep_output, appId)
 
 
