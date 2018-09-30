@@ -37,7 +37,7 @@ cmd = 'git remote prune origin';os.system(cmd)
 cmd = 'free -m';os.system(cmd)
 
 #########################################################################################
-cmd = 'time spark-submit mirLibPipeline.py ../paramfile.txt 2>/dev/null';os.system(cmd)
+cmd = 'time spark-submit mirLibPipeline.py ../paramfile_ATH_TAIR10.txt 2>/dev/null';os.system(cmd)
 #########################################################################################
 
 cmd = 'free -m';os.system(cmd)
