@@ -10,40 +10,6 @@ import os
 import utils as ut
 from operator import itemgetter
 
-def distinctPrecursor_infos_rearrange_rule (elem):
-    miRNAseq = elem[0]
-    frq = elem[1][0]
-    #= bowtie_result
-    nbLoc = elem[1][1]
-    strand = elem[1][2][0]
-    chromo = elem[1][2][1]
-    posChr = elem[1][2][2]
-    #= pri-miRNA
-    priSeq = elem[1][3][0] 
-    posMirPri = elem[1][3][1] 
-    priFold = elem[1][3][2] 
-    #= mircheck_result
-    mkPred = elem[1][3][3]
-    mkStart = elem[1][3][4]
-    mkStop = elem[1][3][5]  
-    #= mirdup_result
-    preSeq = elem[1][4][0]
-    posMirPre = elem[1][4][1]
-    newfbstart = int(posMirPre) + int(posMirPri) - int(mkStart) 
-    newfbstop  = int(posMirPre) + int(mkStop) - int(posMirPri) 
-    preFold = elem[1][4][2]
-    mpPred = elem[1][4][3]
-    mpScore = elem[1][4][4]
-    #= premirna_range_total_small_rna_freq
-    totalFrq =  elem[1][5]
-    
-    newelem = [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq]
-    return newelem
-
-def distinctPrecursor_infos_select (elem):
-  [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq] = elem
-  newelem = [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
-  return newelem
 
 def rearrange_rule(kv_arg, kv_sep):
   '''
@@ -450,11 +416,7 @@ class prog_miRanda ():
     with open (tmp_file, 'w') as fh_tmp:
       print >> fh_tmp, '>x\n' + miRNAseq
     FNULL = open(os.devnull, 'w')
-    #cmd = [self.miranda_exe, tmp_file, self.target_file, '-sc', self.Max_Score_cutoff]
-    #cmd = [self.miranda_exe, tmp_file, self.target_file, '-strict']
-    #cmd = [self.miranda_exe, tmp_file, self.target_file, '-strict', '-sc', self.Max_Score_cutoff, '-en', self.Max_Energy_cutoff]
     cmd = [self.miranda_exe, tmp_file, self.target_file, '-strict', '-sc', self.Max_Score_cutoff, '-en', self.Max_Energy_cutoff, '-go', self.Gap_Penalty]
-    ##cmd = [self.miranda_exe, tmp_file, self.target_file, '-sc', self.Max_Score_cutoff, '-en', self.Max_Energy_cutoff, '-go', self.Gap_Penalty]
 
     sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
     mirandaout = sproc.communicate()[0].split('\n')
@@ -566,10 +528,6 @@ class prog_varna ():
     #-highlightRegion "48-63:fill=#bcffdd;81-102:fill=#bcffdd"
     cmd = 'java -cp ../lib/VARNAv3-93.jar fr.orsay.lri.varna.applications.VARNAcmd -sequenceDBN "'+ preSEQ +'" -structureDBN "' + preFOLD + '" -highlightRegion "'+ miRNApos + ':fill=#ff0000" -title "' + title + '" -o '+ filename +'.jpg'
     os.system(cmd)
-    #cmd = ['java', '-cp', '../lib/VARNAv3-93.jar', 'fr.orsay.lri.varna.applications.VARNAcmd', '-sequenceDBN', preSEQ, '-structureDBN', preFOLD, '-highlightRegion',  '"' + miRNApos + ':fill=#ff0000"', '-title', '-o', filename + '.jpg'] 
-    #FNULL = open(os.devnull, 'w')
-    #sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
-    #FNULL.close()
 
   def run_VARNA (self, e):
     [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore] = e[0]
@@ -582,7 +540,14 @@ class prog_varna ():
     return e[0]
 
 
-
+def matchRNAidRule (e, distResultSmallRNA):
+  ##in  : precursorSerial, miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore
+  ##out : precursorSerial, miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore, miRNAindex
+  d_rna_index = {} # {seq: index}
+  for i in distResultSmallRNA: d_rna_index[ i[0] ] = i[1]
+  miRNAseq = e[1]
+  e.append(d_rna_index[miRNAseq]) 
+  return e
 
       
 if __name__ == '__main__' :

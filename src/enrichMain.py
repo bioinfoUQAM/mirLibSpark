@@ -5,7 +5,7 @@ Chao-Jung Wu
 import os
 
 
-cmd = 'git pull origin tgkegg';os.system (cmd)
+#cmd = 'git pull origin tgkegg';os.system (cmd)
 
 
 

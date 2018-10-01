@@ -4,6 +4,13 @@
 
 # Le programme crée un heatmap d'enrechissement des entites (GO, KEGG, etc.)
 
+
+# Chao-Jung Wu, 
+# update: 2018-09-30
+# mask lines 88, 89 so that it does not plot heatmaps. 
+# And lease from the the dependency of R and RColorBrewer, gplots. 
+# I will have to find a way to plot the heatmaps, such as python seaborne.
+
 use v5.10.1;
 use strict;
 use warnings;
@@ -79,13 +86,13 @@ my %unirefs = &getUnirefList(\@$tfiles,\@$tCases);
 
 ###############################################################################
 # Compute frequencies and pvalues
-#&computeEnrichment (\$GOSFILE,\%unirefs, $tCases,\$DISTFLE);  # $tCases is a already a reference
-#&computePvalues ($GOSFILE, $DISTFLE, $PVALFLE, $pvalue_type);
+&computeEnrichment (\$GOSFILE,\%unirefs, $tCases,\$DISTFLE);  # $tCases is a already a reference
+&computePvalues ($GOSFILE, $DISTFLE, $PVALFLE, $pvalue_type);
 ###############################################################################
 
 # Plot the heatmaps ###########################################################
-&createPvalueHeatmap ($DISTFLE,$PVALFLE);
-&createPvalueHeatmapTrunc ($DISTFLE,$PVALFLE);
+#&createPvalueHeatmap ($DISTFLE,$PVALFLE);
+#&createPvalueHeatmapTrunc ($DISTFLE,$PVALFLE);
 
 ## SVG ########################################################################
 # &createPvalueHeatmapSVG ($DISTFLE,$PVALFLE);

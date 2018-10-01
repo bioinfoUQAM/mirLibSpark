@@ -147,8 +147,6 @@ if __name__ == '__main__' :
   sc.addFile(project_path + '/lib/VARNAv3-93.jar')
   sc.addFile(mirdup_jar)
   sc.addFile(mirdup_model)
-  sc.addFile(target_file)
-  sc.addFile(miranda_binary)
 
   #= Objects for rule functions
   dmask_obj = mru.prog_dustmasker()
@@ -276,7 +274,7 @@ if __name__ == '__main__' :
                             .map(bowtie_obj.bowtie_rearrange_map)\
                             .groupByKey()\
                             .map(lambda e: (e[0], [len(list(e[1])), list(e[1])]))
-      #print('NB bowtie_rdd: ', len(bowtie_rdd.collect()))##################################################
+      #print('NB bowtie_rdd: ', bowtie_rdd.count())##################################################
       #================================================================================================================
       #================================================================================================================
       #================================================================================================================
@@ -294,7 +292,7 @@ if __name__ == '__main__' :
 
     #= Create dict, chromo_strand as key to search bowtie blocs in the following dict
     dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(bowFrq_rdd.collect())
-    broadcastVar_bowtie_chromo_strand = sc.broadcast(dict_bowtie_chromo_strand) #= get the value by broadcastVar.value
+    broadcastVar_bowtie_chromo_strand = sc.broadcast(dict_bowtie_chromo_strand) 
 
 
     #= Filtering miRNA low frequency
@@ -424,46 +422,42 @@ if __name__ == '__main__' :
   keyword = appId + '_miRNAprediction_'
   infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
   Precursor = ut.writeSummaryExpressionToFile (infiles, rep_output, appId)
-  #broadcastVar_Precursor = sc.broadcast(Precursor)   
 
   ## in:  ( lib, ('seq', [...]) )
   ## out: ( 'seq', [...] )
-  #broadcastVar_libRESULTS = sc.broadcast(libRESULTS)  
-  #libRESULTS_rdd = sc.parallelize(broadcastVar_libRESULTS.value, partition).flatMap(lambda e: e[1]) 
-  libRESULTS_rdd = sc.parallelize(libRESULTS, partition).flatMap(lambda e: e[1]) 
+  libRESULTS_rdd = sc.parallelize(libRESULTS, partition)\
+                     .flatMap(lambda e: e[1]) 
 
   ## in:  ( 'seq', [...] )
-  ## out: ( 'seq' ) 
-  master_predicted_distinctMiRNAs_rdd = libRESULTS_rdd.map(lambda e: e[0]).distinct()
-  
-  ## in:  ( 'seq' ) 
-  ## out: ('miRNAseq', zipindex)
-  distResultSmallRNA_rdd = master_predicted_distinctMiRNAs_rdd.zipWithIndex() 
-
+  ## mid: ( 'seq' )
+  ## out: ( 'seq', zipindex)
+  distResultSmallRNA_rdd = libRESULTS_rdd.map(lambda e: e[0])\
+                                         .distinct()\
+                                         .zipWithIndex() 
   
   #= varna
   varna_obj = mru.prog_varna(appId, rep_output) 
-
-  ## in:  ( 'seq', [...] ) 
-  ## mid: [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq] 
-  ## out : [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
-  #Precursor_rdd = sc.parallelize(broadcastVar_Precursor.value, partition)
-  Precursor_rdd = sc.parallelize(Precursor, partition)
-  
-  ## in : [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
-  ## out : ([miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore], zipindex)
-  VARNA_rdd = Precursor_rdd.zipWithIndex()\
-                               .map(varna_obj.run_VARNA)
-  indexVis = VARNA_rdd.collect()
-  ut.write_index (indexVis, rep_output, appId)
+  ## in : ([miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore], zipindex)
+  Precursor_rdd = sc.parallelize(Precursor, partition)\
+                    .zipWithIndex()
+  distResultSmallRNA = distResultSmallRNA_rdd.collect()
+  ## out : ( PrecursorIndex, miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore, miRNAindex )
+  PrecursorVis = Precursor_rdd.map(varna_obj.run_VARNA)\
+                              .map(lambda e: mru.matchRNAidRule(e, distResultSmallRNA))\
+                              .collect()
+  ut.write_index (PrecursorVis, rep_output, appId)
   
   
   #= miranda
   ## in : ('miRNAseq', zipindex)
   ## out: ('miRNAseq', [[target1 and its scores], [target2 and its scores]])
-  miranda_rdd = distResultSmallRNA_rdd.map(miranda_obj.computeTargetbyMiranda)
-  mirna_and_targets = miranda_rdd.collect()
+  sc.clearFiles()
+  sc.addFile(miranda_binary)
+  sc.addFile(target_file)
+  mirna_and_targets = distResultSmallRNA_rdd.map(miranda_obj.computeTargetbyMiranda)\
+                                            .collect()
   ut.writeTargetsToFile (mirna_and_targets, rep_output, appId)
+  
   #'''
 
   ## I dont know what is the use of this, maybe there is no use...
@@ -499,20 +493,20 @@ if __name__ == '__main__' :
   #===============================================================================================================
   #===============================================================================================================
   #appId = 'local-1538110614002'
+  print('sc stop time:', datetime.datetime.now())
 
   #= diff analysis 
   if perform_differnatial_analysis == 'yes':
     diffguide, _ = ut.read_diffguide(diffguide_file)
     diff_outs = ut.diff_output(diffguide, rep_output, appId)
 
-
   if perform_KEGGpathways_enrichment_analysis == 'yes':
     #= KEGG annotation
     list_mirna_and_topscoredTargetsKEGGpathway = ut.annotate_target_genes_with_KEGGpathway (gene_vs_pathway_file, rep_output, appId)
 
     #= KEGG enrichment analysis 
-    ut.input_for_enrichment_analysis (diff_outs, pathway_description_file, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId)
-
+    keyword =  appId + '_topscoredTargetsKEGGpathway'
+    ut.perform_enrichment_analysis (keyword, diff_outs, pathway_description_file, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId)
 
   #===============================================================================================================
   #===============================================================================================================
