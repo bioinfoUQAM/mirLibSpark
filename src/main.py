@@ -4,9 +4,9 @@ import os
 
 #cmd = 'python purge.py';os.system (cmd)
 
-cmd = 'git pull origin ensembl';os.system (cmd)
+#cmd = 'git pull origin ensembl';os.system (cmd)
 
-#cmd = 'git branch -D formatdiffout';os.system(cmd)
+cmd = 'git branch -D ensembl';os.system(cmd)
 cmd = 'git remote prune origin';os.system(cmd)
 #cmd = 'git branch';os.system(cmd)
 #cmd = 'git fetch origin';os.system(cmd)
