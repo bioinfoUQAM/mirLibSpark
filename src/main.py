@@ -73,7 +73,9 @@ cmd = 'free -m';os.system(cmd)
 #https://spark.apache.org/docs/latest/configuration.html
 
 
-
+##Remove CTRL-M characters from a file in UNIX Inside vi [in ESC mode] type: 
+#:%s/^M//g
+#To enter ^M, type CTRL-V, then CTRL-M. That is, hold down the CTRL key then press V and M in succession.
 
 
 #cmd = 'mv ../output/* ../output_depo/';os.system(cmd)
