@@ -546,7 +546,8 @@ def matchRNAidRule (e, distResultSmallRNA):
   d_rna_index = {} # {seq: index}
   for i in distResultSmallRNA: d_rna_index[ i[0] ] = i[1]
   miRNAseq = e[1]
-  return e.append(d_rna_index[miRNAseq]) 
+  e.append(d_rna_index[miRNAseq]) 
+  return e
 
       
 if __name__ == '__main__' :
