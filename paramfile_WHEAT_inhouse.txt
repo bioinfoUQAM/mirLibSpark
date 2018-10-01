@@ -55,8 +55,8 @@ pathway_description_file=/home/cloudera/workspace/mirLibSpark/dbs/WHEAT_inhouse/
 #
 #
 #==================== User needs to define
-input_type=c
-adapter=TGGAATTCTCGGGTGCCAAGGAACTC
+input_type=a
+adapter=none
 #
 #
 #
