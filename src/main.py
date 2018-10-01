@@ -22,8 +22,8 @@ cmd = 'cp ../input_samples/fake_a3.txt ../input';os.system(cmd)
 cmd = 'cp ../input_samples/fake_a5.txt ../input';os.system(cmd)
 #cmd = 'rm -fr ../input/fake_a5.txt';os.system(cmd)
 
-#cmd = 'cp ../input_samples/100.txt ../input';os.system(cmd)
-cmd = 'rm -f ../input/100.txt';os.system(cmd)
+cmd = 'cp ../input_samples/100.txt ../input';os.system(cmd)
+#cmd = 'rm -f ../input/100.txt';os.system(cmd)
 
 #cmd = 'mv ../input_samples/11w2013_t2_1.fasta ../input';os.system(cmd)
 #cmd = 'mv ../input/11w2013_t2_1.fasta ../input_samples';os.system(cmd)

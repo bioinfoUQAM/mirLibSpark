@@ -425,16 +425,15 @@ if __name__ == '__main__' :
 
   ## in:  ( lib, ('seq', [...]) )
   ## out: ( 'seq', [...] )
-  libRESULTS_rdd = sc.parallelize(libRESULTS, partition).flatMap(lambda e: e[1]) 
+  libRESULTS_rdd = sc.parallelize(libRESULTS, partition)\
+                     .flatMap(lambda e: e[1]) 
 
   ## in:  ( 'seq', [...] )
-  ## out: ( 'seq' ) 
-  master_predicted_distinctMiRNAs_rdd = libRESULTS_rdd.map(lambda e: e[0]).distinct()
-  
-  ## in:  ( 'seq' ) 
-  ## out: ('miRNAseq', zipindex)
-  distResultSmallRNA_rdd = master_predicted_distinctMiRNAs_rdd.zipWithIndex() 
-
+  ## mid: ( 'seq' ) 
+  ## out: ( 'seq', zipindex)
+  distResultSmallRNA_rdd = libRESULTS_rdd.map(lambda e: e[0])\
+                                         .distinct()\
+                                         .zipWithIndex() 
   
   #= varna
   varna_obj = mru.prog_varna(appId, rep_output) 
@@ -446,10 +445,10 @@ if __name__ == '__main__' :
   
   ## in : [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
   ## out : ([miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore], zipindex)
-  VARNA_rdd = Precursor_rdd.zipWithIndex()\
-                               .map(varna_obj.run_VARNA)
-  indexVis = VARNA_rdd.collect()
-  ut.write_index (indexVis, rep_output, appId)
+  PrecursorVis = Precursor_rdd.zipWithIndex()\
+                          .map(varna_obj.run_VARNA)\
+                          .collect()
+  ut.write_index (PrecursorVis, rep_output, appId)
   
   
   #= miranda
@@ -458,9 +457,10 @@ if __name__ == '__main__' :
   sc.clearFiles()
   sc.addFile(miranda_binary)
   sc.addFile(target_file)
-  miranda_rdd = distResultSmallRNA_rdd.map(miranda_obj.computeTargetbyMiranda)
-  mirna_and_targets = miranda_rdd.collect()
+  mirna_and_targets = distResultSmallRNA_rdd.map(miranda_obj.computeTargetbyMiranda)\
+                                            .collect()
   ut.writeTargetsToFile (mirna_and_targets, rep_output, appId)
+  
   #'''
 
   ## I dont know what is the use of this, maybe there is no use...
@@ -509,7 +509,7 @@ if __name__ == '__main__' :
     list_mirna_and_topscoredTargetsKEGGpathway = ut.annotate_target_genes_with_KEGGpathway (gene_vs_pathway_file, rep_output, appId)
 
     #= KEGG enrichment analysis 
-    ut.input_for_enrichment_analysis (diff_outs, pathway_description_file, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId)
+    ut.create_inputs_for_enrichment_analysis (diff_outs, pathway_description_file, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId)
 
 
   #===============================================================================================================
