@@ -443,7 +443,7 @@ if __name__ == '__main__' :
   distResultSmallRNA = distResultSmallRNA_rdd.collect()
   ## out : ( PrecursorIndex, miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore, miRNAindex )
   PrecursorVis = Precursor_rdd.map(varna_obj.run_VARNA)\
-                              .map(mru.xrule(distResultSmallRNA))
+                              .map(mru.xrule(distResultSmallRNA))\
                               .collect()
   ut.write_index (PrecursorVis, rep_output, appId)
   
