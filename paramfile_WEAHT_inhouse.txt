@@ -1,0 +1,90 @@
+#== wheat inhouse genome settings
+#  date:2018-09-21
+#  author: M.A.Remita
+#  author: Chao-Jung Wu
+#
+#
+#
+#  note:
+#  Lines led by char(#) are omitted.
+#  Spaces are not allowed, except in message.
+#
+#  note:
+#  Viridiplantae.model is better than thaliana.model in terms of prediction, 
+#  but during quick code testing, use the latter to have shorter run time.
+#
+#  note: input_types 
+#  a = raw (seq\tfreq); 
+#  b = reads (each line may be a redundant sequence); 
+#  c = fasta (>name\nseq); 
+#  d = fastq 
+#
+#  note: adapter
+#  A short ATCG sequence or none.
+#
+#  note:
+#  Chromosomes are the folder names within bowtie_split_index folder.
+#  Option All is the entire genome index without split by chromosomes.
+#
+#  note:
+#  Message option supports line break (\n).
+#
+########################################################################
+#
+message=\nwrite your message (for stdout) here line1\nline2: \nchromosomes=All\nChange target gene base file to Arabidopsis_thaliana.TAIR10.cdna.all.fa (from ensembl)\ntarget_file=Arabidopsis_thaliana.TAIR10.cdna.all.fa
+#
+########################################################################
+#
+#
+#
+#==================== Absolute paths in user's computer, please modify this string according to need: /home/cloudera/workspace/
+project_path=/home/cloudera/workspace/mirLibSpark/
+input_path=/home/cloudera/workspace/mirLibSpark/input/
+output_path=/home/cloudera/workspace/mirLibSpark/output/
+perform_differnatial_analysis=yes
+perform_KEGGpathways_enrichment_analysis=yes
+diffguide_file=/home/cloudera/workspace/mirLibSpark/diffguide.txt
+#
+genome_path=/home/cloudera/workspace/mirLibSpark/dbs/WHEAT_inhouse/Genome/
+b_index_path=/home/cloudera/workspace/mirLibSpark/dbs/WHEAT_inhouse/bowtie_split_index/
+target_file=/home/cloudera/workspace/mirLibSpark/dbs/WHEAT_inhouse/mRNA_contigs.fasta
+known_non_file=/home/cloudera/workspace/mirLibSpark/dbs/ATH_TAIR10/TAIR10_ncRNA_CDS.gff
+gene_vs_pathway_file=/home/cloudera/workspace/mirLibSpark/dbs/WHEAT_inhouse/ko_gene_vs_pathway.txt
+pathway_description_file=/home/cloudera/workspace/mirLibSpark/dbs/WHEAT_inhouse/ko_pathway_description.txt
+#
+#
+#==================== User needs to define
+input_type=a
+adapter=none
+#
+#
+#
+#====================  Ideally, do not change the following parameters since they are already tuned.
+chromosomes=1AL,1AS,1BL,1BS,1DL,1DS,2AL,2AS,2BL,2BS,2DL,2DS,3AL,3AS,3B,3DL,3DS,4AL,4AS,4BL,4BS,4DL,4DS,5AL,5AS,5BL,5BS,5DL,5DS,6AL,6AS,6BL,6BS,6DL,6DS,7AL,7AS,7BL,7BS,7DL,7DS
+bowtie_index_suffix=a_thaliana_t10
+#mirdup_model=Viridiplantae.model
+mirdup_model=thaliana.model
+#==================== 
+limit_s_freq=10
+limit_m_freq=100
+limit_len=18
+limit_nbLoc=15
+pri_l_flank=500
+pri_r_flank=200
+pre_flank=10
+temperature=25
+mirdup_limit=0.98
+mcheck_param=def
+Max_Score_cutoff=170
+Max_Energy_cutoff=-15
+Gap_Penalty=-15
+nbTargets=100
+#==================== Spark configuration
+sc_appname=mirLibSpark
+sc_partition=4
+sc_mstrmemory=20g
+sc_execmemory=20g
+#==================== local mode
+sc_master=local[*]
+#==================== cluster mode
+sc_execcores=24
