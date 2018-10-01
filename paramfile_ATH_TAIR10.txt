@@ -31,7 +31,7 @@
 #
 ########################################################################
 #
-message=\nwrite your message (for stdout) here line1\nline2: \nchromosomes=All\nChange target gene base file to Arabidopsis_thaliana.TAIR10.cdna.all.fa (from ensembl)\ntarget_file=Arabidopsis_thaliana.TAIR10.cdna.all.fa
+message=\nwrite your message (for stdout) here line1\nline2: \nchromosomes=All\n
 #
 ########################################################################
 #
