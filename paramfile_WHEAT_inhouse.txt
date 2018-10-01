@@ -42,8 +42,8 @@ message=\nwrite your message (for stdout) here line1\nline2: \nchromosomes=split
 project_path=/home/cloudera/workspace/mirLibSpark/
 input_path=/home/cloudera/workspace/mirLibSpark/input/
 output_path=/home/cloudera/workspace/mirLibSpark/output/
-perform_differnatial_analysis=yes
-perform_KEGGpathways_enrichment_analysis=yes
+perform_differnatial_analysis=no
+perform_KEGGpathways_enrichment_analysis=no
 diffguide_file=/home/cloudera/workspace/mirLibSpark/diffguide.txt
 #
 genome_path=/home/cloudera/workspace/mirLibSpark/dbs/WHEAT_inhouse/Genome/
