@@ -147,7 +147,6 @@ if __name__ == '__main__' :
   sc.addFile(project_path + '/lib/VARNAv3-93.jar')
   sc.addFile(mirdup_jar)
   sc.addFile(mirdup_model)
-  sc.addFile(target_file)
   sc.addFile(miranda_binary)
 
   #= Objects for rule functions
@@ -461,6 +460,8 @@ if __name__ == '__main__' :
   #= miranda
   ## in : ('miRNAseq', zipindex)
   ## out: ('miRNAseq', [[target1 and its scores], [target2 and its scores]])
+  sc.clearFiles()
+  sc.addFile(target_file)
   miranda_rdd = distResultSmallRNA_rdd.map(miranda_obj.computeTargetbyMiranda)
   mirna_and_targets = miranda_rdd.collect()
   ut.writeTargetsToFile (mirna_and_targets, rep_output, appId)

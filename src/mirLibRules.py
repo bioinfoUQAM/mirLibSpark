@@ -450,11 +450,7 @@ class prog_miRanda ():
     with open (tmp_file, 'w') as fh_tmp:
       print >> fh_tmp, '>x\n' + miRNAseq
     FNULL = open(os.devnull, 'w')
-    #cmd = [self.miranda_exe, tmp_file, self.target_file, '-sc', self.Max_Score_cutoff]
-    #cmd = [self.miranda_exe, tmp_file, self.target_file, '-strict']
-    #cmd = [self.miranda_exe, tmp_file, self.target_file, '-strict', '-sc', self.Max_Score_cutoff, '-en', self.Max_Energy_cutoff]
     cmd = [self.miranda_exe, tmp_file, self.target_file, '-strict', '-sc', self.Max_Score_cutoff, '-en', self.Max_Energy_cutoff, '-go', self.Gap_Penalty]
-    ##cmd = [self.miranda_exe, tmp_file, self.target_file, '-sc', self.Max_Score_cutoff, '-en', self.Max_Energy_cutoff, '-go', self.Gap_Penalty]
 
     sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
     mirandaout = sproc.communicate()[0].split('\n')
@@ -566,10 +562,6 @@ class prog_varna ():
     #-highlightRegion "48-63:fill=#bcffdd;81-102:fill=#bcffdd"
     cmd = 'java -cp ../lib/VARNAv3-93.jar fr.orsay.lri.varna.applications.VARNAcmd -sequenceDBN "'+ preSEQ +'" -structureDBN "' + preFOLD + '" -highlightRegion "'+ miRNApos + ':fill=#ff0000" -title "' + title + '" -o '+ filename +'.jpg'
     os.system(cmd)
-    #cmd = ['java', '-cp', '../lib/VARNAv3-93.jar', 'fr.orsay.lri.varna.applications.VARNAcmd', '-sequenceDBN', preSEQ, '-structureDBN', preFOLD, '-highlightRegion',  '"' + miRNApos + ':fill=#ff0000"', '-title', '-o', filename + '.jpg'] 
-    #FNULL = open(os.devnull, 'w')
-    #sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
-    #FNULL.close()
 
   def run_VARNA (self, e):
     [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore] = e[0]
