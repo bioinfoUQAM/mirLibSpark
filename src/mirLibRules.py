@@ -131,7 +131,7 @@ class prog_bowtie ():
 
 class extract_precurosrs ():
 
-  def __init__(self, genome, ext_left, ext_right, pre_flank, chromosomeName):
+  def __init__(self, genome, ext_left, ext_right, pre_flank):
     self.genome = genome 
     self.ext_left = ext_left
     self.ext_right = ext_right
