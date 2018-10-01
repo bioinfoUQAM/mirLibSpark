@@ -4,10 +4,10 @@ import os
 
 #cmd = 'python purge.py';os.system (cmd)
 
-cmd = 'git pull origin testWheatInHouse';os.system (cmd)
+cmd = 'git pull origin dbsauto';os.system (cmd)
 
-#cmd = 'git branch -D ensembl';os.system(cmd)
-#cmd = 'git remote prune origin';os.system(cmd)
+cmd = 'git branch -D testWheatInHouse';os.system(cmd)
+cmd = 'git remote prune origin';os.system(cmd)
 #cmd = 'git branch';os.system(cmd)
 #cmd = 'git fetch origin';os.system(cmd)
 #cmd = 'git checkout master';os.system(cmd)
