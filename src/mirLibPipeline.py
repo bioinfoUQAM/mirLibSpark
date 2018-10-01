@@ -199,6 +199,7 @@ if __name__ == '__main__' :
     ##      (d) u'seq\tquality'
     distFile_rdd = sc.textFile("file:///" + infile, partition) #= partition is 2 if not set 
     print('NB distFile_rdd: ', distFile_rdd.count())#
+    print(distFile_rdd.collect())
 
     #= Unify different input formats to "seq freq" elements
     if input_type == 'a': #= raw
