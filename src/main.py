@@ -6,8 +6,8 @@ import os
 
 cmd = 'git pull origin testWheatInHouse';os.system (cmd)
 
-cmd = 'git branch -D ensembl';os.system(cmd)
-cmd = 'git remote prune origin';os.system(cmd)
+#cmd = 'git branch -D ensembl';os.system(cmd)
+#cmd = 'git remote prune origin';os.system(cmd)
 #cmd = 'git branch';os.system(cmd)
 #cmd = 'git fetch origin';os.system(cmd)
 #cmd = 'git checkout master';os.system(cmd)
@@ -30,14 +30,14 @@ cmd = 'rm -f ../input/100.txt';os.system(cmd)
 
 
 
-#cmd = 'cp ../input_samples/wheat_a1.txt ../input';os.system(cmd)
-cmd = 'rm -fr ../input/wheat_a1.txt';os.system(cmd)
+cmd = 'cp ../input_samples/wheat_a1.txt ../input';os.system(cmd)
+#cmd = 'rm -fr ../input/wheat_a1.txt';os.system(cmd)
 
-#cmd = 'cp ../input_samples/wheat_a4.txt ../input';os.system(cmd)
-cmd = 'rm -fr ../input/wheat_a4.txt';os.system(cmd)
-
-cmd = 'cp ../input_samples/wheat_lib_demo_c8.txt ../input';os.system(cmd)
+cmd = 'cp ../input_samples/wheat_a4.txt ../input';os.system(cmd)
 #cmd = 'rm -fr ../input/wheat_a4.txt';os.system(cmd)
+
+#cmd = 'cp ../input_samples/wheat_lib_demo_c8.txt ../input';os.system(cmd)
+cmd = 'rm -fr ../input/wheat_a4.txt';os.system(cmd)
 
 
 #cmd = 'git add -f ../output/*';os.system(cmd)
