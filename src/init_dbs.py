@@ -89,8 +89,19 @@ if __name__ == '__main__' :
       bowtieBuild (wanted_file[:-3], key)
       cmd = 'mv *.ebwt ' + rep3
       os.system(cmd)
-      move_file_to (wanted_file, rep2)
+      #move_file_to (wanted_file, rep2)
  
+
+      IDs = '1 2 3 4 5 Mt Pt'.split(' ')
+      for ID in IDs:
+        rep_ch = rep3 + ID + '/'
+        if not os.path.exists(rep_ch): os.makedirs(rep_ch)
+
+        URL = 'ftp://ftp.ensemblgenomes.org/pub/plants/release-40/fasta/arabidopsis_thaliana/dna/Arabidopsis_thaliana.TAIR10.dna.chromosome.'+ ID +'.fa.gz'
+        wanted_file = URL.split('/')[-1]
+        curl_and_unzip_file (URL, wanted_file)
+        move_chromosomeFile_to (wanted_file, ID, rep2)
+
     if option == '2':
       IDs = '1 2 3 4 5 Mt Pt'.split(' ')
       for ID in IDs:

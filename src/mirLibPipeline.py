@@ -325,7 +325,6 @@ if __name__ == '__main__' :
 
     mergeChromosomesResults_rdd = sc.emptyRDD()
     for i in range(len(chromosomes)):
-      #ch = chromosomes[i].replace('chr', 'Chr')
       genome = ut.getGenome(genome_path, ".fa", ch)
       broadcastVar_genome = sc.broadcast(genome)
       v = broadcastVar_genome.value
