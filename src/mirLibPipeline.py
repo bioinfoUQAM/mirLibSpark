@@ -252,7 +252,7 @@ if __name__ == '__main__' :
                             .filter(lambda e: e.isupper() and not e.startswith('>'))\
                             .map(lambda e: str(e.rstrip()))\
                             .persist()
-    print('NB dmask_rdd: ', dmask_rdd.count())############################################
+    #print('NB dmask_rdd: ', dmask_rdd.count())############################################
 
     mergebowtie_rdd = sc.emptyRDD()
     for i in range(len(chromosomes)):
