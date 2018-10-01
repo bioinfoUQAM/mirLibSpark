@@ -790,7 +790,7 @@ def __create_diff_annotation (rep_output, diff_outs, list_mirna_and_topscoredTar
         print(line, file=fh_out)
     fh_out.close()
 
-def create_inputs_for_enrichment_analysis (diff_outs, pathway_description_file, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId):
+def __create_inputs_for_enrichment_analysis (diff_outs, pathway_description_file, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId):
   '''
   '''
   dict_pathway_description = __dictPathwayDescription (pathway_description_file)
@@ -809,6 +809,11 @@ def create_inputs_for_enrichment_analysis (diff_outs, pathway_description_file, 
   __create_background (outfile, list_mirna_and_topscoredTargetsKEGGpathway, dict_pathway_description)
   __create_diff_annotation (rep_output, diff_outs, list_mirna_and_topscoredTargetsKEGGpathway, folder)
 
+
+def perform_enrichment_analysis (keyword, diff_outs, pathway_description_file, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId):
+  __create_inputs_for_enrichment_analysis (diff_outs, pathway_description_file, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId)
+  cmd = 'perl compute_enrichment.pl ../output/' + keyword + '/namecode.txt ../output/' + keyword +'/output_comput_enrich 1'
+  os.system(cmd)
 
 
 

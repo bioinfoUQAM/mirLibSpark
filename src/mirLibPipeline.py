@@ -505,10 +505,8 @@ if __name__ == '__main__' :
     list_mirna_and_topscoredTargetsKEGGpathway = ut.annotate_target_genes_with_KEGGpathway (gene_vs_pathway_file, rep_output, appId)
 
     #= KEGG enrichment analysis 
-    ut.create_inputs_for_enrichment_analysis (diff_outs, pathway_description_file, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId)
     keyword =  appId + '_topscoredTargetsKEGGpathway'
-    cmd = 'perl compute_enrichment.pl ../output/' + keyword + '/namecode.txt ../output/' + keyword +'/output_comput_enrich 1'
-    os.system(cmd)
+    ut.perform_enrichment_analysis (keyword, diff_outs, pathway_description_file, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId)
 
   #===============================================================================================================
   #===============================================================================================================
