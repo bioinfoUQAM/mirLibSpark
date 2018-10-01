@@ -28,8 +28,13 @@ cmd = 'rm -f ../input/100.txt';os.system(cmd)
 #cmd = 'mv ../input_samples/11w2013_t2_1.fasta ../input';os.system(cmd)
 #cmd = 'mv ../input/11w2013_t2_1.fasta ../input_samples';os.system(cmd)
 
+
+
+cmd = 'cp ../input_samples/wheat_a1.txt.txt ../input';os.system(cmd)
+#cmd = 'rm -fr ../input/wheat_a1.txt';os.system(cmd)
+
 cmd = 'cp ../input_samples/wheat_a4.txt.txt ../input';os.system(cmd)
-#cmd = 'rm -fr ../input/fake_a.txt';os.system(cmd)
+#cmd = 'rm -fr ../input/wheat_a4.txt';os.system(cmd)
 
 
 
