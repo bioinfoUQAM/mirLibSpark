@@ -1,7 +1,7 @@
 from os import listdir
 import os.path
 
-rep = ''
+rep = '.'
 infiles = [f for f in listdir(rep) if os.path.isfile(os.path.join(rep, f))]
 
 for infile in infiles:
