@@ -1,3 +1,2 @@
 Experiment->Control
-fake_a5->fake_a
-fake_a5->fake_a3
+wheat_a5.txt->wheat_a1.txt
