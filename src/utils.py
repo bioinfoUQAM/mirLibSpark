@@ -43,12 +43,12 @@ def validate_options(paramDict):
 
 
   #= verify if input folder contain all files requisted by diffguide file
-  infiles = [f for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
-  diffguide, neededInfiles = read_diffguide(diffguide_file)
   if perform_differnatial_analysis == 'yes':
-    testInfiles = [f.split('.')[0] for f in infiles]
+    infiles = [f.split('.')[0] for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
+    #testInfiles = [f.split('.')[0] for f in infiles]
+    diffguide, neededInfiles = read_diffguide(diffguide_file)
     for infile in neededInfiles:
-      if infile not in testInfiles: 
+      if infile not in infiles: 
         sys.stderr.write('One or more input files requested by diffguide_file are not provided in the input folder.\nExit the program.')
         sys.exit()
 
