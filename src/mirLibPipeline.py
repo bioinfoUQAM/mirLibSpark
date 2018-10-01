@@ -506,6 +506,10 @@ if __name__ == '__main__' :
 
     #= KEGG enrichment analysis 
     ut.create_inputs_for_enrichment_analysis (diff_outs, pathway_description_file, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId)
+    keyword = 'top5scoredTG_pathways'
+    cmd = 'perl compute_enrichment.pl ../output/'+ keyword +'/namecode.txt ../output/'+ keyword +'/output_comput_enrich 1'
+    os.system(cmd)
+
   #===============================================================================================================
   #===============================================================================================================
   #===============================================================================================================
