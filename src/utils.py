@@ -274,9 +274,12 @@ def getGenome (genome_path, file_ext, chromosomeName):
   if chromosomeName == 'All':
     files = [each for each in os.listdir(genome_path) if each.endswith(file_ext)]
   else:
-    files = [ chromosomeName + file_ext]
+    #files = [each for each in os.listdir(genome_path) if each.endswith(file_ext)]
+    #files = [ f for f in files if (chromosomeName + file_ext in f) ]
+    files = [ chromosomeName + file_ext ]
+
   for namefile in files :
-    file = genome_path+namefile
+    file = genome_path + namefile
     chr = getChromosomeName(file)
     sequence = getFastaSeq(file)
     genome[chr] = sequence

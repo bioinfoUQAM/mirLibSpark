@@ -258,8 +258,9 @@ if __name__ == '__main__' :
     for i in range(len(chromosomes)):
       ch = chromosomes[i]
       #= furture work: case insensitive
-      p = b_index_path + ch.replace('Chr', 'chr') + '/' + bowtie_index_suffix + '_' + ch.replace('chr', 'Chr') 
-      if ch == 'All': p = b_index_path + ch + '/' + bowtie_index_suffix 
+      #p = b_index_path + ch.replace('Chr', 'chr') + '/' + bowtie_index_suffix + '_' + ch.replace('chr', 'Chr') 
+      p = b_index_path + ch + '/' + bowtie_index_suffix
+      #if ch == 'All': p = b_index_path + ch + '/' + bowtie_index_suffix 
       bowtie_obj = mru.prog_bowtie(p)
       bowtie_cmd, bowtie_env = bowtie_obj.Bowtie_pipe_cmd()
       #================================================================================================================
@@ -324,8 +325,8 @@ if __name__ == '__main__' :
 
     mergeChromosomesResults_rdd = sc.emptyRDD()
     for i in range(len(chromosomes)):
-      ch = chromosomes[i].replace('chr', 'Chr')
-      genome = ut.getGenome(genome_path, ".fas", ch)
+      #ch = chromosomes[i].replace('chr', 'Chr')
+      genome = ut.getGenome(genome_path, ".fa", ch)
       broadcastVar_genome = sc.broadcast(genome)
       v = broadcastVar_genome.value
       prec_obj = mru.extract_precurosrs(v, pri_l_flank, pri_r_flank, pre_flank, ch)

@@ -37,6 +37,13 @@ def move_file_to (wanted_file, rep):
     cmd = 'mv '+ fastaFile + ' ' + rep
     os.system(cmd)
 
+def move_chromosomeFile_to (wanted_file, ID, rep):
+    fastaFile = wanted_file[:-3]
+    cmd = 'rm -rf ' + wanted_file
+    os.system(cmd)
+    cmd = 'mv '+ fastaFile + ' ' + rep + ID + '.fa'
+    os.system(cmd)
+
 if __name__ == '__main__' :
   '''
   usage: main [organism 3-letter code]
@@ -49,11 +56,8 @@ if __name__ == '__main__' :
   option = sys.argv[2] #=1: All; 2: split chromosome
   
   
-  if organism == 'ath' and option == '1':
+  if organism == 'ath':
     key = 'ATH_TAIR10'
-
-    wanted_file = 'Arabidopsis_thaliana.TAIR10.dna.toplevel.fa.gz'
-    URL = 'ftp://ftp.ensemblgenomes.org/pub/plants/release-40/fasta/arabidopsis_thaliana/dna/' + wanted_file
 
     rep1 = '../dbs/' + key + '/'
     if not os.path.exists(rep1): os.makedirs(rep1)
@@ -61,62 +65,82 @@ if __name__ == '__main__' :
     if not os.path.exists(rep2): os.makedirs(rep2)
     rep3 = rep1 + 'bowtie_index/'
     if not os.path.exists(rep3): os.makedirs(rep3)
-    rep3 = rep3 + 'All/'
-    if not os.path.exists(rep3): os.makedirs(rep3)
-
-    curl_and_unzip_file (URL, wanted_file)
-    
-    #bowtieBuild (wanted_file[:-3], key)
-    cmd = 'mv *.ebwt ' + rep3
-    os.system(cmd)
-    #move_file_to (wanted_file, rep2)
 
     #= get annotation files
-    URL = 'ftp://ftp.ensemblgenomes.org/pub/plants/release-40/fasta/arabidopsis_thaliana/cds/Arabidopsis_thaliana.TAIR10.cds.all.fa.gz'
-    wanted_file = 'Arabidopsis_thaliana.TAIR10.cds.all.fa.gz'
-    #curl_and_unzip_file (URL, wanted_file)
-    #move_file_to (wanted_file, rep1)
+    URL = 'ftp://ftp.ensemblgenomes.org/pub/plants/release-40/fasta/arabidopsis_thaliana/cdna/Arabidopsis_thaliana.TAIR10.cdna.all.fa.gz'
+    wanted_file = 'Arabidopsis_thaliana.TAIR10.cdna.all.fa.gz'
+    curl_and_unzip_file (URL, wanted_file)
+    move_file_to (wanted_file, rep1)
 
     URL = 'ftp://ftp.ensemblgenomes.org/pub/plants/release-40/fasta/arabidopsis_thaliana/ncrna/Arabidopsis_thaliana.TAIR10.ncrna.fa.gz'
     wanted_file = 'Arabidopsis_thaliana.TAIR10.ncrna.fa.gz'
-    #curl_and_unzip_file (URL, wanted_file)
-    #move_file_to (wanted_file, rep1)
+    curl_and_unzip_file (URL, wanted_file)
+    move_file_to (wanted_file, rep1)
 
-  ###############################################################################
-  if organism == 'ath' and option == '2':
-    key = 'ATH_TAIR10'
-    IDs = '1 2 3 4 5 Mt Pt'.split(' ')
 
-    rep1 = '../dbs/' + key + '/'
-    if not os.path.exists(rep1): os.makedirs(rep1)
-    rep2 = rep1 + 'Genome/'
-    if not os.path.exists(rep2): os.makedirs(rep2)
-    rep3 = rep1 + 'bowtie_index/'
-    if not os.path.exists(rep3): os.makedirs(rep3)
+    if option == '1':
+      rep3 = rep3 + 'All/'
+      if not os.path.exists(rep3): os.makedirs(rep3)
 
-    for ID in IDs:
-      URL = 'ftp://ftp.ensemblgenomes.org/pub/plants/release-40/fasta/arabidopsis_thaliana/dna/Arabidopsis_thaliana.TAIR10.dna.chromosome.'+ ID +'.fa.gz'
-      wanted_file = URL.split('/')[-1]
+      wanted_file = 'Arabidopsis_thaliana.TAIR10.dna.toplevel.fa.gz'
+      URL = 'ftp://ftp.ensemblgenomes.org/pub/plants/release-40/fasta/arabidopsis_thaliana/dna/' + wanted_file
       curl_and_unzip_file (URL, wanted_file)
-
-      rep_ch = rep3 + ID + '/'
-      if not os.path.exists(rep_ch): os.makedirs(rep_ch)
-
+    
       bowtieBuild (wanted_file[:-3], key)
-      cmd = 'mv *.ebwt ' + rep_ch
+      cmd = 'mv *.ebwt ' + rep3
       os.system(cmd)
       move_file_to (wanted_file, rep2)
+ 
+    if option == '2':
+      IDs = '1 2 3 4 5 Mt Pt'.split(' ')
+      for ID in IDs:
+        rep_ch = rep3 + ID + '/'
+        if not os.path.exists(rep_ch): os.makedirs(rep_ch)
 
-    #= get annotation files
-    URL = 'ftp://ftp.ensemblgenomes.org/pub/plants/release-40/fasta/arabidopsis_thaliana/cds/Arabidopsis_thaliana.TAIR10.cds.all.fa.gz'
-    wanted_file = 'Arabidopsis_thaliana.TAIR10.cds.all.fa.gz'
+        URL = 'ftp://ftp.ensemblgenomes.org/pub/plants/release-40/fasta/arabidopsis_thaliana/dna/Arabidopsis_thaliana.TAIR10.dna.chromosome.'+ ID +'.fa.gz'
+        wanted_file = URL.split('/')[-1]
+        curl_and_unzip_file (URL, wanted_file)
+
+        bowtieBuild (wanted_file[:-3], key)
+        cmd = 'mv *.ebwt ' + rep_ch
+        os.system(cmd)
+        move_chromosomeFile_to (wanted_file, ID, rep2)
+
+
+  ###############################################################################
+  if organism == 'wheat':
+    key = 'WHEAT_IWGSC'
+    
+
+    rep1 = '../dbs/' + key + '/'
+    if not os.path.exists(rep1): os.makedirs(rep1)
+    rep2 = rep1 + 'Genome/'
+    if not os.path.exists(rep2): os.makedirs(rep2)
+    rep3 = rep1 + 'bowtie_index/'
+    if not os.path.exists(rep3): os.makedirs(rep3)
+
+    #= get annotation files (ncrna is empty)
+    URL = 'ftp://ftp.ensemblgenomes.org/pub/plants/release-40/fasta/triticum_aestivum/cdna/Triticum_aestivum.IWGSC.cdna.all.fa.gz'
+    wanted_file = 'Triticum_aestivum.IWGSC.cdna.all.fa.gz'
     curl_and_unzip_file (URL, wanted_file)
     move_file_to (wanted_file, rep1)
 
-    URL = 'ftp://ftp.ensemblgenomes.org/pub/plants/release-40/fasta/arabidopsis_thaliana/ncrna/Arabidopsis_thaliana.TAIR10.ncrna.fa.gz'
-    wanted_file = 'Arabidopsis_thaliana.TAIR10.ncrna.fa.gz'
-    curl_and_unzip_file (URL, wanted_file)
-    move_file_to (wanted_file, rep1)
+    if option == '1':
+      print('only option 2 is provided to wheat ')
+      option = '2'
+ 
+    if option == '2':
+      IDs = '1A 1B 1D 2A 2B 2D 3A 3B 3D 4A 4B 4D 5A 5B 5D 6A 6B 6D 7A 7B 7D'.split(' ')
+      for ID in IDs:
+        rep_ch = rep3 + ID + '/'
+        if not os.path.exists(rep_ch): os.makedirs(rep_ch)
 
+        URL = 'ftp://ftp.ensemblgenomes.org/pub/plants/release-40/fasta/triticum_aestivum/dna/Triticum_aestivum.IWGSC.dna.chromosome.'+ ID +'.fa.gz'
+        wanted_file = URL.split('/')[-1]
+        curl_and_unzip_file (URL, wanted_file)
 
+        bowtieBuild (wanted_file[:-3], key)
+        cmd = 'mv *.ebwt ' + rep_ch
+        os.system(cmd)
+        move_chromosomeFile_to (wanted_file, ID, rep2)
 
