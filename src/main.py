@@ -37,7 +37,7 @@ cmd = 'cp ../input_samples/wheat_a4.txt ../input';os.system(cmd)
 #cmd = 'rm -fr ../input/wheat_a4.txt';os.system(cmd)
 
 #cmd = 'cp ../input_samples/wheat_lib_demo_c8.txt ../input';os.system(cmd)
-cmd = 'rm -fr ../input/wheat_a4.txt';os.system(cmd)
+cmd = 'rm -fr ../input/wheat_lib_demo_c8.txt';os.system(cmd)
 
 
 #cmd = 'git add -f ../output/*';os.system(cmd)
