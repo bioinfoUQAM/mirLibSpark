@@ -31,7 +31,8 @@
 #
 ########################################################################
 #
-message=\nwrite your message (for stdout) here line1\nline2: \nchromosomes=split
+message=\nwrite your message (for stdout) here line1\nline2: \nchromosomes=split\nchromosomes=3AS\ntarget_file=Arabidopsis_thaliana.TAIR10.cdna.all.fa
+
 #
 ########################################################################
 #
