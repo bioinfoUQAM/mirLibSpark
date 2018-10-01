@@ -10,6 +10,10 @@
 #  Spaces are not allowed, except in message.
 #
 #  note:
+#  perform_differnatial_analysis= yes or no
+#  perform_KEGGpathways_enrichment_analysis = yes or no
+#
+#  note:
 #  Viridiplantae.model is better than thaliana.model in terms of prediction, 
 #  but during quick code testing, use the latter to have shorter run time.
 #
@@ -41,15 +45,17 @@ message=\nwrite your message (for stdout) here line1\nline2: \nchromosomes=split
 project_path=/home/cloudera/workspace/mirLibSpark/
 input_path=/home/cloudera/workspace/mirLibSpark/input/
 output_path=/home/cloudera/workspace/mirLibSpark/output/
-perform_differnatial_analysis=no
-perform_KEGGpathways_enrichment_analysis=no
-diffguide_file=/home/cloudera/workspace/mirLibSpark/diffguide.txt
 #
 genome_path=/home/cloudera/workspace/mirLibSpark/dbs/WHEAT_inhouse/Genome/
 b_index_path=/home/cloudera/workspace/mirLibSpark/dbs/WHEAT_inhouse/bowtie_split_index/
 #target_file=/home/cloudera/workspace/mirLibSpark/dbs/WHEAT_inhouse/mRNA_contigs.fasta
 target_file=/home/cloudera/workspace/mirLibSpark/dbs/ATH_TAIR10/Arabidopsis_thaliana.TAIR10.cdna.all.fa
 known_non_file=/home/cloudera/workspace/mirLibSpark/dbs/ATH_TAIR10/TAIR10_ncRNA_CDS.gff
+#
+perform_differnatial_analysis=no
+diffguide_file=/home/cloudera/workspace/mirLibSpark/diffguide.txt
+#
+perform_KEGGpathways_enrichment_analysis=no
 gene_vs_pathway_file=/home/cloudera/workspace/mirLibSpark/dbs/WHEAT_inhouse/ko_gene_vs_pathway.txt
 pathway_description_file=/home/cloudera/workspace/mirLibSpark/dbs/WHEAT_inhouse/ko_pathway_description.txt
 #
