@@ -165,7 +165,10 @@ def convert_fastq_file_to_KeyValue(infile, outfile):
   fh.close()
   fh_out.close()
 
-def trim_adapter (seq, ad):
+'''
+#ORIGINAL FUNCTION
+'''
+def trim_adapter__ (seq, ad):
   while len(ad) > 0:
     len_ad = len(ad)
     if seq[-len_ad:] == ad:
@@ -174,6 +177,21 @@ def trim_adapter (seq, ad):
     ad = ad[:-1]
   return seq
 
+'''
+#NEW FUNCTION
+'''
+def trim_adapter (seq, ad):
+  '''
+  example:  adapter ad =                  TGGAATTCTCGGGTGCCAAGGAACTC
+            seq =        NTACCGATCTGAGCCATTGGAATTCTCGGGTGCCAAGGAACTCCAGTCACN
+            return =     NTACCGATCTGAGCCAT
+  '''
+  while len(ad) > 6:
+    len_ad = len(ad)
+    pos = find_str(seq, ad)
+    if pos > 0: return seq[:pos]
+    else: ad = ad[:-1]
+  return seq
 def getRevComp (seq):
   intab = "ACGT"
   outab = "TGCA"
