@@ -10,6 +10,15 @@ import os
 import utils as ut
 from operator import itemgetter
 
+def xrule (e, distResultSmallRNA):
+  ##in  : precursorSerial, miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore
+  ##out : precursorSerial, miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore, miRNAindex
+  d_rna_index = {} # {seq: index}
+  for i in distResultSmallRNA: d_rna_index[ i[0] ] = i[1]
+  miRNAseq = e[1]
+  return e.append(d_rna_index[miRNAseq]) 
+
+
 def distinctPrecursor_infos_rearrange_rule (elem):
     miRNAseq = elem[0]
     frq = elem[1][0]

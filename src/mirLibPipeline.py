@@ -274,7 +274,7 @@ if __name__ == '__main__' :
                             .map(bowtie_obj.bowtie_rearrange_map)\
                             .groupByKey()\
                             .map(lambda e: (e[0], [len(list(e[1])), list(e[1])]))
-      #print('NB bowtie_rdd: ', len(bowtie_rdd.collect()))##################################################
+      #print('NB bowtie_rdd: ', bowtie_rdd.count())##################################################
       #================================================================================================================
       #================================================================================================================
       #================================================================================================================
@@ -292,7 +292,7 @@ if __name__ == '__main__' :
 
     #= Create dict, chromo_strand as key to search bowtie blocs in the following dict
     dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(bowFrq_rdd.collect())
-    broadcastVar_bowtie_chromo_strand = sc.broadcast(dict_bowtie_chromo_strand) #= get the value by broadcastVar.value
+    broadcastVar_bowtie_chromo_strand = sc.broadcast(dict_bowtie_chromo_strand) 
 
 
     #= Filtering miRNA low frequency
@@ -429,7 +429,7 @@ if __name__ == '__main__' :
                      .flatMap(lambda e: e[1]) 
 
   ## in:  ( 'seq', [...] )
-  ## mid: ( 'seq' ) 
+  ## mid: ( 'seq' )
   ## out: ( 'seq', zipindex)
   distResultSmallRNA_rdd = libRESULTS_rdd.map(lambda e: e[0])\
                                          .distinct()\
@@ -437,17 +437,14 @@ if __name__ == '__main__' :
   
   #= varna
   varna_obj = mru.prog_varna(appId, rep_output) 
-
-  ## in:  ( 'seq', [...] ) 
-  ## mid: [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq] 
-  ## out : [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
-  Precursor_rdd = sc.parallelize(Precursor, partition)
-  
-  ## in : [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
-  ## out : ([miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore], zipindex)
-  PrecursorVis = Precursor_rdd.zipWithIndex()\
-                          .map(varna_obj.run_VARNA)\
-                          .collect()
+  ## in : ([miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore], zipindex)
+  Precursor_rdd = sc.parallelize(Precursor, partition)\
+                    .zipWithIndex()
+  distResultSmallRNA = distResultSmallRNA_rdd.collect()
+  ## out : ( PrecursorIndex, miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore, miRNAindex )
+  PrecursorVis = Precursor_rdd.map(varna_obj.run_VARNA)\
+                              .map(mru.xrule(distResultSmallRNA))
+                              .collect()
   ut.write_index (PrecursorVis, rep_output, appId)
   
   
@@ -491,18 +488,17 @@ if __name__ == '__main__' :
 
   sc.stop() #= allow to run multiple SparkContexts
 
-  print('sc stop time:', datetime.datetime.now())
   #===============================================================================================================
   #===============================================================================================================
   #===============================================================================================================
   #===============================================================================================================
   #appId = 'local-1538110614002'
+  print('sc stop time:', datetime.datetime.now())
 
   #= diff analysis 
   if perform_differnatial_analysis == 'yes':
     diffguide, _ = ut.read_diffguide(diffguide_file)
     diff_outs = ut.diff_output(diffguide, rep_output, appId)
-
 
   if perform_KEGGpathways_enrichment_analysis == 'yes':
     #= KEGG annotation
@@ -510,8 +506,6 @@ if __name__ == '__main__' :
 
     #= KEGG enrichment analysis 
     ut.create_inputs_for_enrichment_analysis (diff_outs, pathway_description_file, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId)
-
-
   #===============================================================================================================
   #===============================================================================================================
   #===============================================================================================================
