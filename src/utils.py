@@ -521,8 +521,7 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
   transpose_txt(infile, outfile)
   os.remove(infile) 
 
-  #return master_predicted_distinctMiRNAs #sorted(master_distinctMiRNAs_infos)
-  return sorted(master_distinctPrecursor_infos)
+  return sorted(master_distinctPrecursor_infos), sorted(master_predicted_distinctMiRNAs)
 
 
 def writeTargetsToFile (mirna_and_targets, rep_output, appId):

@@ -174,7 +174,7 @@ if __name__ == '__main__' :
   print('============================================================\n')
   print('begin time:', datetime.datetime.now())
   #'''
-  libRESULTS = [] 
+  #libRESULTS = [] 
   for infile in infiles :
     if infile[-1:] == '~': continue
     print ("--Processing of the library: ", infile)
@@ -236,13 +236,13 @@ if __name__ == '__main__' :
     ## in : ('seq', freq)
     ## out: ('seq', freq)
     sr_low_rdd = collapse_rdd.filter(lambda e: int(e[1]) > limit_srna_freq)
-    print('NB sr_low_rdd: ', sr_low_rdd.count())####################################################
+    print('NB sr_low_rdd: ', sr_low_rdd.count())
     
     #= Filtering short length
     ## in : ('seq', freq)
     ## out: ('seq', freq)
     sr_short_rdd = sr_low_rdd.filter(lambda e: len(e[0]) > limit_len).persist()  # TO KEEP IT
-    print('NB sr_short_rdd: ', sr_short_rdd.count())###################################################
+    print('NB sr_short_rdd: ', sr_short_rdd.count())
     
     #= Filtering with DustMasker
     ## in : ('seq', freq)
@@ -252,7 +252,7 @@ if __name__ == '__main__' :
                             .filter(lambda e: e.isupper() and not e.startswith('>'))\
                             .map(lambda e: str(e.rstrip()))\
                             .persist()
-    print('NB dmask_rdd: ', dmask_rdd.count())############################################
+    print('NB dmask_rdd: ', dmask_rdd.count())
 
     mergebowtie_rdd = sc.emptyRDD()
     for i in range(len(chromosomes)):
@@ -274,7 +274,7 @@ if __name__ == '__main__' :
                             .map(bowtie_obj.bowtie_rearrange_map)\
                             .groupByKey()\
                             .map(lambda e: (e[0], [len(list(e[1])), list(e[1])]))
-      #print('NB bowtie_rdd: ', bowtie_rdd.count())##################################################
+      #print('NB bowtie_rdd: ', bowtie_rdd.count())
       #================================================================================================================
       #================================================================================================================
       #================================================================================================================
@@ -286,7 +286,7 @@ if __name__ == '__main__' :
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     bowFrq_rdd = mergebowtie_rdd.join(sr_short_rdd)\
                            .map(bowtie_obj.bowtie_freq_rearrange_rule)
-    print('NB bowFrq_rdd: ', bowFrq_rdd.count())############################################ 
+    print('NB bowFrq_rdd: ', bowFrq_rdd.count())
     #180921 fake_a.txt takes 17 secs till this step, option chromo=All
     #180921 100.txt takes 23 secs till this step, option chromo=All
 
@@ -299,30 +299,27 @@ if __name__ == '__main__' :
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     mr_low_rdd = bowFrq_rdd.filter(lambda e: e[1][0] > limit_mrna_freq)
-    #print('NB mr_low_rdd: ', mr_low_rdd.count())##################################################
+    #print('NB mr_low_rdd: ', mr_low_rdd.count())
     
     #= Filtering high nbLocations and zero location
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     nbLoc_rdd = mr_low_rdd.filter(lambda e: e[1][1] > 0 and e[1][1] < limit_nbLoc)
-    #print('NB nbLoc_rdd: ', nbLoc_rdd.count())###################################################
+    #print('NB nbLoc_rdd: ', nbLoc_rdd.count())
     
     
     #= Flatmap the RDD
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr])
     flat_rdd = nbLoc_rdd.flatMap(mru.flatmap_mappings)
-    #print('NB flat_rdd distinct (this step flats elements): ', flat_rdd.groupByKey().count())##################
-    #print('NB flat_rdd not distinct: ', flat_rdd.count())##################
+    #print('NB flat_rdd distinct (this step flats elements): ', flat_rdd.groupByKey().count())
+    #print('NB flat_rdd not distinct: ', flat_rdd.count())
 
-    ###############################
-    ## Filtering known non-miRNA ##
-    ###############################
+    #= Filtering known non-miRNA ##
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr])
-    #excluKnownNon_rdd = flat_rdd.repartition(100).filter(kn_obj.knFilterByCoor)
     excluKnownNon_rdd = flat_rdd.filter(kn_obj.knFilterByCoor)
-    #print('excluKnownNon_rdd distinct: ', excluKnownNon_rdd.groupByKey().count())########
+    #print('excluKnownNon_rdd distinct: ', excluKnownNon_rdd.groupByKey().count())
     
 
     mergeChromosomesResults_rdd = sc.emptyRDD()
@@ -358,7 +355,7 @@ if __name__ == '__main__' :
       ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
       ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
       one_loop_rdd = pri_vld_rdd.filter(lambda e: ut.containsOnlyOneLoop(e[1][3][2][int(e[1][3][4]) : int(e[1][3][5])+1]))
-      #print('NB one_loop_rdd distinct : ', len(one_loop_rdd.groupByKey().collect()))##
+      #print('NB one_loop_rdd distinct : ', len(one_loop_rdd.groupByKey().collect()))
     
       #= Extraction of the pre-miRNA
       ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
@@ -371,7 +368,7 @@ if __name__ == '__main__' :
       #================================================================================================================
       mergeChromosomesResults_rdd = mergeChromosomesResults_rdd.union(premir_rdd).persist()#.checkpoint()
       broadcastVar_genome.unpersist()
-    #print('mergeChromosomesResults: ', mergeChromosomesResults_rdd.count())######## 
+    #print('mergeChromosomesResults: ', mergeChromosomesResults_rdd.count())
     #180921 fake_a.txt takes 42 secs to run till this line (All chromo)
     #180921 fake_a.txt takes 307 secs to run till this line (split chromo)
 
@@ -394,7 +391,7 @@ if __name__ == '__main__' :
     pre_vld_rdd = pre_fold_rdd.zipWithIndex()\
                               .map(mirdup_obj.run_miRdup)\
                               .filter(lambda e: e[1][4][3] == "true")
-    #print('NB pre_vld_rdd distinct (mirdup): ', pre_vld_rdd.groupByKey().count())##
+    #print('NB pre_vld_rdd distinct (mirdup): ', pre_vld_rdd.groupByKey().count())
 
     
     #= Filtering by expression profile (< 20%)
@@ -402,9 +399,9 @@ if __name__ == '__main__' :
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq])
     profile_rdd = pre_vld_rdd.map(lambda e: profile_obj.computeProfileFrq(e, broadcastVar_bowtie_chromo_strand.value))\
                              .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)
-    print('NB profile_rdd distinct: ', profile_rdd.groupByKey().count())##
+    print('NB profile_rdd distinct: ', profile_rdd.groupByKey().count())
     libresults = profile_rdd.collect()
-    libRESULTS.append( [inBasename, libresults] )
+    #libRESULTS.append( [inBasename, libresults] )
    
     endLib = time.time() 
     timeDict[inBasename] = endLib - startLib
@@ -421,19 +418,24 @@ if __name__ == '__main__' :
   #= make summary table of all libraries in one submission with expressions in the field
   keyword = appId + '_miRNAprediction_'
   infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
-  Precursor = ut.writeSummaryExpressionToFile (infiles, rep_output, appId)
+  Precursor, distResultSmallRNA = ut.writeSummaryExpressionToFile (infiles, rep_output, appId)
 
-  ## in:  ( lib, ('seq', [...]) )
-  ## out: ( 'seq', [...] )
-  libRESULTS_rdd = sc.parallelize(libRESULTS, partition)\
-                     .flatMap(lambda e: e[1]) 
+  ### in : ( 'seq' )
+  ### out: ( 'seq', zipindex)
+  distResultSmallRNA_rdd = sc.parallelize(distResultSmallRNA, partition)\
+                             .zipWithIndex()
 
-  ## in:  ( 'seq', [...] )
-  ## mid: ( 'seq' )
-  ## out: ( 'seq', zipindex)
-  distResultSmallRNA_rdd = libRESULTS_rdd.map(lambda e: e[0])\
-                                         .distinct()\
-                                         .zipWithIndex() 
+  ### in:  ( lib, ('seq', [...]) )
+  ### out: ( 'seq', [...] )
+  #libRESULTS_rdd = sc.parallelize(libRESULTS, partition)\
+  #                   .flatMap(lambda e: e[1]) 
+  #
+  ### in:  ( 'seq', [...] )
+  ### mid: ( 'seq' )
+  ### out: ( 'seq', zipindex)
+  #distResultSmallRNA_rdd = libRESULTS_rdd.map(lambda e: e[0])\
+  #                                       .distinct()\
+  #                                       .zipWithIndex() 
   
   #= varna
   varna_obj = mru.prog_varna(appId, rep_output) 
