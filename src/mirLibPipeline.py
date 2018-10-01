@@ -147,7 +147,6 @@ if __name__ == '__main__' :
   sc.addFile(project_path + '/lib/VARNAv3-93.jar')
   sc.addFile(mirdup_jar)
   sc.addFile(mirdup_model)
-  sc.addFile(miranda_binary)
 
   #= Objects for rule functions
   dmask_obj = mru.prog_dustmasker()
@@ -423,12 +422,9 @@ if __name__ == '__main__' :
   keyword = appId + '_miRNAprediction_'
   infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
   Precursor = ut.writeSummaryExpressionToFile (infiles, rep_output, appId)
-  #broadcastVar_Precursor = sc.broadcast(Precursor)   
 
   ## in:  ( lib, ('seq', [...]) )
   ## out: ( 'seq', [...] )
-  #broadcastVar_libRESULTS = sc.broadcast(libRESULTS)  
-  #libRESULTS_rdd = sc.parallelize(broadcastVar_libRESULTS.value, partition).flatMap(lambda e: e[1]) 
   libRESULTS_rdd = sc.parallelize(libRESULTS, partition).flatMap(lambda e: e[1]) 
 
   ## in:  ( 'seq', [...] )
@@ -446,7 +442,6 @@ if __name__ == '__main__' :
   ## in:  ( 'seq', [...] ) 
   ## mid: [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq] 
   ## out : [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
-  #Precursor_rdd = sc.parallelize(broadcastVar_Precursor.value, partition)
   Precursor_rdd = sc.parallelize(Precursor, partition)
   
   ## in : [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore]
@@ -461,6 +456,7 @@ if __name__ == '__main__' :
   ## in : ('miRNAseq', zipindex)
   ## out: ('miRNAseq', [[target1 and its scores], [target2 and its scores]])
   sc.clearFiles()
+  sc.addFile(miranda_binary)
   sc.addFile(target_file)
   miranda_rdd = distResultSmallRNA_rdd.map(miranda_obj.computeTargetbyMiranda)
   mirna_and_targets = miranda_rdd.collect()
@@ -495,6 +491,7 @@ if __name__ == '__main__' :
 
   sc.stop() #= allow to run multiple SparkContexts
 
+  print('sc stop time:', datetime.datetime.now())
   #===============================================================================================================
   #===============================================================================================================
   #===============================================================================================================
