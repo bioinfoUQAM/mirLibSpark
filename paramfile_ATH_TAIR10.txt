@@ -10,6 +10,10 @@
 #  Spaces are not allowed, except in message.
 #
 #  note:
+#  perform_differnatial_analysis= yes or no
+#  perform_KEGGpathways_enrichment_analysis = yes or no
+#
+#  note:
 #  Viridiplantae.model is better than thaliana.model in terms of prediction, 
 #  but during quick code testing, use the latter to have shorter run time.
 #
@@ -41,15 +45,16 @@ message=\nwrite your message (for stdout) here line1\nline2: \nchromosomes=All\n
 project_path=/home/cloudera/workspace/mirLibSpark/
 input_path=/home/cloudera/workspace/mirLibSpark/input/
 output_path=/home/cloudera/workspace/mirLibSpark/output/
-perform_differnatial_analysis=yes
-perform_KEGGpathways_enrichment_analysis=yes
-diffguide_file=/home/cloudera/workspace/mirLibSpark/diffguide.txt
 #
 genome_path=/home/cloudera/workspace/mirLibSpark/dbs/ATH_TAIR10/Genome/
-b_index_path=/home/cloudera/workspace/mirLibSpark/dbs/ATH_TAIR10/bowtie_split_index/
+b_index_path=/home/cloudera/workspace/mirLibSpark/dbs/ATH_TAIR10/bowtie_index/
 target_file=/home/cloudera/workspace/mirLibSpark/dbs/ATH_TAIR10/Arabidopsis_thaliana.TAIR10.cdna.all.fa
-#target_file=/home/cloudera/workspace/mirLibSpark/dbs/ATH_TAIR10/TAIR10_cdna_20101214_updated.fasta
 known_non_file=/home/cloudera/workspace/mirLibSpark/dbs/ATH_TAIR10/TAIR10_ncRNA_CDS.gff
+#
+perform_differnatial_analysis=no
+diffguide_file=/home/cloudera/workspace/mirLibSpark/diffguide.txt
+#
+perform_KEGGpathways_enrichment_analysis=no
 gene_vs_pathway_file=/home/cloudera/workspace/mirLibSpark/dbs/ATH_TAIR10/ath_gene_vs_pathway.txt
 pathway_description_file=/home/cloudera/workspace/mirLibSpark/dbs/ATH_TAIR10/ath_pathway_description.txt
 #
@@ -61,9 +66,9 @@ adapter=none
 #
 #
 #====================  Ideally, do not change the following parameters since they are already tuned.
-#chromosomes=chr1,chr2,chr3,chr4,chr5,chrC,chrM
-chromosomes=All
-bowtie_index_suffix=a_thaliana_t10
+chromosomes=1,2,3,4,5,Mt,Pt
+#chromosomes=All
+bowtie_index_suffix=ATH_TAIR10
 #mirdup_model=Viridiplantae.model
 mirdup_model=thaliana.model
 #==================== 

@@ -14,3 +14,5 @@ def bowtieBuild (fastaFile, NAMEbase):
   '''
   cmd = 'bowtie-build -f ' + fastaFile + ' ' + NAMEbase
   os.system(cmd)
+
+cmd = 'bowtie-build -f Triticum_aestivum.IWGSC.dna.chromosome.1A.fa Triticum_aestivum.IWGSC.1A';os.system(cmd)

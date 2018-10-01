@@ -4,10 +4,10 @@ import os
 
 #cmd = 'python purge.py';os.system (cmd)
 
-cmd = 'git pull origin ensembl';os.system (cmd)
+cmd = 'git pull origin testWheatInHouse';os.system (cmd)
 
-#cmd = 'git branch -D formatdiffout';os.system(cmd)
-cmd = 'git remote prune origin';os.system(cmd)
+#cmd = 'git branch -D ensembl';os.system(cmd)
+#cmd = 'git remote prune origin';os.system(cmd)
 #cmd = 'git branch';os.system(cmd)
 #cmd = 'git fetch origin';os.system(cmd)
 #cmd = 'git checkout master';os.system(cmd)
@@ -16,11 +16,11 @@ cmd = 'git remote prune origin';os.system(cmd)
 cmd = 'cp ../input_samples/fake_a.txt ../input';os.system(cmd)
 #cmd = 'rm -fr ../input/fake_a.txt';os.system(cmd)
 
-cmd = 'cp ../input_samples/fake_a3.txt ../input';os.system(cmd)
-#cmd = 'rm -fr ../input/fake_a3.txt';os.system(cmd)
+#cmd = 'cp ../input_samples/fake_a3.txt ../input';os.system(cmd)
+cmd = 'rm -fr ../input/fake_a3.txt';os.system(cmd)
 
-cmd = 'cp ../input_samples/fake_a5.txt ../input';os.system(cmd)
-#cmd = 'rm -fr ../input/fake_a5.txt';os.system(cmd)
+#cmd = 'cp ../input_samples/fake_a5.txt ../input';os.system(cmd)
+cmd = 'rm -fr ../input/fake_a5.txt';os.system(cmd)
 
 #cmd = 'cp ../input_samples/100.txt ../input';os.system(cmd)
 cmd = 'rm -f ../input/100.txt';os.system(cmd)
@@ -28,6 +28,16 @@ cmd = 'rm -f ../input/100.txt';os.system(cmd)
 #cmd = 'mv ../input_samples/11w2013_t2_1.fasta ../input';os.system(cmd)
 #cmd = 'mv ../input/11w2013_t2_1.fasta ../input_samples';os.system(cmd)
 
+
+
+#cmd = 'cp ../input_samples/wheat_a1.txt ../input';os.system(cmd)
+cmd = 'rm -fr ../input/wheat_a1.txt';os.system(cmd)
+
+#cmd = 'cp ../input_samples/wheat_a4.txt ../input';os.system(cmd)
+cmd = 'rm -fr ../input/wheat_a4.txt';os.system(cmd)
+
+#cmd = 'cp ../input_samples/wheat_lib_demo_c8.txt ../input';os.system(cmd)
+cmd = 'rm -fr ../input/wheat_lib_demo_c8.txt';os.system(cmd)
 
 
 #cmd = 'git add -f ../output/*';os.system(cmd)
@@ -41,6 +51,11 @@ cmd = 'free -m';os.system(cmd)
 #########################################################################################
 cmd = 'time spark-submit mirLibPipeline.py ../paramfile_ATH_TAIR10.txt 2>/dev/null';os.system(cmd)
 #########################################################################################
+
+#########################################################################################
+#cmd = 'time spark-submit mirLibPipeline.py ../paramfile_WHEAT_inhouse.txt 2>/dev/null';os.system(cmd)
+#########################################################################################
+
 
 cmd = 'free -m';os.system(cmd)
 
@@ -66,7 +81,7 @@ cmd = 'free -m';os.system(cmd)
 
 #cmd = 'free -m' #= to check memory;os.system(cmd)
 
-
+# cmd = 'sudo mount -t vboxsf VM_Share /home/cloudera/vm_share/';os.system(cmd)
 
 #branches = 'athsettings, bowtiesplit, format_vis_input, format_vis_inputs, genomeextract, include_Dustmasker, include_RNAfold, include_bowtie, smooth, smooth_pipevarna, test, varna'.split(', ')
 #for b in branches:

@@ -43,12 +43,12 @@ def validate_options(paramDict):
 
 
   #= verify if input folder contain all files requisted by diffguide file
-  infiles = [f for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
-  diffguide, neededInfiles = read_diffguide(diffguide_file)
   if perform_differnatial_analysis == 'yes':
-    testInfiles = [f.split('.')[0] for f in infiles]
+    infiles = [f.split('.')[0] for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
+    #testInfiles = [f.split('.')[0] for f in infiles]
+    diffguide, neededInfiles = read_diffguide(diffguide_file)
     for infile in neededInfiles:
-      if infile not in testInfiles: 
+      if infile not in infiles: 
         sys.stderr.write('One or more input files requested by diffguide_file are not provided in the input folder.\nExit the program.')
         sys.exit()
 
@@ -165,7 +165,23 @@ def convert_fastq_file_to_KeyValue(infile, outfile):
   fh.close()
   fh_out.close()
 
-def trim_adapter (seq, ad):
+
+def find_str(s, char):
+    ''' zero based indexing '''
+    index = 0
+    if char in s:
+        c = char[0]
+        for ch in s:
+            if ch == c:
+                if s[index:index+len(char)] == char:
+                    return index
+            index += 1
+    return -1000
+
+'''
+#ORIGINAL FUNCTION
+'''
+def trim_adapter__ (seq, ad):
   while len(ad) > 0:
     len_ad = len(ad)
     if seq[-len_ad:] == ad:
@@ -174,6 +190,21 @@ def trim_adapter (seq, ad):
     ad = ad[:-1]
   return seq
 
+'''
+#NEW FUNCTION
+'''
+def trim_adapter (seq, ad):
+  '''
+  example:  adapter ad =                  TGGAATTCTCGGGTGCCAAGGAACTC
+            seq =        NTACCGATCTGAGCCATTGGAATTCTCGGGTGCCAAGGAACTCCAGTCACN
+            return =     NTACCGATCTGAGCCAT
+  '''
+  while len(ad) > 6:
+    len_ad = len(ad)
+    pos = find_str(seq, ad)
+    if pos > 0: return seq[:pos]
+    else: ad = ad[:-1]
+  return seq
 def getRevComp (seq):
   intab = "ACGT"
   outab = "TGCA"
@@ -243,9 +274,10 @@ def getGenome (genome_path, file_ext, chromosomeName):
   if chromosomeName == 'All':
     files = [each for each in os.listdir(genome_path) if each.endswith(file_ext)]
   else:
-    files = [ chromosomeName + file_ext]
+    files = [ chromosomeName + file_ext ]
+
   for namefile in files :
-    file = genome_path+namefile
+    file = genome_path + namefile
     chr = getChromosomeName(file)
     sequence = getFastaSeq(file)
     genome[chr] = sequence
@@ -490,8 +522,7 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
   transpose_txt(infile, outfile)
   os.remove(infile) 
 
-  #return master_predicted_distinctMiRNAs #sorted(master_distinctMiRNAs_infos)
-  return sorted(master_distinctPrecursor_infos)
+  return sorted(master_distinctPrecursor_infos), sorted(master_predicted_distinctMiRNAs)
 
 
 def writeTargetsToFile (mirna_and_targets, rep_output, appId):
