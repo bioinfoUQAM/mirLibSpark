@@ -47,7 +47,8 @@ diffguide_file=/home/cloudera/workspace/mirLibSpark/diffguide.txt
 #
 genome_path=/home/cloudera/workspace/mirLibSpark/dbs/WHEAT_inhouse/Genome/
 b_index_path=/home/cloudera/workspace/mirLibSpark/dbs/WHEAT_inhouse/bowtie_split_index/
-target_file=/home/cloudera/workspace/mirLibSpark/dbs/WHEAT_inhouse/mRNA_contigs.fasta
+#target_file=/home/cloudera/workspace/mirLibSpark/dbs/WHEAT_inhouse/mRNA_contigs.fasta
+target_file=/home/cloudera/workspace/mirLibSpark/dbs/ATH_TAIR10/Arabidopsis_thaliana.TAIR10.cdna.all.fa
 known_non_file=/home/cloudera/workspace/mirLibSpark/dbs/ATH_TAIR10/TAIR10_ncRNA_CDS.gff
 gene_vs_pathway_file=/home/cloudera/workspace/mirLibSpark/dbs/WHEAT_inhouse/ko_gene_vs_pathway.txt
 pathway_description_file=/home/cloudera/workspace/mirLibSpark/dbs/WHEAT_inhouse/ko_pathway_description.txt
