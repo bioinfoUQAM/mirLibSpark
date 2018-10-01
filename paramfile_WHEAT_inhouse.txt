@@ -65,7 +65,7 @@ adapter=TGGAATTCTCGGGTGCCAAGGAACTC
 #====================  Ideally, do not change the following parameters since they are already tuned.
 #chromosomes=1AL,1AS,1BL,1BS,1DL,1DS,2AL,2AS,2BL,2BS,2DL,2DS,3AL,3AS,3B,3DL,3DS,4AL,4AS,4BL,4BS,4DL,4DS,5AL,5AS,5BL,5BS,5DL,5DS,6AL,6AS,6BL,6BS,6DL,6DS,7AL,7AS,7BL,7BS,7DL,7DS
 chromosomes=3AS
-bowtie_index_suffix=
+bowtie_index_suffix=WHEAT_inhouse
 #mirdup_model=Viridiplantae.model
 mirdup_model=thaliana.model
 #==================== 
