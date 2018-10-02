@@ -642,7 +642,8 @@ def __write_html (DATA, rep_output, appId):
     #mircheck = i[8:11]	
     strand = i[2]
  
-    path = rep_output + appId + '_' + serial.zfill(4) + '_' + chromo + '_' + poschromo + '.jpg'
+    #path = rep_output + appId + '_' + serial.zfill(4) + '_' + chromo + '_' + poschromo + '.jpg'
+    path = appId + '_' + serial.zfill(4) + '_' + chromo + '_' + poschromo + '.jpg'
 
     l='  <tr>';print(l, file=fh_out)
     l="    <td rowspan=3 style='width: 120px;'><strong>"+ serial + "</strong></td>";print(l, file=fh_out)

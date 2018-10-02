@@ -536,8 +536,8 @@ class prog_varna ():
     [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore] = e[0]
     uid = str(e[1]).zfill(4)
     miRNApos = str(int(posMirPre)) + '-' + str(int(posMirPre) + len(miRNAseq)-1) 
-    title = self.appId + '_' + uid + '_' + chromo + '_' + str(posChr)
-    filename = self.rep_output + title
+    title = uid + '_' + chromo + '_' + str(posChr)
+    filename = self.rep_output + self.appId + '_' + title
     self.run_VARNA_prog (preSeq, preFold, miRNApos, title, filename) 
     e[0].insert(0, e[1])
     return e[0]

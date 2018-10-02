@@ -449,18 +449,21 @@ if __name__ == '__main__' :
                               .map(lambda e: mru.matchRNAidRule(e, distResultSmallRNA))\
                               .collect()
   ut.write_index (PrecursorVis, rep_output, appId)
+  print('PrecursorVis done')
   
   
   #= miranda
   ## in : ('miRNAseq', zipindex)
   ## out: ('miRNAseq', [[target1 and its scores], [target2 and its scores]])
   sc.clearFiles()
+  print('Clear files done')
   sc.addFile(miranda_binary)
   sc.addFile(target_file)
+  print('Add miranda files done')
   mirna_and_targets = distResultSmallRNA_rdd.map(miranda_obj.computeTargetbyMiranda)\
                                             .collect()
   ut.writeTargetsToFile (mirna_and_targets, rep_output, appId)
-  
+  print('Target prediction done')
   #'''
 
   ## I dont know what is the use of this, maybe there is no use...
@@ -502,6 +505,7 @@ if __name__ == '__main__' :
   if perform_differnatial_analysis == 'yes':
     diffguide, _ = ut.read_diffguide(diffguide_file)
     diff_outs = ut.diff_output(diffguide, rep_output, appId)
+    print('Differential analysis done')
 
   if perform_KEGGpathways_enrichment_analysis == 'yes':
     #= KEGG annotation
@@ -510,7 +514,7 @@ if __name__ == '__main__' :
     #= KEGG enrichment analysis 
     keyword =  appId + '_topscoredTargetsKEGGpathway'
     ut.perform_enrichment_analysis (keyword, diff_outs, pathway_description_file, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId)
-
+    print('KEGG pathways enrichment analysis done')
   #===============================================================================================================
   #===============================================================================================================
   #===============================================================================================================
