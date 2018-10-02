@@ -399,7 +399,7 @@ class prog_miRanda ():
     self.rep_tmp = rep_tmp
     self.miranda_exe = miranda_exe
     self.nbTargets = nbTargets
-
+    #
     self.dict_seq_target = {}
 
   def computeTargetbyMiranda (self, e):
@@ -414,12 +414,11 @@ class prog_miRanda ():
     #= This kind of duplicate has been resolved.
     miRNAseq = e[0]
 
-
     tmp_file = self.rep_tmp + miRNAseq + '_tmpseq_forMiranda.txt' 
     with open (tmp_file, 'w') as fh_tmp:
       print >> fh_tmp, '>x\n' + miRNAseq
     FNULL = open(os.devnull, 'w')
-    cmd = [self.miranda_exe, tmp_file, self.target_file, '-strict', '-sc', self.Max_Score_cutoff, '-en', self.Max_Energy_cutoff, '-go', self.Gap_Penalty]
+    cmd = [self.miranda_exe, tmp_file, self.target_file, '-quiet', '-strict', '-sc', self.Max_Score_cutoff, '-en', self.Max_Energy_cutoff, '-go', self.Gap_Penalty]
 
     sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
     mirandaout = sproc.communicate()[0].split('\n')

@@ -236,7 +236,7 @@ if __name__ == '__main__' :
     ## in : ('seq', freq)
     ## out: ('seq', freq)
     sr_low_rdd = collapse_rdd.filter(lambda e: int(e[1]) > limit_srna_freq)
-    print('NB sr_low_rdd: ', sr_low_rdd.count())
+    #print('NB sr_low_rdd: ', sr_low_rdd.count())
     
     #= Filtering short length
     ## in : ('seq', freq)
@@ -464,7 +464,7 @@ if __name__ == '__main__' :
                                             .collect()
   ut.writeTargetsToFile (mirna_and_targets, rep_output, appId)
   print('Target prediction done')
-  #'''
+  
 
   ## I dont know what is the use of this, maybe there is no use...
   ## in: ('miRNAseq', [[targetgene1 and its scores], [targetgene2 and its scores]])
@@ -498,7 +498,7 @@ if __name__ == '__main__' :
   #===============================================================================================================
   #===============================================================================================================
   #===============================================================================================================
-  #appId = 'local-1538110614002'
+  #appId = 'local-1538502520294'
   print('sc stop time:', datetime.datetime.now())
 
   #= diff analysis 
