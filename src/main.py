@@ -1,5 +1,6 @@
 import os
 
+cmd = 'sudo mount -t vboxsf Dropbox\ (Pesonnelle) /home/cloudera/vm_dropbox/';os.system(cmd)
 
 
 #cmd = 'python purge.py';os.system (cmd)
@@ -84,7 +85,6 @@ cmd = 'free -m';os.system(cmd)
 #cmd = 'free -m' #= to check memory;os.system(cmd)
 
 # cmd = 'sudo mount -t vboxsf VM_Share /home/cloudera/vm_share/';os.system(cmd)
-cmd = 'sudo mount -t vboxsf Dropbox\ (Pesonnelle) /home/cloudera/vm_dropbox/';os.system(cmd)
 
 #branches = 'athsettings, bowtiesplit, format_vis_input, format_vis_inputs, genomeextract, include_Dustmasker, include_RNAfold, include_bowtie, smooth, smooth_pipevarna, test, varna'.split(', ')
 #for b in branches:
