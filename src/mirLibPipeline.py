@@ -188,7 +188,7 @@ if __name__ == '__main__' :
       ut.convert_fastq_file_to_KeyValue(infile, inKvfile)
       infile = inKvfile
       
-    print ("  Start of the processing...", end="\n")
+    print ("  Start of miRNA prediction processing...", end="\n")
     startLib = time.time()
     
     #= Convert the text file to RDD object
@@ -406,7 +406,7 @@ if __name__ == '__main__' :
    
     endLib = time.time() 
     timeDict[inBasename] = endLib - startLib
-    print ("  End of the processing     ", end="\n")
+    print ("  End of miRNA prediction processing     ", end="\n")
 
     #= write results to a file
     eachLiboutFile = rep_output  +  appId + '_miRNAprediction_' + inBasename + '.txt'
@@ -456,10 +456,8 @@ if __name__ == '__main__' :
   ## in : ('miRNAseq', zipindex)
   ## out: ('miRNAseq', [[target1 and its scores], [target2 and its scores]])
   sc.clearFiles()
-  print('Clear files done')
   sc.addFile(miranda_binary)
   sc.addFile(target_file)
-  print('Add miranda files done')
   mirna_and_targets = distResultSmallRNA_rdd.map(miranda_obj.computeTargetbyMiranda)\
                                             .collect()
   ut.writeTargetsToFile (mirna_and_targets, rep_output, appId)
