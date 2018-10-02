@@ -1,6 +1,6 @@
 import os
 
-cmd = 'sudo mount -t vboxsf Dropbox\(Pesonnelle) /home/cloudera/vm_dropbox/';os.system(cmd)
+cmd = 'sudo mount -t vboxsf "Dropbox (Pesonnelle)" /home/cloudera/vm_dropbox/';os.system(cmd)
 
 
 #cmd = 'python purge.py';os.system (cmd)
