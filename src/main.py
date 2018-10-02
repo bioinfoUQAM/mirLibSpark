@@ -59,6 +59,8 @@ cmd = 'time spark-submit mirLibPipeline.py ../paramfile_WHEAT_inhouse.txt 2>/dev
 cmd = 'free -m';os.system(cmd)
 
 
+#dos2unix windows.txt unix.txt
+#awk '{ sub("\r$", ""); print }' windows.txt > unix.txt
 
 
 #= to study spark
