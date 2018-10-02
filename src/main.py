@@ -1,14 +1,14 @@
 import os
 
-cmd = 'sudo mount -t vboxsf 1_Projects /home/cloudera/vm_dropbox_projects/';os.system(cmd)
+#cmd = 'sudo mount -t vboxsf 1_Projects /home/cloudera/vm_dropbox_projects/';os.system(cmd)
 
 
 #cmd = 'python purge.py';os.system (cmd)
 
-cmd = 'git pull origin dbsauto';os.system (cmd)
+#cmd = 'git pull origin dbsauto';os.system (cmd)
 
-cmd = 'git branch -D testWheatInHouse';os.system(cmd)
-cmd = 'git remote prune origin';os.system(cmd)
+#cmd = 'git branch -D testWheatInHouse';os.system(cmd)
+#cmd = 'git remote prune origin';os.system(cmd)
 #cmd = 'git branch';os.system(cmd)
 #cmd = 'git fetch origin';os.system(cmd)
 #cmd = 'git checkout master';os.system(cmd)
