@@ -188,7 +188,7 @@ if __name__ == '__main__' :
       ut.convert_fastq_file_to_KeyValue(infile, inKvfile)
       infile = inKvfile
       
-    print ("  Start of miRNA prediction processing...", end="\n")
+    print ("  Start of miRNA prediction...", end="\n")
     startLib = time.time()
     
     #= Convert the text file to RDD object
@@ -406,7 +406,7 @@ if __name__ == '__main__' :
    
     endLib = time.time() 
     timeDict[inBasename] = endLib - startLib
-    print ("  End of miRNA prediction processing     ", end="\n")
+    print ("  End of miRNA prediction     ", end="\n")
 
     #= write results to a file
     eachLiboutFile = rep_output  +  appId + '_miRNAprediction_' + inBasename + '.txt'
@@ -508,11 +508,11 @@ if __name__ == '__main__' :
   if perform_KEGGpathways_enrichment_analysis == 'yes':
     #= KEGG annotation
     list_mirna_and_topscoredTargetsKEGGpathway = ut.annotate_target_genes_with_KEGGpathway (gene_vs_pathway_file, rep_output, appId)
-
+    print('KEGG pathway annotation done')
     #= KEGG enrichment analysis 
     keyword =  appId + '_topscoredTargetsKEGGpathway'
     ut.perform_enrichment_analysis (keyword, diff_outs, pathway_description_file, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId)
-    print('KEGG pathways enrichment analysis done')
+    print('\nKEGG pathway enrichment analysis done')
   #===============================================================================================================
   #===============================================================================================================
   #===============================================================================================================

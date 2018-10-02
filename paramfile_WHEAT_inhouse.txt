@@ -48,8 +48,8 @@ output_path=/home/cloudera/vm_dropbox_projects/1_Project_mirLibHadoop/gitRepo_mi
 #
 genome_path=/home/cloudera/vm_dropbox_projects/1_Project_mirLibHadoop/gitRepo_mirLibHadoop/mirLibSpark/dbs/WHEAT_INHOUSE/Genome/
 b_index_path=/home/cloudera/vm_dropbox_projects/1_Project_mirLibHadoop/gitRepo_mirLibHadoop/mirLibSpark/dbs/WHEAT_INHOUSE/bowtie_split_index/
-target_file=/home/cloudera/vm_dropbox_projects/1_Project_mirLibHadoop/gitRepo_mirLibHadoop/mirLibSpark/dbs/WHEAT_INHOUSE/mRNA_contigs.fasta
-#target_file=/home/cloudera/vm_dropbox_projects/1_Project_mirLibHadoop/gitRepo_mirLibHadoop/mirLibSpark/dbs/ATH_TAIR10/Arabidopsis_thaliana.TAIR10.cdna.all.fa
+#target_file=/home/cloudera/vm_dropbox_projects/1_Project_mirLibHadoop/gitRepo_mirLibHadoop/mirLibSpark/dbs/WHEAT_INHOUSE/mRNA_contigs.fasta
+target_file=/home/cloudera/vm_dropbox_projects/1_Project_mirLibHadoop/gitRepo_mirLibHadoop/mirLibSpark/dbs/WHEAT_INHOUSE/mRNA_contigs_smaller.fasta
 known_non_file=/home/cloudera/vm_dropbox_projects/1_Project_mirLibHadoop/gitRepo_mirLibHadoop/mirLibSpark/dbs/ATH_TAIR10/TAIR10_ncRNA_CDS.gff
 #
 perform_differnatial_analysis=yes

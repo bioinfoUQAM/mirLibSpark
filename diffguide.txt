@@ -1,2 +1,2 @@
 Experiment->Control
-wheat_a4->wheat_a1
+wheat_a2_3AS->wheat_a1_3AS

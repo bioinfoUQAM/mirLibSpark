@@ -526,6 +526,21 @@ class prog_varna ():
     self.appId = appId
     self.rep_output = rep_output
 
+
+  def __editing___run_VARNA_prog (self, preSEQ, preFOLD, miRNApos, title, filename):
+    #-highlightRegion "48-63:fill=#bcffdd;81-102:fill=#bcffdd"
+    cmd = 'java -cp ../lib/VARNAv3-93.jar fr.orsay.lri.varna.applications.VARNAcmd -sequenceDBN "'+ preSEQ +'" -structureDBN "' + preFOLD + '" -highlightRegion "'+ miRNApos + ':fill=#ff0000" -title "' + title + '" -o '+ filename +'.jpg'
+    # os.system(cmd)
+
+    FNULL = open(os.devnull, 'w')
+
+    cmd = ['java', '-cp', '../lib/VARNAv3-93.jar', 'fr.orsay.lri.varna.applications.VARNAcmd', '-sequenceDBN', '"' + preSEQ + '"', '-structureDBN', '"' + preFOLD + '"', '-highlightRegion', '"' + miRNApos + ':fill=#ff0000"', '-title', '"' + title + '"', '-o', filename + '.jpg']
+    sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
+    out = sproc.communicate() #= this line is essential!
+    FNULL.close()
+
+
+
   def run_VARNA_prog (self, preSEQ, preFOLD, miRNApos, title, filename):
     #-highlightRegion "48-63:fill=#bcffdd;81-102:fill=#bcffdd"
     cmd = 'java -cp ../lib/VARNAv3-93.jar fr.orsay.lri.varna.applications.VARNAcmd -sequenceDBN "'+ preSEQ +'" -structureDBN "' + preFOLD + '" -highlightRegion "'+ miRNApos + ':fill=#ff0000" -title "' + title + '" -o '+ filename +'.jpg'

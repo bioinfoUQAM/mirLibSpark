@@ -50,7 +50,7 @@ if __name__ == '__main__' :
   example: python main.py ath
   '''
   if not len(sys.argv) == 3:
-    sys.stderr.write('please provide organism 3-letter code. \nusage: main [organism 3-letter code] [option]\nexample: python main.py ath 1')
+    sys.stderr.write('please provide organism 3-letter code. \nusage: main [organism 3-letter code] [1|2]\nexample: python main.py ath 1\n option 1: bowtie indexing whole genome; option 2: bowtie indexing split genome')
     sys.exit()
   organism = sys.argv[1]
   option = sys.argv[2] #=1: All; 2: split chromosome
