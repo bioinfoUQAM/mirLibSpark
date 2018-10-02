@@ -188,7 +188,7 @@ if __name__ == '__main__' :
       ut.convert_fastq_file_to_KeyValue(infile, inKvfile)
       infile = inKvfile
       
-    print ("  Start of the processing...", end="\n")
+    print ("  Start of miRNA prediction...", end="\n")
     startLib = time.time()
     
     #= Convert the text file to RDD object
@@ -236,7 +236,7 @@ if __name__ == '__main__' :
     ## in : ('seq', freq)
     ## out: ('seq', freq)
     sr_low_rdd = collapse_rdd.filter(lambda e: int(e[1]) > limit_srna_freq)
-    print('NB sr_low_rdd: ', sr_low_rdd.count())
+    #print('NB sr_low_rdd: ', sr_low_rdd.count())
     
     #= Filtering short length
     ## in : ('seq', freq)
@@ -406,7 +406,7 @@ if __name__ == '__main__' :
    
     endLib = time.time() 
     timeDict[inBasename] = endLib - startLib
-    print ("  End of the processing     ", end="\n")
+    print ("  End of miRNA prediction     ", end="\n")
 
     #= write results to a file
     eachLiboutFile = rep_output  +  appId + '_miRNAprediction_' + inBasename + '.txt'
@@ -449,6 +449,7 @@ if __name__ == '__main__' :
                               .map(lambda e: mru.matchRNAidRule(e, distResultSmallRNA))\
                               .collect()
   ut.write_index (PrecursorVis, rep_output, appId)
+  print('PrecursorVis done')
   
   
   #= miranda
@@ -460,8 +461,8 @@ if __name__ == '__main__' :
   mirna_and_targets = distResultSmallRNA_rdd.map(miranda_obj.computeTargetbyMiranda)\
                                             .collect()
   ut.writeTargetsToFile (mirna_and_targets, rep_output, appId)
+  print('Target prediction done')
   
-  #'''
 
   ## I dont know what is the use of this, maybe there is no use...
   ## in: ('miRNAseq', [[targetgene1 and its scores], [targetgene2 and its scores]])
@@ -495,22 +496,23 @@ if __name__ == '__main__' :
   #===============================================================================================================
   #===============================================================================================================
   #===============================================================================================================
-  #appId = 'local-1538110614002'
+  #appId = 'local-1538502520294'
   print('sc stop time:', datetime.datetime.now())
 
   #= diff analysis 
   if perform_differnatial_analysis == 'yes':
     diffguide, _ = ut.read_diffguide(diffguide_file)
     diff_outs = ut.diff_output(diffguide, rep_output, appId)
+    print('Differential analysis done')
 
   if perform_KEGGpathways_enrichment_analysis == 'yes':
     #= KEGG annotation
     list_mirna_and_topscoredTargetsKEGGpathway = ut.annotate_target_genes_with_KEGGpathway (gene_vs_pathway_file, rep_output, appId)
-
+    print('KEGG pathway annotation done')
     #= KEGG enrichment analysis 
     keyword =  appId + '_topscoredTargetsKEGGpathway'
     ut.perform_enrichment_analysis (keyword, diff_outs, pathway_description_file, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId)
-
+    print('\nKEGG pathway enrichment analysis done')
   #===============================================================================================================
   #===============================================================================================================
   #===============================================================================================================

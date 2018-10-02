@@ -399,7 +399,7 @@ class prog_miRanda ():
     self.rep_tmp = rep_tmp
     self.miranda_exe = miranda_exe
     self.nbTargets = nbTargets
-
+    #
     self.dict_seq_target = {}
 
   def computeTargetbyMiranda (self, e):
@@ -414,12 +414,11 @@ class prog_miRanda ():
     #= This kind of duplicate has been resolved.
     miRNAseq = e[0]
 
-
     tmp_file = self.rep_tmp + miRNAseq + '_tmpseq_forMiranda.txt' 
     with open (tmp_file, 'w') as fh_tmp:
       print >> fh_tmp, '>x\n' + miRNAseq
     FNULL = open(os.devnull, 'w')
-    cmd = [self.miranda_exe, tmp_file, self.target_file, '-strict', '-sc', self.Max_Score_cutoff, '-en', self.Max_Energy_cutoff, '-go', self.Gap_Penalty]
+    cmd = [self.miranda_exe, tmp_file, self.target_file, '-quiet', '-strict', '-sc', self.Max_Score_cutoff, '-en', self.Max_Energy_cutoff, '-go', self.Gap_Penalty]
 
     sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
     mirandaout = sproc.communicate()[0].split('\n')
@@ -527,6 +526,21 @@ class prog_varna ():
     self.appId = appId
     self.rep_output = rep_output
 
+
+  def __editing___run_VARNA_prog (self, preSEQ, preFOLD, miRNApos, title, filename):
+    #-highlightRegion "48-63:fill=#bcffdd;81-102:fill=#bcffdd"
+    cmd = 'java -cp ../lib/VARNAv3-93.jar fr.orsay.lri.varna.applications.VARNAcmd -sequenceDBN "'+ preSEQ +'" -structureDBN "' + preFOLD + '" -highlightRegion "'+ miRNApos + ':fill=#ff0000" -title "' + title + '" -o '+ filename +'.jpg'
+    # os.system(cmd)
+
+    FNULL = open(os.devnull, 'w')
+
+    cmd = ['java', '-cp', '../lib/VARNAv3-93.jar', 'fr.orsay.lri.varna.applications.VARNAcmd', '-sequenceDBN', '"' + preSEQ + '"', '-structureDBN', '"' + preFOLD + '"', '-highlightRegion', '"' + miRNApos + ':fill=#ff0000"', '-title', '"' + title + '"', '-o', filename + '.jpg']
+    sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
+    out = sproc.communicate() #= this line is essential!
+    FNULL.close()
+
+
+
   def run_VARNA_prog (self, preSEQ, preFOLD, miRNApos, title, filename):
     #-highlightRegion "48-63:fill=#bcffdd;81-102:fill=#bcffdd"
     cmd = 'java -cp ../lib/VARNAv3-93.jar fr.orsay.lri.varna.applications.VARNAcmd -sequenceDBN "'+ preSEQ +'" -structureDBN "' + preFOLD + '" -highlightRegion "'+ miRNApos + ':fill=#ff0000" -title "' + title + '" -o '+ filename +'.jpg'
@@ -536,8 +550,8 @@ class prog_varna ():
     [miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore] = e[0]
     uid = str(e[1]).zfill(4)
     miRNApos = str(int(posMirPre)) + '-' + str(int(posMirPre) + len(miRNAseq)-1) 
-    title = self.appId + '_' + uid + '_' + chromo + '_' + str(posChr)
-    filename = self.rep_output + title
+    title = uid + '_' + chromo + '_' + str(posChr)
+    filename = self.rep_output + self.appId + '_' + title
     self.run_VARNA_prog (preSeq, preFold, miRNApos, title, filename) 
     e[0].insert(0, e[1])
     return e[0]

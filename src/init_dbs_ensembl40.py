@@ -50,7 +50,7 @@ if __name__ == '__main__' :
   example: python main.py ath
   '''
   if not len(sys.argv) == 3:
-    sys.stderr.write('please provide organism 3-letter code. \nusage: main [organism 3-letter code] [option]\nexample: python main.py ath 1')
+    sys.stderr.write('please provide organism 3-letter code. \nusage: main [organism 3-letter code] [1|2]\nexample: python main.py ath 1\n option 1: bowtie indexing whole genome; option 2: bowtie indexing split genome')
     sys.exit()
   organism = sys.argv[1]
   option = sys.argv[2] #=1: All; 2: split chromosome
@@ -77,7 +77,6 @@ if __name__ == '__main__' :
     curl_and_unzip_file (URL, wanted_file)
     move_file_to (wanted_file, rep1)
 
-
     if option == '1':
       rep3 = rep3 + 'All/'
       if not os.path.exists(rep3): os.makedirs(rep3)
@@ -89,8 +88,6 @@ if __name__ == '__main__' :
       bowtieBuild (wanted_file[:-3], key)
       cmd = 'mv *.ebwt ' + rep3
       os.system(cmd)
-      #move_file_to (wanted_file, rep2)
- 
 
       IDs = '1 2 3 4 5 Mt Pt'.split(' ')
       for ID in IDs:
@@ -122,7 +119,6 @@ if __name__ == '__main__' :
   if organism == 'wheat':
     key = 'WHEAT_IWGSC'
     
-
     rep1 = '../dbs/' + key + '/'
     if not os.path.exists(rep1): os.makedirs(rep1)
     rep2 = rep1 + 'Genome/'
@@ -130,16 +126,16 @@ if __name__ == '__main__' :
     rep3 = rep1 + 'bowtie_index/'
     if not os.path.exists(rep3): os.makedirs(rep3)
 
-    #= get annotation files (ncrna is empty)
+    #= get annotation files
     URL = 'ftp://ftp.ensemblgenomes.org/pub/plants/release-40/fasta/triticum_aestivum/cdna/Triticum_aestivum.IWGSC.cdna.all.fa.gz'
     wanted_file = 'Triticum_aestivum.IWGSC.cdna.all.fa.gz'
     curl_and_unzip_file (URL, wanted_file)
     move_file_to (wanted_file, rep1)
 
     if option == '1':
-      print('only option 2 is provided to wheat ')
+      print('option 1 not provided for wheat, switching to option 2 ...')
       option = '2'
- 
+
     if option == '2':
       IDs = '1A 1B 1D 2A 2B 2D 3A 3B 3D 4A 4B 4D 5A 5B 5D 6A 6B 6D 7A 7B 7D'.split(' ')
       for ID in IDs:
@@ -154,4 +150,3 @@ if __name__ == '__main__' :
         cmd = 'mv *.ebwt ' + rep_ch
         os.system(cmd)
         move_chromosomeFile_to (wanted_file, ID, rep2)
-

@@ -642,7 +642,8 @@ def __write_html (DATA, rep_output, appId):
     #mircheck = i[8:11]	
     strand = i[2]
  
-    path = rep_output + appId + '_' + serial.zfill(4) + '_' + chromo + '_' + poschromo + '.jpg'
+    #path = rep_output + appId + '_' + serial.zfill(4) + '_' + chromo + '_' + poschromo + '.jpg'
+    path = appId + '_' + serial.zfill(4) + '_' + chromo + '_' + poschromo + '.jpg'
 
     l='  <tr>';print(l, file=fh_out)
     l="    <td rowspan=3 style='width: 120px;'><strong>"+ serial + "</strong></td>";print(l, file=fh_out)
@@ -711,8 +712,8 @@ def read_diffguide (infile):
   with open (infile, 'r') as fh: diffguide = [x.rstrip('\n').split('->') for x in fh.readlines()]
   needed_infilenames = []
   for i in diffguide[1:]:
-    name1 = i[0]
-    name2 = i[1]
+    name1 = i[0].split('.')[0]
+    name2 = i[1].split('.')[0]
     if name1 not in needed_infilenames: needed_infilenames.append(name1)
     if name2 not in needed_infilenames: needed_infilenames.append(name2)
   return diffguide[1:], needed_infilenames
@@ -759,8 +760,10 @@ def __fake_diff_output (a, b, rep, appId):
 def diff_output (diffguide, rep, appId):
   diff_outs = []
   for i in diffguide:
-    __fake_diff_output (i[0], i[1], rep, appId)
-    diff_outs.append( appId + '_diff_' + i[0] + '_' + i[1] )
+    a = i[0].split('.')[0]
+    b = i[1].split('.')[0]
+    __fake_diff_output (a, b, rep, appId)
+    diff_outs.append( appId + '_diff_' + a + '_' + b )
   return diff_outs
 
 
