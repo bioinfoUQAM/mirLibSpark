@@ -198,6 +198,9 @@ if __name__ == '__main__' :
     ##      (c) u'>name1\nseq1', u'>name2\nseq2', u'>name3\nseq1',
     ##      (d) u'seq\tquality'
     distFile_rdd = sc.textFile("file:///" + infile, partition) #= partition is 2 if not set 
+    if distFile_rdd.isEmpty():
+      print(infile, 'is an empty file, omit this file')
+      continue
     print('NB distFile_rdd: ', distFile_rdd.count())#
 
     #= Unify different input formats to "seq freq" elements
