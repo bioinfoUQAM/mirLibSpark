@@ -12,17 +12,17 @@ import os
 #cmd = 'git checkout master';os.system(cmd)
 
 
-cmd = 'cp ../input_samples/fake_a.txt ../input';os.system(cmd)
-#cmd = 'rm -fr ../input/fake_a.txt';os.system(cmd)
+#cmd = 'cp ../input_samples/fake_a.txt ../input';os.system(cmd)
+cmd = 'rm -fr ../input/fake_a.txt';os.system(cmd)
 
-cmd = 'cp ../input_samples/fake_a3.txt ../input';os.system(cmd)
-#cmd = 'rm -fr ../input/fake_a3.txt';os.system(cmd)
+#cmd = 'cp ../input_samples/fake_a3.txt ../input';os.system(cmd)
+cmd = 'rm -fr ../input/fake_a3.txt';os.system(cmd)
 
-#cmd = 'cp ../input_samples/wheat_a1_3AS.txt ../input';os.system(cmd)
-#cmd = 'rm -fr ../input/wheat_a1_3AS.txt';os.system(cmd)
+cmd = 'cp ../input_samples/wheat_3A_a1.txt ../input';os.system(cmd)
+#cmd = 'rm -fr ../input/wheat_3A_a1.txt';os.system(cmd)
 
-#cmd = 'cp ../input_samples/wheat_a2_3AS.txt ../input';os.system(cmd)
-#cmd = 'rm -fr ../input/wheat_a2_3AS.txt';os.system(cmd)
+cmd = 'cp ../input_samples/wheat_3A_a2.txt ../input';os.system(cmd)
+#cmd = 'rm -fr ../input/wheat_3A_a2.txt';os.system(cmd)
 
 
 
