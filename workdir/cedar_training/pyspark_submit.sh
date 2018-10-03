@@ -10,15 +10,15 @@
 #SBATCH --mail-user=wu.chaojung@gmail.com
 #SBATCH --mail-type=ALL
 
-#= dependencies:  perl, java, bowtie, duskmasker,  miranda, VARNA
-#= loaded: spark, (python2.7), RNAfold
+#= preloaded: python2.7, perl, java
+#= module loaded: pyspark, duskmasker, bowtie, RNAfold
+#= dependencies: miranda, VARNA
 module load nixpkgs/16.09
 module load spark/2.3.0
 module load gcc/5.4.0
 module load viennarna/2.4.9
 module load bowtie/1.1.2
-#module load python/2.7.14
-#module load java/1.8.0_121
+module load blast+/2.6.0
 
 
 export SPARK_IDENT_STRING=$SLURM_JOBID
