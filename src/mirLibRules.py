@@ -10,6 +10,8 @@ import os
 import utils as ut
 from operator import itemgetter
 
+bin = '../lib/'
+
 
 def rearrange_rule(kv_arg, kv_sep):
   '''
@@ -53,7 +55,7 @@ class prog_dustmasker ():
   def dmask_filter_rule(self, elem):
     sRNAseq = str(elem[0])
     line1 = ['echo', '>seqMir\n' + sRNAseq]
-    line2 = ['../lib/dustmasker']
+    line2 = [bin + 'dustmasker']
     
     p1 = sbp.Popen(line1, stdout=sbp.PIPE, env=self.env)
     p2 = sbp.Popen(line2, stdin=p1.stdout, stdout=sbp.PIPE, env=self.env)
@@ -66,7 +68,7 @@ class prog_dustmasker ():
     return False  ##= false data will be automatically excluded in the new RDD
 
   def dmask_pipe_cmd(self):
-    return '../lib/dustmasker -outfmt fasta', self.env
+    return bin + 'dustmasker -outfmt fasta', self.env
 
 class prog_bowtie ():
 
@@ -79,7 +81,7 @@ class prog_bowtie ():
     FNULL = open(os.devnull, 'w')
     
     # cmd = 'bowtie --mm -a -v 0 --suppress 1,5,6,7,8 -c ' + self.bowtie_index + ' '+ seq  # shell=True
-    cmd = ['../lib/bowtie', '--mm', '-a', '-v', '0', '--suppress', '1,5,6,7,8', '-c', self.bowtie_index, seq] # shell=False
+    cmd = [bin + 'bowtie', '--mm', '-a', '-v', '0', '--suppress', '1,5,6,7,8', '-c', self.bowtie_index, seq] # shell=False
     
     sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
     bsout = sproc.communicate()[0]
@@ -109,7 +111,7 @@ class prog_bowtie ():
     '''
     -v 0 : allowing zero mismatch in alignment
     '''
-    cmd = "../lib/bowtie --mm -a -v 0 --suppress 1,6,7,8 -r " + self.bowtie_index + " - "
+    cmd = bin + "bowtie --mm -a -v 0 --suppress 1,6,7,8 -r " + self.bowtie_index + " - "
     return cmd, self.env
   
   def bowtie_rearrange_map (self, elem):
@@ -245,7 +247,7 @@ class prog_RNAfold ():
     this requires two subprocesses
     '''
     line1 = ['echo', seq]
-    line2 = ['../lib/RNAfold','--noPS', '--noLP', '--temp=' + self.temperature]
+    line2 = [bin + 'RNAfold','--noPS', '--noLP', '--temp=' + self.temperature]
     
     p1 = sbp.Popen(line1, stdout=sbp.PIPE, env=self.env)
     p2 = sbp.Popen(line2, stdin=p1.stdout, stdout=sbp.PIPE, env=self.env)

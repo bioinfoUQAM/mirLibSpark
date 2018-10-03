@@ -91,8 +91,8 @@ if __name__ == '__main__' :
 
 
   #= RNAfold
-  path_RNAfold = project_path + '/lib/'
-  path_RNAfold = ut.find_RNAfold_path () #mirdup dependency
+  #path_RNAfold = project_path + '/lib/'
+  path_RNAfold = ut.find_RNAfold_path () #mirdup needs it
   temperature = int(paramDict['temperature']) 
 
   #= pri-mirna
