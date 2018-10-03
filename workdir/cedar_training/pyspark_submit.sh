@@ -15,6 +15,7 @@ module load nixpkgs/16.09
 module load spark/2.3.0
 module load gcc/5.4.0
 module load viennarna/2.4.9
+module load bowtie/1.1.2
 #module load python/2.7.14
 #module load java/1.8.0_121
 
@@ -39,3 +40,5 @@ stop-master.sh
 
 #181002-2031
 #Submitted batch job 12281602
+#
+#Submitted batch job 12281943
