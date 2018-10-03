@@ -10,7 +10,8 @@
 #SBATCH --mail-user=wu.chaojung@gmail.com
 #SBATCH --mail-type=ALL
 
-
+#= dependencies:  perl, java, bowtie, duskmasker,  miranda, VARNA
+#= loaded: spark, (python2.7), RNAfold
 module load nixpkgs/16.09
 module load spark/2.3.0
 module load gcc/5.4.0

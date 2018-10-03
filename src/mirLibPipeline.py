@@ -67,7 +67,7 @@ if __name__ == '__main__' :
   project_path = paramDict['project_path'][:-1]
   rep_input = paramDict['input_path']
   rep_output = paramDict['output_path']
-  rep_msub_jobsOut = project_path + '/workdir/jobsOut'
+  rep_msub_jobout = project_path + '/workdir/jobout'
   rep_tmp = project_path + '/tmp/'     
 
   #= genome
@@ -130,7 +130,7 @@ if __name__ == '__main__' :
   #= end of paramDict naming =================================================================================
 
   #= make required folders if not exist
-  reps = [rep_output, rep_tmp, rep_msub_jobsOut]
+  reps = [rep_output, rep_tmp, rep_msub_jobout]
   ut.makedirs_reps (reps)
 
   #= addFile
@@ -486,11 +486,8 @@ if __name__ == '__main__' :
 
   #'''
 
-  #= end of spark context
-  #broadcastVar_paramDict.unpersist()
-  #broadcastVar_d_ncRNA_CDS.unpersist()
-
-  sc.stop() #= allow to run multiple SparkContexts
+  #= end of spark context, stop to allow running multiple SparkContexts
+  sc.stop() 
 
   #===============================================================================================================
   #===============================================================================================================
@@ -501,8 +498,7 @@ if __name__ == '__main__' :
 
   #= diff analysis 
   if perform_differnatial_analysis == 'yes':
-    diffguide, _ = ut.read_diffguide(diffguide_file)
-    diff_outs = ut.diff_output(diffguide, rep_output, appId)
+    diff_outs = ut.diff_output(diffguide_file, rep_output, appId)
     print('Differential analysis done')
 
   if perform_KEGGpathways_enrichment_analysis == 'yes':
@@ -510,8 +506,7 @@ if __name__ == '__main__' :
     list_mirna_and_topscoredTargetsKEGGpathway = ut.annotate_target_genes_with_KEGGpathway (gene_vs_pathway_file, rep_output, appId)
     print('KEGG pathway annotation done')
     #= KEGG enrichment analysis 
-    keyword =  appId + '_topscoredTargetsKEGGpathway'
-    ut.perform_enrichment_analysis (keyword, diff_outs, pathway_description_file, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId)
+    ut.perform_enrichment_analysis (diff_outs, pathway_description_file, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId)
     print('\nKEGG pathway enrichment analysis done')
   #===============================================================================================================
   #===============================================================================================================
