@@ -53,7 +53,7 @@ target_file=/home/cloudera/vm_dropbox_projects/1_Project_mirLibHadoop/gitRepo_mi
 known_non_file=/home/cloudera/vm_dropbox_projects/1_Project_mirLibHadoop/gitRepo_mirLibHadoop/mirLibSpark/dbs/ATH_TAIR10/TAIR10_ncRNA_CDS.gff
 #
 perform_differnatial_analysis=yes
-diffguide_file=/home/cloudera/vm_dropbox_projects/1_Project_mirLibHadoop/gitRepo_mirLibHadoop/mirLibSpark/diffguide.txt
+diffguide_file=/home/cloudera/vm_dropbox_projects/1_Project_mirLibHadoop/gitRepo_mirLibHadoop/mirLibSpark/diffguide_wheat.txt
 #
 perform_KEGGpathways_enrichment_analysis=yes
 gene_vs_pathway_file=/home/cloudera/vm_dropbox_projects/1_Project_mirLibHadoop/gitRepo_mirLibHadoop/mirLibSpark/dbs/WHEAT_INHOUSE/ko_gene_vs_pathway.txt

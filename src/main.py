@@ -48,11 +48,11 @@ import os
 cmd = 'free -m';os.system(cmd)
 
 #########################################################################################
-#cmd = 'time spark-submit mirLibPipeline.py ../paramfile_ATH_TAIR10.txt 2>/dev/null';os.system(cmd)
+cmd = 'time spark-submit mirLibPipeline.py ../paramfile_ATH_TAIR10.txt 2>/dev/null';os.system(cmd)
 #########################################################################################
 
 #########################################################################################
-cmd = 'time spark-submit mirLibPipeline.py ../paramfile_WHEAT_inhouse.txt 2>/dev/null';os.system(cmd)
+#cmd = 'time spark-submit mirLibPipeline.py ../paramfile_WHEAT_inhouse.txt 2>/dev/null';os.system(cmd)
 #########################################################################################
 
 
@@ -60,7 +60,6 @@ cmd = 'free -m';os.system(cmd)
 
 
 #dos2unix windows.txt unix.txt
-#awk '{ sub("\r$", ""); print }' windows.txt > unix.txt
 
 
 #= to study spark

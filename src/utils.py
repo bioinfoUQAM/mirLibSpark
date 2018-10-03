@@ -758,7 +758,7 @@ def __fake_diff_output (a, b, rep, appId):
 
 
 def diff_output (diffguide_file, rep, appId):
-  diffguide, _ = ut.read_diffguide(diffguide_file)
+  diffguide, _ = __read_diffguide(diffguide_file)
   diff_outs = []
   for i in diffguide:
     a = i[0].split('.')[0]
