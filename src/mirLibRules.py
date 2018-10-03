@@ -464,7 +464,9 @@ class prog_miRdup ():
     '''
     tmp_file  = self.rep_tmp + 'mdup_'+ str(e[1]) +'.txt'
     pred_file = tmp_file+"."+self.modelName+".miRdup.txt"
-    
+   
+    ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold']])
+    ## tmp format: name \t miseq \t preseq \t prefold
     with open (tmp_file, 'w') as fh_tmp:
       print >> fh_tmp, 'seqx\t' + str(e[0][0]) + '\t' + str(e[0][1][4][0]) + '\t' + str(e[0][1][4][2])
     
