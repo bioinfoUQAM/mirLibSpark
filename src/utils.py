@@ -650,7 +650,7 @@ def __write_html (DATA, rep_output, appId):
     #l="    <td rowspan=3 style='width: 120px;'>"+newid+"</td>";print(l, file=fh_out)
     l="    <td rowspan=3 > <a href="+ path + " target='_blank'><img class='heightSet' src="+ path + " alt='Struture'></a></td>";print(l, file=fh_out)
     l="    <td style='width: 400px;'>"+ mirna + "</td>";print(l, file=fh_out)
-    l="    <td>"+ chromo + ":"+ poschromo + " ["+ strand + "] </td>";print(l, file=fh_out)
+    l="    <td> Chr "+ chromo + ":"+ poschromo + " ["+ strand + "] </td>";print(l, file=fh_out)
     l="  </tr>";print(l, file=fh_out)
     l="  <tr>";print(l, file=fh_out)
     l="    <td colspan=2 style='font-family:monospace'>"+ preseq + "</td>";print(l, file=fh_out)
