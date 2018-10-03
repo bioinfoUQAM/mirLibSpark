@@ -7,9 +7,14 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --job-name=multi-node-spark-181002
 #SBATCH --output=jobout/%x-%j.out
+#SBATCH --mail-user=wu.chaojung@gmail.com
+#SBATCH --mail-type=ALL
+
 
 module load nixpkgs/16.09
 module load spark/2.3.0
+module load gcc/5.4.0
+module load viennarna/2.4.9
 #module load python/2.7.14
 #module load java/1.8.0_121
 
@@ -31,3 +36,6 @@ stop-master.sh
 
 #= sbatch pyspark_submit.sh
 #= squeue -u cjwu
+
+#181002-2031
+#Submitted batch job 12281602
