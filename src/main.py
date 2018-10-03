@@ -24,6 +24,10 @@ cmd = 'cp ../input_samples/wheat_3A_a1.txt ../input';os.system(cmd)
 cmd = 'cp ../input_samples/wheat_3A_a2.txt ../input';os.system(cmd)
 #cmd = 'rm -fr ../input/wheat_3A_a2.txt';os.system(cmd)
 
+#cmd = 'cp ../input_samples/high_conf_mature_ath_uniq_raw.txt ../input';os.system(cmd)
+#cmd = 'rm -fr ../input/high_conf_mature_ath_uniq_raw.txt';os.system(cmd)
+
+
 
 
 #cmd = 'cp ../input_samples/fake_a5.txt ../input';os.system(cmd)
@@ -56,11 +60,11 @@ cmd = 'cp ../input_samples/wheat_3A_a2.txt ../input';os.system(cmd)
 cmd = 'free -m';os.system(cmd)
 
 #########################################################################################
-cmd = 'time spark-submit mirLibPipeline.py ../paramfile_ATH_TAIR10.txt 2>/dev/null';os.system(cmd)
+#cmd = 'time spark-submit mirLibPipeline.py ../paramfile_ATH_TAIR10.txt 2>/dev/null';os.system(cmd)
 #########################################################################################
 
 #########################################################################################
-#cmd = 'time spark-submit mirLibPipeline.py ../paramfile_WHEAT_IWGSC.txt 2>/dev/null';os.system(cmd)
+cmd = 'time spark-submit mirLibPipeline.py ../paramfile_WHEAT_IWGSC.txt 2>/dev/null';os.system(cmd)
 #########################################################################################
 
 
