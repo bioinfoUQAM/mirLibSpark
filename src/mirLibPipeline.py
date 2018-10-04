@@ -243,6 +243,7 @@ if __name__ == '__main__' :
     ## out: ('seq', freq)
     sr_short_rdd = sr_low_rdd.filter(lambda e: len(e[0]) > limit_len).persist()  # TO KEEP IT
     print('NB sr_short_rdd: ', sr_short_rdd.count())
+
     
     #= Filtering with DustMasker
     ## in : ('seq', freq)
@@ -282,18 +283,21 @@ if __name__ == '__main__' :
       #================================================================================================================
       mergebowtie_rdd = mergebowtie_rdd.union(bowtie_rdd).persist()
 
+    print('NB mergebowtie_rdd: ', mergebowtie_rdd.count())############################################
     #= Getting the expression value for each reads
     ## in : ('seq', [nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     bowFrq_rdd = mergebowtie_rdd.join(sr_short_rdd)\
                            .map(bowtie_obj.bowtie_freq_rearrange_rule)
     print('NB bowFrq_rdd: ', bowFrq_rdd.count())
+
     #180921 fake_a.txt takes 17 secs till this step, option chromo=All
     #180921 100.txt takes 23 secs till this step, option chromo=All
 
     #= Create dict, chromo_strand as key to search bowtie blocs in the following dict
-    dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(bowFrq_rdd.collect())
-    broadcastVar_bowtie_chromo_strand = sc.broadcast(dict_bowtie_chromo_strand) 
+    #dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(bowFrq_rdd.collect())
+    #broadcastVar_bowtie_chromo_strand = sc.broadcast(dict_bowtie_chromo_strand) 
+
 
 
     #= Filtering miRNA low frequency
@@ -314,8 +318,15 @@ if __name__ == '__main__' :
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr])
     flat_rdd = nbLoc_rdd.flatMap(mru.flatmap_mappings)
     #print('NB flat_rdd distinct (this step flats elements): ', flat_rdd.groupByKey().count())
-    #print('NB flat_rdd not distinct: ', flat_rdd.count())
-
+    print('NB flat_rdd not distinct: ', flat_rdd.count())
+    
+    outfile = '../outputJEAN/' + appId + '_sRNAloci.txt'
+    fh_out = open (outfile, 'w')
+    for i in flat_rdd.collect():
+      print(i, file=fh_out)
+    fh_out.close()
+    
+    
     #= Filtering known non-miRNA ##
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr])
@@ -361,8 +372,8 @@ if __name__ == '__main__' :
       #= Extraction of the pre-miRNA
       ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
       ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop'], ['preSeq',posMirPre]])
-      premir_rdd = one_loop_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3)) ## use one-loop rule
-      #premir_rdd = pri_vld_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3)) ## ignore one-loop rule
+      #premir_rdd = one_loop_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3)) ## use one-loop rule
+      premir_rdd = pri_vld_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3)) ## ignore one-loop rule
       #================================================================================================================
       #================================================================================================================
       #================================================================================================================
@@ -372,7 +383,7 @@ if __name__ == '__main__' :
     #print('mergeChromosomesResults: ', mergeChromosomesResults_rdd.count())
     #180921 fake_a.txt takes 42 secs to run till this line (All chromo)
     #180921 fake_a.txt takes 307 secs to run till this line (split chromo)
-
+    
     
     #= pre-miRNA folding
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre]])
@@ -400,8 +411,9 @@ if __name__ == '__main__' :
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq])
     profile_rdd = pre_vld_rdd.map(lambda e: profile_obj.computeProfileFrq(e, broadcastVar_bowtie_chromo_strand.value))\
                              .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)
-    print('NB profile_rdd distinct: ', profile_rdd.groupByKey().count())
-    libresults = profile_rdd.collect()
+
+    #print('NB profile_rdd distinct: ', profile_rdd.groupByKey().count())
+    #libresults = profile_rdd.collect()
     #libRESULTS.append( [inBasename, libresults] )
    
     endLib = time.time() 
@@ -410,12 +422,13 @@ if __name__ == '__main__' :
 
     #= write results to a file
     eachLiboutFile = rep_output  +  appId + '_miRNAprediction_' + inBasename + '.txt'
-    ut.writeToFile (libresults, eachLiboutFile)
+    #ut.writeToFile (libresults, eachLiboutFile)
 
   #= print executions time  to a file
   outTime = rep_output + appId + '_time.txt'
   ut.writeTimeLibToFile (timeDict, outTime, appId, paramDict)
 
+  
   #= make summary table of all libraries in one submission with expressions in the field
   keyword = appId + '_miRNAprediction_'
   infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
@@ -438,6 +451,7 @@ if __name__ == '__main__' :
   #                                       .distinct()\
   #                                       .zipWithIndex() 
   
+
   #= varna
   varna_obj = mru.prog_varna(appId, rep_output) 
   ## in : ([miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore], zipindex)
