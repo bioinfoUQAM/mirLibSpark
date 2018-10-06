@@ -48,8 +48,10 @@ output_path=/home/cjwu/project/cjwu/gitrepo/mirLibSpark/output/
 #
 genome_path=/home/cjwu/project/cjwu/gitrepo/mirLibSpark/dbs/ATH_TAIR10/Genome/
 b_index_path=/home/cjwu/project/cjwu/gitrepo/mirLibSpark/dbs/ATH_TAIR10/bowtie_index/
-target_file=/home/cjwu/project/cjwu/gitrepo/mirLibSpark/dbs/ATH_TAIR10/Arabidopsis_thaliana.TAIR10.cdna.all.fa
+bowtie_index_suffix=ATH_TAIR10
+#
 known_non_file=/home/cjwu/project/cjwu/gitrepo/mirLibSpark/dbs/ATH_TAIR10/TAIR10_ncRNA_CDS.gff
+target_file=/home/cjwu/project/cjwu/gitrepo/mirLibSpark/dbs/ATH_TAIR10/Arabidopsis_thaliana.TAIR10.cdna.all.fa
 #
 perform_differnatial_analysis=yes
 diffguide_file=/home/cjwu/project/cjwu/gitrepo/mirLibSpark/diffguide.txt
@@ -66,9 +68,8 @@ adapter=none
 #
 #
 #====================  Ideally, do not change the following parameters since they are already tuned.
-chromosomes=1,2,3,4,5,Mt,Pt
-#chromosomes=All
-bowtie_index_suffix=ATH_TAIR10
+#chromosomes=1,2,3,4,5,Mt,Pt
+chromosomes=All
 #mirdup_model=Viridiplantae.model
 mirdup_model=thaliana.model
 #==================== 

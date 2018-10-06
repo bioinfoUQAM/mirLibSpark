@@ -10,7 +10,8 @@ import os
 import utils as ut
 from operator import itemgetter
 
-bin = '../lib/'
+#bin = '../lib/'
+bin = ''
 
 
 def rearrange_rule(kv_arg, kv_sep):

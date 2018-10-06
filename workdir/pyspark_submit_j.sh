@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --account=def-banire
-#SBATCH --time=01:00:00
+#SBATCH --time=02:00:00
 #SBATCH --nodes=4
 #SBATCH --mem=4000M
 #SBATCH --cpus-per-task=8
@@ -12,7 +12,7 @@
 
 #= preloaded: python2.7, perl, java
 #= module loaded: pyspark, duskmasker, bowtie, RNAfold
-#= dependencies: miranda, VARNA
+#= included dependencies: miranda, VARNA
 module load nixpkgs/16.09
 module load spark/2.3.0
 module load gcc/5.4.0
