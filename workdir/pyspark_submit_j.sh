@@ -5,7 +5,7 @@
 #SBATCH --mem=4000M
 #SBATCH --cpus-per-task=8
 #SBATCH --ntasks-per-node=1
-#SBATCH --job-name=spark-32ppn-2hr-pi-181006
+#SBATCH --job-name=spark-32ppn-2hr-pi-path-181006
 #SBATCH --output=jobout/%x-%j.out
 #SBATCH --mail-user=wu.chaojung@gmail.com
 #SBATCH --mail-type=ALL
@@ -33,7 +33,7 @@ SPARK_NO_DAEMONIZE=1 srun -n ${NWORKERS} -N ${NWORKERS} --label --output=$SPARK_
 slaves_pid=$!
 
 
-srun -n 1 -N 1 spark-submit --master ${MASTER_URL} --executor-memory ${SLURM_MEM_PER_NODE}M $SPARK_HOME/pi.py 100000
+srun -n 1 -N 1 spark-submit --master ${MASTER_URL} --executor-memory ${SLURM_MEM_PER_NODE}M $SPARK_HOME/cjwu/project/cjwu/gitrepo/mirLibSpark/workdir/pi.py 100000
 
 kill $slaves_pid
 stop-master.sh
@@ -50,3 +50,11 @@ stop-master.sh
 #Submitted batch job 12281602
 #
 #Submitted batch job 12281943
+#
+#
+#
+#181006-0145
+#Submitted batch job 12398002
+#
+##SBATCH --job-name=spark-32ppn-2hr-pi-path-181006
+#Submitted batch job 12398313
