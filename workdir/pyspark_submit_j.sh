@@ -59,3 +59,6 @@ stop-master.sh
 #
 ##SBATCH --job-name=spark-32ppn-2hr-pi-path-181006
 #Submitted batch job 12398313
+#
+##SBATCH --job-name=spark-8ppn-2hr-pi-path-181006
+#Submitted batch job 12398846
