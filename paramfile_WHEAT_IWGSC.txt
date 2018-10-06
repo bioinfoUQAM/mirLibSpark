@@ -49,9 +49,12 @@ output_path=/home/cloudera/vm_dropbox_projects/1_Project_mirLibHadoop/gitRepo_mi
 #
 genome_path=/home/cloudera/vm_share/dbs/WHEAT_IWGSC/Genome/
 b_index_path=/home/cloudera/vm_share/dbs/WHEAT_IWGSC/bowtie_index/
+bowtie_index_suffix=WHEAT_IWGSC
+#
+known_non_file=/home/cloudera/vm_dropbox_projects/1_Project_mirLibHadoop/gitRepo_mirLibHadoop/mirLibSpark/dbs/ATH_TAIR10/TAIR10_ncRNA_CDS.gff
+#
 target_file=/home/cloudera/vm_share/dbs/WHEAT_IWGSC/mRNA_contigs_smaller.fasta
 #target_file=/home/cloudera/vm_share/dbs/WHEAT_IWGSC/Triticum_aestivum.IWGSC.cdna.all.fa
-known_non_file=/home/cloudera/vm_dropbox_projects/1_Project_mirLibHadoop/gitRepo_mirLibHadoop/mirLibSpark/dbs/ATH_TAIR10/TAIR10_ncRNA_CDS.gff
 #
 perform_differnatial_analysis=no
 diffguide_file=/home/cloudera/vm_dropbox_projects/1_Project_mirLibHadoop/gitRepo_mirLibHadoop/mirLibSpark/diffguide_wheat.txt
@@ -72,7 +75,6 @@ adapter=TGGAATTCTCGGGTGCCAAGGAACTC
 #====================  Ideally, do not change the following parameters since they are already tuned.
 #chromosomes=1A,1B,1D,2A,2B,2D,3A,3B,3D,4A,4B,4D,5A,5B,5D,6A,6B,6D,7A,7B,7D
 chromosomes=3A
-bowtie_index_suffix=WHEAT_IWGSC
 #mirdup_model=Viridiplantae.model
 mirdup_model=thaliana.model
 #==================== 
