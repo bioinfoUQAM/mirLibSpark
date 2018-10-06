@@ -62,10 +62,10 @@ pathway_description_file=/home/cloudera/vm_dropbox_projects/1_Project_mirLibHado
 #
 #
 #==================== User needs to define
-#input_type=c
-#adapter=TGGAATTCTCGGGTGCCAAGGAACTC
-input_type=a
-adapter=none
+input_type=c
+adapter=TGGAATTCTCGGGTGCCAAGGAACTC
+#input_type=a
+#adapter=none
 #
 #
 #
