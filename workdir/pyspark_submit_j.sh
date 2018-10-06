@@ -42,14 +42,12 @@ stop-master.sh
 
 
 
-#=== https://docs.computecanada.ca/wiki/Apache_Spark
 
+#= sbatch pyspark_submit.sh
 #= sbatch pyspark_submit_j.sh
 #= squeue -u cjwu
 
 #181002-2031
-#Submitted batch job 12281602 (useless)
+#Submitted batch job 12281602
 #
-#Submitted batch job 12281943 (useless)
-#
-#Submitted batch job 12290774
+#Submitted batch job 12281943
