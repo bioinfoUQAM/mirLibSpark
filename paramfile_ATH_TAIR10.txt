@@ -42,21 +42,21 @@ message=\nwrite your message (for stdout) here line1\nline2: \nchromosomes=All\n
 #
 #
 #==================== Absolute paths in user's computer
-project_path=/home/cloudera/workplace/mirLibSpark/
-input_path=/home/cloudera/workplace/mirLibSpark/input/
+project_path=/home/cloudera/workspace/mirLibSpark/
+input_path=/home/cloudera/workspace/mirLibSpark/input/
 output_path=/home/cloudera/vm_dropbox_projects/1_Project_mirLibHadoop/gitRepo_mirLibHadoop/mirLibSpark/output/
 #
-genome_path=/home/cloudera/workplace/mirLibSpark/dbs/ATH_TAIR10/Genome/
-b_index_path=/home/cloudera/workplace/mirLibSpark/dbs/ATH_TAIR10/bowtie_index/
-target_file=/home/cloudera/workplace/mirLibSpark/dbs/ATH_TAIR10/Arabidopsis_thaliana.TAIR10.cdna.all.fa
-known_non_file=/home/cloudera/workplace/mirLibSpark/dbs/ATH_TAIR10/TAIR10_ncRNA_CDS.gff
+genome_path=/home/cloudera/workspace/mirLibSpark/dbs/ATH_TAIR10/Genome/
+b_index_path=/home/cloudera/workspace/mirLibSpark/dbs/ATH_TAIR10/bowtie_index/
+target_file=/home/cloudera/workspace/mirLibSpark/dbs/ATH_TAIR10/Arabidopsis_thaliana.TAIR10.cdna.all.fa
+known_non_file=/home/cloudera/workspace/mirLibSpark/dbs/ATH_TAIR10/TAIR10_ncRNA_CDS.gff
 #
 perform_differnatial_analysis=yes
-diffguide_file=/home/cloudera/workplace/mirLibSpark/diffguide_ath.txt
+diffguide_file=/home/cloudera/workspace/mirLibSpark/diffguide_ath.txt
 #
 perform_KEGGpathways_enrichment_analysis=yes
-gene_vs_pathway_file=/home/clouderaworkplace/mirLibSpark/dbs/ATH_TAIR10/ath_gene_vs_pathway.txt
-pathway_description_file=/home/cloudera/workplace/mirLibSpark/dbs/ATH_TAIR10/ath_pathway_description.txt
+gene_vs_pathway_file=/home/cloudera/workspace/mirLibSpark/dbs/ATH_TAIR10/ath_gene_vs_pathway.txt
+pathway_description_file=/home/cloudera/workspace/mirLibSpark/dbs/ATH_TAIR10/ath_pathway_description.txt
 #
 #
 #==================== User needs to define
