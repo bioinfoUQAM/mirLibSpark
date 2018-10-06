@@ -5,7 +5,7 @@
 #SBATCH --mem=4000M
 #SBATCH --cpus-per-task=8
 #SBATCH --ntasks-per-node=1
-#SBATCH --job-name=multi-node-spark-181002
+#SBATCH --job-name=spark-32ppn-2hr-pi-181006
 #SBATCH --output=jobout/%x-%j.out
 #SBATCH --mail-user=wu.chaojung@gmail.com
 #SBATCH --mail-type=ALL
@@ -43,7 +43,6 @@ stop-master.sh
 
 
 
-#= sbatch pyspark_submit.sh
 #= sbatch pyspark_submit_j.sh
 #= squeue -u cjwu
 
