@@ -170,7 +170,7 @@ if __name__ == '__main__' :
     
   print('\n====================== mirLibSpark =========================')
   print('====================== ' + appId + ' =================')
-  #for k, v in paramDict.items(): print(k, ': ', v)
+  for k, v in sorted(paramDict.items()): print(k, ': ', v)
   print('============================================================\n')
   print('begin time:', datetime.datetime.now())
   #'''
