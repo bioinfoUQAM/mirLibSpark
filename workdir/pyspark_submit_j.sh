@@ -1,11 +1,11 @@
 #!/bin/bash
 #SBATCH --account=def-banire
 #SBATCH --time=02:00:00
-#SBATCH --nodes=4
+#SBATCH --nodes=1
 #SBATCH --mem=4000M
 #SBATCH --cpus-per-task=8
 #SBATCH --ntasks-per-node=1
-#SBATCH --job-name=spark-32ppn-2hr-pi-path-181006
+#SBATCH --job-name=spark-8ppn-2hr-pi-path-181006
 #SBATCH --output=jobout/%x-%j.out
 #SBATCH --mail-user=wu.chaojung@gmail.com
 #SBATCH --mail-type=ALL
@@ -45,6 +45,7 @@ stop-master.sh
 
 #= sbatch pyspark_submit_j.sh
 #= squeue -u cjwu
+#= scancel <jobid>
 
 #181002-2031
 #Submitted batch job 12281602
