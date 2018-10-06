@@ -35,21 +35,22 @@
 #
 ########################################################################
 #
-message=\nwrite your message (for stdout) here line1\nline2: \n
+message=\nwrite your message (for stdout) here line1\nline2: \nChr=3A
 #
 ########################################################################
 #
 #
 #
 #==================== Absolute paths in user's computer, please modify this string according to need: /home/cloudera/vm_dropbox_projects/1_Project_mirLibHadoop/gitRepo_mirLibHadoop/
-project_path=/home/cloudera/vm_dropbox_projects/1_Project_mirLibHadoop/gitRepo_mirLibHadoop/mirLibSpark/
-input_path=/home/cloudera/vm_dropbox_projects/1_Project_mirLibHadoop/gitRepo_mirLibHadoop/mirLibSpark/input/
+project_path=/home/cloudera/workspace/mirLibSpark/
+#input_path=/home/cloudera/workspace/mirLibSpark/input/
+input_path=/home/cloudera/vm_share/Wheat_field_libraries/
 output_path=/home/cloudera/vm_dropbox_projects/1_Project_mirLibHadoop/gitRepo_mirLibHadoop/mirLibSpark/output/
 #
-genome_path=/home/cloudera/vm_dropbox_projects/1_Project_mirLibHadoop/gitRepo_mirLibHadoop/mirLibSpark/dbs/WHEAT_IWGSC/Genome/
-b_index_path=/home/cloudera/vm_dropbox_projects/1_Project_mirLibHadoop/gitRepo_mirLibHadoop/mirLibSpark/dbs/WHEAT_IWGSC/bowtie_index/
-target_file=/home/cloudera/vm_dropbox_projects/1_Project_mirLibHadoop/gitRepo_mirLibHadoop/mirLibSpark/dbs/WHEAT_IWGSC/mRNA_contigs_smaller.fasta
-#target_file=/home/cloudera/vm_dropbox_projects/1_Project_mirLibHadoop/gitRepo_mirLibHadoop/mirLibSpark/dbs/WHEAT_IWGSC/Triticum_aestivum.IWGSC.cdna.all.fa
+genome_path=/home/cloudera/vm_share/dbs/WHEAT_IWGSC/Genome/
+b_index_path=/home/cloudera/vm_share/dbs/WHEAT_IWGSC/bowtie_index/
+target_file=/home/cloudera/vm_share/dbs/WHEAT_IWGSC/mRNA_contigs_smaller.fasta
+#target_file=/home/cloudera/vm_share/dbs/WHEAT_IWGSC/Triticum_aestivum.IWGSC.cdna.all.fa
 known_non_file=/home/cloudera/vm_dropbox_projects/1_Project_mirLibHadoop/gitRepo_mirLibHadoop/mirLibSpark/dbs/ATH_TAIR10/TAIR10_ncRNA_CDS.gff
 #
 perform_differnatial_analysis=yes
