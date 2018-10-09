@@ -2,7 +2,7 @@
 #SBATCH --account=def-banire
 #SBATCH --time=02:00:00
 #SBATCH --nodes=1
-#SBATCH --mem=12000M
+#SBATCH --mem=10000M
 #SBATCH --cpus-per-task=8
 #SBATCH --ntasks-per-node=1
 #SBATCH --job-name=spark-8ppn-2hr-pi-path-181006
