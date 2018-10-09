@@ -174,7 +174,6 @@ if __name__ == '__main__' :
   print('============================================================\n')
   print('begin time:', datetime.datetime.now())
   #'''
-  #libRESULTS = [] 
   for infile in infiles :
     if infile[-1:] == '~': continue
     print ("--Processing of the library: ", infile)
@@ -182,7 +181,6 @@ if __name__ == '__main__' :
     inBasename = os.path.splitext(infile)[0] #= lib name
     infile = rep_input+infile
     inKvfile = rep_tmp + inBasename + '.kv.txt'
-    # hdfsFile = inBasename + '.hkv.txt' #= spark will take care of textFile() and pass it through hdfs, so no need this line
 
     if input_type == 'd': #= fastq
       ut.convert_fastq_file_to_KeyValue(infile, inKvfile)
@@ -208,7 +206,7 @@ if __name__ == '__main__' :
     ## in : u'seq\tfreq'
     ## out: ('seq', freq)
       ## note that type_a does not need to collapse nor trim.
-      collapse_rdd = distFile_rdd.map(lambda line: mru.rearrange_rule(line, '\t'))#\
+      collapse_rdd = distFile_rdd.map(lambda line: mru.rearrange_rule(line, '\t'))
     else:
       if input_type == 'b': #= reads
       ## in : u'seq1', u'seq2', u'seq1'
@@ -261,10 +259,7 @@ if __name__ == '__main__' :
     mergebowtie_rdd = sc.emptyRDD()
     for i in range(len(chromosomes)):
       ch = chromosomes[i]
-      #= furture work: case insensitive
-      #p = b_index_path + ch.replace('Chr', 'chr') + '/' + bowtie_index_suffix + '_' + ch.replace('chr', 'Chr') 
       p = b_index_path + ch + '/' + bowtie_index_suffix
-      #if ch == 'All': p = b_index_path + ch + '/' + bowtie_index_suffix 
       bowtie_obj = mru.prog_bowtie(p)
       bowtie_cmd, bowtie_env = bowtie_obj.Bowtie_pipe_cmd()
       #================================================================================================================
@@ -286,7 +281,7 @@ if __name__ == '__main__' :
       #================================================================================================================
       mergebowtie_rdd = mergebowtie_rdd.union(bowtie_rdd).persist()
 
-    print('NB mergebowtie_rdd: ', mergebowtie_rdd.count())############################################
+    print('NB mergebowtie_rdd: ', mergebowtie_rdd.count())
     #= Getting the expression value for each reads
     ## in : ('seq', [nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
@@ -294,13 +289,10 @@ if __name__ == '__main__' :
                            .map(bowtie_obj.bowtie_freq_rearrange_rule)
     print('NB bowFrq_rdd: ', bowFrq_rdd.count())
 
-    #180921 fake_a.txt takes 17 secs till this step, option chromo=All
-    #180921 100.txt takes 23 secs till this step, option chromo=All
 
     #= Create dict, chromo_strand as key to search bowtie blocs in the following dict
-    #dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(bowFrq_rdd.collect())
-    #broadcastVar_bowtie_chromo_strand = sc.broadcast(dict_bowtie_chromo_strand) 
-
+    dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(bowFrq_rdd.collect())
+    broadcastVar_bowtie_chromo_strand = sc.broadcast(dict_bowtie_chromo_strand) 
 
 
     #= Filtering miRNA low frequency
@@ -322,12 +314,6 @@ if __name__ == '__main__' :
     flat_rdd = nbLoc_rdd.flatMap(mru.flatmap_mappings)
     #print('NB flat_rdd distinct (this step flats elements): ', flat_rdd.groupByKey().count())
     print('NB flat_rdd not distinct: ', flat_rdd.count())
-    
-    outfile = '../outputJEAN/' + appId + '_sRNAloci.txt'
-    fh_out = open (outfile, 'w')
-    for i in flat_rdd.collect():
-      print(i, file=fh_out)
-    fh_out.close()
     
     
     #= Filtering known non-miRNA ##
@@ -417,9 +403,8 @@ if __name__ == '__main__' :
     profile_rdd = pre_vld_rdd.map(lambda e: profile_obj.computeProfileFrq(e, broadcastVar_bowtie_chromo_strand.value))\
                              .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)
 
-    #print('NB profile_rdd distinct: ', profile_rdd.groupByKey().count())
-    #libresults = profile_rdd.collect()
-    #libRESULTS.append( [inBasename, libresults] )
+    print('NB profile_rdd distinct: ', profile_rdd.groupByKey().count())
+    libresults = profile_rdd.collect()
    
     endLib = time.time() 
     timeDict[inBasename] = endLib - startLib
@@ -427,7 +412,7 @@ if __name__ == '__main__' :
 
     #= write results to a file
     eachLiboutFile = rep_output  +  appId + '_miRNAprediction_' + inBasename + '.txt'
-    #ut.writeToFile (libresults, eachLiboutFile)
+    ut.writeToFile (libresults, eachLiboutFile)
 
   #= print executions time  to a file
   outTime = rep_output + appId + '_time.txt'
@@ -462,7 +447,6 @@ if __name__ == '__main__' :
   #= miranda
   ## in : ('miRNAseq', zipindex)
   ## out: ('miRNAseq', [[target1 and its scores], [target2 and its scores]])
-  #sc.clearFiles()
   sc.addFile(miranda_binary)
   sc.addFile(target_file)
   mirna_and_targets = distResultSmallRNA_rdd.map(miranda_obj.computeTargetbyMiranda)\
