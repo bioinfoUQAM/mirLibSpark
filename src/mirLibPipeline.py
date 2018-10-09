@@ -323,7 +323,7 @@ if __name__ == '__main__' :
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr])
     excluKnownNon_rdd = flat_rdd.filter(kn_obj.knFilterByCoor)
-    #print('excluKnownNon_rdd distinct: ', excluKnownNon_rdd.groupByKey().count())
+    print('excluKnownNon_rdd distinct: ', excluKnownNon_rdd.groupByKey().count())
     
 
     mergeChromosomesResults_rdd = sc.emptyRDD()
@@ -372,7 +372,7 @@ if __name__ == '__main__' :
       #================================================================================================================
       mergeChromosomesResults_rdd = mergeChromosomesResults_rdd.union(premir_rdd).persist()#.checkpoint()
       broadcastVar_genome.unpersist()
-    #print('mergeChromosomesResults: ', mergeChromosomesResults_rdd.count())
+    print('mergeChromosomesResults: ', mergeChromosomesResults_rdd.count())
     #180921 fake_a.txt takes 42 secs to run till this line (All chromo)
     #180921 fake_a.txt takes 307 secs to run till this line (split chromo)
 
@@ -428,18 +428,6 @@ if __name__ == '__main__' :
   ### out: ( 'seq', zipindex)
   distResultSmallRNA_rdd = sc.parallelize(distResultSmallRNA, partition)\
                              .zipWithIndex()
-
-  ### in:  ( lib, ('seq', [...]) )
-  ### out: ( 'seq', [...] )
-  #libRESULTS_rdd = sc.parallelize(libRESULTS, partition)\
-  #                   .flatMap(lambda e: e[1]) 
-  #
-  ### in:  ( 'seq', [...] )
-  ### mid: ( 'seq' )
-  ### out: ( 'seq', zipindex)
-  #distResultSmallRNA_rdd = libRESULTS_rdd.map(lambda e: e[0])\
-  #                                       .distinct()\
-  #                                       .zipWithIndex() 
   
   #= varna
   varna_obj = mru.prog_varna(appId, rep_output) 
