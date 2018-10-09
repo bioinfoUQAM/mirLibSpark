@@ -10,6 +10,8 @@ if __name__ == "__main__":
     """
         Usage: pi [partitions]
     """
+
+    print("julie test 14")
     sc = SparkContext(appName="PythonPi")
     partitions = int(sys.argv[1]) if len(sys.argv) > 1 else 4
     n = 100000 * partitions
@@ -21,6 +23,6 @@ if __name__ == "__main__":
 
     count = sc.parallelize(range(1, n + 1), partitions).map(f).reduce(add)
     print("Pi is roughly %f" % (4.0 * count / n))
-    print("julie test")
+    print("julie test 26")
 
     sc.stop()
