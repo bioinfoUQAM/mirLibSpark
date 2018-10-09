@@ -342,26 +342,26 @@ if __name__ == '__main__' :
       ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri]])
       primir_rdd = excluKnownNon_rdd.filter(prec_obj.hasKey)\
                                     .flatMap(prec_obj.extract_prim_rule)
-      print('NB primir_rdd: ', primir_rdd.count())      
+      #print('NB primir_rdd: ', primir_rdd.count())      
 
       #= pri-miRNA folding
       ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri]])
       ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold']])
       pri_fold_rdd = primir_rdd.map(lambda e: rnafold_obj.RNAfold_map_rule(e, 3))
-      print('pri_fold_rdd DATA: ', pri_fold_rdd.collect())
+      #print('pri_fold_rdd DATA: ', pri_fold_rdd.collect())
 
       #= Validating pri-mirna with mircheck
       ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold']])
       ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
       pri_vld_rdd = pri_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 3))\
                                 .filter(lambda e: any(e[1][3]))
-      print('NB pri_vld_rdd distinct (mircheck): ', pri_vld_rdd.groupByKey().count())##
+      print('NB pri_vld_rdd distinct (mircheck): ', pri_vld_rdd.groupByKey().count())
 
       #= Filtering structure with branched loop
       ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
       ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
       one_loop_rdd = pri_vld_rdd.filter(lambda e: ut.containsOnlyOneLoop(e[1][3][2][int(e[1][3][4]) : int(e[1][3][5])+1]))
-      print('NB one_loop_rdd distinct : ', one_loop_rdd.groupByKey().count())
+      #print('NB one_loop_rdd distinct : ', one_loop_rdd.groupByKey().count())
     
       #= Extraction of the pre-miRNA
       ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
