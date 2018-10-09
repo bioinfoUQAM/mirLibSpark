@@ -56,10 +56,10 @@ known_non_file=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/dbs/ATH_TAIR10/TAIR10
 target_file=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/dbs/WHEAT_IWGSC/mRNA_contigs_smaller.fasta
 #target_file=/home/cloudera/vm_share/dbs/WHEAT_IWGSC/Triticum_aestivum.IWGSC.cdna.all.fa
 #
-perform_differnatial_analysis=yes
+perform_differnatial_analysis=no
 diffguide_file=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/diffguide_wheat.txt
 #
-perform_KEGGpathways_enrichment_analysis=yes
+perform_KEGGpathways_enrichment_analysis=no
 gene_vs_pathway_file=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/dbs/WHEAT_IWGSC/ko_gene_vs_pathway.txt
 pathway_description_file=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/dbs/WHEAT_IWGSC/ko_pathway_description.txt
 #
