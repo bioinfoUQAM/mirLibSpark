@@ -272,15 +272,17 @@ class prog_RNAfold ():
 
 class prog_mirCheck ():
 
-  def __init__(self, param):
+  def __init__(self, param, project_path):
     self.param = param
     self.env = os.environ
+    self.project_path = project_path
 
   def run_mirCheck(self, folding, miRNA_start, miRNA_stop):
     '''
     example line = perl eval_mircheck.pl "((((((.((((((....).))))).)))))).........." 46 64 def
     '''
-    cmd = ['perl', 'eval_mircheck.pl', folding, str(miRNA_start), str(miRNA_stop), self.param]
+    #cmd = ['perl', 'eval_mircheck.pl', folding, str(miRNA_start), str(miRNA_stop), self.param]
+    cmd = ['perl', self.project_path + '/src/' + 'eval_mircheck.pl', folding, str(miRNA_start), str(miRNA_stop), self.param]
     FNULL = open(os.devnull, 'w')
     sproc = sbp.Popen(cmd, stdout=sbp.PIPE, shell=False, stderr=FNULL, env=self.env)
     mirCheck_results = sproc.communicate()[0].rstrip('\n').split('\t') #= ['3prime', '1', '173']
