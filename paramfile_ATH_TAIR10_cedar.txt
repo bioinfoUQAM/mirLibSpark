@@ -68,8 +68,8 @@ adapter=none
 #
 #
 #====================  Ideally, do not change the following parameters since they are already tuned.
-chromosomes=1,2,3,4,5,Mt,Pt
-#chromosomes=All
+#chromosomes=1,2,3,4,5,Mt,Pt
+chromosomes=All
 #mirdup_model=Viridiplantae.model
 mirdup_model=thaliana.model
 #==================== 

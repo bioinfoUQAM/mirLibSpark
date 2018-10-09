@@ -360,7 +360,7 @@ if __name__ == '__main__' :
       ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
       ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
       one_loop_rdd = pri_vld_rdd.filter(lambda e: ut.containsOnlyOneLoop(e[1][3][2][int(e[1][3][4]) : int(e[1][3][5])+1]))
-      print('NB one_loop_rdd distinct : ', len(one_loop_rdd.groupByKey().count()))
+      print('NB one_loop_rdd distinct : ', one_loop_rdd.groupByKey().count())
     
       #= Extraction of the pre-miRNA
       ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
