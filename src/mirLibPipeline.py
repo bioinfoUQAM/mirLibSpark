@@ -329,7 +329,7 @@ if __name__ == '__main__' :
     for i in range(len(chromosomes)):
       ch = chromosomes[i]
       genome = ut.getGenome(genome_path, ".fa", ch)
-      print('len_genome: ', ch, genome)
+      print('len_genome: ', ch, genome[ch][:30])
       broadcastVar_genome = sc.broadcast(genome)
       v = broadcastVar_genome.value
       prec_obj = mru.extract_precurosrs(v, pri_l_flank, pri_r_flank, pre_flank)
