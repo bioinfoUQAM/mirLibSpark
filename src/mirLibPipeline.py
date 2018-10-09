@@ -55,6 +55,8 @@ if __name__ == '__main__' :
 
   #= Spark application ID
   appId = str(sc.applicationId)
+  print('spark.executor.memory: ', sc._conf.get('spark.executor.memory'))
+  print('spark.driver.memory: ', sc._conf.get('spark.driver.memory'))
 
   #= broadcast paramDict
   broadcastVar_paramDict = sc.broadcast(paramDict)
