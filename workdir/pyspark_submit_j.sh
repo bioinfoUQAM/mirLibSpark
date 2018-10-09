@@ -35,7 +35,7 @@ slaves_pid=$!
 
 
 #srun -n 1 -N 1 spark-submit --master ${MASTER_URL} --executor-memory ${SLURM_MEM_PER_NODE}M $SPARK_HOME/cjwu/project/cjwu/gitRepo/mirLibSpark/workdir/pi.py 100000
-srun -n 1 -N 1 spark-submit --master ${MASTER_URL} --executor-memory ${SLURM_MEM_PER_NODE}M /home/cjwu/project/cjwu/gitRepo/mirLibSpark/workdir/pi.py 100000
+srun -n 7 -N 7 spark-submit --master ${MASTER_URL} --executor-memory ${SLURM_MEM_PER_NODE}M /home/cjwu/project/cjwu/gitRepo/mirLibSpark/workdir/pi.py 100000
 
 kill $slaves_pid
 stop-master.sh
