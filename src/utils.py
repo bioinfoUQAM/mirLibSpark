@@ -849,7 +849,7 @@ def perform_enrichment_analysis (diff_outs, pathway_description_file, list_mirna
   keyword =  appId + '_topscoredTargetsKEGGpathway'
   __create_inputs_for_enrichment_analysis (diff_outs, pathway_description_file, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId)
   #cmd = 'perl compute_enrichment.pl ' + rep_output + keyword + '/namecode.txt ' + rep_output + keyword +'/output_comput_enrich 1'
-  cmd = 'perl ' + project_path + '/src/'+ ' compute_enrichment.pl ' + rep_output + keyword + '/namecode.txt ' + rep_output + keyword +'/output_comput_enrich 1'
+  cmd = 'perl ' + project_path + '/src/'+ 'compute_enrichment.pl ' + rep_output + keyword + '/namecode.txt ' + rep_output + keyword +'/output_comput_enrich 1'
   os.system(cmd)
 
 
