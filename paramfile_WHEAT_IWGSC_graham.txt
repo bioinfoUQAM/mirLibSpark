@@ -57,7 +57,7 @@ target_file=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/dbs/WHEAT_IWGSC/mRNA_con
 #target_file=/home/cloudera/vm_share/dbs/WHEAT_IWGSC/Triticum_aestivum.IWGSC.cdna.all.fa
 #
 perform_differnatial_analysis=yes
-diffguide_file=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/mirLibSpark/diffguide_wheat.txt
+diffguide_file=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/diffguide_wheat.txt
 #
 perform_KEGGpathways_enrichment_analysis=yes
 gene_vs_pathway_file=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/dbs/WHEAT_IWGSC/ko_gene_vs_pathway.txt
