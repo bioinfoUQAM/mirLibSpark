@@ -16,6 +16,7 @@ import os
 cmd = 'rm -fr ../input/fake_a.txt';os.system(cmd)
 
 #cmd = 'cp ../input_samples/fake_a3.txt ../input';os.system(cmd)
+
 cmd = 'rm -fr ../input/fake_a3.txt';os.system(cmd)
 
 #cmd = 'cp ../input_samples/wheat_3A_a1.txt ../input';os.system(cmd)
@@ -26,7 +27,6 @@ cmd = 'rm -fr ../input/fake_a3.txt';os.system(cmd)
 
 #cmd = 'cp ../input_samples/high_conf_mature_ath_uniq_raw.txt ../input';os.system(cmd)
 #cmd = 'rm -fr ../input/high_conf_mature_ath_uniq_raw.txt';os.system(cmd)
-
 
 
 
@@ -60,11 +60,16 @@ cmd = 'rm -fr ../input/fake_a3.txt';os.system(cmd)
 cmd = 'free -m';os.system(cmd)
 
 #########################################################################################
+
 #cmd = 'time spark-submit mirLibPipeline.py ../paramfile_ATH_TAIR10.txt 2>/dev/null';os.system(cmd)
 #########################################################################################
 
 #########################################################################################
 cmd = 'time spark-submit mirLibPipeline.py ../paramfile_WHEAT_IWGSC.txt 2>/dev/null';os.system(cmd)
+#########################################################################################
+
+#########################################################################################
+cmd = 'time spark-submit mirLibPipeline.py ../paramfile_jean.txt 2>/dev/null';os.system(cmd)
 #########################################################################################
 
 
@@ -96,6 +101,9 @@ cmd = 'free -m';os.system(cmd)
 #cmd = 'free -m' #= to check memory;os.system(cmd)
 
 # cmd = 'sudo mount -t vboxsf VM_Share /home/cloudera/vm_share/';os.system(cmd)
+
+#cmd = 'bowtie-build -f XLOC_126981_6D_REVCOMP.fasta XLOC_126981_6D_REVCOMP';os.system(cmd)
+
 
 #branches = 'athsettings, bowtiesplit, format_vis_input, format_vis_inputs, genomeextract, include_Dustmasker, include_RNAfold, include_bowtie, smooth, smooth_pipevarna, test, varna'.split(', ')
 #for b in branches:
@@ -194,4 +202,5 @@ cmd = 'free -m';os.system(cmd)
 #path note: 181002
 #/home/cloudera/vm_dropbox_projects/1_Project_mirLibHadoop/gitRepo_mirLibHadoop/
 #/home/cloudera/workspace/
+
 
