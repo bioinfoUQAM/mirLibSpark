@@ -29,7 +29,6 @@ cmd = 'rm -fr ../input/fake_a3.txt';os.system(cmd)
 #cmd = 'rm -fr ../input/high_conf_mature_ath_uniq_raw.txt';os.system(cmd)
 
 
-
 #cmd = 'cp ../input_samples/fake_a5.txt ../input';os.system(cmd)
 #cmd = 'rm -fr ../input/fake_a5.txt';os.system(cmd)
 
@@ -66,6 +65,10 @@ cmd = 'free -m';os.system(cmd)
 
 #########################################################################################
 cmd = 'time spark-submit mirLibPipeline.py ../paramfile_WHEAT_IWGSC.txt 2>/dev/null';os.system(cmd)
+#########################################################################################
+
+#########################################################################################
+cmd = 'time spark-submit mirLibPipeline.py ../paramfile_jean.txt 2>/dev/null';os.system(cmd)
 #########################################################################################
 
 #########################################################################################

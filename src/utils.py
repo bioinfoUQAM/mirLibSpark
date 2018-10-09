@@ -165,7 +165,6 @@ def convert_fastq_file_to_KeyValue(infile, outfile):
   fh.close()
   fh_out.close()
 
-
 def find_str(s, char):
     ''' zero based indexing '''
     index = 0
@@ -205,6 +204,7 @@ def trim_adapter (seq, ad):
     if pos > 0: return seq[:pos]
     else: ad = ad[:-1]
   return seq
+
 def getRevComp (seq):
   intab = "ACGT"
   outab = "TGCA"
