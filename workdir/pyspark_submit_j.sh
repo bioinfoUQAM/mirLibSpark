@@ -2,7 +2,7 @@
 #SBATCH --account=def-banire
 #SBATCH --time=02:00:00
 #SBATCH --nodes=1
-#SBATCH --mem=4000M
+#SBATCH --mem=15000M
 #SBATCH --cpus-per-task=8
 #SBATCH --ntasks-per-node=1
 #SBATCH --job-name=spark-8ppn-2hr-pi-path-181006
@@ -32,9 +32,7 @@ NWORKERS=$((SLURM_NTASKS - 0))
 SPARK_NO_DAEMONIZE=1 srun -n ${NWORKERS} -N ${NWORKERS} --label --output=$SPARK_LOG_DIR/spark-%j-workers.out start-slave.sh -m ${SLURM_MEM_PER_NODE}M -c ${SLURM_CPUS_PER_TASK} ${MASTER_URL} &
 slaves_pid=$!
 
-
-#srun -n 1 -N 1 spark-submit --master ${MASTER_URL} --executor-memory ${SLURM_MEM_PER_NODE}M $SPARK_HOME/cjwu/project/cjwu/gitRepo/mirLibSpark/workdir/pi.py 100000
-spark-submit --master ${MASTER_URL} --executor-memory ${SLURM_MEM_PER_NODE}M /home/cjwu/project/cjwu/gitRepo/mirLibSpark/workdir/cedar_training/pi.py 10
+spark-submit --master ${MASTER_URL} --executor-memory ${SLURM_MEM_PER_NODE}M /home/cjwu/project/cjwu/gitRepo/mirLibSpark/workdir/cedar_training/pi.py 1000
 
 kill $slaves_pid
 stop-master.sh
