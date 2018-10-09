@@ -161,7 +161,8 @@ if __name__ == '__main__' :
 
   #= Fetch library files in rep_input
   infiles = [f for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
-
+  print('infiles:')
+  for infile in infiles: print(infile)
   #= Time processing of libraries
   timeDict = {}
 
@@ -340,7 +341,7 @@ if __name__ == '__main__' :
       ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri]])
       primir_rdd = excluKnownNon_rdd.filter(prec_obj.hasKey)\
                                     .flatMap(prec_obj.extract_prim_rule)
-      #print('NB primir_rdd: ', primir_rdd.count())      
+      print('NB primir_rdd: ', primir_rdd.count())      
 
       #= pri-miRNA folding
       ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri]])
@@ -353,7 +354,7 @@ if __name__ == '__main__' :
       ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
       pri_vld_rdd = pri_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 3))\
                                 .filter(lambda e: any(e[1][3]))
-      print('NB pri_vld_rdd distinct (mircheck): ', pri_vld_rdd.groupByKey().count())
+      if pri_vld_rdd.count() > 0: print('NB pri_vld_rdd distinct (mircheck): ', pri_vld_rdd.groupByKey().count())
 
       #= Filtering structure with branched loop
       ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
