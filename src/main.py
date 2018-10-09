@@ -1,29 +1,35 @@
 import os
 
 #cmd = 'sudo mount -t vboxsf 1_Projects /home/cloudera/vm_dropbox_projects/';os.system(cmd)
+#cmd = 'sudo mount -t vboxsf VM_Share /home/cloudera/vm_share/';os.system(cmd)
 
 
 #cmd = 'python purge.py';os.system (cmd)
-#cmd = 'git pull origin cedar';os.system (cmd)
+#cmd = 'git pull origin graham';os.system (cmd)
 #cmd = 'git branch -D dbsauto';os.system(cmd)
 #cmd = 'git remote prune origin';os.system(cmd)
-#cmd = 'git branch';os.system(cmd)
 #cmd = 'git fetch origin';os.system(cmd)
 #cmd = 'git checkout master';os.system(cmd)
 
 
+#=== ATH diff =======
 #cmd = 'cp ../input_samples/fake_a.txt ../input';os.system(cmd)
-cmd = 'rm -fr ../input/fake_a.txt';os.system(cmd)
+#cmd = 'rm -fr ../input/fake_a.txt';os.system(cmd)
 
 #cmd = 'cp ../input_samples/fake_a3.txt ../input';os.system(cmd)
+#cmd = 'rm -fr ../input/fake_a3.txt';os.system(cmd)
+#====================
 
-cmd = 'rm -fr ../input/fake_a3.txt';os.system(cmd)
 
+#=== WHEAT diff =======
 #cmd = 'cp ../input_samples/wheat_3A_a1.txt ../input';os.system(cmd)
 #cmd = 'rm -fr ../input/wheat_3A_a1.txt';os.system(cmd)
 
 #cmd = 'cp ../input_samples/wheat_3A_a2.txt ../input';os.system(cmd)
 #cmd = 'rm -fr ../input/wheat_3A_a2.txt';os.system(cmd)
+#====================
+
+
 
 #cmd = 'cp ../input_samples/high_conf_mature_ath_uniq_raw.txt ../input';os.system(cmd)
 #cmd = 'rm -fr ../input/high_conf_mature_ath_uniq_raw.txt';os.system(cmd)
@@ -40,23 +46,13 @@ cmd = 'rm -fr ../input/fake_a3.txt';os.system(cmd)
 
 
 
-#cmd = 'cp ../input_samples/wheat_a1.txt ../input';os.system(cmd)
-#cmd = 'rm -fr ../input/wheat_a1.txt';os.system(cmd)
-
-#cmd = 'cp ../input_samples/wheat_a4.txt ../input';os.system(cmd)
-#cmd = 'rm -fr ../input/wheat_a4.txt';os.system(cmd)
-
-#cmd = 'cp ../input_samples/wheat_lib_demo_c8.txt ../input';os.system(cmd)
-#cmd = 'rm -fr ../input/wheat_lib_demo_c8.txt';os.system(cmd)
-
-
 #cmd = 'git add -f ../output/*';os.system(cmd)
 #cmd = 'git commit -m "save a copy of output"';os.system(cmd)
 #cmd = 'git push origin refactor';os.system(cmd)
 
 
 
-cmd = 'free -m';os.system(cmd)
+#cmd = 'free -m';os.system(cmd)
 
 #########################################################################################
 
@@ -64,19 +60,11 @@ cmd = 'free -m';os.system(cmd)
 #########################################################################################
 
 #########################################################################################
-cmd = 'time spark-submit mirLibPipeline.py ../paramfile_WHEAT_IWGSC.txt 2>/dev/null';os.system(cmd)
-#########################################################################################
-
-#########################################################################################
-cmd = 'time spark-submit mirLibPipeline.py ../paramfile_jean.txt 2>/dev/null';os.system(cmd)
-#########################################################################################
-
-#########################################################################################
-cmd = 'time spark-submit mirLibPipeline.py ../paramfile_jean.txt 2>/dev/null';os.system(cmd)
+#cmd = 'time spark-submit mirLibPipeline.py ../paramfile_WHEAT_IWGSC.txt 2>/dev/null';os.system(cmd)
 #########################################################################################
 
 
-cmd = 'free -m';os.system(cmd)
+#cmd = 'free -m';os.system(cmd)
 
 
 #dos2unix windows.txt unix.txt
@@ -100,10 +88,6 @@ cmd = 'free -m';os.system(cmd)
 
 #cmd = 'mv ../output/* ../output_depo/';os.system(cmd)
 
-
-#cmd = 'free -m' #= to check memory;os.system(cmd)
-
-# cmd = 'sudo mount -t vboxsf VM_Share /home/cloudera/vm_share/';os.system(cmd)
 
 #cmd = 'bowtie-build -f XLOC_126981_6D_REVCOMP.fasta XLOC_126981_6D_REVCOMP';os.system(cmd)
 
