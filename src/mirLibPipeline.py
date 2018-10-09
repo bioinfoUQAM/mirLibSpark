@@ -67,7 +67,7 @@ if __name__ == '__main__' :
   project_path = paramDict['project_path'][:-1]
   rep_input = paramDict['input_path']
   rep_output = paramDict['output_path']
-  rep_msub_jobsOut = project_path + '/workdir/jobsOut'
+  rep_msub_jobout = project_path + '/workdir/jobout'
   rep_tmp = project_path + '/tmp/'     
 
   #= genome
@@ -91,8 +91,8 @@ if __name__ == '__main__' :
 
 
   #= RNAfold
-  path_RNAfold = project_path + '/lib/'
-  path_RNAfold = ut.find_RNAfold_path () #mirdup dependency
+  #path_RNAfold = project_path + '/lib/'
+  path_RNAfold = ut.find_RNAfold_path () #mirdup needs it
   temperature = int(paramDict['temperature']) 
 
   #= pri-mirna
@@ -130,7 +130,7 @@ if __name__ == '__main__' :
   #= end of paramDict naming =================================================================================
 
   #= make required folders if not exist
-  reps = [rep_output, rep_tmp, rep_msub_jobsOut]
+  reps = [rep_output, rep_tmp, rep_msub_jobout]
   ut.makedirs_reps (reps)
 
   #= addFile
@@ -139,12 +139,12 @@ if __name__ == '__main__' :
   sc.addFile(project_path + '/src/eval_mircheck.pl')
   sc.addFile(project_path + '/lib/miRcheck.pm')
   sc.addFile(project_path + '/lib/miRdup_1.4/lib/weka.jar')
-  sc.addFile(project_path + '/lib/dustmasker')
-  sc.addFile(project_path + '/lib/RNAfold')
-  sc.addFile(project_path + '/lib/bowtie')
-  sc.addFile(project_path + '/lib/bowtie-align-l')
-  sc.addFile(project_path + '/lib/bowtie-align-s')
-  sc.addFile(project_path + '/lib/VARNAv3-93.jar')
+  #sc.addFile(project_path + '/lib/dustmasker')
+  #sc.addFile(project_path + '/lib/RNAfold')
+  #sc.addFile(project_path + '/lib/bowtie')
+  #sc.addFile(project_path + '/lib/bowtie-align-l')
+  #sc.addFile(project_path + '/lib/bowtie-align-s')
+  #sc.addFile(project_path + '/lib/VARNAv3-93.jar')
   sc.addFile(mirdup_jar)
   sc.addFile(mirdup_model)
 
@@ -153,7 +153,7 @@ if __name__ == '__main__' :
   dmask_cmd, dmask_env = dmask_obj.dmask_pipe_cmd()
   kn_obj = mru.prog_knownNonMiRNA(broadcastVar_d_ncRNA_CDS.value)
   rnafold_obj = mru.prog_RNAfold(temperature)
-  mircheck_obj = mru.prog_mirCheck(mcheck_param)
+  mircheck_obj = mru.prog_mirCheck(mcheck_param, project_path)
   mirdup_obj = mru.prog_miRdup (rep_tmp, mirdup_model, mirdup_jar, path_RNAfold)
   profile_obj = mru.prog_dominant_profile()
   miranda_obj = mru.prog_miRanda(Max_Score_cutoff, Max_Energy_cutoff, target_file, rep_tmp, miranda_binary, Gap_Penalty, nbTargets)
@@ -170,7 +170,7 @@ if __name__ == '__main__' :
     
   print('\n====================== mirLibSpark =========================')
   print('====================== ' + appId + ' =================')
-  #for k, v in paramDict.items(): print(k, ': ', v)
+  for k, v in sorted(paramDict.items()): print(k, ': ', v)
   print('============================================================\n')
   print('begin time:', datetime.datetime.now())
   #'''
@@ -198,6 +198,9 @@ if __name__ == '__main__' :
     ##      (c) u'>name1\nseq1', u'>name2\nseq2', u'>name3\nseq1',
     ##      (d) u'seq\tquality'
     distFile_rdd = sc.textFile("file:///" + infile, partition) #= partition is 2 if not set 
+    if distFile_rdd.isEmpty():
+      print(infile, 'is an empty file, omit this file')
+      continue
     print('NB distFile_rdd: ', distFile_rdd.count())#
 
     #= Unify different input formats to "seq freq" elements
@@ -350,24 +353,26 @@ if __name__ == '__main__' :
       ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri]])
       primir_rdd = excluKnownNon_rdd.filter(prec_obj.hasKey)\
                                     .flatMap(prec_obj.extract_prim_rule)
+      #print('NB primir_rdd: ', primir_rdd.count())      
 
       #= pri-miRNA folding
       ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri]])
       ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold']])
       pri_fold_rdd = primir_rdd.map(lambda e: rnafold_obj.RNAfold_map_rule(e, 3))
-    
+      #print('pri_fold_rdd DATA: ', pri_fold_rdd.collect())
+
       #= Validating pri-mirna with mircheck
       ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold']])
       ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
       pri_vld_rdd = pri_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 3))\
                                 .filter(lambda e: any(e[1][3]))
-      #print('NB pri_vld_rdd distinct (mircheck): ', pri_vld_rdd.groupByKey().count())##
+      print('NB pri_vld_rdd distinct (mircheck): ', pri_vld_rdd.groupByKey().count())
 
       #= Filtering structure with branched loop
       ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
       ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
       one_loop_rdd = pri_vld_rdd.filter(lambda e: ut.containsOnlyOneLoop(e[1][3][2][int(e[1][3][4]) : int(e[1][3][5])+1]))
-      #print('NB one_loop_rdd distinct : ', len(one_loop_rdd.groupByKey().collect()))
+      #print('NB one_loop_rdd distinct : ', one_loop_rdd.groupByKey().count())
     
       #= Extraction of the pre-miRNA
       ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
@@ -380,7 +385,7 @@ if __name__ == '__main__' :
       #================================================================================================================
       mergeChromosomesResults_rdd = mergeChromosomesResults_rdd.union(premir_rdd).persist()#.checkpoint()
       broadcastVar_genome.unpersist()
-    #print('mergeChromosomesResults: ', mergeChromosomesResults_rdd.count())
+    print('mergeChromosomesResults: ', mergeChromosomesResults_rdd.count())
     #180921 fake_a.txt takes 42 secs to run till this line (All chromo)
     #180921 fake_a.txt takes 307 secs to run till this line (split chromo)
     
@@ -438,18 +443,6 @@ if __name__ == '__main__' :
   ### out: ( 'seq', zipindex)
   distResultSmallRNA_rdd = sc.parallelize(distResultSmallRNA, partition)\
                              .zipWithIndex()
-
-  ### in:  ( lib, ('seq', [...]) )
-  ### out: ( 'seq', [...] )
-  #libRESULTS_rdd = sc.parallelize(libRESULTS, partition)\
-  #                   .flatMap(lambda e: e[1]) 
-  #
-  ### in:  ( 'seq', [...] )
-  ### mid: ( 'seq' )
-  ### out: ( 'seq', zipindex)
-  #distResultSmallRNA_rdd = libRESULTS_rdd.map(lambda e: e[0])\
-  #                                       .distinct()\
-  #                                       .zipWithIndex() 
   
 
   #= varna
@@ -469,7 +462,7 @@ if __name__ == '__main__' :
   #= miranda
   ## in : ('miRNAseq', zipindex)
   ## out: ('miRNAseq', [[target1 and its scores], [target2 and its scores]])
-  sc.clearFiles()
+  #sc.clearFiles()
   sc.addFile(miranda_binary)
   sc.addFile(target_file)
   mirna_and_targets = distResultSmallRNA_rdd.map(miranda_obj.computeTargetbyMiranda)\
@@ -500,11 +493,8 @@ if __name__ == '__main__' :
 
   #'''
 
-  #= end of spark context
-  #broadcastVar_paramDict.unpersist()
-  #broadcastVar_d_ncRNA_CDS.unpersist()
-
-  sc.stop() #= allow to run multiple SparkContexts
+  #= end of spark context, stop to allow running multiple SparkContexts
+  sc.stop() 
 
   #===============================================================================================================
   #===============================================================================================================
@@ -515,8 +505,7 @@ if __name__ == '__main__' :
 
   #= diff analysis 
   if perform_differnatial_analysis == 'yes':
-    diffguide, _ = ut.read_diffguide(diffguide_file)
-    diff_outs = ut.diff_output(diffguide, rep_output, appId)
+    diff_outs = ut.diff_output(diffguide_file, rep_output, appId)
     print('Differential analysis done')
 
   if perform_KEGGpathways_enrichment_analysis == 'yes':
@@ -524,8 +513,7 @@ if __name__ == '__main__' :
     list_mirna_and_topscoredTargetsKEGGpathway = ut.annotate_target_genes_with_KEGGpathway (gene_vs_pathway_file, rep_output, appId)
     print('KEGG pathway annotation done')
     #= KEGG enrichment analysis 
-    keyword =  appId + '_topscoredTargetsKEGGpathway'
-    ut.perform_enrichment_analysis (keyword, diff_outs, pathway_description_file, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId)
+    ut.perform_enrichment_analysis (diff_outs, pathway_description_file, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId, project_path)
     print('\nKEGG pathway enrichment analysis done')
   #===============================================================================================================
   #===============================================================================================================

@@ -4,8 +4,8 @@ import os
 
 
 #cmd = 'python purge.py';os.system (cmd)
-#cmd = 'git pull origin dbsauto';os.system (cmd)
-#cmd = 'git branch -D testWheatInHouse';os.system(cmd)
+#cmd = 'git pull origin cedar';os.system (cmd)
+#cmd = 'git branch -D dbsauto';os.system(cmd)
 #cmd = 'git remote prune origin';os.system(cmd)
 #cmd = 'git branch';os.system(cmd)
 #cmd = 'git fetch origin';os.system(cmd)
@@ -13,11 +13,21 @@ import os
 
 
 #cmd = 'cp ../input_samples/fake_a.txt ../input';os.system(cmd)
-#cmd = 'rm -fr ../input/fake_a.txt';os.system(cmd)
+cmd = 'rm -fr ../input/fake_a.txt';os.system(cmd)
 
 #cmd = 'cp ../input_samples/fake_a3.txt ../input';os.system(cmd)
 
-#cmd = 'rm -fr ../input/fake_a3.txt';os.system(cmd)
+cmd = 'rm -fr ../input/fake_a3.txt';os.system(cmd)
+
+#cmd = 'cp ../input_samples/wheat_3A_a1.txt ../input';os.system(cmd)
+#cmd = 'rm -fr ../input/wheat_3A_a1.txt';os.system(cmd)
+
+#cmd = 'cp ../input_samples/wheat_3A_a2.txt ../input';os.system(cmd)
+#cmd = 'rm -fr ../input/wheat_3A_a2.txt';os.system(cmd)
+
+#cmd = 'cp ../input_samples/high_conf_mature_ath_uniq_raw.txt ../input';os.system(cmd)
+#cmd = 'rm -fr ../input/high_conf_mature_ath_uniq_raw.txt';os.system(cmd)
+
 
 #cmd = 'cp ../input_samples/fake_a5.txt ../input';os.system(cmd)
 #cmd = 'rm -fr ../input/fake_a5.txt';os.system(cmd)
@@ -54,7 +64,11 @@ cmd = 'free -m';os.system(cmd)
 #########################################################################################
 
 #########################################################################################
-cmd = 'time spark-submit mirLibPipeline.py ../paramfile_WHEAT_inhouse.txt 2>/dev/null';os.system(cmd)
+cmd = 'time spark-submit mirLibPipeline.py ../paramfile_WHEAT_IWGSC.txt 2>/dev/null';os.system(cmd)
+#########################################################################################
+
+#########################################################################################
+cmd = 'time spark-submit mirLibPipeline.py ../paramfile_jean.txt 2>/dev/null';os.system(cmd)
 #########################################################################################
 
 #########################################################################################
@@ -65,6 +79,7 @@ cmd = 'time spark-submit mirLibPipeline.py ../paramfile_jean.txt 2>/dev/null';os
 cmd = 'free -m';os.system(cmd)
 
 
+#dos2unix windows.txt unix.txt
 
 
 #= to study spark
@@ -190,4 +205,5 @@ cmd = 'free -m';os.system(cmd)
 #path note: 181002
 #/home/cloudera/vm_dropbox_projects/1_Project_mirLibHadoop/gitRepo_mirLibHadoop/
 #/home/cloudera/workspace/
+
 

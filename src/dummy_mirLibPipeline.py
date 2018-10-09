@@ -154,13 +154,3 @@ if __name__ == '__main__' :
   sc.stop() #= allow to run multiple SparkContexts
 
 
-
-  ### test to initiate a new sc context ########
-  sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, execCores) 
-  distFile_rdd = sc.textFile("file:///" + infile, partition) 
-  second_sccontext_results = distFile_rdd.collect() 
-  
-  print('second_sccontext_results:') 
-  print(second_sccontext_results) 
-  sc.stop() 
-

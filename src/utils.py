@@ -46,7 +46,7 @@ def validate_options(paramDict):
   if perform_differnatial_analysis == 'yes':
     infiles = [f.split('.')[0] for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
     #testInfiles = [f.split('.')[0] for f in infiles]
-    diffguide, neededInfiles = read_diffguide(diffguide_file)
+    diffguide, neededInfiles = __read_diffguide(diffguide_file)
     for infile in neededInfiles:
       if infile not in infiles: 
         sys.stderr.write('One or more input files requested by diffguide_file are not provided in the input folder.\nExit the program.')
@@ -650,7 +650,7 @@ def __write_html (DATA, rep_output, appId):
     #l="    <td rowspan=3 style='width: 120px;'>"+newid+"</td>";print(l, file=fh_out)
     l="    <td rowspan=3 > <a href="+ path + " target='_blank'><img class='heightSet' src="+ path + " alt='Struture'></a></td>";print(l, file=fh_out)
     l="    <td style='width: 400px;'>"+ mirna + "</td>";print(l, file=fh_out)
-    l="    <td>"+ chromo + ":"+ poschromo + " ["+ strand + "] </td>";print(l, file=fh_out)
+    l="    <td> Chr "+ chromo + ":"+ poschromo + " ["+ strand + "] </td>";print(l, file=fh_out)
     l="  </tr>";print(l, file=fh_out)
     l="  <tr>";print(l, file=fh_out)
     l="    <td colspan=2 style='font-family:monospace'>"+ preseq + "</td>";print(l, file=fh_out)
@@ -706,7 +706,7 @@ def get_nonMirna_list (infile, genome_path):
       l_non_miRNA.append(seq)
   return l_non_miRNA
 
-def read_diffguide (infile):
+def __read_diffguide (infile):
   #= a / b = numerator / denominator
   #= [[numerator, denominator], [numerator, denominator], ...]
   with open (infile, 'r') as fh: diffguide = [x.rstrip('\n').split('->') for x in fh.readlines()]
@@ -757,7 +757,8 @@ def __fake_diff_output (a, b, rep, appId):
   fh_out.close()
 
 
-def diff_output (diffguide, rep, appId):
+def diff_output (diffguide_file, rep, appId):
+  diffguide, _ = __read_diffguide(diffguide_file)
   diff_outs = []
   for i in diffguide:
     a = i[0].split('.')[0]
@@ -844,9 +845,11 @@ def __create_inputs_for_enrichment_analysis (diff_outs, pathway_description_file
   __create_diff_annotation (rep_output, diff_outs, list_mirna_and_topscoredTargetsKEGGpathway, folder)
 
 
-def perform_enrichment_analysis (keyword, diff_outs, pathway_description_file, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId):
+def perform_enrichment_analysis (diff_outs, pathway_description_file, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId, project_path):
+  keyword =  appId + '_topscoredTargetsKEGGpathway'
   __create_inputs_for_enrichment_analysis (diff_outs, pathway_description_file, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId)
-  cmd = 'perl compute_enrichment.pl ../output/' + keyword + '/namecode.txt ../output/' + keyword +'/output_comput_enrich 1'
+  #cmd = 'perl compute_enrichment.pl ' + rep_output + keyword + '/namecode.txt ' + rep_output + keyword +'/output_comput_enrich 1'
+  cmd = 'perl ' + project_path + '/src/'+ 'compute_enrichment.pl ' + rep_output + keyword + '/namecode.txt ' + rep_output + keyword +'/output_comput_enrich/ 1'
   os.system(cmd)
 
 

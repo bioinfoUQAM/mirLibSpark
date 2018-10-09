@@ -3,8 +3,8 @@
 #PBS -l nodes=3:ppn=8
 #PBS -l walltime=00:10:00
 #PBS -A hvg-164-aa
-#PBS -o jobsOut/$MOAB_JOBID.out
-#PBS -e jobsOut/$MOAB_JOBID.err
+#PBS -o jobout/$MOAB_JOBID.out
+#PBS -e jobout/$MOAB_JOBID.err
 #PBS -E
 
 cd "${PBS_O_WORKDIR}"

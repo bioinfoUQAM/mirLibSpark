@@ -41,22 +41,24 @@ message=\nwrite your message (for stdout) here line1\nline2: \nchromosomes=All\n
 #
 #
 #
-#==================== Absolute paths in user's computer
-project_path=/home/cloudera/workspace/mirLibSpark/
-input_path=/home/cloudera/workspace/mirLibSpark/input/
-output_path=/home/cloudera/vm_dropbox_projects/1_Project_mirLibHadoop/gitRepo_mirLibHadoop/mirLibSpark/output/
+#==================== Absolute paths in user's computer, please modify this string: /home/cjwu/project/cjwu/gitRepo/
+project_path=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/
+input_path=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/input/
+output_path=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/output/
 #
-genome_path=/home/cloudera/workspace/mirLibSpark/dbs/ATH_TAIR10/Genome/
-b_index_path=/home/cloudera/workspace/mirLibSpark/dbs/ATH_TAIR10/bowtie_index/
-target_file=/home/cloudera/workspace/mirLibSpark/dbs/ATH_TAIR10/Arabidopsis_thaliana.TAIR10.cdna.all.fa
-known_non_file=/home/cloudera/workspace/mirLibSpark/dbs/ATH_TAIR10/TAIR10_ncRNA_CDS.gff
+genome_path=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/dbs/ATH_TAIR10/Genome/
+b_index_path=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/dbs/ATH_TAIR10/bowtie_index/
+bowtie_index_suffix=ATH_TAIR10
+#
+known_non_file=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/dbs/ATH_TAIR10/TAIR10_ncRNA_CDS.gff
+target_file=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/dbs/ATH_TAIR10/Arabidopsis_thaliana.TAIR10.cdna.all.fa
 #
 perform_differnatial_analysis=yes
-diffguide_file=/home/cloudera/workspace/mirLibSpark/diffguide_ath.txt
+diffguide_file=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/diffguide_ath.txt
 #
 perform_KEGGpathways_enrichment_analysis=yes
-gene_vs_pathway_file=/home/cloudera/workspace/mirLibSpark/dbs/ATH_TAIR10/ath_gene_vs_pathway.txt
-pathway_description_file=/home/cloudera/workspace/mirLibSpark/dbs/ATH_TAIR10/ath_pathway_description.txt
+gene_vs_pathway_file=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/dbs/ATH_TAIR10/ath_gene_vs_pathway.txt
+pathway_description_file=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/dbs/ATH_TAIR10/ath_pathway_description.txt
 #
 #
 #==================== User needs to define
@@ -68,7 +70,6 @@ adapter=none
 #====================  Ideally, do not change the following parameters since they are already tuned.
 #chromosomes=1,2,3,4,5,Mt,Pt
 chromosomes=All
-bowtie_index_suffix=ATH_TAIR10
 #mirdup_model=Viridiplantae.model
 mirdup_model=thaliana.model
 #==================== 
@@ -88,7 +89,7 @@ Gap_Penalty=-15
 nbTargets=100
 #==================== Spark configuration
 sc_appname=mirLibSpark
-sc_partition=8
+sc_partition=4
 sc_mstrmemory=20g
 sc_execmemory=20g
 #==================== local mode

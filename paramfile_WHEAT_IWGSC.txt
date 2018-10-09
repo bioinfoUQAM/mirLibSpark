@@ -35,43 +35,46 @@
 #
 ########################################################################
 #
-message=\nwrite your message (for stdout) here line1\nline2: \nchromosomes=split\nchromosomes=3AS\nXLOC target_file=mRNA_contigs.fasta\nTEST
+message=\nwrite your message (for stdout) here line1\nline2: \nChr=3A
 #
 ########################################################################
 #
 #
 #
 #==================== Absolute paths in user's computer, please modify this string according to need: /home/cloudera/vm_dropbox_projects/1_Project_mirLibHadoop/gitRepo_mirLibHadoop/
-project_path=/home/cloudera/vm_dropbox_projects/1_Project_mirLibHadoop/gitRepo_mirLibHadoop/mirLibSpark/
-input_path=/home/cloudera/vm_dropbox_projects/1_Project_mirLibHadoop/gitRepo_mirLibHadoop/mirLibSpark/input/
+project_path=/home/cloudera/workspace/mirLibSpark/
+#input_path=/home/cloudera/workspace/mirLibSpark/input/
+input_path=/home/cloudera/vm_share/Wheat_field_libraries/
 output_path=/home/cloudera/vm_dropbox_projects/1_Project_mirLibHadoop/gitRepo_mirLibHadoop/mirLibSpark/output/
 #
-genome_path=/home/cloudera/vm_dropbox_projects/1_Project_mirLibHadoop/gitRepo_mirLibHadoop/mirLibSpark/dbs/WHEAT_INHOUSE/Genome/
-b_index_path=/home/cloudera/vm_dropbox_projects/1_Project_mirLibHadoop/gitRepo_mirLibHadoop/mirLibSpark/dbs/WHEAT_INHOUSE/bowtie_split_index/
-#target_file=/home/cloudera/vm_dropbox_projects/1_Project_mirLibHadoop/gitRepo_mirLibHadoop/mirLibSpark/dbs/WHEAT_INHOUSE/mRNA_contigs.fasta
-target_file=/home/cloudera/vm_dropbox_projects/1_Project_mirLibHadoop/gitRepo_mirLibHadoop/mirLibSpark/dbs/WHEAT_INHOUSE/mRNA_contigs_smaller.fasta
+genome_path=/home/cloudera/vm_share/dbs/WHEAT_IWGSC/Genome/
+b_index_path=/home/cloudera/vm_share/dbs/WHEAT_IWGSC/bowtie_index/
+bowtie_index_suffix=WHEAT_IWGSC
+#
 known_non_file=/home/cloudera/vm_dropbox_projects/1_Project_mirLibHadoop/gitRepo_mirLibHadoop/mirLibSpark/dbs/ATH_TAIR10/TAIR10_ncRNA_CDS.gff
 #
-perform_differnatial_analysis=yes
+target_file=/home/cloudera/vm_share/dbs/WHEAT_IWGSC/mRNA_contigs_smaller.fasta
+#target_file=/home/cloudera/vm_share/dbs/WHEAT_IWGSC/Triticum_aestivum.IWGSC.cdna.all.fa
+#
+perform_differnatial_analysis=no
 diffguide_file=/home/cloudera/vm_dropbox_projects/1_Project_mirLibHadoop/gitRepo_mirLibHadoop/mirLibSpark/diffguide_wheat.txt
 #
-perform_KEGGpathways_enrichment_analysis=yes
-gene_vs_pathway_file=/home/cloudera/vm_dropbox_projects/1_Project_mirLibHadoop/gitRepo_mirLibHadoop/mirLibSpark/dbs/WHEAT_INHOUSE/ko_gene_vs_pathway.txt
-pathway_description_file=/home/cloudera/vm_dropbox_projects/1_Project_mirLibHadoop/gitRepo_mirLibHadoop/mirLibSpark/dbs/WHEAT_INHOUSE/ko_pathway_description.txt
+perform_KEGGpathways_enrichment_analysis=no
+gene_vs_pathway_file=/home/cloudera/vm_dropbox_projects/1_Project_mirLibHadoop/gitRepo_mirLibHadoop/mirLibSpark/dbs/WHEAT_IWGSC/ko_gene_vs_pathway.txt
+pathway_description_file=/home/cloudera/vm_dropbox_projects/1_Project_mirLibHadoop/gitRepo_mirLibHadoop/mirLibSpark/dbs/WHEAT_IWGSC/ko_pathway_description.txt
 #
 #
 #==================== User needs to define
-#input_type=c
-#adapter=TGGAATTCTCGGGTGCCAAGGAACTC
-input_type=a
-adapter=none
+input_type=c
+adapter=TGGAATTCTCGGGTGCCAAGGAACTC
+#input_type=a
+#adapter=none
 #
 #
 #
 #====================  Ideally, do not change the following parameters since they are already tuned.
-#chromosomes=1AL,1AS,1BL,1BS,1DL,1DS,2AL,2AS,2BL,2BS,2DL,2DS,3AL,3AS,3B,3DL,3DS,4AL,4AS,4BL,4BS,4DL,4DS,5AL,5AS,5BL,5BS,5DL,5DS,6AL,6AS,6BL,6BS,6DL,6DS,7AL,7AS,7BL,7BS,7DL,7DS
-chromosomes=3AS
-bowtie_index_suffix=WHEAT_inhouse_3AS
+#chromosomes=1A,1B,1D,2A,2B,2D,3A,3B,3D,4A,4B,4D,5A,5B,5D,6A,6B,6D,7A,7B,7D
+chromosomes=3A
 #mirdup_model=Viridiplantae.model
 mirdup_model=thaliana.model
 #==================== 
@@ -91,7 +94,7 @@ Gap_Penalty=-15
 nbTargets=100
 #==================== Spark configuration
 sc_appname=mirLibSpark
-sc_partition=4
+sc_partition=8
 sc_mstrmemory=20g
 sc_execmemory=20g
 #==================== local mode
