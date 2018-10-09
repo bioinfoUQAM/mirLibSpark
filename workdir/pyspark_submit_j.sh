@@ -34,7 +34,8 @@ SPARK_NO_DAEMONIZE=1 --label --output=$SPARK_LOG_DIR/spark-%j-workers.out start-
 slaves_pid=$!
 
 
-srun -n 1 -N 1 spark-submit --master ${MASTER_URL} --executor-memory ${SLURM_MEM_PER_NODE}M $SPARK_HOME/cjwu/project/cjwu/gitRepo/mirLibSpark/workdir/pi.py 100000
+#srun -n 1 -N 1 spark-submit --master ${MASTER_URL} --executor-memory ${SLURM_MEM_PER_NODE}M $SPARK_HOME/cjwu/project/cjwu/gitRepo/mirLibSpark/workdir/pi.py 100000
+srun -n 1 -N 1 spark-submit --master ${MASTER_URL} --executor-memory ${SLURM_MEM_PER_NODE}M /home/cjwu/project/cjwu/gitRepo/mirLibSpark/workdir/pi.py 100000
 
 kill $slaves_pid
 stop-master.sh
@@ -48,18 +49,3 @@ stop-master.sh
 #= squeue -u cjwu
 #= scancel <jobid>
 
-#181002-2031
-#Submitted batch job 12281602
-#
-#Submitted batch job 12281943
-#
-#
-#
-#181006-0145
-#Submitted batch job 12398002
-#
-##SBATCH --job-name=spark-32ppn-2hr-pi-path-181006
-#Submitted batch job 12398313
-#
-##SBATCH --job-name=spark-8ppn-2hr-pi-path-181006
-#Submitted batch job 12398846
