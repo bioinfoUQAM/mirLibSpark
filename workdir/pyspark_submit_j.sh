@@ -6,6 +6,7 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --ntasks-per-node=1
 #SBATCH --job-name=spark-8ppn-2hr-pi-path-181006
+#SBATCH --error=jobout/%x-%j.err
 #SBATCH --output=jobout/%x-%j.out
 #SBATCH --mail-user=wu.chaojung@gmail.com
 #SBATCH --mail-type=ALL
