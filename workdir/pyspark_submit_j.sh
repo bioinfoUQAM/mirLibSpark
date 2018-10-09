@@ -26,7 +26,7 @@ export SPARK_IDENT_STRING=$SLURM_JOBID
 export SPARK_WORKER_DIR=$SLURM_TMPDIR
 start-master.sh
 
-sleep 2
+sleep 5
 MASTER_URL=$(grep -Po '(?=spark://).*' $SPARK_LOG_DIR/spark-${SPARK_IDENT_STRING}-org.apache.spark.deploy.master*.out)
 
 NWORKERS=$((SLURM_NTASKS - 0))
