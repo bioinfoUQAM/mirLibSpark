@@ -280,8 +280,9 @@ if __name__ == '__main__' :
       #================================================================================================================
       #================================================================================================================
       mergebowtie_rdd = mergebowtie_rdd.union(bowtie_rdd).persist()
-
     print('NB mergebowtie_rdd: ', mergebowtie_rdd.count())
+
+    
     #= Getting the expression value for each reads
     ## in : ('seq', [nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
