@@ -458,7 +458,7 @@ if __name__ == '__main__' :
   #= miranda
   ## in : ('miRNAseq', zipindex)
   ## out: ('miRNAseq', [[target1 and its scores], [target2 and its scores]])
-  sc.clearFiles()
+  #sc.clearFiles()
   sc.addFile(miranda_binary)
   sc.addFile(target_file)
   mirna_and_targets = distResultSmallRNA_rdd.map(miranda_obj.computeTargetbyMiranda)\
