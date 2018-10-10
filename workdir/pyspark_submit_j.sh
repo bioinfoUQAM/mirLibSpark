@@ -16,7 +16,7 @@
 #= included dependencies: miranda, VARNA
 module load nixpkgs/16.09
 module load spark/2.3.0
-module load gcc/5.4.0
+module load intel/2016.4
 module load viennarna/2.4.9
 module load bowtie/1.1.2
 module load blast+/2.6.0
@@ -35,8 +35,7 @@ slaves_pid=$!
 
 #= example:
 #= spark-submit --master ${MASTER_URL} --executor-memory ${SLURM_MEM_PER_NODE}M /home/cjwu/project/cjwu/gitRepo/mirLibSpark/workdir/cedar_training/pi.py 1000
-#spark-submit --master ${MASTER_URL} --executor-memory ${SLURM_MEM_PER_NODE}M ../src/mirLibPipeline.py ../paramfile_ATH_TAIR10_graham.txt
-srun -n ${NWORKERS} -N ${NWORKERS} spark-submit --master ${MASTER_URL} ${SLURM_MEM_PER_NODE}M ../src/mirLibPipeline.py ../paramfile_WHEAT_IWGSC_graham.txt
+srun -n ${NWORKERS} -N ${NWORKERS} spark-submit --master ${MASTER_URL} --executor-memory ${SLURM_MEM_PER_NODE}M ../src/mirLibPipeline.py ../paramfile_WHEAT_IWGSC_graham.txt
 
 kill $slaves_pid
 stop-master.sh
