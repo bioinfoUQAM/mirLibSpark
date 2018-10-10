@@ -16,7 +16,7 @@
 #= included dependencies: miranda, VARNA
 module load nixpkgs/16.09
 module load spark/2.3.0
-module load intel/2016.4
+module load gcc/5.4.0
 module load viennarna/2.4.9
 module load bowtie/1.1.2
 module load blast+/2.6.0
