@@ -2,7 +2,7 @@
 #SBATCH --account=def-banire
 #SBATCH --time=00:30:00
 #SBATCH --nodes=1
-#SBATCH --mem-per-cpu=1500M
+#SBATCH --mem=4000M
 #SBATCH --cpus-per-task=8
 #SBATCH --ntasks-per-node=1
 #SBATCH --job-name=spark-8ppn-2hr-mirLib-181009
@@ -36,7 +36,7 @@ slaves_pid=$!
 #= example:
 #= spark-submit --master ${MASTER_URL} --executor-memory ${SLURM_MEM_PER_NODE}M /home/cjwu/project/cjwu/gitRepo/mirLibSpark/workdir/cedar_training/pi.py 1000
 #spark-submit --master ${MASTER_URL} --executor-memory ${SLURM_MEM_PER_NODE}M ../src/mirLibPipeline.py ../paramfile_ATH_TAIR10_graham.txt
-srun -n ${NWORKERS} -N ${NWORKERS} spark-submit --master ${MASTER_URL} --executor-memory 40000M ../src/mirLibPipeline.py ../paramfile_WHEAT_IWGSC_graham.txt
+srun -n ${NWORKERS} -N ${NWORKERS} spark-submit --master ${MASTER_URL} ${SLURM_MEM_PER_NODE}M ../src/mirLibPipeline.py ../paramfile_WHEAT_IWGSC_graham.txt
 
 kill $slaves_pid
 stop-master.sh
