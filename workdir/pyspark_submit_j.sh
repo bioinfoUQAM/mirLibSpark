@@ -3,7 +3,7 @@
 #SBATCH --time=02:00:00
 #SBATCH --nodes=1
 #SBATCH --mem=4000M
-#SBATCH --cpus-per-task=4
+#SBATCH --cpus-per-task=8
 #SBATCH --ntasks-per-node=1
 #SBATCH --job-name=spark-8ppn-2hr-mirLib-181009
 #SBATCH --error=jobout/%x-%j.err
