@@ -2,10 +2,10 @@
 #SBATCH --account=def-banire
 #SBATCH --time=02:00:00
 #SBATCH --nodes=1
-#SBATCH --mem=4000M
-#SBATCH --cpus-per-task=8
+#SBATCH --mem=12000M
+#SBATCH --cpus-per-task=6
 #SBATCH --ntasks-per-node=1
-#SBATCH --job-name=spark-8ppn-2hr-mirLib-181009
+#SBATCH --job-name=spark-1nx6p-2hr-mirLib-181010
 #SBATCH --error=jobout/%x-%j.err
 #SBATCH --output=jobout/%x-%j.out
 #SBATCH --mail-user=wu.chaojung@gmail.com
