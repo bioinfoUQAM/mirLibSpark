@@ -2,10 +2,10 @@
 #SBATCH --account=def-banire
 #SBATCH --time=02:00:00
 #SBATCH --nodes=1
-#SBATCH --mem=12000M
+#SBATCH --mem=5000M
 #SBATCH --cpus-per-task=6
 #SBATCH --ntasks-per-node=1
-#SBATCH --job-name=spark-1nx6p-2hr-mirLib-181010
+#SBATCH --job-name=spark-1nx6p-2hr5G-mirLib-181010
 #SBATCH --error=jobout/%x-%j.err
 #SBATCH --output=jobout/%x-%j.out
 #SBATCH --mail-user=wu.chaojung@gmail.com
@@ -26,7 +26,7 @@ export SPARK_IDENT_STRING=$SLURM_JOBID
 export SPARK_WORKER_DIR=$SLURM_TMPDIR
 start-master.sh
 
-sleep 15
+sleep 5
 MASTER_URL=$(grep -Po '(?=spark://).*' $SPARK_LOG_DIR/spark-${SPARK_IDENT_STRING}-org.apache.spark.deploy.master*.out)
 
 NWORKERS=$((SLURM_NTASKS - 0))
