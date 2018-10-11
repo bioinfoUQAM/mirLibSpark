@@ -8,8 +8,8 @@ ath: 	Arabidopsis_thaliana.TAIR10				python init_dbs_ensembl40.py ath 1|2	tested
 wheat: 	Triticum_aestivum.IWGSC					python init_dbs_ensembl40.py wheat 2	tested_previously_ok
 corn: 	Zea_mays.AGPv4						python init_dbs_ensembl40.py corn 2
 rice: 	Oryza_sativa.IRGSP-1.0					python init_dbs_ensembl40.py rice 1	tested_181010_ok
-potato: Solanum_tuberosum.SolTub_3.0				python init_dbs_ensembl40.py potato 1
-brome: 	Brachypodium_distachyon.Brachypodium_distachyon_v3.0	python init_dbs_ensembl40.py brome 1
+potato: Solanum_tuberosum.SolTub_3.0				python init_dbs_ensembl40.py potato 1   tested_181010_ok
+brome: 	Brachypodium_distachyon.Brachypodium_distachyon_v3.0	python init_dbs_ensembl40.py brome 1    tested_181011_ok
 wheatD: Aegilops_tauschii.ASM34733v1				python init_dbs_ensembl40.py wheatD 1
 '''
 
