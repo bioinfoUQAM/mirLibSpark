@@ -727,33 +727,20 @@ def __fake_diff_output (a, b, rep, appId):
   #a = 'fake_a3'
   #b = 'fake_a'
   outfile = rep + appId + '_diff_' + a + '_' + b + '.txt'
-  fh_out = open (outfile, 'w')
   with open (infile, 'r') as fh: DATA = [x.rstrip('\n').split('\t') for x in fh.readlines()]
 
   #= out: Sequence	Iso8S_y2010_2	Iso8S_y2010_1	Fold_change	Z_score	p_value	BH_p_value	Diff_exp
   for i in range( len(DATA[0]) ):
     if DATA[0][i] == a: index_a = i
     if DATA[0][i] == b: index_b = i
-  
-  line = '\t'.join(  ('Sequence,' + a + ',' + b + ',Fold_change,Z_score,p_value,BH_p_value,Diff_exp').split(',')  )
-  print(line, file=fh_out)
 
-  for i in DATA[1:]:
-    seq = i[0]
-    a = int(i[index_a])
-    b = int(i[index_b])
+  data = [ [x[0], x[index_a], x[index_b]] for x in DATA ]
+  title = '\t'.join(  ('Sequence,' + a + ',' + b + ',Fold_change,Z_score,p_value,BH_p_value,Diff_exp').split(',')  )
 
-    foldchange = ( a + 1 ) / ( b + 1 )
-    Z_score = '0.01fake'
-    p_value = '0.01fake'
-    BH_p_value = '0.01fake'
-    if foldchange > 2: Diff_exp_fake = 'UP'
-    elif foldchange < 0.5: Diff_exp_fake = 'DOWN'
-    else: Diff_exp_fake = 'NO'
-  
-    line = '\t'.join(  [seq, str(a), str(b), str(foldchange), Z_score, p_value, BH_p_value, Diff_exp_fake] )
-    print(line, file=fh_out)
-
+  import diffAnlysis as dif
+  DATA = dif.main (data, title)
+  fh_out = open (outfile, 'w')
+  for i in DATA: print( '\t'.join([str(x) for x in i]), file=fh_out)
   fh_out.close()
 
 
