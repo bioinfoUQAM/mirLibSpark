@@ -1,0 +1,5 @@
+#
+# https://pip.pypa.io/en/latest/reference/pip_install/#requirements-file-format
+#
+statsmodels
+seaborn
