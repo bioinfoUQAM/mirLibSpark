@@ -65,10 +65,10 @@ pathway_description_file=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/dbs/WHEAT_I
 #
 #
 #==================== User needs to define
-#input_type=c
-#adapter=TGGAATTCTCGGGTGCCAAGGAACTC
-input_type=a
-adapter=none
+input_type=c
+adapter=TGGAATTCTCGGGTGCCAAGGAACTC
+#input_type=a
+#adapter=none
 #
 #
 #
