@@ -34,13 +34,12 @@ if __name__ == '__main__' :
     sys.stderr.write('Three arguments required\nUsage: spark-submit mirLibPipeline.py <path to paramfile> 2>/dev/null\n')
     sys.exit()
 
-
   paramfile = sys.argv[1]
   paramDict = ut.readParam (paramfile)
   #= EXMAMINE OPTIONS 
   print('\nVerifying parameters ...')
   ut.validate_options(paramDict)
-
+  for k, v in sorted(paramDict.items()): print(k, ': ', v)
 
   #= spark configuration
   appMaster = paramDict['sc_master']                #"local[*]" 
@@ -55,12 +54,12 @@ if __name__ == '__main__' :
 
   #= Spark application ID
   appId = str(sc.applicationId)
-  print('spark.executor.memory: ', sc._conf.get('spark.executor.memory'))
-  print('spark.driver.memory: ', sc._conf.get('spark.driver.memory'))
-  print('spark.master: ', sc._conf.get('spark.master'))
-  print('spark.driver.memoryOverhead: ', sc._conf.get('spark.driver.memoryOverhead'))
-  print('spark.executor.memoryOverhead: ', sc._conf.get('spark.executor.memoryOverhead'))
-  print('spark.cores.max: ', sc._conf.get('spark.cores.max'))
+  #print('spark.executor.memory: ', sc._conf.get('spark.executor.memory'))
+  #print('spark.driver.memory: ', sc._conf.get('spark.driver.memory'))
+  #print('spark.master: ', sc._conf.get('spark.master'))
+  #print('spark.driver.memoryOverhead: ', sc._conf.get('spark.driver.memoryOverhead')) = none
+  #print('spark.executor.memoryOverhead: ', sc._conf.get('spark.executor.memoryOverhead')) = none
+  #print('spark.cores.max: ', sc._conf.get('spark.cores.max'))
 
   #= broadcast paramDict
   broadcastVar_paramDict = sc.broadcast(paramDict)
@@ -95,9 +94,7 @@ if __name__ == '__main__' :
   d_ncRNA_CDS = ut.get_nonMirna_coors (known_non) #= nb = 198736
   broadcastVar_d_ncRNA_CDS = sc.broadcast(d_ncRNA_CDS)
 
-
   #= RNAfold
-  #path_RNAfold = project_path + '/lib/'
   path_RNAfold = ut.find_RNAfold_path () #mirdup needs it
   temperature = int(paramDict['temperature']) 
 
@@ -145,14 +142,9 @@ if __name__ == '__main__' :
   sc.addFile(project_path + '/src/eval_mircheck.pl')
   sc.addFile(project_path + '/lib/miRcheck.pm')
   sc.addFile(project_path + '/lib/miRdup_1.4/lib/weka.jar')
-  #sc.addFile(project_path + '/lib/dustmasker')
-  #sc.addFile(project_path + '/lib/RNAfold')
-  #sc.addFile(project_path + '/lib/bowtie')
-  #sc.addFile(project_path + '/lib/bowtie-align-l')
-  #sc.addFile(project_path + '/lib/bowtie-align-s')
-  #sc.addFile(project_path + '/lib/VARNAv3-93.jar')
   sc.addFile(mirdup_jar)
   sc.addFile(mirdup_model)
+  sc.addFile(project_path + '/lib/VARNAv3-93.jar')
 
   #= Objects for rule functions
   dmask_obj = mru.prog_dustmasker()
@@ -177,7 +169,6 @@ if __name__ == '__main__' :
     
   print('\n====================== mirLibSpark =========================')
   print('====================== ' + appId + ' =================')
-  for k, v in sorted(paramDict.items()): print(k, ': ', v)
   print('============================================================\n')
   print('begin time:', datetime.datetime.now())
   #'''
