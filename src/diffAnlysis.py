@@ -36,10 +36,10 @@ def __calculate_BH_p_values (DATA):
     P_VALUES.append(p_value)
 
   #= https://www.statsmodels.org/dev/generated/statsmodels.stats.multitest.multipletests.html
-  #= reject (array, boolean) – true for hypothesis that can be rejected for given alpha
-  #= pvals_corrected (array) – p-values corrected for multiple tests
-  #= alphacSidak (float) – corrected alpha for Sidak method
-  #= alphacBonf (float) – corrected alpha for Bonferroni method
+  #= reject (array, boolean) - true for hypothesis that can be rejected for given alpha
+  #= pvals_corrected (array) - p-values corrected for multiple tests
+  #= alphacSidak (float) - corrected alpha for Sidak method
+  #= alphacBonf (float) - corrected alpha for Bonferroni method
   reject, pvals_corrected, alphacSidak, alphacBonf = multipletests(P_VALUES)
   return pvals_corrected
 
