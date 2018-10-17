@@ -734,7 +734,7 @@ def __write_diff_output (a, b, rep, appId):
     if DATA[0][i] == b: index_b = i
 
   data = [ [x[0], x[index_a], x[index_b]] for x in DATA ]
-  title = 'Sequence,' + a + ',' + b + ',Fold_change,Z_score,p_value,BH_p_value,Diff_exp').split(',')
+  title = 'Sequence,' + a + ',' + b + ',Fold_change,Z_score,p_value,BH_p_value,Diff_exp'.split(',')
 
   import diffAnlysis as dif
   DATA = dif.main (data, title)
