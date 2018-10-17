@@ -24,7 +24,7 @@ module load viennarna/2.4.9
 module load bowtie/1.1.2
 module load blast+/2.6.0
 
-#= python requirements: statsmodels (includes: numpy), seaborn
+#= python requirements: statsmodels (with this, it includes: numpy, scipy, pandas, patsy), seaborn (with this, it includes: matplotlib)
 pip install --user requests
 pip install --user -r requirements.txt
 
