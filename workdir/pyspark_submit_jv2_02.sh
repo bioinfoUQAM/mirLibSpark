@@ -23,6 +23,7 @@ module load viennarna/2.4.9
 module load bowtie/1.1.2
 module load blast+/2.6.0
 
+
 pip install --user requests
 pip install --user -r requirements.txt
 
@@ -40,16 +41,13 @@ slaves_pid=$!
 
 
 #= example:
-#= spark-submit --master ${MASTER_URL} --executor-memory ${SLURM_MEM_PER_NODE}M /home/cjwu/project/cjwu/gitRepo/mirLibSpark/workdir/cedar_training/pi.py 1000
 #srun -n ${NWORKERS} -N ${NWORKERS} spark-submit --master ${MASTER_URL} --executor-memory ${SLURM_MEM_PER_NODE}M /home/cjwu/project/cjwu/gitRepo/mirLibSpark/workdir/cedar_training/pi.py 1000
+
+
 srun -n ${NWORKERS} -N ${NWORKERS} spark-submit --master ${MASTER_URL} --executor-memory ${SLURM_MEM_PER_NODE}M ../src/mirLibPipeline.py ../paramfile_ATH_TAIR10_graham.txt
 
 kill $slaves_pid
 stop-all.sh
-
-
-
-
 
 
 #= sbatch pyspark_submit_j.sh
