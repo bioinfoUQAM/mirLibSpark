@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --account=def-banire
-#SBATCH --time=00:10:00
+#SBATCH --time=00:30:00
 #SBATCH --nodes=2
 #SBATCH --mem=100000M
 #SBATCH --cpus-per-task=6
@@ -12,7 +12,6 @@
 #SBATCH --mail-type=ALL
 
 
-#= py2env requirements: numpy, statsmodels
 #= preloaded: python2.7, perl, java
 #= module loaded: pyspark, duskmasker, bowtie, RNAfold
 #= included dependencies: miranda, VARNA
@@ -23,6 +22,7 @@ module load viennarna/2.4.9
 module load bowtie/1.1.2
 module load blast+/2.6.0
 
+#= python requirements: statsmodels (includes: numpy), seaborn
 pip install --user requests
 pip install --user -r requirements.txt
 
@@ -51,8 +51,7 @@ stop-all.sh
 
 
 
-
-#= sbatch pyspark_submit_j.sh
+#= sbatch pyspark_submit_jv2_02.sh
 #= squeue -u cjwu
 #= scancel <jobid>
 
