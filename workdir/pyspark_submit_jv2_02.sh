@@ -1,16 +1,18 @@
 #!/bin/bash
 #SBATCH --account=def-banire
 #SBATCH --time=00:30:00
-#SBATCH --nodes=2
+#SBATCH --nodes=1
 #SBATCH --mem=100000M
-#SBATCH --cpus-per-task=6
+#SBATCH --cpus-per-task=10
 #SBATCH --ntasks-per-node=1
-#SBATCH --job-name=jv2-03-mirL10000M2n6pn-181016
+#SBATCH --job-name=jv2-03-mirL10000M1n10pn-181016
 #SBATCH --error=jobout/%x-%j.err
 #SBATCH --output=jobout/%x-%j.out
 #SBATCH --mail-user=wu.chaojung@gmail.com
 #SBATCH --mail-type=ALL
 
+#= maximun --cpus-per-task=32
+#= maximun --mem=115000M
 
 #= preloaded: python2.7, perl, java
 #= module loaded: pyspark, duskmasker, bowtie, RNAfold
@@ -26,7 +28,7 @@ module load blast+/2.6.0
 pip install --user requests
 pip install --user -r requirements.txt
 
-export _JAVA_OPTIONS="-Xms2g -Xmx4g"
+export _JAVA_OPTIONS="-Xms2g -Xmx3.7g"
 export SPARK_IDENT_STRING=$SLURM_JOBID
 export SPARK_WORKER_DIR=$SLURM_TMPDIR
 start-all.sh
