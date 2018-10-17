@@ -43,7 +43,11 @@ def __calculate_BH_p_values (DATA):
   reject, pvals_corrected, alphacSidak, alphacBonf = multipletests(P_VALUES)
   return pvals_corrected
 
-
+def __dertermine_UP_or_Down (BH_p_value, foldchange):
+  if BH_p_value > 0.05: return "NO"
+  elif foldchange > 2 or foldchange == 2: return "UP"
+  elif foldchange < 0.5 or foldchange == 0.5: return "DOWN"
+  else: return "NO"
 
 
 #infile = '../input/demo_diff_input.txt'
@@ -74,6 +78,10 @@ def main (data, title):
 
   for n in range(1, len(data)):
     DATA[n].append(list_BH_p_values[n-1])
+    BH_p_value = DATA[n][6]
+    foldchange = DATA[n][3]
+    diff_exp = __dertermine_UP_or_Down (BH_p_value, foldchange)
+    DATA[n].append(diff_exp)
   return DATA
   
   #for i in DATA: print( '\t'.join([str(x) for x in i]) )
