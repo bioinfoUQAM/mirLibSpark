@@ -55,6 +55,12 @@ if __name__ == '__main__' :
 
   #= Spark application ID
   appId = str(sc.applicationId)
+  print('spark.executor.memory: ', sc._conf.get('spark.executor.memory'))
+  print('spark.driver.memory: ', sc._conf.get('spark.driver.memory'))
+  print('spark.master: ', sc._conf.get('spark.master'))
+  print('spark.driver.memoryOverhead: ', sc._conf.get('spark.driver.memoryOverhead'))
+  print('spark.executor.memoryOverhead: ', sc._conf.get('spark.executor.memoryOverhead'))
+  print('spark.cores.max: ', sc._conf.get('spark.cores.max'))
 
   #= broadcast paramDict
   broadcastVar_paramDict = sc.broadcast(paramDict)
@@ -161,7 +167,8 @@ if __name__ == '__main__' :
 
   #= Fetch library files in rep_input
   infiles = [f for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
-
+  print('infiles:')
+  for infile in infiles: print(infile)
   #= Time processing of libraries
   timeDict = {}
 
@@ -280,8 +287,9 @@ if __name__ == '__main__' :
       #================================================================================================================
       #================================================================================================================
       mergebowtie_rdd = mergebowtie_rdd.union(bowtie_rdd).persist()
-
     print('NB mergebowtie_rdd: ', mergebowtie_rdd.count())
+
+    
     #= Getting the expression value for each reads
     ## in : ('seq', [nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
@@ -327,6 +335,7 @@ if __name__ == '__main__' :
     for i in range(len(chromosomes)):
       ch = chromosomes[i]
       genome = ut.getGenome(genome_path, ".fa", ch)
+      #print('len_genome: ', ch, genome[ch][:30])
       broadcastVar_genome = sc.broadcast(genome)
       v = broadcastVar_genome.value
       prec_obj = mru.extract_precurosrs(v, pri_l_flank, pri_r_flank, pre_flank)
@@ -352,7 +361,7 @@ if __name__ == '__main__' :
       ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
       pri_vld_rdd = pri_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 3))\
                                 .filter(lambda e: any(e[1][3]))
-      print('NB pri_vld_rdd distinct (mircheck): ', pri_vld_rdd.groupByKey().count())
+      if pri_vld_rdd.count() > 0: print('NB pri_vld_rdd distinct (mircheck): ', pri_vld_rdd.groupByKey().count())
 
       #= Filtering structure with branched loop
       ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
