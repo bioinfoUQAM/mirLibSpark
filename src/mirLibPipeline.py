@@ -38,6 +38,7 @@ if __name__ == '__main__' :
   paramDict = ut.readParam (paramfile)
   #= EXMAMINE OPTIONS 
   print('\nVerifying parameters ...')
+  print('============================================================\n')
   ut.validate_options(paramDict)
   for k, v in sorted(paramDict.items()): print(k, ': ', v)
 
@@ -159,6 +160,7 @@ if __name__ == '__main__' :
 
   #= Fetch library files in rep_input
   infiles = [f for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
+  print('============================================================\n')
   print('infiles:')
   for infile in infiles: print(infile)
   #= Time processing of libraries

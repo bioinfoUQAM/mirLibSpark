@@ -35,7 +35,7 @@
 #
 ########################################################################
 #
-message=\nwrite your message (for stdout) here line1\nline2: \nchromosomes=All\n
+message=\nwrite your message (for stdout) here line1\nline2:
 #
 ########################################################################
 #
@@ -44,7 +44,7 @@ message=\nwrite your message (for stdout) here line1\nline2: \nchromosomes=All\n
 #==================== Absolute paths in user's computer
 project_path=/home/cloudera/workspace/mirLibSpark/
 input_path=/home/cloudera/workspace/mirLibSpark/input/
-output_path=/home/cloudera/vm_dropbox_projects/1_Project_mirLibHadoop/gitRepo_mirLibHadoop/mirLibSpark/output/
+output_path=/home/cloudera/workspace/mirLibSpark/output/
 #
 genome_path=/home/cloudera/workspace/mirLibSpark/dbs/ATH_TAIR10/Genome/
 b_index_path=/home/cloudera/workspace/mirLibSpark/dbs/ATH_TAIR10/bowtie_index/

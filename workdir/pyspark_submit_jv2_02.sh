@@ -5,7 +5,7 @@
 #SBATCH --mem=100000M
 #SBATCH --cpus-per-task=6
 #SBATCH --ntasks-per-node=1
-#SBATCH --job-name=jv2-01-mirL10000M2n6pn-181016
+#SBATCH --job-name=jv2-03-mirL10000M2n6pn-181016
 #SBATCH --error=jobout/%x-%j.err
 #SBATCH --output=jobout/%x-%j.out
 #SBATCH --mail-user=wu.chaojung@gmail.com
@@ -22,6 +22,9 @@ module load gcc/5.4.0
 module load viennarna/2.4.9
 module load bowtie/1.1.2
 module load blast+/2.6.0
+
+pip install --user requests
+pip install --user -r requirements.txt
 
 export _JAVA_OPTIONS="-Xms2g -Xmx4g"
 export SPARK_IDENT_STRING=$SLURM_JOBID
