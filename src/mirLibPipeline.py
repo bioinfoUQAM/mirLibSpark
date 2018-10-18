@@ -55,9 +55,6 @@ if __name__ == '__main__' :
 
   #= Spark application ID
   appId = str(sc.applicationId)
-  outfile = project_path + '/appId.txt'
-  with open (outfile, 'w') as fh: print(appId, file=fh)
-
   #print('spark.executor.memory: ', sc._conf.get('spark.executor.memory'))
   #print('spark.driver.memory: ', sc._conf.get('spark.driver.memory'))
   #print('spark.master: ', sc._conf.get('spark.master'))
@@ -78,6 +75,10 @@ if __name__ == '__main__' :
   rep_output = paramDict['output_path']
   rep_msub_jobout = project_path + '/workdir/jobout'
   rep_tmp = project_path + '/tmp/'     
+
+  #= print appId to a file
+  outfile = project_path + '/appId.txt'
+  with open (outfile, 'w') as fh: print(appId, file=fh) 
 
   #= genome
   genome_path = paramDict['genome_path'] 
