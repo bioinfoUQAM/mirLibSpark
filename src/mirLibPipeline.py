@@ -73,7 +73,6 @@ if __name__ == '__main__' :
   project_path = paramDict['project_path'][:-1]
   rep_input = paramDict['input_path']
   rep_output = paramDict['output_path']
-  rep_msub_jobout = project_path + '/workdir/jobout'
   rep_tmp = project_path + '/tmp/'     
 
   #= print appId to a file
@@ -138,7 +137,7 @@ if __name__ == '__main__' :
   #= end of paramDict naming =================================================================================
 
   #= make required folders if not exist
-  reps = [rep_output, rep_tmp, rep_msub_jobout]
+  reps = [rep_output, rep_tmp]
   ut.makedirs_reps (reps)
 
   #= addFile
