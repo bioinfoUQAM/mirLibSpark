@@ -55,6 +55,9 @@ if __name__ == '__main__' :
 
   #= Spark application ID
   appId = str(sc.applicationId)
+  outfile = project_path + '/appId.txt'
+  with open (outfile, 'w') as fh: print(appId, file=fh)
+
   #print('spark.executor.memory: ', sc._conf.get('spark.executor.memory'))
   #print('spark.driver.memory: ', sc._conf.get('spark.driver.memory'))
   #print('spark.master: ', sc._conf.get('spark.master'))
