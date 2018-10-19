@@ -2,7 +2,8 @@
 Chao-Jung Wu
 2018-10-01
 
-
+option1: small genomes (< 1G), or the genomes that ensembl does not provide chromosomal files
+option2: large genomes (> 1G)
 == supported species ========================================== cmd line ============================== test ================
 ath: 	Arabidopsis_thaliana.TAIR10				python init_dbs_ensembl40.py ath 1|2	tested_previously_ok
 wheat: 	Triticum_aestivum.IWGSC					python init_dbs_ensembl40.py wheat 2	tested_previously_ok
@@ -167,7 +168,7 @@ if __name__ == '__main__' :
     URL_dna_prefix = 'ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/arabidopsis_thaliana/dna/Arabidopsis_thaliana.TAIR10.dna.chromosome.'
     URL_irregulars = []
     if option == '1': option1_forSmallGenome (organism, key, URL_cdna, URL_ncrna, URL_toplevel, IDs, URL_dna_prefix, URL_irregulars)
-    elif option == '2': option2_forLargeGenome (organism, key, URL_cdna, URL_ncrna, IDs, URL_dna_prefix)
+    elif option == '2': option2_forLargeGenome (organism, key, URL_cdna, URL_ncrna, IDs, URL_dna_prefix, URL_irregulars)
   #======================================================
   if organism == 'wheat':
     key = 'WHEAT_IWGSC'
@@ -179,7 +180,7 @@ if __name__ == '__main__' :
     if option == '1':
       print('option 1 not provided for ' + organism + ', switching to option 2 ...')
       option = '2'
-    option2_forLargeGenome (organism, key, URL_cdna, URL_ncrna, IDs, URL_dna_prefix)
+    option2_forLargeGenome (organism, key, URL_cdna, URL_ncrna, IDs, URL_dna_prefix, URL_irregulars)
   #======================================================
   if organism == 'corn':
     key = 'CORN_AGPv4'
