@@ -90,10 +90,12 @@ def option2_forLargeGenome (organism, key, URL_cdna, URL_ncrna, IDs, URL_dna_pre
       wanted_file = URL_dna.split('/')[-1]
       curl_and_unzip_file (URL_dna, wanted_file)
 
+      ''' #skip build
       bowtieBuild (wanted_file[:-3], key)
       cmd = 'mv *.ebwt ' + rep_ch
       os.system(cmd)
       move_chromosomeFile_to (wanted_file, ID, rep2)
+      '''
 
     #= irregular naming of the chromosomes
     for URL in URL_irregulars:
@@ -126,9 +128,11 @@ def option1_forSmallGenome (organism, key, URL_cdna, URL_ncrna, URL_toplevel, ID
     wanted_file = URL_toplevel.split('/')[-1]
     curl_and_unzip_file (URL_toplevel, wanted_file)
     
+    ''' #skip build
     bowtieBuild (wanted_file[:-3], key)
     cmd = 'mv *.ebwt ' + repAll
     os.system(cmd)
+    '''
 
     for ID in IDs:
       URL_dna = URL_dna_prefix + ID +'.fa.gz'
