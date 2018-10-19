@@ -87,9 +87,9 @@ def option2_forLargeGenome (place, organism, key, URL_cdna, URL_ncrna, IDs, URL_
       rep_ch = rep3 + ID + '/'
       if not os.path.exists(rep_ch): os.makedirs(rep_ch)
 
+      URL_dna = URL_dna_prefix + ID +'.fa.gz'
+      wanted_file = URL_dna.split('/')[-1]
       if place == 'S1' or place == 'L':
-        URL_dna = URL_dna_prefix + ID +'.fa.gz'
-        wanted_file = URL_dna.split('/')[-1]
         curl_and_unzip_file (URL_dna, wanted_file)
 
       #''' #skip build
@@ -131,8 +131,8 @@ def option1_forSmallGenome (place, organism, key, URL_cdna, URL_ncrna, URL_tople
     repAll = rep3 + 'All/'
     if not os.path.exists(repAll): os.makedirs(repAll)
 
+    wanted_file = URL_toplevel.split('/')[-1]
     if place == 'S1' or place == 'L':
-      wanted_file = URL_toplevel.split('/')[-1]
       curl_and_unzip_file (URL_toplevel, wanted_file)
     
     #''' #skip build
