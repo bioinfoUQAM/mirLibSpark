@@ -42,10 +42,9 @@ def bowtieBuild (fastaFile, NAMEbase):
   cmd = 'bowtie-build -f ' + fastaFile + ' ' + NAMEbase
   os.system(cmd)
 
-def curl_and_unzip_file (place, URL, wanted_file):
-    if place == 'S1' or place == 'L':
-      cmd = 'curl -O ' + URL
-      os.system(cmd)
+def curl_and_unzip_file (URL, wanted_file):
+    cmd = 'curl -O ' + URL
+    os.system(cmd)
     unzip_gzFile (wanted_file)
 
 def move_file_to (wanted_file, rep):
@@ -72,14 +71,15 @@ def option2_forLargeGenome (place, organism, key, URL_cdna, URL_ncrna, IDs, URL_
     if not os.path.exists(rep3): os.makedirs(rep3)
 
     #= get annotation files: cdna, ncrna
-    wanted_file = URL_cdna.split('/')[-1]
-    curl_and_unzip_file (place, URL_cdna, wanted_file)
-    move_file_to (wanted_file, rep1)
-
-    if not URL_ncrna == '':
-      wanted_file = URL_ncrna.split('/')[-1]
-      curl_and_unzip_file (place, URL_ncrna, wanted_file)
+    if place == 'S1' or place == 'L':
+      wanted_file = URL_cdna.split('/')[-1]
+      curl_and_unzip_file (URL_cdna, wanted_file)
       move_file_to (wanted_file, rep1)
+
+      if not URL_ncrna == '':
+        wanted_file = URL_ncrna.split('/')[-1]
+        curl_and_unzip_file (URL_ncrna, wanted_file)
+        move_file_to (wanted_file, rep1)
 
     #= build chromosome-split bowtie index in chromosome-specific sub-folders
     #= get chromosome-split genome in Genome folders
@@ -87,9 +87,10 @@ def option2_forLargeGenome (place, organism, key, URL_cdna, URL_ncrna, IDs, URL_
       rep_ch = rep3 + ID + '/'
       if not os.path.exists(rep_ch): os.makedirs(rep_ch)
 
-      URL_dna = URL_dna_prefix + ID +'.fa.gz'
-      wanted_file = URL_dna.split('/')[-1]
-      curl_and_unzip_file (place, URL_dna, wanted_file)
+      if place == 'S1' or place == 'L':
+        URL_dna = URL_dna_prefix + ID +'.fa.gz'
+        wanted_file = URL_dna.split('/')[-1]
+        curl_and_unzip_file (URL_dna, wanted_file)
 
       #''' #skip build
       if place == 'L' or place == 'S2':
@@ -100,11 +101,12 @@ def option2_forLargeGenome (place, organism, key, URL_cdna, URL_ncrna, IDs, URL_
       #'''
 
     #= irregular naming of the chromosomes
-    for URL in URL_irregulars:
-      wanted_file = URL.split('/')[-1]
-      curl_and_unzip_file (place, URL, wanted_file)
-      ID = wanted_file.split('.')[0]
-      move_chromosomeFile_to (wanted_file, ID, rep2)
+    if place == 'S1' or place == 'L':
+      for URL in URL_irregulars:
+        wanted_file = URL.split('/')[-1]
+        curl_and_unzip_file (URL, wanted_file)
+        ID = wanted_file.split('.')[0]
+        move_chromosomeFile_to (wanted_file, ID, rep2)
 
 def option1_forSmallGenome (place, organism, key, URL_cdna, URL_ncrna, URL_toplevel, IDs, URL_dna_prefix, URL_irregulars):
     ''' generate whole-genome bowtie index and split chromosome genome '''
@@ -116,20 +118,22 @@ def option1_forSmallGenome (place, organism, key, URL_cdna, URL_ncrna, URL_tople
     if not os.path.exists(rep3): os.makedirs(rep3)
 
     #= get annotation files: cdna, ncrna
-    wanted_file = URL_cdna.split('/')[-1]
-    curl_and_unzip_file (place, URL_cdna, wanted_file)
-    move_file_to (wanted_file, rep1)
-
-    if not URL_ncrna == '':
-      wanted_file = URL_ncrna.split('/')[-1]
-      curl_and_unzip_file (place, URL_ncrna, wanted_file)
+    if place == 'S1' or place == 'L':
+      wanted_file = URL_cdna.split('/')[-1]
+      curl_and_unzip_file (URL_cdna, wanted_file)
       move_file_to (wanted_file, rep1)
+
+      if not URL_ncrna == '':
+        wanted_file = URL_ncrna.split('/')[-1]
+        curl_and_unzip_file (URL_ncrna, wanted_file)
+        move_file_to (wanted_file, rep1)
 
     repAll = rep3 + 'All/'
     if not os.path.exists(repAll): os.makedirs(repAll)
 
-    wanted_file = URL_toplevel.split('/')[-1]
-    curl_and_unzip_file (place, URL_toplevel, wanted_file)
+    if place == 'S1' or place == 'L':
+      wanted_file = URL_toplevel.split('/')[-1]
+      curl_and_unzip_file (URL_toplevel, wanted_file)
     
     #''' #skip build
     if place == 'L' or place == 'S2':
@@ -138,18 +142,19 @@ def option1_forSmallGenome (place, organism, key, URL_cdna, URL_ncrna, URL_tople
       os.system(cmd)
     #'''
 
-    for ID in IDs:
-      URL_dna = URL_dna_prefix + ID +'.fa.gz'
-      wanted_file = URL_dna.split('/')[-1]
-      curl_and_unzip_file (place, URL_dna, wanted_file)
-      move_chromosomeFile_to (wanted_file, ID, rep2)
+    if place == 'S1' or place == 'L':
+      for ID in IDs:
+        URL_dna = URL_dna_prefix + ID +'.fa.gz'
+        wanted_file = URL_dna.split('/')[-1]
+        curl_and_unzip_file (URL_dna, wanted_file)
+        move_chromosomeFile_to (wanted_file, ID, rep2)
 
-    #= irregular naming of the chromosomes
-    for URL in URL_irregulars:
-      wanted_file = URL.split('/')[-1]
-      curl_and_unzip_file (place, URL, wanted_file)
-      ID = wanted_file.split('.')[0]
-      move_chromosomeFile_to (wanted_file, ID, rep2)
+      #= irregular naming of the chromosomes
+      for URL in URL_irregulars:
+        wanted_file = URL.split('/')[-1]
+        curl_and_unzip_file (URL, wanted_file)
+        ID = wanted_file.split('.')[0]
+        move_chromosomeFile_to (wanted_file, ID, rep2)
 
 #=========================
 #
