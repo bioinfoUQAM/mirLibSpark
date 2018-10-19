@@ -410,7 +410,7 @@ if __name__ == '__main__' :
     #= Filtering by expression profile (< 20%)
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore']])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq])
-    profile_rdd = pre_vld_rdd.map(lambda e: profile_obj.computeProfileFrq(e, broadcastVar_bowtie_chromo_strand))\
+    profile_rdd = pre_vld_rdd.map(lambda e: profile_obj.computeProfileFrq(e, dict_bowtie_chromo_strand))\
                              .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)
 
     print('NB profile_rdd distinct: ', profile_rdd.groupByKey().count())
@@ -485,7 +485,7 @@ if __name__ == '__main__' :
   mergebowtie_rdd.unpersist()
   mergeChromosomesResults_rdd.unpersist()
   broadcastVar_d_ncRNA_CDS.unpersist()
-  broadcastVar_bowtie_chromo_strand.unpersist()
+  #broadcastVar_bowtie_chromo_strand.unpersist()
 
   #'''
 
