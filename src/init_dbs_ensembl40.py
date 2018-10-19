@@ -73,12 +73,12 @@ def option2_forLargeGenome (place, organism, key, URL_cdna, URL_ncrna, IDs, URL_
 
     #= get annotation files: cdna, ncrna
     wanted_file = URL_cdna.split('/')[-1]
-    curl_and_unzip_file (URL_cdna, wanted_file)
+    curl_and_unzip_file (place, URL_cdna, wanted_file)
     move_file_to (wanted_file, rep1)
 
     if not URL_ncrna == '':
       wanted_file = URL_ncrna.split('/')[-1]
-      curl_and_unzip_file (URL_ncrna, wanted_file)
+      curl_and_unzip_file (place, URL_ncrna, wanted_file)
       move_file_to (wanted_file, rep1)
 
     #= build chromosome-split bowtie index in chromosome-specific sub-folders
@@ -89,7 +89,7 @@ def option2_forLargeGenome (place, organism, key, URL_cdna, URL_ncrna, IDs, URL_
 
       URL_dna = URL_dna_prefix + ID +'.fa.gz'
       wanted_file = URL_dna.split('/')[-1]
-      curl_and_unzip_file (URL_dna, wanted_file)
+      curl_and_unzip_file (place, URL_dna, wanted_file)
 
       #''' #skip build
       if place == 'L' or place == 'S2':
@@ -102,7 +102,7 @@ def option2_forLargeGenome (place, organism, key, URL_cdna, URL_ncrna, IDs, URL_
     #= irregular naming of the chromosomes
     for URL in URL_irregulars:
       wanted_file = URL.split('/')[-1]
-      curl_and_unzip_file (URL, wanted_file)
+      curl_and_unzip_file (place, URL, wanted_file)
       ID = wanted_file.split('.')[0]
       move_chromosomeFile_to (wanted_file, ID, rep2)
 
@@ -117,19 +117,19 @@ def option1_forSmallGenome (place, organism, key, URL_cdna, URL_ncrna, URL_tople
 
     #= get annotation files: cdna, ncrna
     wanted_file = URL_cdna.split('/')[-1]
-    curl_and_unzip_file (URL_cdna, wanted_file)
+    curl_and_unzip_file (place, URL_cdna, wanted_file)
     move_file_to (wanted_file, rep1)
 
     if not URL_ncrna == '':
       wanted_file = URL_ncrna.split('/')[-1]
-      curl_and_unzip_file (URL_ncrna, wanted_file)
+      curl_and_unzip_file (place, URL_ncrna, wanted_file)
       move_file_to (wanted_file, rep1)
 
     repAll = rep3 + 'All/'
     if not os.path.exists(repAll): os.makedirs(repAll)
 
     wanted_file = URL_toplevel.split('/')[-1]
-    curl_and_unzip_file (URL_toplevel, wanted_file)
+    curl_and_unzip_file (place, URL_toplevel, wanted_file)
     
     #''' #skip build
     if place == 'L' or place == 'S2':
@@ -141,13 +141,13 @@ def option1_forSmallGenome (place, organism, key, URL_cdna, URL_ncrna, URL_tople
     for ID in IDs:
       URL_dna = URL_dna_prefix + ID +'.fa.gz'
       wanted_file = URL_dna.split('/')[-1]
-      curl_and_unzip_file (URL_dna, wanted_file)
+      curl_and_unzip_file (place, URL_dna, wanted_file)
       move_chromosomeFile_to (wanted_file, ID, rep2)
 
     #= irregular naming of the chromosomes
     for URL in URL_irregulars:
       wanted_file = URL.split('/')[-1]
-      curl_and_unzip_file (URL, wanted_file)
+      curl_and_unzip_file (place, URL, wanted_file)
       ID = wanted_file.split('.')[0]
       move_chromosomeFile_to (wanted_file, ID, rep2)
 
