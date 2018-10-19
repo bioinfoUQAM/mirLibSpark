@@ -357,7 +357,7 @@ if __name__ == '__main__' :
       ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
       pri_vld_rdd = pri_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 3))\
                                 .filter(lambda e: any(e[1][3]))
-      if pri_vld_rdd.count() > 0: print('NB pri_vld_rdd distinct (mircheck): ', pri_vld_rdd.groupByKey().count())
+      #if pri_vld_rdd.count() > 0: print('NB pri_vld_rdd distinct (mircheck): ', pri_vld_rdd.groupByKey().count())
 
       #= Filtering structure with branched loop
       ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
@@ -379,12 +379,16 @@ if __name__ == '__main__' :
     print('mergeChromosomesResults: ', mergeChromosomesResults_rdd.count())
     #180921 fake_a.txt takes 42 secs to run till this line (All chromo)
     #180921 fake_a.txt takes 307 secs to run till this line (split chromo)
-    
+    print('current time:', datetime.datetime.now())
+
     
     #= pre-miRNA folding
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre]])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold']])
     pre_fold_rdd = mergeChromosomesResults_rdd.map(lambda e: rnafold_obj.RNAfold_map_rule(e, 4))
+
+    print('pre_fold_rdd: ', pre_fold_rdd.count())
+    print('current time:', datetime.datetime.now())
 
     #= Validating pre-mirna with mircheck II -- replaced by mirdup
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold']])
@@ -399,7 +403,8 @@ if __name__ == '__main__' :
     pre_vld_rdd = pre_fold_rdd.zipWithIndex()\
                               .map(mirdup_obj.run_miRdup)\
                               .filter(lambda e: e[1][4][3] == "true")
-    #print('NB pre_vld_rdd distinct (mirdup): ', pre_vld_rdd.groupByKey().count())
+    print('NB pre_vld_rdd distinct (mirdup): ', pre_vld_rdd.groupByKey().count())
+    print('current time:', datetime.datetime.now())
 
     
     #= Filtering by expression profile (< 20%)
@@ -411,6 +416,8 @@ if __name__ == '__main__' :
     print('NB profile_rdd distinct: ', profile_rdd.groupByKey().count())
     libresults = profile_rdd.collect()
    
+    print('current time:', datetime.datetime.now())
+
     endLib = time.time() 
     timeDict[inBasename] = endLib - startLib
     print ("  End of miRNA prediction     ", end="\n")
