@@ -42,9 +42,10 @@ def bowtieBuild (fastaFile, NAMEbase):
   cmd = 'bowtie-build -f ' + fastaFile + ' ' + NAMEbase
   os.system(cmd)
 
-def curl_and_unzip_file (URL, wanted_file):
-    cmd = 'curl -O ' + URL
-    os.system(cmd)
+def curl_and_unzip_file (place, URL, wanted_file):
+    if place == 'S1' or place == 'L':
+      cmd = 'curl -O ' + URL
+      os.system(cmd)
     unzip_gzFile (wanted_file)
 
 def move_file_to (wanted_file, rep):
@@ -61,7 +62,7 @@ def move_chromosomeFile_to (wanted_file, ID, rep):
     cmd = 'mv '+ fastaFile + ' ' + rep + ID + '.fa'
     os.system(cmd)
 
-def option2_forLargeGenome (organism, key, URL_cdna, URL_ncrna, IDs, URL_dna_prefix, URL_irregulars):
+def option2_forLargeGenome (place, organism, key, URL_cdna, URL_ncrna, IDs, URL_dna_prefix, URL_irregulars):
     ''' generate chromosome-split genome and bowtie index '''
     rep1 = '../dbs/' + key + '/'
     if not os.path.exists(rep1): os.makedirs(rep1)
@@ -90,12 +91,13 @@ def option2_forLargeGenome (organism, key, URL_cdna, URL_ncrna, IDs, URL_dna_pre
       wanted_file = URL_dna.split('/')[-1]
       curl_and_unzip_file (URL_dna, wanted_file)
 
-      ''' #skip build
-      bowtieBuild (wanted_file[:-3], key)
-      cmd = 'mv *.ebwt ' + rep_ch
-      os.system(cmd)
-      move_chromosomeFile_to (wanted_file, ID, rep2)
-      '''
+      #''' #skip build
+      if place == 'L' or place == 'S2':
+        bowtieBuild (wanted_file[:-3], key)
+        cmd = 'mv *.ebwt ' + rep_ch
+        os.system(cmd)
+        move_chromosomeFile_to (wanted_file, ID, rep2)
+      #'''
 
     #= irregular naming of the chromosomes
     for URL in URL_irregulars:
@@ -104,7 +106,7 @@ def option2_forLargeGenome (organism, key, URL_cdna, URL_ncrna, IDs, URL_dna_pre
       ID = wanted_file.split('.')[0]
       move_chromosomeFile_to (wanted_file, ID, rep2)
 
-def option1_forSmallGenome (organism, key, URL_cdna, URL_ncrna, URL_toplevel, IDs, URL_dna_prefix, URL_irregulars):
+def option1_forSmallGenome (place, organism, key, URL_cdna, URL_ncrna, URL_toplevel, IDs, URL_dna_prefix, URL_irregulars):
     ''' generate whole-genome bowtie index and split chromosome genome '''
     rep1 = '../dbs/' + key + '/'
     if not os.path.exists(rep1): os.makedirs(rep1)
@@ -129,11 +131,12 @@ def option1_forSmallGenome (organism, key, URL_cdna, URL_ncrna, URL_toplevel, ID
     wanted_file = URL_toplevel.split('/')[-1]
     curl_and_unzip_file (URL_toplevel, wanted_file)
     
-    ''' #skip build
-    bowtieBuild (wanted_file[:-3], key)
-    cmd = 'mv *.ebwt ' + repAll
-    os.system(cmd)
-    '''
+    #''' #skip build
+    if place == 'L' or place == 'S2':
+      bowtieBuild (wanted_file[:-3], key)
+      cmd = 'mv *.ebwt ' + repAll
+      os.system(cmd)
+    #'''
 
     for ID in IDs:
       URL_dna = URL_dna_prefix + ID +'.fa.gz'
@@ -155,15 +158,15 @@ def option1_forSmallGenome (organism, key, URL_cdna, URL_ncrna, URL_toplevel, ID
 #=========================
 if __name__ == '__main__' :
   '''
-  usage: init_dbs_ensembl40 [organism code] [1|2]
+  usage: init_dbs_ensembl40 [organism code] [1|2] [L|S1|S2]
   example: python init_dbs_ensembl40.py ath 1
   '''
-  if not len(sys.argv) == 3:
-    sys.stderr.write('please provide organism code. \nusage: main [organism code] [1|2]\nexample: python init_dbs_ensembl40.py ath 1\n option 1: bowtie indexing whole genome; option 2: bowtie indexing split genome\nSupported organism codes: ath, wheat, rice, potato, brome, corn, wheatD')
+  if not len(sys.argv) == 4:
+    sys.stderr.write('usage: main [organism code] [1|2] [L|S1|S2]\nexample: python init_dbs_ensembl40.py ath 1 L\n option 1: bowtie indexing whole genome; option 2: bowtie indexing split genome\nSupported organism codes: ath, wheat, rice, potato, brome, corn, wheatD')
     sys.exit()
   organism = sys.argv[1]
   option = sys.argv[2] #=1: All; 2: split chromosome
-  
+  place = sys.argv[3]  #= L: local (do curl and bowtie-build); S1: server, do only curl, not bowtie-build; S2: server, do only bowtie-build, not curl
   
   if organism == 'ath':
     key = 'ATH_TAIR10'
@@ -173,8 +176,8 @@ if __name__ == '__main__' :
     IDs =  '1 2 3 4 5 Mt Pt'.split(' ')
     URL_dna_prefix = 'ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/arabidopsis_thaliana/dna/Arabidopsis_thaliana.TAIR10.dna.chromosome.'
     URL_irregulars = []
-    if option == '1': option1_forSmallGenome (organism, key, URL_cdna, URL_ncrna, URL_toplevel, IDs, URL_dna_prefix, URL_irregulars)
-    elif option == '2': option2_forLargeGenome (organism, key, URL_cdna, URL_ncrna, IDs, URL_dna_prefix, URL_irregulars)
+    if option == '1': option1_forSmallGenome (place, organism, key, URL_cdna, URL_ncrna, URL_toplevel, IDs, URL_dna_prefix, URL_irregulars)
+    elif option == '2': option2_forLargeGenome (place, organism, key, URL_cdna, URL_ncrna, IDs, URL_dna_prefix, URL_irregulars)
   #======================================================
   if organism == 'wheat':
     key = 'WHEAT_IWGSC'
@@ -186,7 +189,7 @@ if __name__ == '__main__' :
     if option == '1':
       print('option 1 not provided for ' + organism + ', switching to option 2 ...')
       option = '2'
-    option2_forLargeGenome (organism, key, URL_cdna, URL_ncrna, IDs, URL_dna_prefix, URL_irregulars)
+    option2_forLargeGenome (place, organism, key, URL_cdna, URL_ncrna, IDs, URL_dna_prefix, URL_irregulars)
   #======================================================
   if organism == 'corn':
     key = 'CORN_AGPv4'
@@ -198,7 +201,7 @@ if __name__ == '__main__' :
     if option == '1':
       print('option 1 not provided for ' + organism + ', switching to option 2 ...')
       option = '2'
-    option2_forLargeGenome (organism, key, URL_cdna, URL_ncrna, IDs, URL_dna_prefix, URL_irregulars)
+    option2_forLargeGenome (place, organism, key, URL_cdna, URL_ncrna, IDs, URL_dna_prefix, URL_irregulars)
   #======================================================
   if organism == 'rice':
     key = 'RICE_IRGSP_1' 
@@ -211,7 +214,7 @@ if __name__ == '__main__' :
     if option == '2':
       print('option 2 not provided for ' + organism + ', switching to option 1 ...')
       option = '1'
-    option1_forSmallGenome (organism, key, URL_cdna, URL_ncrna, URL_toplevel, IDs, URL_dna_prefix, URL_irregulars)
+    option1_forSmallGenome (place, organism, key, URL_cdna, URL_ncrna, URL_toplevel, IDs, URL_dna_prefix, URL_irregulars)
   #======================================================
   if organism == 'potato':
     key = 'POTATO_SolTub_3' 
@@ -224,7 +227,7 @@ if __name__ == '__main__' :
     if option == '2':
       print('option 2 not provided for ' + organism + ', switching to option 1 ...')
       option = '1'
-    option1_forSmallGenome (organism, key, URL_cdna, URL_ncrna, URL_toplevel, IDs, URL_dna_prefix, URL_irregulars)
+    option1_forSmallGenome (place, organism, key, URL_cdna, URL_ncrna, URL_toplevel, IDs, URL_dna_prefix, URL_irregulars)
   #======================================================
   if organism == 'brome':
     key = 'STIFFBROME' 
@@ -237,7 +240,7 @@ if __name__ == '__main__' :
     if option == '2':
       print('option 2 not provided for ' + organism + ', switching to option 1 ...')
       option = '1'
-    option1_forSmallGenome (organism, key, URL_cdna, URL_ncrna, URL_toplevel, IDs, URL_dna_prefix, URL_irregulars)
+    option1_forSmallGenome (place, organism, key, URL_cdna, URL_ncrna, URL_toplevel, IDs, URL_dna_prefix, URL_irregulars)
   #======================================================
   if organism == 'wheatD':
     key = 'WHEAT_D'
@@ -251,5 +254,5 @@ if __name__ == '__main__' :
     if option == '2':
       print('option 2 not provided for ' + organism + ', switching to option 1 ...')
       option = '1'
-    option1_forSmallGenome (organism, key, URL_cdna, URL_ncrna, URL_toplevel, IDs, URL_dna_prefix, URL_irregulars)
+    option1_forSmallGenome (place, organism, key, URL_cdna, URL_ncrna, URL_toplevel, IDs, URL_dna_prefix, URL_irregulars)
 
