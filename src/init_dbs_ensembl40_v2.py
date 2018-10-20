@@ -1,6 +1,7 @@
 '''
 Chao-Jung Wu
 2018-10-01
+version: 00.02.00
 
 #= supported species
 ath: 	Arabidopsis_thaliana.TAIR10
@@ -27,43 +28,37 @@ update: 2018-10-20 refactor for compute canada, beacuse worker nodes do not have
 #===============================================================
 #= One step "curl and build", using user's computer
 #===============================================================
-#python init_dbs_ensembl40_refactor.py ath 1 curl-build
-#python init_dbs_ensembl40_refactor.py ath 2 curl-build
-python init_dbs_ensembl40_refactor.py wheat 2 curl-build	
-python init_dbs_ensembl40_refactor.py corn 2 curl-build
-python init_dbs_ensembl40_refactor.py rice 1 curl-build
-python init_dbs_ensembl40_refactor.py potato 1 curl-build
-python init_dbs_ensembl40_refactor.py brome 1 curl-build
-python init_dbs_ensembl40_refactor.py wheatD 1 curl-build
+#python init_dbs_ensembl40_v2.py ath 1 curl-build
+#python init_dbs_ensembl40_v2.py ath 2 curl-build
+python init_dbs_ensembl40_v2.py wheat 2 curl-build	
+python init_dbs_ensembl40_v2.py corn 2 curl-build
+python init_dbs_ensembl40_v2.py rice 1 curl-build
+python init_dbs_ensembl40_v2.py potato 1 curl-build
+python init_dbs_ensembl40_v2.py brome 1 curl-build
+python init_dbs_ensembl40_v2.py wheatD 1 curl-build
 
 #===============================================================
 #= Two steps "curl" and "build", using sbatch on compute canada
 #===============================================================
 #= curl (each line takes about 30 sec to 5 minutes)
-#python init_dbs_ensembl40_refactor.py ath 1 curl
-#python init_dbs_ensembl40_refactor.py ath 2 curl
-python init_dbs_ensembl40_refactor.py wheat 2 curl	
-python init_dbs_ensembl40_refactor.py corn 2 curl
-python init_dbs_ensembl40_refactor.py rice 1 curl
-python init_dbs_ensembl40_refactor.py potato 1 curl
-python init_dbs_ensembl40_refactor.py brome 1 curl
-python init_dbs_ensembl40_refactor.py wheatD 1 curl
+#python init_dbs_ensembl40_v2.py ath 1 curl
+#python init_dbs_ensembl40_v2.py ath 2 curl
+python init_dbs_ensembl40_v2.py wheat 2 curl	
+python init_dbs_ensembl40_v2.py corn 2 curl
+python init_dbs_ensembl40_v2.py rice 1 curl
+python init_dbs_ensembl40_v2.py potato 1 curl
+python init_dbs_ensembl40_v2.py brome 1 curl
+python init_dbs_ensembl40_v2.py wheatD 1 curl
 #
 #= build (each line may take more than 10 minutes, so it is necessary to use task submission file)
-#python init_dbs_ensembl40_refactor.py ath 1 build
-#python init_dbs_ensembl40_refactor.py ath 2 build
-python init_dbs_ensembl40_refactor.py wheat 2 build	
-python init_dbs_ensembl40_refactor.py corn 2 build
-python init_dbs_ensembl40_refactor.py rice 1 build
-python init_dbs_ensembl40_refactor.py potato 1 build
-python init_dbs_ensembl40_refactor.py brome 1 build
-python init_dbs_ensembl40_refactor.py wheatD 1 build
-
-
-
-
-
-
+#python init_dbs_ensembl40_v2.py ath 1 build
+#python init_dbs_ensembl40_v2.py ath 2 build
+python init_dbs_ensembl40_v2.py wheat 2 build	
+python init_dbs_ensembl40_v2.py corn 2 build
+python init_dbs_ensembl40_v2.py rice 1 build
+python init_dbs_ensembl40_v2.py potato 1 build
+python init_dbs_ensembl40_v2.py brome 1 build
+python init_dbs_ensembl40_v2.py wheatD 1 build
 '''
 
 
@@ -311,5 +306,7 @@ if __name__ == '__main__' :
     if option == '2': print('option 2 not provided for ' + organism + ', switching to option 1 ...')
     option = '1'
     option1_forSmallGenome (key, URL_cdna, URL_ncrna, URL_toplevel, IDs, URL_dna_prefix, URL_irregulars)
+
+
 
 

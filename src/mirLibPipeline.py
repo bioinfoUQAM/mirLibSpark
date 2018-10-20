@@ -34,13 +34,13 @@ if __name__ == '__main__' :
     sys.stderr.write('Three arguments required\nUsage: spark-submit mirLibPipeline.py <path to paramfile> 2>/dev/null\n')
     sys.exit()
 
-
   paramfile = sys.argv[1]
   paramDict = ut.readParam (paramfile)
   #= EXMAMINE OPTIONS 
   print('\nVerifying parameters ...')
+  print('============================================================\n')
   ut.validate_options(paramDict)
-
+  for k, v in sorted(paramDict.items()): print(k, ': ', v)
 
   #= spark configuration
   appMaster = paramDict['sc_master']                #"local[*]" 
@@ -55,12 +55,12 @@ if __name__ == '__main__' :
 
   #= Spark application ID
   appId = str(sc.applicationId)
-  print('spark.executor.memory: ', sc._conf.get('spark.executor.memory'))
-  print('spark.driver.memory: ', sc._conf.get('spark.driver.memory'))
-  print('spark.master: ', sc._conf.get('spark.master'))
-  print('spark.driver.memoryOverhead: ', sc._conf.get('spark.driver.memoryOverhead'))
-  print('spark.executor.memoryOverhead: ', sc._conf.get('spark.executor.memoryOverhead'))
-  print('spark.cores.max: ', sc._conf.get('spark.cores.max'))
+  #print('spark.executor.memory: ', sc._conf.get('spark.executor.memory'))
+  #print('spark.driver.memory: ', sc._conf.get('spark.driver.memory'))
+  #print('spark.master: ', sc._conf.get('spark.master'))
+  #print('spark.driver.memoryOverhead: ', sc._conf.get('spark.driver.memoryOverhead')) = none
+  #print('spark.executor.memoryOverhead: ', sc._conf.get('spark.executor.memoryOverhead')) = none
+  #print('spark.cores.max: ', sc._conf.get('spark.cores.max'))
 
   #= broadcast paramDict
   broadcastVar_paramDict = sc.broadcast(paramDict)
@@ -73,8 +73,11 @@ if __name__ == '__main__' :
   project_path = paramDict['project_path'][:-1]
   rep_input = paramDict['input_path']
   rep_output = paramDict['output_path']
-  rep_msub_jobout = project_path + '/workdir/jobout'
   rep_tmp = project_path + '/tmp/'     
+
+  #= print appId to a file
+  outfile = project_path + '/appId.txt'
+  with open (outfile, 'w') as fh: print(appId, file=fh) 
 
   #= genome
   genome_path = paramDict['genome_path'] 
@@ -95,9 +98,7 @@ if __name__ == '__main__' :
   d_ncRNA_CDS = ut.get_nonMirna_coors (known_non) #= nb = 198736
   broadcastVar_d_ncRNA_CDS = sc.broadcast(d_ncRNA_CDS)
 
-
   #= RNAfold
-  #path_RNAfold = project_path + '/lib/'
   path_RNAfold = ut.find_RNAfold_path () #mirdup needs it
   temperature = int(paramDict['temperature']) 
 
@@ -136,7 +137,7 @@ if __name__ == '__main__' :
   #= end of paramDict naming =================================================================================
 
   #= make required folders if not exist
-  reps = [rep_output, rep_tmp, rep_msub_jobout]
+  reps = [rep_output, rep_tmp]
   ut.makedirs_reps (reps)
 
   #= addFile
@@ -145,14 +146,9 @@ if __name__ == '__main__' :
   sc.addFile(project_path + '/src/eval_mircheck.pl')
   sc.addFile(project_path + '/lib/miRcheck.pm')
   sc.addFile(project_path + '/lib/miRdup_1.4/lib/weka.jar')
-  #sc.addFile(project_path + '/lib/dustmasker')
-  #sc.addFile(project_path + '/lib/RNAfold')
-  #sc.addFile(project_path + '/lib/bowtie')
-  #sc.addFile(project_path + '/lib/bowtie-align-l')
-  #sc.addFile(project_path + '/lib/bowtie-align-s')
-  #sc.addFile(project_path + '/lib/VARNAv3-93.jar')
   sc.addFile(mirdup_jar)
   sc.addFile(mirdup_model)
+  sc.addFile(project_path + '/lib/VARNAv3-93.jar')
 
   #= Objects for rule functions
   dmask_obj = mru.prog_dustmasker()
@@ -167,6 +163,7 @@ if __name__ == '__main__' :
 
   #= Fetch library files in rep_input
   infiles = [f for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
+  print('============================================================\n')
   print('infiles:')
   for infile in infiles: print(infile)
   #= Time processing of libraries
@@ -177,7 +174,6 @@ if __name__ == '__main__' :
     
   print('\n====================== mirLibSpark =========================')
   print('====================== ' + appId + ' =================')
-  for k, v in sorted(paramDict.items()): print(k, ': ', v)
   print('============================================================\n')
   print('begin time:', datetime.datetime.now())
   #'''
@@ -299,8 +295,9 @@ if __name__ == '__main__' :
 
 
     #= Create dict, chromo_strand as key to search bowtie blocs in the following dict
-    dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(bowFrq_rdd.collect())
-    broadcastVar_bowtie_chromo_strand = sc.broadcast(dict_bowtie_chromo_strand) 
+    x = bowFrq_rdd.map(mru.slimData_bowFrq).collect()
+    dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(x)
+    #broadcastVar_bowtie_chromo_strand = sc.broadcast(dict_bowtie_chromo_strand) 
 
 
     #= Filtering miRNA low frequency
@@ -361,7 +358,7 @@ if __name__ == '__main__' :
       ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
       pri_vld_rdd = pri_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 3))\
                                 .filter(lambda e: any(e[1][3]))
-      if pri_vld_rdd.count() > 0: print('NB pri_vld_rdd distinct (mircheck): ', pri_vld_rdd.groupByKey().count())
+      #if pri_vld_rdd.count() > 0: print('NB pri_vld_rdd distinct (mircheck): ', pri_vld_rdd.groupByKey().count())
 
       #= Filtering structure with branched loop
       ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
@@ -383,12 +380,16 @@ if __name__ == '__main__' :
     print('mergeChromosomesResults: ', mergeChromosomesResults_rdd.count())
     #180921 fake_a.txt takes 42 secs to run till this line (All chromo)
     #180921 fake_a.txt takes 307 secs to run till this line (split chromo)
-    
+    print('current time:', datetime.datetime.now())
+
     
     #= pre-miRNA folding
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre]])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold']])
     pre_fold_rdd = mergeChromosomesResults_rdd.map(lambda e: rnafold_obj.RNAfold_map_rule(e, 4))
+
+    print('pre_fold_rdd: ', pre_fold_rdd.count())
+    print('current time:', datetime.datetime.now())
 
     #= Validating pre-mirna with mircheck II -- replaced by mirdup
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold']])
@@ -403,18 +404,21 @@ if __name__ == '__main__' :
     pre_vld_rdd = pre_fold_rdd.zipWithIndex()\
                               .map(mirdup_obj.run_miRdup)\
                               .filter(lambda e: e[1][4][3] == "true")
-    #print('NB pre_vld_rdd distinct (mirdup): ', pre_vld_rdd.groupByKey().count())
+    print('NB pre_vld_rdd distinct (mirdup): ', pre_vld_rdd.groupByKey().count())
+    print('current time:', datetime.datetime.now())
 
     
     #= Filtering by expression profile (< 20%)
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore']])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq])
-    profile_rdd = pre_vld_rdd.map(lambda e: profile_obj.computeProfileFrq(e, broadcastVar_bowtie_chromo_strand.value))\
+    profile_rdd = pre_vld_rdd.map(lambda e: profile_obj.computeProfileFrq(e, dict_bowtie_chromo_strand))\
                              .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)
 
     print('NB profile_rdd distinct: ', profile_rdd.groupByKey().count())
     libresults = profile_rdd.collect()
    
+    print('current time:', datetime.datetime.now())
+
     endLib = time.time() 
     timeDict[inBasename] = endLib - startLib
     print ("  End of miRNA prediction     ", end="\n")
@@ -482,7 +486,7 @@ if __name__ == '__main__' :
   mergebowtie_rdd.unpersist()
   mergeChromosomesResults_rdd.unpersist()
   broadcastVar_d_ncRNA_CDS.unpersist()
-  broadcastVar_bowtie_chromo_strand.unpersist()
+  #broadcastVar_bowtie_chromo_strand.unpersist()
 
   #'''
 

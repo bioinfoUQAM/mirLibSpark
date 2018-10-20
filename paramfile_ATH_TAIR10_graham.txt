@@ -35,7 +35,7 @@
 #
 ########################################################################
 #
-message=\nwrite your message (for stdout) here line1\nline2: \nchromosomes=All\n
+message=\nwrite your message (for stdout) here line1\nline2:
 #
 ########################################################################
 #
@@ -89,7 +89,7 @@ Gap_Penalty=-15
 nbTargets=100
 #==================== Spark configuration
 sc_appname=mirLibSpark
-sc_partition=4
+sc_partition=8
 sc_mstrmemory=20g
 sc_execmemory=20g
 #==================== local mode

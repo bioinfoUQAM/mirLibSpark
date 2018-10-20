@@ -79,9 +79,10 @@ def find_RNAfold_path ():
 def pyspark_configuration(appMaster, appName, masterMemory, execMemory, execCores):
   from pyspark import SparkConf, SparkContext
   myConf = SparkConf()
-  #myConf.setMaster(appMaster) #= 'local[2] or local[*]'
+  myConf.setMaster(appMaster) #= 'local[2] or local[*]'
   myConf.setAppName(appName)  #= 'mirLibSpark'
   myConf.set("spark.driver.memory", masterMemory)
+  #myConf.set("spark.driver.maxResultSize", '1500M')
   myConf.set("spark.executor.memory", execMemory) 
   myConf.set("spark.cores.max", execCores) 
   
@@ -718,14 +719,13 @@ def __read_diffguide (infile):
     if name2 not in needed_infilenames: needed_infilenames.append(name2)
   return diffguide[1:], needed_infilenames
 
-def __fake_diff_output (a, b, rep, appId):
+def __write_diff_output (a, b, rep, appId):
   #rep = '../output/'
   #appId = 'local-1538031347138'
   infile = rep + appId + '_summaryFreq.txt'
 
   #= a/b: a: numerator, b: denominator
-  #a = 'fake_a3'
-  #b = 'fake_a'
+  #a = 'fake_a3'; b = 'fake_a'
   outfile = rep + appId + '_diff_' + a + '_' + b + '.txt'
   with open (infile, 'r') as fh: DATA = [x.rstrip('\n').split('\t') for x in fh.readlines()]
 
@@ -735,7 +735,7 @@ def __fake_diff_output (a, b, rep, appId):
     if DATA[0][i] == b: index_b = i
 
   data = [ [x[0], x[index_a], x[index_b]] for x in DATA ]
-  title = '\t'.join(  ('Sequence,' + a + ',' + b + ',Fold_change,Z_score,p_value,BH_p_value,Diff_exp').split(',')  )
+  title = ('Sequence,' + a + ',' + b + ',Fold_change,Z_score,p_value,BH_p_value,Diff_exp').split(',')
 
   import diffAnlysis as dif
   DATA = dif.main (data, title)
@@ -750,16 +750,9 @@ def diff_output (diffguide_file, rep, appId):
   for i in diffguide:
     a = i[0].split('.')[0]
     b = i[1].split('.')[0]
-    __fake_diff_output (a, b, rep, appId)
+    __write_diff_output (a, b, rep, appId)
     diff_outs.append( appId + '_diff_' + a + '_' + b )
   return diff_outs
-
-
-def readFile (infile):
-  with open (infile, 'r') as fh: data = [x.rstrip('\n').split('\t') for x in fh.readlines()]
-  return data
-
-
 
 
 def __dictPathwayDescription (infile):
