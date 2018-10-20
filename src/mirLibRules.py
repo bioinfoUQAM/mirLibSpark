@@ -13,13 +13,6 @@ from operator import itemgetter
 #bin = '../lib/'
 bin = ''
 
-def slimData_bowFrq(e):
-  '''
-  in:  ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
-  out: ('', [freq, nbLoc, [['strd','chr',posChr],..]])
-  '''
-  e[0] = ''
-  return e
 
 def rearrange_rule(kv_arg, kv_sep):
   '''
