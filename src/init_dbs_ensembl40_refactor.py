@@ -218,19 +218,19 @@ if __name__ == '__main__' :
     option = '1'
     option1_forSmallGenome (organism, key, URL_cdna, URL_ncrna, URL_toplevel, IDs, URL_dna_prefix, URL_irregulars)
   #======================================================
-  if organism == 'brome':
+  if organism == 'brome': #= 280MB
     key = 'STIFFBROME' 
     URL_cdna = 'ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/brachypodium_distachyon/cdna/Brachypodium_distachyon.Brachypodium_distachyon_v3.0.cdna.all.fa.gz'
     URL_ncrna = ''
     URL_toplevel = 'ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/brachypodium_distachyon/dna/Brachypodium_distachyon.Brachypodium_distachyon_v3.0.dna.toplevel.fa.gz'
-    IDs = IDs = '1 2 3 4 5'.split(' ')   
+    IDs = '1 2 3 4 5'.split(' ')   
     URL_dna_prefix = 'ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/brachypodium_distachyon/dna/Brachypodium_distachyon.Brachypodium_distachyon_v3.0.dna.chromosome.'
     URL_irregulars = ['ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/brachypodium_distachyon/dna/Brachypodium_distachyon.Brachypodium_distachyon_v3.0.dna.nonchromosomal.fa.gz']
     if option == '2': print('option 2 not provided for ' + organism + ', switching to option 1 ...')
     option = '1'
     option1_forSmallGenome (organism, key, URL_cdna, URL_ncrna, URL_toplevel, IDs, URL_dna_prefix, URL_irregulars)
   #======================================================
-  if organism == 'wheatD': #= 280MB
+  if organism == 'wheatD': #= 600MB
     key = 'WHEAT_D'
     URL_cdna = 'ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/aegilops_tauschii/cdna/Aegilops_tauschii.ASM34733v1.cdna.all.fa.gz'    
     URL_ncrna = 'ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/aegilops_tauschii/ncrna/Aegilops_tauschii.ASM34733v1.ncrna.fa.gz'
