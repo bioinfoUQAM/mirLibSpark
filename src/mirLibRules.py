@@ -321,15 +321,22 @@ class prog_dominant_profile () :
     
     for elem in bowtie_rdd_collect :
       bowties = elem[1][2]
+      freq = elem[1][0]
       
       for bowtie in bowties :
         #= concatenate chromosome (bowtie[1]) and strand (bowtie[0])
-        chromo_strand = bowtie[1] + bowtie[0]
-        
+        chromo = bowtie[1]
+        strand = bowtie[0]
+        posChr = bowtie[2]
+        chromo_strand = chromo + strand
+
         if chromo_strand not in dict_bowtie_chromo_strand.keys():
           dict_bowtie_chromo_strand[chromo_strand] = []
-        
-        dict_bowtie_chromo_strand[chromo_strand].append(elem)
+        new_elem = [posChr, freq]
+        dict_bowtie_chromo_strand[chromo_strand].append(new_elem)
+
+    for k, v in dict_bowtie_chromo_strand.items():
+      dict_bowtie_chromo_strand[k] = v.sort(key=lambda x: int(x[0]))
     
     return dict_bowtie_chromo_strand
   
@@ -338,15 +345,24 @@ class prog_dominant_profile () :
     old elem in bowbloc = (id, [seq, frq, nbloc, [bowties]])
     new elem in bowbloc = (seq, [frq, nbloc, [bowties]])
     '''
+    #totalfrq = 0
+    #for elem in bowbloc :
+    #  bowties = elem[1][2]
+    #  for bowtie in bowties :
+    #    posgen = bowtie[2]
+    #    if (x < posgen < y) :
+    #      frq = elem[1][0]
+    #      totalfrq += frq
+    #return totalfrq
+
     totalfrq = 0
-    for elem in bowbloc :
-      bowties = elem[1][2]
-      for bowtie in bowties :
-        posgen = bowtie[2]
-        if (x < posgen < y) :
-          frq = elem[1][0]
-          totalfrq += frq
+    for e in bowbloc :
+      posgen = e[0]
+      if (x < posgen < y) :
+        frq = e[1]
+        totalfrq += frq
     return totalfrq
+
 
   def profile_range (self, elem):
     ''' 
