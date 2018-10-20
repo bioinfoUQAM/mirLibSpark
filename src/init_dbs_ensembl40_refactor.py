@@ -187,7 +187,11 @@ if __name__ == '__main__' :
   example: python init_dbs_ensembl40.py ath 1 curl-build
   '''
   if not len(sys.argv) == 4:
-      sys.stderr.write('usage: main [organism code] [1|2]\nexample: python init_dbs_ensembl40.py ath 1 curl-build\n option 1: bowtie indexing whole genome; option 2: bowtie indexing split genome\nSupported organism codes: ath, wheat, rice, potato, brome, corn, wheatD\n action curl: access internet and get genome; action build: build bowtie index after having obtained genome; action curl-build: do both')
+    sys.stderr.write('usage: main [organism code] [1|2] [curl|build|curl-build]\n\
+    example: python init_dbs_ensembl40.py ath 1 curl-build\n\
+    option 1: bowtie indexing whole genome; option 2: bowtie indexing split genome\n\
+    Supported organism codes: ath, wheat, rice, potato, brome, corn, wheatD\n\
+    action curl: access internet and get genome; action build: build bowtie index after having obtained genome; action curl-build: do both')
     sys.exit()
   organism = sys.argv[1]
   option = sys.argv[2] #=1: All; 2: split chromosome
