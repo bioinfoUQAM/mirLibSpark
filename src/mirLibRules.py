@@ -348,6 +348,23 @@ class prog_dominant_profile () :
           totalfrq += frq
     return totalfrq
 
+  def refactor_calculateTotalfrq (self, bowbloc, x, y):
+    ''' 
+    REFACTORING 2018-10-20 #=model cmd: totalTimeSec = reduce((lambda x,y : x + y), timeDict.values())
+    
+    old elem in bowbloc = (id, [seq, frq, nbloc, [bowties]])
+    new elem in bowbloc = (seq, [frq, nbloc, [bowties]])
+    '''
+    totalfrq = 0
+    for elem in bowbloc :
+      bowties = elem[1][2]
+      for bowtie in bowties :
+        posgen = bowtie[2]
+        if (x < posgen < y) :
+          frq = elem[1][0]
+          totalfrq += frq
+    return totalfrq
+
   def profile_range (self, elem):
     ''' 
     define x, y with pre_vld_rdd
