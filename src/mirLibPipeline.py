@@ -295,7 +295,8 @@ if __name__ == '__main__' :
 
 
     #= Create dict, chromo_strand as key to search bowtie blocs in the following dict
-    dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(bowFrq_rdd.collect())
+    x = bowFrq_rdd.collect()
+    dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(x)
     #broadcastVar_bowtie_chromo_strand = sc.broadcast(dict_bowtie_chromo_strand) 
 
 
