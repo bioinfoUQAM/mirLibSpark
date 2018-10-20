@@ -84,27 +84,33 @@ def option2_forLargeGenome (organism, key, URL_cdna, URL_ncrna, IDs, URL_dna_pre
       curl_and_unzip_file (URL_ncrna, wanted_file)
       move_file_to (wanted_file, rep1)
 
-    #= build chromosome-split bowtie index in chromosome-specific sub-folders
-    #= get chromosome-split genome in Genome folders
-    for ID in IDs:
-      rep_ch = rep3 + ID + '/'
-      if not os.path.exists(rep_ch): os.makedirs(rep_ch)
-
-      URL_dna = URL_dna_prefix + ID +'.fa.gz'
-      wanted_file = URL_dna.split('/')[-1]
-      curl_and_unzip_file (URL_dna, wanted_file)
-
-      bowtieBuild (wanted_file[:-3], key)
-      cmd = 'mv *.ebwt ' + rep_ch
-      os.system(cmd)
-      move_chromosomeFile_to (wanted_file, ID, rep2)
-
+    #= get chromosomes in "Genome" folder
     #= irregular naming of the chromosomes
     for URL in URL_irregulars:
       wanted_file = URL.split('/')[-1]
       ID = wanted_file.split('.fa')[0].split('.')[-1]
       curl_and_unzip_file (URL, wanted_file)
       move_chromosomeFile_to (wanted_file, ID, rep2)
+    #= get chromosomes but do not put in "Genome" folder yet
+    for ID in IDs:
+      URL_dna = URL_dna_prefix + ID +'.fa.gz'
+      wanted_file = URL_dna.split('/')[-1]
+      curl_and_unzip_file (URL_dna, wanted_file)
+
+    #= build chromosome-split bowtie index in chromosome-specific sub-folders
+    #= put chromosomes in "Genome" folder
+    for ID in IDs:
+      URL_dna = URL_dna_prefix + ID +'.fa.gz'
+      wanted_file = URL_dna.split('/')[-1]
+      #
+      rep_ch = rep3 + ID + '/'
+      if not os.path.exists(rep_ch): os.makedirs(rep_ch)
+      #
+      bowtieBuild (wanted_file[:-3], key)
+      cmd = 'mv *.ebwt ' + rep_ch
+      os.system(cmd)
+      move_chromosomeFile_to (wanted_file, ID, rep2)
+
 
 def option1_forSmallGenome (organism, key, URL_cdna, URL_ncrna, URL_toplevel, IDs, URL_dna_prefix, URL_irregulars):
     ''' generate whole-genome bowtie index and split chromosome genome '''
