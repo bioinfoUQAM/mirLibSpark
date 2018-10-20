@@ -21,14 +21,32 @@ wheatD: Aegilops_tauschii.ASM34733v1				python init_dbs_ensembl40.py wheatD 1
 
 updating...
 == supported species ========================================== cmd line ======================================================
-ath: 	Arabidopsis_thaliana.TAIR10				python init_dbs_ensembl40.py ath 1|2 curl-build             ok
-wheat: 	Triticum_aestivum.IWGSC					python init_dbs_ensembl40.py wheat 2 curl-build	
-corn: 	Zea_mays.AGPv4						python init_dbs_ensembl40.py corn 2 curl-build
-rice: 	Oryza_sativa.IRGSP-1.0					python init_dbs_ensembl40.py rice 1 curl-build
-potato: Solanum_tuberosum.SolTub_3.0				python init_dbs_ensembl40.py potato 1 curl-build
-brome: 	Brachypodium_distachyon.Brachypodium_distachyon_v3.0	python init_dbs_ensembl40.py brome 1 curl-build
-wheatD: Aegilops_tauschii.ASM34733v1				python init_dbs_ensembl40.py wheatD 1 curl-build
+ath: 	Arabidopsis_thaliana.TAIR10
+wheat: 	Triticum_aestivum.IWGSC	
+corn: 	Zea_mays.AGPv4	
+rice: 	Oryza_sativa.IRGSP-1.0
+potato: Solanum_tuberosum.SolTub_3.0
+brome: 	Brachypodium_distachyon.Brachypodium_distachyon_v3.0
+wheatD: Aegilops_tauschii.ASM34733v1	
 
+#= curl
+python init_dbs_ensembl40_refactor.py ath 1 curl
+python init_dbs_ensembl40_refactor.py wheat 2 curl	
+python init_dbs_ensembl40_refactor.py corn 2 curl
+python init_dbs_ensembl40_refactor.py rice 1 curl
+python init_dbs_ensembl40_refactor.py potato 1 curl
+python init_dbs_ensembl40_refactor.py brome 1 curl
+python init_dbs_ensembl40_refactor.py wheatD 1 curl
+
+
+#= build
+python init_dbs_ensembl40_refactor.py ath 1 build
+python init_dbs_ensembl40_refactor.py wheat 2 build	
+python init_dbs_ensembl40_refactor.py corn 2 build
+python init_dbs_ensembl40_refactor.py rice 1 build
+python init_dbs_ensembl40_refactor.py potato 1 build
+python init_dbs_ensembl40_refactor.py brome 1 build
+python init_dbs_ensembl40_refactor.py wheatD 1 build
 
 
 
