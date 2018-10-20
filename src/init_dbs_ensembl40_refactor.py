@@ -195,7 +195,8 @@ if __name__ == '__main__' :
     sys.exit()
   organism = sys.argv[1]
   option = sys.argv[2] #=1: All; 2: split chromosome
-  action = sys.argv[3] #=1: All; 2: split chromosome
+  action = sys.argv[3] #= [curl|build|curl-build]
+
   
   
   #======================================================
@@ -221,7 +222,7 @@ if __name__ == '__main__' :
     option = '2'
     option2_forLargeGenome (organism, key, URL_cdna, URL_ncrna, IDs, URL_dna_prefix)
   #======================================================
-     if organism == 'corn': #= 1.6G
+  if organism == 'corn': #= 1.6G
     key = 'CORN_AGPv4'
     URL_cdna = 'ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/zea_mays/cdna/Zea_mays.AGPv4.cdna.all.fa.gz'
     URL_ncrna = 'ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/zea_mays/ncrna/Zea_mays.AGPv4.ncrna.fa.gz'
@@ -232,7 +233,7 @@ if __name__ == '__main__' :
     option = '2'
     option2_forLargeGenome (organism, key, URL_cdna, URL_ncrna, IDs, URL_dna_prefix, URL_irregulars)
   #======================================================
-    if organism == 'rice': #= 300MB
+  if organism == 'rice': #= 300MB
     key = 'RICE_IRGSP_1' 
     URL_cdna = 'ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/oryza_sativa/cdna/Oryza_sativa.IRGSP-1.0.cdna.all.fa.gz'
     URL_ncrna = 'ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/oryza_sativa/ncrna/Oryza_sativa.IRGSP-1.0.ncrna.fa.gz'
