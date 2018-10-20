@@ -81,7 +81,7 @@ def move_chromosomeFile_to (wanted_file, ID, rep):
     cmd = 'mv '+ fastaFile + ' ' + rep + ID + '.fa'
     os.system(cmd)
 
-def option2_forLargeGenome (action, organism, key, URL_cdna, URL_ncrna, IDs, URL_dna_prefix, URL_irregulars):
+def option2_forLargeGenome (key, URL_cdna, URL_ncrna, IDs, URL_dna_prefix, URL_irregulars):
     ''' generate chromosome-split genome and bowtie index '''
     rep1 = '../dbs/' + key + '/'
     if not os.path.exists(rep1): os.makedirs(rep1)
@@ -130,7 +130,7 @@ def option2_forLargeGenome (action, organism, key, URL_cdna, URL_ncrna, IDs, URL
         move_chromosomeFile_to (wanted_file, ID, rep2)
 
 
-def option1_forSmallGenome (organism, key, URL_cdna, URL_ncrna, URL_toplevel, IDs, URL_dna_prefix, URL_irregulars):
+def option1_forSmallGenome (key, URL_cdna, URL_ncrna, URL_toplevel, IDs, URL_dna_prefix, URL_irregulars):
     ''' generate whole-genome bowtie index and split chromosome genome '''
     rep1 = '../dbs/' + key + '/'
     if not os.path.exists(rep1): os.makedirs(rep1)
@@ -206,8 +206,8 @@ if __name__ == '__main__' :
     IDs =  '1 2 3 4 5 Mt Pt'.split(' ')
     URL_dna_prefix = 'ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/arabidopsis_thaliana/dna/Arabidopsis_thaliana.TAIR10.dna.chromosome.'
     URL_irregulars = []
-    if option == '1': option1_forSmallGenome (organism, key, URL_cdna, URL_ncrna, URL_toplevel, IDs, URL_dna_prefix, URL_irregulars)
-    elif option == '2': option2_forLargeGenome (organism, key, URL_cdna, URL_ncrna, IDs, URL_dna_prefix)
+    if option == '1': option1_forSmallGenome (key, URL_cdna, URL_ncrna, URL_toplevel, IDs, URL_dna_prefix, URL_irregulars)
+    elif option == '2': option2_forLargeGenome (key, URL_cdna, URL_ncrna, IDs, URL_dna_prefix)
   #======================================================
   if organism == 'wheat': #= 15G
     key = 'WHEAT_IWGSC'
