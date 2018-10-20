@@ -2,51 +2,65 @@
 Chao-Jung Wu
 2018-10-01
 
-update: 2018-10-20 refactor for compute canada, beacuse worker nodes do not have access to internet and curl does not work.
-
-
-#= irregular URL chromosomes are not explicitly included for bowtie-build, but I am not sure if they are already oncluded in ensembl toplevel.
-
-
-== supported species ========================================== cmd line ============================== test ================
-ath: 	Arabidopsis_thaliana.TAIR10				python init_dbs_ensembl40.py ath 1|2	tested_previously_ok
-wheat: 	Triticum_aestivum.IWGSC					python init_dbs_ensembl40.py wheat 2	tested_previously_ok
-corn: 	Zea_mays.AGPv4						python init_dbs_ensembl40.py corn 2
-rice: 	Oryza_sativa.IRGSP-1.0					python init_dbs_ensembl40.py rice 1	tested_181010_ok
-potato: Solanum_tuberosum.SolTub_3.0				python init_dbs_ensembl40.py potato 1   tested_181010_ok
-brome: 	Brachypodium_distachyon.Brachypodium_distachyon_v3.0	python init_dbs_ensembl40.py brome 1    tested_181011_ok
-wheatD: Aegilops_tauschii.ASM34733v1				python init_dbs_ensembl40.py wheatD 1
-
-
-
-updating...
-== supported species ========================================== cmd line ======================================================
+#= supported species
 ath: 	Arabidopsis_thaliana.TAIR10
 wheat: 	Triticum_aestivum.IWGSC	
 corn: 	Zea_mays.AGPv4	
 rice: 	Oryza_sativa.IRGSP-1.0
 potato: Solanum_tuberosum.SolTub_3.0
 brome: 	Brachypodium_distachyon.Brachypodium_distachyon_v3.0
-wheatD: Aegilops_tauschii.ASM34733v1	
+wheatD: Aegilops_tauschii.ASM34733v1
 
-#= curl
-python init_dbs_ensembl40_refactor.py ath 1 curl
+
+
+update: 2018-10-20 refactor for compute canada, beacuse worker nodes do not have access to internet and curl does not work.
+
+#= NOTE: irregular URL chromosomes are not explicitly included for bowtie-build, but I am not sure if they are already oncluded in ensembl toplevel.
+
+
+
+
+#= Go to src folder and run the following command lines to make index for your favorite species
+#= ath is already included in the project with two versions: whole genome (option 1) or split genome (option 2)
+#= $ cd src
+
+#===============================================================
+#= One step "curl and build", using user's computer
+#===============================================================
+#python init_dbs_ensembl40_refactor.py ath 1 curl-build
+#python init_dbs_ensembl40_refactor.py ath 2 curl-build
+python init_dbs_ensembl40_refactor.py wheat 2 curl-build	
+python init_dbs_ensembl40_refactor.py corn 2 curl-build
+python init_dbs_ensembl40_refactor.py rice 1 curl-build
+python init_dbs_ensembl40_refactor.py potato 1 curl-build
+python init_dbs_ensembl40_refactor.py brome 1 curl-build
+python init_dbs_ensembl40_refactor.py wheatD 1 curl-build
+
+#===============================================================
+#= Two steps "curl" and "build", using sbatch on compute canada
+#===============================================================
+#= curl (each line takes about 30 sec to 5 minutes)
+#python init_dbs_ensembl40_refactor.py ath 1 curl
+#python init_dbs_ensembl40_refactor.py ath 2 curl
 python init_dbs_ensembl40_refactor.py wheat 2 curl	
 python init_dbs_ensembl40_refactor.py corn 2 curl
 python init_dbs_ensembl40_refactor.py rice 1 curl
 python init_dbs_ensembl40_refactor.py potato 1 curl
 python init_dbs_ensembl40_refactor.py brome 1 curl
 python init_dbs_ensembl40_refactor.py wheatD 1 curl
-
-
-#= build
-python init_dbs_ensembl40_refactor.py ath 1 build
+#
+#= build (each line may take more than 10 minutes, so it is necessary to use task submission file)
+#python init_dbs_ensembl40_refactor.py ath 1 build
+#python init_dbs_ensembl40_refactor.py ath 2 build
 python init_dbs_ensembl40_refactor.py wheat 2 build	
 python init_dbs_ensembl40_refactor.py corn 2 build
 python init_dbs_ensembl40_refactor.py rice 1 build
 python init_dbs_ensembl40_refactor.py potato 1 build
 python init_dbs_ensembl40_refactor.py brome 1 build
 python init_dbs_ensembl40_refactor.py wheatD 1 build
+
+
+
 
 
 
