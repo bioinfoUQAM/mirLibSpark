@@ -2,6 +2,11 @@
 Chao-Jung Wu
 2018-10-01
 
+update: 2018-10-20 refactor for compute canada, beacuse worker nodes do not have access to internet and curl does not work.
+
+
+#= irregular URL chromosomes are not explicitly included for bowtie-build, but I am not sure if they are already oncluded in ensembl toplevel.
+
 
 == supported species ========================================== cmd line ============================== test ================
 ath: 	Arabidopsis_thaliana.TAIR10				python init_dbs_ensembl40.py ath 1|2	tested_previously_ok
@@ -73,7 +78,7 @@ def option2_forLargeGenome (organism, key, URL_cdna, URL_ncrna, IDs, URL_dna_pre
     wanted_file = URL_cdna.split('/')[-1]
     curl_and_unzip_file (URL_cdna, wanted_file)
     move_file_to (wanted_file, rep1)
-
+    #
     if not URL_ncrna == '':
       wanted_file = URL_ncrna.split('/')[-1]
       curl_and_unzip_file (URL_ncrna, wanted_file)
@@ -114,34 +119,36 @@ def option1_forSmallGenome (organism, key, URL_cdna, URL_ncrna, URL_toplevel, ID
     wanted_file = URL_cdna.split('/')[-1]
     curl_and_unzip_file (URL_cdna, wanted_file)
     move_file_to (wanted_file, rep1)
-
+    #
     if not URL_ncrna == '':
       wanted_file = URL_ncrna.split('/')[-1]
       curl_and_unzip_file (URL_ncrna, wanted_file)
       move_file_to (wanted_file, rep1)
 
-    repAll = rep3 + 'All/'
-    if not os.path.exists(repAll): os.makedirs(repAll)
-
-    wanted_file = URL_toplevel.split('/')[-1]
-    curl_and_unzip_file (URL_toplevel, wanted_file)
-    
-    bowtieBuild (wanted_file[:-3], key)
-    cmd = 'mv *.ebwt ' + repAll
-    os.system(cmd)
-
+    #= get chromosomes in "Genome" folder
     for ID in IDs:
       URL_dna = URL_dna_prefix + ID +'.fa.gz'
       wanted_file = URL_dna.split('/')[-1]
       curl_and_unzip_file (URL_dna, wanted_file)
       move_chromosomeFile_to (wanted_file, ID, rep2)
-
     #= irregular naming of the chromosomes
     for URL in URL_irregulars:
       wanted_file = URL.split('/')[-1]
       ID = wanted_file.split('.fa')[0].split('.')[-1]
       curl_and_unzip_file (URL, wanted_file)
       move_chromosomeFile_to (wanted_file, ID, rep2)
+
+    #= build boetie-index in "All" folder
+    repAll = rep3 + 'All/'
+    if not os.path.exists(repAll): os.makedirs(repAll)
+    #
+    wanted_file = URL_toplevel.split('/')[-1]
+    curl_and_unzip_file (URL_toplevel, wanted_file)
+    #
+    bowtieBuild (wanted_file[:-3], key)
+    cmd = 'mv *.ebwt ' + repAll
+    os.system(cmd)
+
 
 #=========================
 #
