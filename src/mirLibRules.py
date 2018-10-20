@@ -316,8 +316,7 @@ class prog_dominant_profile () :
     self.env = os.environ
   
   def get_bowtie_strandchromo_dict (self, bowtie_rdd_collect):
-    '''elem : (seq, [frq, nbloc, [bowties]])
-    '''
+    ''' elem : (seq, [frq, nbloc, [bowties]]) '''
     dict_bowtie_chromo_strand = {}
     
     for elem in bowtie_rdd_collect :
@@ -335,8 +334,9 @@ class prog_dominant_profile () :
     return dict_bowtie_chromo_strand
   
   def calculateTotalfrq (self, bowbloc, x, y):
-    ''' old elem in bowbloc = (id, [seq, frq, nbloc, [bowties]])
-        new elem in bowbloc = (seq, [frq, nbloc, [bowties]])
+    ''' 
+    old elem in bowbloc = (id, [seq, frq, nbloc, [bowties]])
+    new elem in bowbloc = (seq, [frq, nbloc, [bowties]])
     '''
     totalfrq = 0
     for elem in bowbloc :
@@ -349,9 +349,10 @@ class prog_dominant_profile () :
     return totalfrq
 
   def profile_range (self, elem):
-    ''' define x, y with pre_vld_rdd
-        old : elem = (id, [seq, frq, nbloc, [bowtie], [pri_miRNA], [pre_miRNA]])
-        new : elem = (seq, [frq, nbloc, [bowtie], [pri_miRNA], [pre_miRNA]])
+    ''' 
+    define x, y with pre_vld_rdd
+    old : elem = (id, [seq, frq, nbloc, [bowtie], [pri_miRNA], [pre_miRNA]])
+    new : elem = (seq, [frq, nbloc, [bowtie], [pri_miRNA], [pre_miRNA]])
     ''' 
     posgen = elem[1][2][2]
     mirseq = elem[0]
@@ -367,9 +368,20 @@ class prog_dominant_profile () :
       x = y-len(preseq) + 1
     return x-1, y+1                  #= exclusive  x < a < y
 
+  def computeProfileFrq(self, elem, dict_bowtie_chromo_strand):
+    x, y = self.profile_range (elem)
+    bowtie_bloc_key = elem[1][2][1] + elem[1][2][0]  #=chrom+strand
+    bowbloc = dict_bowtie_chromo_strand[bowtie_bloc_key]
+    totalfrq = self.calculateTotalfrq (bowbloc, x, y)
+
+    elem[1].append(totalfrq)
+    return elem
+
   def exp_profile_filter (self, elem, dict_bowtie_chromo_strand):
-    ''' old : elem = (id, [seq, frq, nbloc, [bowtie], [pri_miRNA], [pre_miRNA]])
-        new : elem = (seq, [frq, nbloc, [bowtie], [pri_miRNA], [pre_miRNA]])
+    ''' 
+    defunct
+    old : elem = (id, [seq, frq, nbloc, [bowtie], [pri_miRNA], [pre_miRNA]])
+    new : elem = (seq, [frq, nbloc, [bowtie], [pri_miRNA], [pre_miRNA]])
     '''
     x, y = self.profile_range (elem)
     bowtie_bloc_key = elem[1][2][1] + elem[1][2][0]  #chrom+strand
@@ -381,15 +393,6 @@ class prog_dominant_profile () :
     if ratio > 0.2 :
         return True
     return False
-
-  def computeProfileFrq(self, elem, dict_bowtie_chromo_strand):
-    x, y = self.profile_range (elem)
-    bowtie_bloc_key = elem[1][2][1] + elem[1][2][0]  #=chrom+strand
-    bowbloc = dict_bowtie_chromo_strand[bowtie_bloc_key]
-    totalfrq = self.calculateTotalfrq (bowbloc, x, y)
-
-    elem[1].append(totalfrq)
-    return elem
 
 
 class prog_miRanda ():
