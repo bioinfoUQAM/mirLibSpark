@@ -21,7 +21,7 @@ wheatD: Aegilops_tauschii.ASM34733v1				python init_dbs_ensembl40.py wheatD 1
 
 updating...
 == supported species ========================================== cmd line ======================================================
-ath: 	Arabidopsis_thaliana.TAIR10				python init_dbs_ensembl40.py ath 1|2 curl-build
+ath: 	Arabidopsis_thaliana.TAIR10				python init_dbs_ensembl40.py ath 1|2 curl-build             ok
 wheat: 	Triticum_aestivum.IWGSC					python init_dbs_ensembl40.py wheat 2 curl-build	
 corn: 	Zea_mays.AGPv4						python init_dbs_ensembl40.py corn 2 curl-build
 rice: 	Oryza_sativa.IRGSP-1.0					python init_dbs_ensembl40.py rice 1 curl-build
@@ -218,7 +218,7 @@ if __name__ == '__main__' :
     URL_irregulars = []
     if option == '1': print('option 1 not provided for ' + organism + ', switching to option 2 ...')
     option = '2'
-    option2_forLargeGenome (organism, key, URL_cdna, URL_ncrna, IDs, URL_dna_prefix, URL_irregulars)
+    option2_forLargeGenome (key, URL_cdna, URL_ncrna, IDs, URL_dna_prefix, URL_irregulars)
   #======================================================
   if organism == 'corn': #= 1.6G
     key = 'CORN_AGPv4'
@@ -229,7 +229,7 @@ if __name__ == '__main__' :
     URL_irregulars = ['ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/zea_mays/dna/Zea_mays.AGPv4.dna.nonchromosomal.fa.gz']
     if option == '1': print('option 1 not provided for ' + organism + ', switching to option 2 ...')
     option = '2'
-    option2_forLargeGenome (organism, key, URL_cdna, URL_ncrna, IDs, URL_dna_prefix, URL_irregulars)
+    option2_forLargeGenome (key, URL_cdna, URL_ncrna, IDs, URL_dna_prefix, URL_irregulars)
   #======================================================
   if organism == 'rice': #= 300MB
     key = 'RICE_IRGSP_1' 
@@ -241,7 +241,7 @@ if __name__ == '__main__' :
     URL_irregulars = []
     if option == '2': print('option 2 not provided for ' + organism + ', switching to option 1 ...')
     option = '1'
-    option1_forSmallGenome (organism, key, URL_cdna, URL_ncrna, URL_toplevel, IDs, URL_dna_prefix, URL_irregulars)
+    option1_forSmallGenome (key, URL_cdna, URL_ncrna, URL_toplevel, IDs, URL_dna_prefix, URL_irregulars)
   #======================================================
   if organism == 'potato': #= 500MB
     key = 'POTATO_SolTub_3' 
@@ -253,7 +253,7 @@ if __name__ == '__main__' :
     URL_irregulars = ['ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/solanum_tuberosum/dna/Solanum_tuberosum.SolTub_3.0.dna.nonchromosomal.fa.gz']
     if option == '2': print('option 2 not provided for ' + organism + ', switching to option 1 ...')
     option = '1'
-    option1_forSmallGenome (organism, key, URL_cdna, URL_ncrna, URL_toplevel, IDs, URL_dna_prefix, URL_irregulars)
+    option1_forSmallGenome (key, URL_cdna, URL_ncrna, URL_toplevel, IDs, URL_dna_prefix, URL_irregulars)
   #======================================================
   if organism == 'brome': #= 280MB
     key = 'STIFFBROME' 
@@ -265,7 +265,7 @@ if __name__ == '__main__' :
     URL_irregulars = ['ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/brachypodium_distachyon/dna/Brachypodium_distachyon.Brachypodium_distachyon_v3.0.dna.nonchromosomal.fa.gz']
     if option == '2': print('option 2 not provided for ' + organism + ', switching to option 1 ...')
     option = '1'
-    option1_forSmallGenome (organism, key, URL_cdna, URL_ncrna, URL_toplevel, IDs, URL_dna_prefix, URL_irregulars)
+    option1_forSmallGenome (key, URL_cdna, URL_ncrna, URL_toplevel, IDs, URL_dna_prefix, URL_irregulars)
   #======================================================
   if organism == 'wheatD': #= 600MB
     key = 'WHEAT_D'
@@ -278,6 +278,6 @@ if __name__ == '__main__' :
                       'ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/aegilops_tauschii/dna/Aegilops_tauschii.ASM34733v1.dna.nonchromosomal.fa.gz']
     if option == '2': print('option 2 not provided for ' + organism + ', switching to option 1 ...')
     option = '1'
-    option1_forSmallGenome (organism, key, URL_cdna, URL_ncrna, URL_toplevel, IDs, URL_dna_prefix, URL_irregulars)
+    option1_forSmallGenome (key, URL_cdna, URL_ncrna, URL_toplevel, IDs, URL_dna_prefix, URL_irregulars)
 
 
