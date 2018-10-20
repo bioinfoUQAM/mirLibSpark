@@ -160,7 +160,8 @@ if __name__ == '__main__' :
   option = sys.argv[2] #=1: All; 2: split chromosome
   
   
-  if organism == 'ath':
+  #======================================================
+  if organism == 'ath': #= 125MB
     key = 'ATH_TAIR10'
     URL_cdna = 'ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/arabidopsis_thaliana/cdna/Arabidopsis_thaliana.TAIR10.cdna.all.fa.gz'
     URL_ncrna = 'ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/arabidopsis_thaliana/ncrna/Arabidopsis_thaliana.TAIR10.ncrna.fa.gz'
@@ -171,31 +172,29 @@ if __name__ == '__main__' :
     if option == '1': option1_forSmallGenome (organism, key, URL_cdna, URL_ncrna, URL_toplevel, IDs, URL_dna_prefix, URL_irregulars)
     elif option == '2': option2_forLargeGenome (organism, key, URL_cdna, URL_ncrna, IDs, URL_dna_prefix)
   #======================================================
-  if organism == 'wheat':
+  if organism == 'wheat': #= 15G
     key = 'WHEAT_IWGSC'
     URL_cdna = 'ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/triticum_aestivum/cdna/Triticum_aestivum.IWGSC.cdna.all.fa.gz'
     URL_ncrna = ''
     IDs = '1A 1B 1D 2A 2B 2D 3A 3B 3D 4A 4B 4D 5A 5B 5D 6A 6B 6D 7A 7B 7D'.split(' ')
     URL_dna_prefix = 'ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/triticum_aestivum/dna/Triticum_aestivum.IWGSC.dna.chromosome.'
     URL_irregulars = []
-    if option == '1':
-      print('option 1 not provided for ' + organism + ', switching to option 2 ...')
-      option = '2'
+    if option == '1': print('option 1 not provided for ' + organism + ', switching to option 2 ...')
+    option = '2'
     option2_forLargeGenome (organism, key, URL_cdna, URL_ncrna, IDs, URL_dna_prefix)
   #======================================================
-  if organism == 'corn':
+     if organism == 'corn': #= 1.6G
     key = 'CORN_AGPv4'
     URL_cdna = 'ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/zea_mays/cdna/Zea_mays.AGPv4.cdna.all.fa.gz'
     URL_ncrna = 'ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/zea_mays/ncrna/Zea_mays.AGPv4.ncrna.fa.gz'
     IDs = '1 2 3 4 5 6 7 8 9 10 Mt Pt'.split(' ')
     URL_dna_prefix = 'ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/zea_mays/dna/Zea_mays.AGPv4.dna.chromosome.'
     URL_irregulars = ['ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/zea_mays/dna/Zea_mays.AGPv4.dna.nonchromosomal.fa.gz']
-    if option == '1':
-      print('option 1 not provided for ' + organism + ', switching to option 2 ...')
-      option = '2'
+    if option == '1': print('option 1 not provided for ' + organism + ', switching to option 2 ...')
+    option = '2'
     option2_forLargeGenome (organism, key, URL_cdna, URL_ncrna, IDs, URL_dna_prefix, URL_irregulars)
   #======================================================
-  if organism == 'rice':
+    if organism == 'rice': #= 300MB
     key = 'RICE_IRGSP_1' 
     URL_cdna = 'ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/oryza_sativa/cdna/Oryza_sativa.IRGSP-1.0.cdna.all.fa.gz'
     URL_ncrna = 'ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/oryza_sativa/ncrna/Oryza_sativa.IRGSP-1.0.ncrna.fa.gz'
@@ -203,12 +202,11 @@ if __name__ == '__main__' :
     IDs = '1 2 3 4 5 6 7 8 9 10 11 12 Mt Pt'.split(' ')
     URL_dna_prefix = 'ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/oryza_sativa/dna/Oryza_sativa.IRGSP-1.0.dna.chromosome.'
     URL_irregulars = []
-    if option == '2':
-      print('option 2 not provided for ' + organism + ', switching to option 1 ...')
-      option = '1'
+    if option == '2': print('option 2 not provided for ' + organism + ', switching to option 1 ...')
+    option = '1'
     option1_forSmallGenome (organism, key, URL_cdna, URL_ncrna, URL_toplevel, IDs, URL_dna_prefix, URL_irregulars)
   #======================================================
-  if organism == 'potato':
+  if organism == 'potato': #= 500MB
     key = 'POTATO_SolTub_3' 
     URL_cdna = 'ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/solanum_tuberosum/cdna/Solanum_tuberosum.SolTub_3.0.cdna.all.fa.gz'
     URL_ncrna = 'ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/solanum_tuberosum/ncrna/Solanum_tuberosum.SolTub_3.0.ncrna.fa.gz'
@@ -216,9 +214,8 @@ if __name__ == '__main__' :
     IDs = '1 2 3 4 5 6 7 8 9 10 11 12'.split(' ')   
     URL_dna_prefix = 'ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/solanum_tuberosum/dna/Solanum_tuberosum.SolTub_3.0.dna.chromosome.'
     URL_irregulars = ['ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/solanum_tuberosum/dna/Solanum_tuberosum.SolTub_3.0.dna.nonchromosomal.fa.gz']
-    if option == '2':
-      print('option 2 not provided for ' + organism + ', switching to option 1 ...')
-      option = '1'
+    if option == '2': print('option 2 not provided for ' + organism + ', switching to option 1 ...')
+    option = '1'
     option1_forSmallGenome (organism, key, URL_cdna, URL_ncrna, URL_toplevel, IDs, URL_dna_prefix, URL_irregulars)
   #======================================================
   if organism == 'brome':
@@ -229,12 +226,11 @@ if __name__ == '__main__' :
     IDs = IDs = '1 2 3 4 5'.split(' ')   
     URL_dna_prefix = 'ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/brachypodium_distachyon/dna/Brachypodium_distachyon.Brachypodium_distachyon_v3.0.dna.chromosome.'
     URL_irregulars = ['ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/brachypodium_distachyon/dna/Brachypodium_distachyon.Brachypodium_distachyon_v3.0.dna.nonchromosomal.fa.gz']
-    if option == '2':
-      print('option 2 not provided for ' + organism + ', switching to option 1 ...')
-      option = '1'
+    if option == '2': print('option 2 not provided for ' + organism + ', switching to option 1 ...')
+    option = '1'
     option1_forSmallGenome (organism, key, URL_cdna, URL_ncrna, URL_toplevel, IDs, URL_dna_prefix, URL_irregulars)
   #======================================================
-  if organism == 'wheatD':
+  if organism == 'wheatD': #= 280MB
     key = 'WHEAT_D'
     URL_cdna = 'ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/aegilops_tauschii/cdna/Aegilops_tauschii.ASM34733v1.cdna.all.fa.gz'    
     URL_ncrna = 'ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/aegilops_tauschii/ncrna/Aegilops_tauschii.ASM34733v1.ncrna.fa.gz'
@@ -243,9 +239,8 @@ if __name__ == '__main__' :
     URL_dna_prefix = ''
     URL_irregulars = ['ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/aegilops_tauschii/dna/Aegilops_tauschii.ASM34733v1.dna.toplevel.fa.gz', \
                       'ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/aegilops_tauschii/dna/Aegilops_tauschii.ASM34733v1.dna.nonchromosomal.fa.gz']
-    if option == '2':
-      print('option 2 not provided for ' + organism + ', switching to option 1 ...')
-      option = '1'
+    if option == '2': print('option 2 not provided for ' + organism + ', switching to option 1 ...')
+    option = '1'
     option1_forSmallGenome (organism, key, URL_cdna, URL_ncrna, URL_toplevel, IDs, URL_dna_prefix, URL_irregulars)
 
 
