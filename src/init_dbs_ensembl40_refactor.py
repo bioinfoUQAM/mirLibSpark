@@ -207,7 +207,7 @@ if __name__ == '__main__' :
     URL_dna_prefix = 'ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/arabidopsis_thaliana/dna/Arabidopsis_thaliana.TAIR10.dna.chromosome.'
     URL_irregulars = []
     if option == '1': option1_forSmallGenome (key, URL_cdna, URL_ncrna, URL_toplevel, IDs, URL_dna_prefix, URL_irregulars)
-    elif option == '2': option2_forLargeGenome (key, URL_cdna, URL_ncrna, IDs, URL_dna_prefix)
+    elif option == '2': option2_forLargeGenome (key, URL_cdna, URL_ncrna, IDs, URL_dna_prefix, URL_irregulars)
   #======================================================
   if organism == 'wheat': #= 15G
     key = 'WHEAT_IWGSC'
@@ -218,7 +218,7 @@ if __name__ == '__main__' :
     URL_irregulars = []
     if option == '1': print('option 1 not provided for ' + organism + ', switching to option 2 ...')
     option = '2'
-    option2_forLargeGenome (organism, key, URL_cdna, URL_ncrna, IDs, URL_dna_prefix)
+    option2_forLargeGenome (organism, key, URL_cdna, URL_ncrna, IDs, URL_dna_prefix, URL_irregulars)
   #======================================================
   if organism == 'corn': #= 1.6G
     key = 'CORN_AGPv4'
