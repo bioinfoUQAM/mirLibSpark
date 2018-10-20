@@ -97,6 +97,7 @@ def option2_forLargeGenome (organism, key, URL_cdna, URL_ncrna, IDs, URL_dna_pre
     #= irregular naming of the chromosomes
     for URL in URL_irregulars:
       wanted_file = URL.split('/')[-1]
+      ID = wanted_file.split('.fa')[0].split('.')[-1]
       curl_and_unzip_file (URL, wanted_file)
       move_chromosomeFile_to (wanted_file, ID, rep2)
 
@@ -138,6 +139,7 @@ def option1_forSmallGenome (organism, key, URL_cdna, URL_ncrna, URL_toplevel, ID
     #= irregular naming of the chromosomes
     for URL in URL_irregulars:
       wanted_file = URL.split('/')[-1]
+      ID = wanted_file.split('.fa')[0].split('.')[-1]
       curl_and_unzip_file (URL, wanted_file)
       move_chromosomeFile_to (wanted_file, ID, rep2)
 
