@@ -16,6 +16,22 @@ rice: 	Oryza_sativa.IRGSP-1.0					python init_dbs_ensembl40.py rice 1	tested_181
 potato: Solanum_tuberosum.SolTub_3.0				python init_dbs_ensembl40.py potato 1   tested_181010_ok
 brome: 	Brachypodium_distachyon.Brachypodium_distachyon_v3.0	python init_dbs_ensembl40.py brome 1    tested_181011_ok
 wheatD: Aegilops_tauschii.ASM34733v1				python init_dbs_ensembl40.py wheatD 1
+
+
+
+updating...
+== supported species ========================================== cmd line ======================================================
+ath: 	Arabidopsis_thaliana.TAIR10				python init_dbs_ensembl40.py ath 1|2 curl-build
+wheat: 	Triticum_aestivum.IWGSC					python init_dbs_ensembl40.py wheat 2 curl-build	
+corn: 	Zea_mays.AGPv4						python init_dbs_ensembl40.py corn 2 curl-build
+rice: 	Oryza_sativa.IRGSP-1.0					python init_dbs_ensembl40.py rice 1 curl-build
+potato: Solanum_tuberosum.SolTub_3.0				python init_dbs_ensembl40.py potato 1 curl-build
+brome: 	Brachypodium_distachyon.Brachypodium_distachyon_v3.0	python init_dbs_ensembl40.py brome 1 curl-build
+wheatD: Aegilops_tauschii.ASM34733v1				python init_dbs_ensembl40.py wheatD 1 curl-build
+
+
+
+
 '''
 
 
@@ -65,7 +81,7 @@ def move_chromosomeFile_to (wanted_file, ID, rep):
     cmd = 'mv '+ fastaFile + ' ' + rep + ID + '.fa'
     os.system(cmd)
 
-def option2_forLargeGenome (organism, key, URL_cdna, URL_ncrna, IDs, URL_dna_prefix, URL_irregulars):
+def option2_forLargeGenome (action, organism, key, URL_cdna, URL_ncrna, IDs, URL_dna_prefix, URL_irregulars):
     ''' generate chromosome-split genome and bowtie index '''
     rep1 = '../dbs/' + key + '/'
     if not os.path.exists(rep1): os.makedirs(rep1)
@@ -74,42 +90,44 @@ def option2_forLargeGenome (organism, key, URL_cdna, URL_ncrna, IDs, URL_dna_pre
     rep3 = rep1 + 'bowtie_index/'
     if not os.path.exists(rep3): os.makedirs(rep3)
 
-    #= get annotation files: cdna, ncrna
-    wanted_file = URL_cdna.split('/')[-1]
-    curl_and_unzip_file (URL_cdna, wanted_file)
-    move_file_to (wanted_file, rep1)
-    #
-    if not URL_ncrna == '':
-      wanted_file = URL_ncrna.split('/')[-1]
-      curl_and_unzip_file (URL_ncrna, wanted_file)
+    if action == 'curl' or action == 'curl-build':
+      #= get annotation files: cdna, ncrna
+      wanted_file = URL_cdna.split('/')[-1]
+      curl_and_unzip_file (URL_cdna, wanted_file)
       move_file_to (wanted_file, rep1)
-
-    #= get chromosomes in "Genome" folder
-    #= irregular naming of the chromosomes
-    for URL in URL_irregulars:
-      wanted_file = URL.split('/')[-1]
-      ID = wanted_file.split('.fa')[0].split('.')[-1]
-      curl_and_unzip_file (URL, wanted_file)
-      move_chromosomeFile_to (wanted_file, ID, rep2)
-    #= get chromosomes but do not put in "Genome" folder yet
-    for ID in IDs:
-      URL_dna = URL_dna_prefix + ID +'.fa.gz'
-      wanted_file = URL_dna.split('/')[-1]
-      curl_and_unzip_file (URL_dna, wanted_file)
-
-    #= build chromosome-split bowtie index in chromosome-specific sub-folders
-    #= put chromosomes in "Genome" folder
-    for ID in IDs:
-      URL_dna = URL_dna_prefix + ID +'.fa.gz'
-      wanted_file = URL_dna.split('/')[-1]
       #
-      rep_ch = rep3 + ID + '/'
-      if not os.path.exists(rep_ch): os.makedirs(rep_ch)
-      #
-      bowtieBuild (wanted_file[:-3], key)
-      cmd = 'mv *.ebwt ' + rep_ch
-      os.system(cmd)
-      move_chromosomeFile_to (wanted_file, ID, rep2)
+      if not URL_ncrna == '':
+        wanted_file = URL_ncrna.split('/')[-1]
+        curl_and_unzip_file (URL_ncrna, wanted_file)
+        move_file_to (wanted_file, rep1)
+
+      #= get chromosomes in "Genome" folder
+      #= irregular naming of the chromosomes
+      for URL in URL_irregulars:
+        wanted_file = URL.split('/')[-1]
+        ID = wanted_file.split('.fa')[0].split('.')[-1]
+        curl_and_unzip_file (URL, wanted_file)
+        move_chromosomeFile_to (wanted_file, ID, rep2)
+      #= get chromosomes but do not put in "Genome" folder yet
+      for ID in IDs:
+        URL_dna = URL_dna_prefix + ID +'.fa.gz'
+        wanted_file = URL_dna.split('/')[-1]
+        curl_and_unzip_file (URL_dna, wanted_file)
+
+    if action == 'build' or action == 'curl-build':
+      #= build chromosome-split bowtie index in chromosome-specific sub-folders
+      #= put chromosomes in "Genome" folder
+      for ID in IDs:
+        URL_dna = URL_dna_prefix + ID +'.fa.gz'
+        wanted_file = URL_dna.split('/')[-1]
+        #
+        rep_ch = rep3 + ID + '/'
+        if not os.path.exists(rep_ch): os.makedirs(rep_ch)
+        #
+        bowtieBuild (wanted_file[:-3], key)
+        cmd = 'mv *.ebwt ' + rep_ch
+        os.system(cmd)
+        move_chromosomeFile_to (wanted_file, ID, rep2)
 
 
 def option1_forSmallGenome (organism, key, URL_cdna, URL_ncrna, URL_toplevel, IDs, URL_dna_prefix, URL_irregulars):
@@ -121,39 +139,41 @@ def option1_forSmallGenome (organism, key, URL_cdna, URL_ncrna, URL_toplevel, ID
     rep3 = rep1 + 'bowtie_index/'
     if not os.path.exists(rep3): os.makedirs(rep3)
 
-    #= get annotation files: cdna, ncrna
-    wanted_file = URL_cdna.split('/')[-1]
-    curl_and_unzip_file (URL_cdna, wanted_file)
-    move_file_to (wanted_file, rep1)
-    #
-    if not URL_ncrna == '':
-      wanted_file = URL_ncrna.split('/')[-1]
-      curl_and_unzip_file (URL_ncrna, wanted_file)
+    if action == 'curl' or action == 'curl-build':
+      #= get annotation files: cdna, ncrna
+      wanted_file = URL_cdna.split('/')[-1]
+      curl_and_unzip_file (URL_cdna, wanted_file)
       move_file_to (wanted_file, rep1)
+      #
+      if not URL_ncrna == '':
+        wanted_file = URL_ncrna.split('/')[-1]
+        curl_and_unzip_file (URL_ncrna, wanted_file)
+        move_file_to (wanted_file, rep1)
 
-    #= get chromosomes in "Genome" folder
-    for ID in IDs:
-      URL_dna = URL_dna_prefix + ID +'.fa.gz'
-      wanted_file = URL_dna.split('/')[-1]
-      curl_and_unzip_file (URL_dna, wanted_file)
-      move_chromosomeFile_to (wanted_file, ID, rep2)
-    #= irregular naming of the chromosomes
-    for URL in URL_irregulars:
-      wanted_file = URL.split('/')[-1]
-      ID = wanted_file.split('.fa')[0].split('.')[-1]
-      curl_and_unzip_file (URL, wanted_file)
-      move_chromosomeFile_to (wanted_file, ID, rep2)
+      #= get chromosomes in "Genome" folder
+      for ID in IDs:
+        URL_dna = URL_dna_prefix + ID +'.fa.gz'
+        wanted_file = URL_dna.split('/')[-1]
+        curl_and_unzip_file (URL_dna, wanted_file)
+        move_chromosomeFile_to (wanted_file, ID, rep2)
+      #= irregular naming of the chromosomes
+      for URL in URL_irregulars:
+        wanted_file = URL.split('/')[-1]
+        ID = wanted_file.split('.fa')[0].split('.')[-1]
+        curl_and_unzip_file (URL, wanted_file)
+        move_chromosomeFile_to (wanted_file, ID, rep2)
 
-    #= build boetie-index in "All" folder
-    repAll = rep3 + 'All/'
-    if not os.path.exists(repAll): os.makedirs(repAll)
-    #
-    wanted_file = URL_toplevel.split('/')[-1]
-    curl_and_unzip_file (URL_toplevel, wanted_file)
-    #
-    bowtieBuild (wanted_file[:-3], key)
-    cmd = 'mv *.ebwt ' + repAll
-    os.system(cmd)
+    if action == 'build' or action == 'curl-build':
+      #= build boetie-index in "All" folder
+      repAll = rep3 + 'All/'
+      if not os.path.exists(repAll): os.makedirs(repAll)
+      #
+      wanted_file = URL_toplevel.split('/')[-1]
+      curl_and_unzip_file (URL_toplevel, wanted_file)
+      #
+      bowtieBuild (wanted_file[:-3], key)
+      cmd = 'mv *.ebwt ' + repAll
+      os.system(cmd)
 
 
 #=========================
@@ -163,14 +183,15 @@ def option1_forSmallGenome (organism, key, URL_cdna, URL_ncrna, URL_toplevel, ID
 #=========================
 if __name__ == '__main__' :
   '''
-  usage: init_dbs_ensembl40 [organism code] [1|2]
-  example: python init_dbs_ensembl40.py ath 1
+  usage: init_dbs_ensembl40 [organism code] [1|2] [curl|build|curl-build]
+  example: python init_dbs_ensembl40.py ath 1 curl-build
   '''
-  if not len(sys.argv) == 3:
-    sys.stderr.write('please provide organism code. \nusage: main [organism code] [1|2]\nexample: python init_dbs_ensembl40.py ath 1\n option 1: bowtie indexing whole genome; option 2: bowtie indexing split genome\nSupported organism codes: ath, wheat, rice, potato, brome, corn, wheatD')
+  if not len(sys.argv) == 4:
+      sys.stderr.write('usage: main [organism code] [1|2]\nexample: python init_dbs_ensembl40.py ath 1 curl-build\n option 1: bowtie indexing whole genome; option 2: bowtie indexing split genome\nSupported organism codes: ath, wheat, rice, potato, brome, corn, wheatD\n action curl: access internet and get genome; action build: build bowtie index after having obtained genome; action curl-build: do both')
     sys.exit()
   organism = sys.argv[1]
   option = sys.argv[2] #=1: All; 2: split chromosome
+  action = sys.argv[3] #=1: All; 2: split chromosome
   
   
   #======================================================
