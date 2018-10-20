@@ -169,8 +169,6 @@ def option1_forSmallGenome (organism, key, URL_cdna, URL_ncrna, URL_toplevel, ID
       if not os.path.exists(repAll): os.makedirs(repAll)
       #
       wanted_file = URL_toplevel.split('/')[-1]
-      curl_and_unzip_file (URL_toplevel, wanted_file)
-      #
       bowtieBuild (wanted_file[:-3], key)
       cmd = 'mv *.ebwt ' + repAll
       os.system(cmd)
