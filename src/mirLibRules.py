@@ -352,15 +352,15 @@ class prog_dominant_profile () :
     old elem in bowbloc = (id, [seq, frq, nbloc, [bowties]])
     new elem in bowbloc = (seq, [frq, nbloc, [bowties]])
     '''
-    #totalfrq = 0
-    #for elem in bowbloc :
-    #  bowties = elem[1][2]
-    #  for bowtie in bowties :
-    #    posgen = bowtie[2]
-    #    if (x < posgen < y) :
-    #      frq = elem[1][0]
-    #      totalfrq += frq
-    #return totalfrq
+    totalfrq = 0
+    for elem in bowbloc :
+      bowties = elem[1][2]
+      for bowtie in bowties :
+        posgen = bowtie[2]
+        if (x < posgen < y) :
+          frq = elem[1][0]
+          totalfrq += frq
+    return totalfrq
 
     #totalfrq = 0
     #for e in bowbloc :
@@ -370,15 +370,15 @@ class prog_dominant_profile () :
     #    totalfrq += frq
     #return totalfrq
 
-    totalfrq = 0
-    posgen = x
-    while posgen < y:
-      for e in bowbloc :
-        posgen = e[0]
-        if x < posgen:
-          frq = e[1]
-          totalfrq += frq
-    return totalfrq
+    #totalfrq = 0
+    #posgen = x
+    #while posgen < y:
+    #  for e in bowbloc :
+    #    posgen = e[0]
+    #    if x < posgen:
+    #      frq = e[1]
+    #      totalfrq += frq
+    #return totalfrq
 
 
 
