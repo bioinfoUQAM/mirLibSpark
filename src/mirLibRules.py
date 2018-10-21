@@ -322,8 +322,8 @@ class prog_dominant_profile () :
   def __init__(self):
     self.env = os.environ
   
+  '''
   def get_bowtie_strandchromo_dict (self, bowtie_rdd_collect):
-    ''' elem : (seq, [frq, nbloc, [bowties]]) '''
     dict_bowtie_chromo_strand = {}
     
     for elem in bowtie_rdd_collect :
@@ -346,6 +346,28 @@ class prog_dominant_profile () :
       #dict_bowtie_chromo_strand[k] = v.sort(key=lambda x: int(x[0]))
     
     return dict_bowtie_chromo_strand
+    '''
+
+
+  def get_bowtie_strandchromo_dict (self, bowtie_rdd_collect):
+    '''elem : (seq, [frq, nbloc, [bowties]])
+    '''
+    dict_bowtie_chromo_strand = {}
+    
+    for elem in bowtie_rdd_collect :
+      bowties = elem[1][2]
+      
+      for bowtie in bowties :
+        #= concatenate chromosome (bowtie[1]) and strand (bowtie[0])
+        chromo_strand = bowtie[1] + bowtie[0]
+        
+        if chromo_strand not in dict_bowtie_chromo_strand.keys():
+          dict_bowtie_chromo_strand[chromo_strand] = []
+        
+        dict_bowtie_chromo_strand[chromo_strand].append(elem)
+    
+    return dict_bowtie_chromo_strand
+
   
   def calculateTotalfrq (self, bowbloc, x, y):
     ''' 
