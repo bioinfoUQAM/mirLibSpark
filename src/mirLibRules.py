@@ -355,12 +355,13 @@ class prog_dominant_profile () :
     totalfrq = 0
     for elem in bowbloc :
       bowties = elem[1][2]
+      frq = elem[1][0]
       for bowtie in bowties :
         posgen = bowtie[2]
         if (x < posgen < y) :
-          frq = elem[1][0]
           totalfrq += frq
     return totalfrq
+
 
     #totalfrq = 0
     #for e in bowbloc :
