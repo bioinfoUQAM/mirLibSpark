@@ -308,6 +308,9 @@ if __name__ == '__main__' :
                                           .collect()
     dict_bowtie_chromo_strand = mru.sort_DictBowtieCS(list_bowtie_chromo_strand)
     #broadcastVar_bowtie_chromo_strand = sc.broadcast(dict_bowtie_chromo_strand) 
+
+    print('dict_bowtie_chromo_strand ==============================================================================')
+    for k, v in dict_bowtie_chromo_strand.items(): print(k, v)
     #================================================================================================================
 
 
