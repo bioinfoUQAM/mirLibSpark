@@ -302,11 +302,11 @@ if __name__ == '__main__' :
     #================================================================================================================
     #= map: (chromo+strand, [posChr, freq])
     #= groupByKey: (chromo+strand, [[posChr, freq],...])
-    dict_bowtie_chromo_strand = bowFrq_rdd.flatMap(mru.flatmap_mappings)\
+    list_bowtie_chromo_strand = bowFrq_rdd.flatMap(mru.flatmap_mappings)\
                                           .map(lambda e: (e[1][2][1] + e[1][2][0], [e[1][2][2], e[1][0]]) )\
                                           .groupByKey().mapValues(list)\
                                           .collect()
-    dict_bowtie_chromo_strand = mru.sort_DictBowtieCS(dict_bowtie_chromo_strand)
+    dict_bowtie_chromo_strand = mru.sort_DictBowtieCS(list_bowtie_chromo_strand)
     #broadcastVar_bowtie_chromo_strand = sc.broadcast(dict_bowtie_chromo_strand) 
     #================================================================================================================
 

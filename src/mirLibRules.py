@@ -13,9 +13,12 @@ from operator import itemgetter
 #bin = '../lib/'
 bin = ''
 
-def sort_DictBowtieCS(dict_bowtie_chromo_strand):
-  for k, v in dict_bowtie_chromo_strand.items():
-    dict_bowtie_chromo_strand[v] = v.sort(key=lambda x: x[0])
+def sort_DictBowtieCS(list_bowtie_chromo_strand):
+  dict_bowtie_chromo_strand = {}
+  for i in list_bowtie_chromo_strand:
+    k = i[0]
+    v = i[1]
+    dict_bowtie_chromo_strand[k] = v.sort(key=lambda x: x[0])
   return dict_bowtie_chromo_strand
     
 def rearrange_rule(kv_arg, kv_sep):
