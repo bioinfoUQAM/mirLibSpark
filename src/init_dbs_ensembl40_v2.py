@@ -16,7 +16,7 @@ wheatD: Aegilops_tauschii.ASM34733v1
 
 update: 2018-10-20 refactor for compute canada, beacuse worker nodes do not have access to internet and curl does not work.
 
-#= NOTE: irregular URL chromosomes are not explicitly included for bowtie-build, but I am not sure if they are already oncluded in ensembl toplevel.
+#= NOTE: there is a problem with wheatD build. I think the problem is the original genome, not my local operations. Hence inactivate the support of wheatD. 
 
 
 
@@ -35,7 +35,7 @@ python init_dbs_ensembl40_v2.py corn 2 curl-build
 python init_dbs_ensembl40_v2.py rice 1 curl-build
 python init_dbs_ensembl40_v2.py potato 1 curl-build
 python init_dbs_ensembl40_v2.py brome 1 curl-build
-python init_dbs_ensembl40_v2.py wheatD 1 curl-build
+####python init_dbs_ensembl40_v2.py wheatD 1 curl-build
 
 #===============================================================
 #= Two steps "curl" and "build", using sbatch on compute canada
@@ -58,7 +58,7 @@ python init_dbs_ensembl40_v2.py corn 2 build
 python init_dbs_ensembl40_v2.py rice 1 build
 python init_dbs_ensembl40_v2.py potato 1 build
 python init_dbs_ensembl40_v2.py brome 1 build
-python init_dbs_ensembl40_v2.py wheatD 1 build
+####python init_dbs_ensembl40_v2.py wheatD 1 build
 '''
 
 
@@ -294,18 +294,18 @@ if __name__ == '__main__' :
     option = '1'
     option1_forSmallGenome (key, URL_cdna, URL_ncrna, URL_toplevel, IDs, URL_dna_prefix, URL_irregulars)
   #======================================================
-  if organism == 'wheatD': #= 600MB
+  if organism == 'wheatD': #= 800MB
+    print('original ensembl genome problem, inactivate support untill resolved. exiting...')
     key = 'WHEAT_D'
     URL_cdna = 'ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/aegilops_tauschii/cdna/Aegilops_tauschii.ASM34733v1.cdna.all.fa.gz'    
     URL_ncrna = 'ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/aegilops_tauschii/ncrna/Aegilops_tauschii.ASM34733v1.ncrna.fa.gz'
     URL_toplevel = 'ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/aegilops_tauschii/dna/Aegilops_tauschii.ASM34733v1.dna.toplevel.fa.gz'
-    IDs = []  
-    URL_dna_prefix = ''
-    URL_irregulars = ['ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/aegilops_tauschii/dna/Aegilops_tauschii.ASM34733v1.dna.toplevel.fa.gz', \
-                      'ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/aegilops_tauschii/dna/Aegilops_tauschii.ASM34733v1.dna.nonchromosomal.fa.gz']
-    if option == '2': print('option 2 not provided for ' + organism + ', switching to option 1 ...')
-    option = '1'
-    option1_forSmallGenome (key, URL_cdna, URL_ncrna, URL_toplevel, IDs, URL_dna_prefix, URL_irregulars)
+    IDs = ['toplevel']  
+    URL_dna_prefix = 'ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/aegilops_tauschii/dna/Aegilops_tauschii.ASM34733v1.dna.'
+    URL_irregulars = ['ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/aegilops_tauschii/dna/Aegilops_tauschii.ASM34733v1.dna.nonchromosomal.fa.gz']
+    #if option == '2': print('option 2 not provided for ' + organism + ', switching to option 1 ...')
+    #option = '1'
+    #option1_forSmallGenome (key, URL_cdna, URL_ncrna, URL_toplevel, IDs, URL_dna_prefix, URL_irregulars)
 
 
 

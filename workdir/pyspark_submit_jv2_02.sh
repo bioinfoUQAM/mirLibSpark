@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --account=def-banire
-#SBATCH --time=00:30:00
+#SBATCH --time=00:10:00
 #SBATCH --nodes=1
 #SBATCH --mem=100000M
 #SBATCH --cpus-per-task=10
@@ -28,7 +28,8 @@ module load blast+/2.6.0
 pip install --user requests
 pip install --user -r requirements.txt
 
-export _JAVA_OPTIONS="-Xms2g -Xmx4g"
+#= _JAVA_OPTIONS can only be integer, such as 3g, 4g, but not 3.2g
+export _JAVA_OPTIONS="-Xms3g -Xmx4g"
 export SPARK_IDENT_STRING=$SLURM_JOBID
 export SPARK_WORKER_DIR=$SLURM_TMPDIR
 start-all.sh

@@ -293,10 +293,25 @@ if __name__ == '__main__' :
                            .map(bowtie_obj.bowtie_freq_rearrange_rule)
     print('NB bowFrq_rdd: ', bowFrq_rdd.count())
 
-
-    #= Create dict, chromo_strand as key to search bowtie blocs in the following dict
-    x = bowFrq_rdd.map(mru.slimData_bowFrq).collect()
+    #= Create dict, chromo_strand as key to search bowtie blocs in the following dict 
+    #x = bowFrq_rdd.map(lambda e: ('', [  e[1][0], 0, [e[1][2]] ])).collect()
+    x = bowFrq_rdd.collect()
     dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(x)
+
+
+
+    #================================================================================================================
+    #= map: (chromo+strand, [posChr, freq])
+    #= groupByKey: (chromo+strand, [[posChr, freq],...])
+    #list_bowtie_chromo_strand = bowFrq_rdd.flatMap(mru.flatmap_mappings)\
+    #                                      .map(lambda e: (e[1][2][1] + e[1][2][0], [e[1][2][2], e[1][0]]) )\
+    #                                      .groupByKey().mapValues(_.toList)\
+    #                                      .collect()
+    #dict_bowtie_chromo_strand = mru.sort_DictBowtieCS(list_bowtie_chromo_strand)
+    #print('dict_bowtie_chromo_strand ==============================================================================')
+    #for k, v in dict_bowtie_chromo_strand.items(): print(k, v)
+    #================================================================================================================
+
     #broadcastVar_bowtie_chromo_strand = sc.broadcast(dict_bowtie_chromo_strand) 
 
 

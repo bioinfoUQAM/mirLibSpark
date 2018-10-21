@@ -43,8 +43,7 @@ message=\nwrite your message (for stdout) here line1\nline2: \nChr=3A
 #
 #==================== Absolute paths in user's computer, please modify this string according to need: /home/cloudera/vm_dropbox_projects/1_Project_mirLibHadoop/gitRepo_mirLibHadoop/
 project_path=/home/cloudera/workspace/mirLibSpark/
-#input_path=/home/cloudera/workspace/mirLibSpark/input/
-input_path=/home/cloudera/vm_share/Wheat_field_libraries/
+input_path=/home/cloudera/workspace/mirLibSpark/input/
 output_path=/home/cloudera/vm_dropbox_projects/1_Project_mirLibHadoop/gitRepo_mirLibHadoop/mirLibSpark/output/
 #
 genome_path=/home/cloudera/vm_share/dbs/WHEAT_IWGSC/Genome/

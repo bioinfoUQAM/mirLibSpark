@@ -13,14 +13,14 @@ from operator import itemgetter
 #bin = '../lib/'
 bin = ''
 
-def slimData_bowFrq(e):
-  '''
-  in:  ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
-  out: ('', [freq, nbLoc, [['strd','chr',posChr],..]])
-  '''
-  e[0] = ''
-  return e
-
+def sort_DictBowtieCS(list_bowtie_chromo_strand):
+  dict_bowtie_chromo_strand = {}
+  for i in list_bowtie_chromo_strand:
+    k = i[0]
+    v = i[1]
+    dict_bowtie_chromo_strand[k] = v.sort(key=lambda x: x[0])
+  return dict_bowtie_chromo_strand
+    
 def rearrange_rule(kv_arg, kv_sep):
   '''
   ## in : u'seq\tfreq'
@@ -322,8 +322,36 @@ class prog_dominant_profile () :
   def __init__(self):
     self.env = os.environ
   
+  '''
   def get_bowtie_strandchromo_dict (self, bowtie_rdd_collect):
-    ''' elem : (seq, [frq, nbloc, [bowties]]) '''
+    dict_bowtie_chromo_strand = {}
+    
+    for elem in bowtie_rdd_collect :
+      bowties = elem[1][2]
+      freq = elem[1][0]
+      
+      for bowtie in bowties :
+        #= concatenate chromosome (bowtie[1]) and strand (bowtie[0])
+        chromo = bowtie[1]
+        strand = bowtie[0]
+        posChr = bowtie[2]
+        chromo_strand = chromo + strand
+
+        if chromo_strand not in dict_bowtie_chromo_strand.keys():
+          dict_bowtie_chromo_strand[chromo_strand] = []
+        new_elem = [posChr, freq]
+        dict_bowtie_chromo_strand[chromo_strand].append(new_elem)
+
+    #for k, v in dict_bowtie_chromo_strand.items():
+      #dict_bowtie_chromo_strand[k] = v.sort(key=lambda x: int(x[0]))
+    
+    return dict_bowtie_chromo_strand
+    '''
+
+
+  def get_bowtie_strandchromo_dict (self, bowtie_rdd_collect):
+    '''elem : (seq, [frq, nbloc, [bowties]])
+    '''
     dict_bowtie_chromo_strand = {}
     
     for elem in bowtie_rdd_collect :
@@ -339,6 +367,7 @@ class prog_dominant_profile () :
         dict_bowtie_chromo_strand[chromo_strand].append(elem)
     
     return dict_bowtie_chromo_strand
+
   
   def calculateTotalfrq (self, bowbloc, x, y):
     ''' 
@@ -355,22 +384,27 @@ class prog_dominant_profile () :
           totalfrq += frq
     return totalfrq
 
-  def refactor_calculateTotalfrq (self, bowbloc, x, y):
-    ''' 
-    REFACTORING 2018-10-20 #=model cmd: totalTimeSec = reduce((lambda x,y : x + y), timeDict.values())
-    
-    old elem in bowbloc = (id, [seq, frq, nbloc, [bowties]])
-    new elem in bowbloc = (seq, [frq, nbloc, [bowties]])
-    '''
-    totalfrq = 0
-    for elem in bowbloc :
-      bowties = elem[1][2]
-      for bowtie in bowties :
-        posgen = bowtie[2]
-        if (x < posgen < y) :
-          frq = elem[1][0]
-          totalfrq += frq
-    return totalfrq
+
+    #totalfrq = 0
+    #for e in bowbloc :
+    #  posgen = e[0]
+    #  if (x < posgen < y) :
+    #    frq = e[1]
+    #    totalfrq += frq
+    #return totalfrq
+
+    #totalfrq = 0
+    #posgen = x
+    #while posgen < y:
+    #  for e in bowbloc :
+    #    posgen = e[0]
+    #    if x < posgen:
+    #      frq = e[1]
+    #      totalfrq += frq
+    #return totalfrq
+
+
+
 
   def profile_range (self, elem):
     ''' 
@@ -401,7 +435,7 @@ class prog_dominant_profile () :
     elem[1].append(totalfrq)
     return elem
 
-  def exp_profile_filter (self, elem, dict_bowtie_chromo_strand):
+  def exp_profile_filter__ (self, elem, dict_bowtie_chromo_strand):
     ''' 
     defunct
     old : elem = (id, [seq, frq, nbloc, [bowtie], [pri_miRNA], [pre_miRNA]])

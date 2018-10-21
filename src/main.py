@@ -66,6 +66,10 @@ cmd = 'time spark-submit mirLibPipeline.py ../paramfile_ATH_TAIR10.txt 2>/dev/nu
 #cmd = 'free -m';os.system(cmd)
 
 
+
+
+#sed -n 2000,2004p file
+
 #dos2unix windows.txt unix.txt
 
 
