@@ -300,7 +300,7 @@ if __name__ == '__main__' :
     URL_ncrna = 'ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/aegilops_tauschii/ncrna/Aegilops_tauschii.ASM34733v1.ncrna.fa.gz'
     URL_toplevel = 'ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/aegilops_tauschii/dna/Aegilops_tauschii.ASM34733v1.dna.toplevel.fa.gz'
     IDs = ['toplevel']  
-    URL_dna_prefix = 'ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/aegilops_tauschii/dna/Aegilops_tauschii.ASM34733v1.dna'
+    URL_dna_prefix = 'ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/aegilops_tauschii/dna/Aegilops_tauschii.ASM34733v1.dna.'
     URL_irregulars = ['ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/aegilops_tauschii/dna/Aegilops_tauschii.ASM34733v1.dna.nonchromosomal.fa.gz']
     if option == '2': print('option 2 not provided for ' + organism + ', switching to option 1 ...')
     option = '1'
