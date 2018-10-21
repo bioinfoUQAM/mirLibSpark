@@ -30,8 +30,6 @@ def validate_options(paramDict):
   perform_differnatial_analysis = paramDict['perform_differnatial_analysis']
   perform_KEGGpathways_enrichment_analysis= paramDict['perform_KEGGpathways_enrichment_analysis']
 
-
-
   if input_type == 'a' and not adapter == 'none':
     sys.stderr.write("The adapter option must be 'none' for the input_type_a.\nExit the program.")
     sys.exit()
@@ -39,8 +37,6 @@ def validate_options(paramDict):
   if perform_KEGGpathways_enrichment_analysis == 'yes' and perform_differnatial_analysis == 'no':
     sys.stderr.write("KEGG pathway enrichment analysis must be done after differential expression analysis.\nExit the program.")
     sys.exit()
-
-
 
   #= verify if input folder contain all files requisted by diffguide file
   if perform_differnatial_analysis == 'yes':
@@ -51,7 +47,6 @@ def validate_options(paramDict):
       if infile not in infiles: 
         sys.stderr.write('One or more input files requested by diffguide_file are not provided in the input folder.\nExit the program.')
         sys.exit()
-
 
 def transpose_txt(infile, outfile):
     with open(infile, 'r') as f:
@@ -220,7 +215,6 @@ def getRevComp (seq):
   n_seq = seq.translate(trantab)
   return n_seq[::-1]
 
-
 def tr_T_U (seq):
   from string import maketrans
   trantab = maketrans("T", "U")
@@ -230,7 +224,6 @@ def tr_U_T (seq):
   from string import maketrans
   trantab = maketrans("U", "T")
   return seq.translate(trantab)
-
 
 def getChromosomeName (file):
   desc = ""
@@ -322,8 +315,6 @@ def containsOnlyOneLoop (folding):
     if m: return False
     return True
 
-
-
 def writeToFile (results, outfile):
     ## in: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq]) 
     fh_out = open (outfile, 'w')
@@ -369,7 +360,6 @@ def writeToFile (results, outfile):
       print(line, file=fh_out)
     fh_out.close()
 
-
 def writeTimeLibToFile (timeDict, outfile, appId, paramDict):
   import datetime
   
@@ -402,7 +392,6 @@ def writeTimeLibToFile (timeDict, outfile, appId, paramDict):
       print("# " + key + ": " + paramDict[key], file=fh_out)
  
   fh_out.close()
-
 
 ###########################
 ## WORK IN PROGRESS ==> precursor geno loci summary
@@ -524,7 +513,6 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
   os.remove(infile) 
 
   return sorted(master_distinctPrecursor_infos), sorted(master_predicted_distinctMiRNAs)
-
 
 def writeTargetsToFile (mirna_and_targets, rep_output, appId):
   ## in:  [miRNAseq, [targets], mirnazipindex]
@@ -690,7 +678,7 @@ def get_nonMirna_coors (infile):
 def get_nonMirna_list (infile, genome_path):
   ''' defunct '''
   genome = ut.getGenome (genome_path, file_ext, 'All') #= genome[chr] = sequence
-  #infile = '../dbs/TAIR10_ncRNA_CDS.gff'
+  #= infile = '../dbs/TAIR10_ncRNA_CDS.gff'
   l_non_miRNA = [] #= ['TGGATTTATGAAAGACGAACAACTGCGAAA']
   with open (infile, 'r') as fh:
     for i in fh:
@@ -725,7 +713,7 @@ def __write_diff_output (a, b, rep, appId):
   infile = rep + appId + '_summaryFreq.txt'
 
   #= a/b: a: numerator, b: denominator
-  #a = 'fake_a3'; b = 'fake_a'
+  #= a = 'fake_a3'; b = 'fake_a'
   outfile = rep + appId + '_diff_' + a + '_' + b + '.txt'
   with open (infile, 'r') as fh: DATA = [x.rstrip('\n').split('\t') for x in fh.readlines()]
 
@@ -743,7 +731,6 @@ def __write_diff_output (a, b, rep, appId):
   for i in DATA: print( '\t'.join([str(x) for x in i]), file=fh_out)
   fh_out.close()
 
-
 def diff_output (diffguide_file, rep, appId):
   diffguide, _ = __read_diffguide(diffguide_file)
   diff_outs = []
@@ -753,7 +740,6 @@ def diff_output (diffguide_file, rep, appId):
     __write_diff_output (a, b, rep, appId)
     diff_outs.append( appId + '_diff_' + a + '_' + b )
   return diff_outs
-
 
 def __dictPathwayDescription (infile):
   #= {ko04978: Mineral absorption	Organismal Systems}, {GO:0006351: transcription, DNA-templated}
@@ -819,16 +805,14 @@ def __create_inputs_for_enrichment_analysis (diff_outs, pathway_description_file
   enrich_output = rep_output + ID + '/output_comput_enrich'
   if not os.path.exists(enrich_output): os.makedirs(enrich_output)
 
-
   outfile = folder + '/background_' + ID
   __create_background (outfile, list_mirna_and_topscoredTargetsKEGGpathway, dict_pathway_description)
   __create_diff_annotation (rep_output, diff_outs, list_mirna_and_topscoredTargetsKEGGpathway, folder)
 
-
 def perform_enrichment_analysis (diff_outs, pathway_description_file, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId, project_path):
   keyword =  appId + '_topscoredTargetsKEGGpathway'
   __create_inputs_for_enrichment_analysis (diff_outs, pathway_description_file, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId)
-  #cmd = 'perl compute_enrichment.pl ' + rep_output + keyword + '/namecode.txt ' + rep_output + keyword +'/output_comput_enrich 1'
+  #= cmd = 'perl compute_enrichment.pl ' + rep_output + keyword + '/namecode.txt ' + rep_output + keyword +'/output_comput_enrich 1'
   cmd = 'perl ' + project_path + '/src/'+ 'compute_enrichment.pl ' + rep_output + keyword + '/namecode.txt ' + rep_output + keyword +'/output_comput_enrich/ 1'
   os.system(cmd)
 
