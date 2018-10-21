@@ -393,7 +393,7 @@ class prog_dominant_profile () :
     elem[1].append(totalfrq)
     return elem
 
-  def exp_profile_filter (self, elem, dict_bowtie_chromo_strand):
+  def exp_profile_filter__ (self, elem, dict_bowtie_chromo_strand):
     ''' 
     defunct
     old : elem = (id, [seq, frq, nbloc, [bowtie], [pri_miRNA], [pre_miRNA]])
