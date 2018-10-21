@@ -13,7 +13,11 @@ from operator import itemgetter
 #bin = '../lib/'
 bin = ''
 
-
+def sort_DictBowtieCS(dict_bowtie_chromo_strand):
+  for k, v in dict_bowtie_chromo_strand.items():
+    dict_bowtie_chromo_strand[v] = v.sort(key=lambda x: x[0])
+  return dict_bowtie_chromo_strand
+    
 def rearrange_rule(kv_arg, kv_sep):
   '''
   ## in : u'seq\tfreq'
@@ -355,13 +359,25 @@ class prog_dominant_profile () :
     #      totalfrq += frq
     #return totalfrq
 
+    #totalfrq = 0
+    #for e in bowbloc :
+    #  posgen = e[0]
+    #  if (x < posgen < y) :
+    #    frq = e[1]
+    #    totalfrq += frq
+    #return totalfrq
+
     totalfrq = 0
-    for e in bowbloc :
-      posgen = e[0]
-      if (x < posgen < y) :
-        frq = e[1]
-        totalfrq += frq
+    posgen = x
+    while posgen < y:
+      for e in bowbloc :
+        posgen = e[0]
+        if x < posgen:
+          frq = e[1]
+          totalfrq += frq
     return totalfrq
+
+
 
 
   def profile_range (self, elem):
