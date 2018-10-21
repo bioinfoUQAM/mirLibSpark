@@ -335,8 +335,8 @@ class prog_dominant_profile () :
         new_elem = [posChr, freq]
         dict_bowtie_chromo_strand[chromo_strand].append(new_elem)
 
-    for k, v in dict_bowtie_chromo_strand.items():
-      dict_bowtie_chromo_strand[k] = v.sort(key=lambda x: int(x[0]))
+    #for k, v in dict_bowtie_chromo_strand.items():
+      #dict_bowtie_chromo_strand[k] = v.sort(key=lambda x: int(x[0]))
     
     return dict_bowtie_chromo_strand
   

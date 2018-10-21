@@ -294,8 +294,10 @@ if __name__ == '__main__' :
     print('NB bowFrq_rdd: ', bowFrq_rdd.count())
 
 
-    #= Create dict, chromo_strand as key to search bowtie blocs in the following dict
-    x = bowFrq_rdd.collect()
+    #= Create dict, chromo_strand as key to search bowtie blocs in the following dict 
+    #('seq', [freq, nbLoc, ['strd','chr',posChr])
+
+    x = bowFrq_rdd.flatMap(mru.flatmap_mappings).map(lambda e: ('', [e[1][0], 0, e[1][2]] ) ).collect()
     dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(x)
     #broadcastVar_bowtie_chromo_strand = sc.broadcast(dict_bowtie_chromo_strand) 
 
