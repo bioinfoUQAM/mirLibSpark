@@ -19,7 +19,7 @@ python init_dbs_ensembl40_v2.py corn 2 build
 python init_dbs_ensembl40_v2.py rice 1 build
 python init_dbs_ensembl40_v2.py potato 1 build
 python init_dbs_ensembl40_v2.py brome 1 build
-python init_dbs_ensembl40_v2.py wheatD 1 build
+#python init_dbs_ensembl40_v2.py wheatD 1 build
 
 
 
