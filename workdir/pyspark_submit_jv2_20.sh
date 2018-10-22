@@ -2,7 +2,7 @@
 #SBATCH --job-name=jv2-20-wheat-mirL11500M1n32pn-181022-newsubmitfile
 #SBATCH --account=def-banire
 #SBATCH --time=00:10:00
-#SBATCH --nodes=2
+#SBATCH --nodes=1
 #SBATCH --mem=115000M
 #SBATCH --cpus-per-task=2
 #SBATCH --ntasks-per-node=16
