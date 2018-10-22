@@ -412,7 +412,12 @@ if __name__ == '__main__' :
     #================================================================================================================
     print('creating dict_bowtie_chromo_strand')
     #= Create dict, chromo_strand as key to search bowtie blocs in the following dict 
-    x = bowFrq_rdd.flatMap(mru.flatmap_mappings).map(lambda e: (e[1][2][1] + e[1][2][0], [e[1][2][2], e[1][0]]) ).collect()
+    #x = bowFrq_rdd.flatMap(mru.flatmap_mappings).map(lambda e: (e[1][2][1] + e[1][2][0], [e[1][2][2], e[1][0]]) ).collect()
+    x = bowFrq_rdd.flatMap(mru.flatmap_mappings)\
+                  .map(lambda e: (e[1][2][1] + '_' + e[1][2][0] + '_' + e[1][2][2], e[1][0]) )\
+                  .reduceByKey(lambda a, b: a+b)\
+                  .map(lambda e: (e[0].split('_')[0] +  e[0].split('_')[1], [e[0].split('_')[2], e[1]]))
+                  .collect()
     dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(x)
     print('current time:', datetime.datetime.now())
     #================================================================================================================

@@ -332,7 +332,7 @@ class prog_dominant_profile () :
 
       if poschr not in dict_bowtie_chromo_strand[chromo_strand]:
         dict_bowtie_chromo_strand[chromo_strand][poschr] = freq
-      else: dict_bowtie_chromo_strand[chromo_strand][poschr] += freq 
+      #else: dict_bowtie_chromo_strand[chromo_strand][poschr] += freq 
     
     return dict_bowtie_chromo_strand
   
