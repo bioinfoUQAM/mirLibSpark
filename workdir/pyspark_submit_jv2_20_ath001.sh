@@ -1,13 +1,13 @@
 #!/bin/bash
-#SBATCH --job-name=jv2-20-wheat-mirL11500M1n32pn-181022-newsubmitfile
+#SBATCH --job-name=jv2-20-ath100txt-mirL-181022
 #SBATCH --account=def-banire
-#SBATCH --time=00:10:00
+#SBATCH --time=10:00:00
 #SBATCH --nodes=1
 #SBATCH --mem=115000M
-#SBATCH --cpus-per-task=2
-#SBATCH --ntasks-per-node=16
-#SBATCH --error=jobout/%x-%j.err
-#SBATCH --output=jobout/%x-%j.out
+#SBATCH --cpus-per-task=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --error=jobout_ath_experiment/%x-%j.err
+#SBATCH --output=jobout_ath_experiment/%x-%j.out
 #SBATCH --mail-user=wu.chaojung@gmail.com
 #SBATCH --mail-type=ALL
 
