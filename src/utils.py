@@ -76,11 +76,12 @@ def pyspark_configuration(appMaster, appName, masterMemory, execMemory, execCore
   myConf = SparkConf()
   myConf.setAppName(appName)  #= 'mirLibSpark'
   myConf.set("spark.driver.maxResultSize", '1500M') #= default 1g
+  #
+  myConf.set("spark.driver.memory", masterMemory)
+  myConf.set("spark.executor.memory", execMemory)
 
   #= no need to configure the followings
   #myConf.setMaster(appMaster) #= 'local[2] or local[*]'
-  #myConf.set("spark.driver.memory", masterMemory)
-  #myConf.set("spark.executor.memory", execMemory) 
   #myConf.set("spark.cores.max", execCores) 
   #
   # other keys: "spark.master" = 'spark://5.6.7.8:7077'
