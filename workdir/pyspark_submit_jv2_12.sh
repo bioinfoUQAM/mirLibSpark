@@ -1,11 +1,11 @@
 #!/bin/bash
+#SBATCH --job-name=jv2-12-wheat-mirL11500M1n32pn-181022
 #SBATCH --account=def-banire
-#SBATCH --time=00:10:00
+#SBATCH --time=08:00:00
 #SBATCH --nodes=1
-#SBATCH --mem=100000M
-#SBATCH --cpus-per-task=10
+#SBATCH --mem=115000M
+#SBATCH --cpus-per-task=32
 #SBATCH --ntasks-per-node=1
-#SBATCH --job-name=jv2-03-mirL10000M1n10pn-181016
 #SBATCH --error=jobout/%x-%j.err
 #SBATCH --output=jobout/%x-%j.out
 #SBATCH --mail-user=wu.chaojung@gmail.com
@@ -28,8 +28,7 @@ module load blast+/2.6.0
 pip install --user requests
 pip install --user -r requirements.txt
 
-#= _JAVA_OPTIONS can only be integer, such as 3g, 4g, but not 3.2g
-export _JAVA_OPTIONS="-Xms3g -Xmx4g"
+export _JAVA_OPTIONS="-Xms2g -Xmx4g"
 export SPARK_IDENT_STRING=$SLURM_JOBID
 export SPARK_WORKER_DIR=$SLURM_TMPDIR
 start-all.sh
@@ -43,11 +42,10 @@ slaves_pid=$!
 
 
 #= example:
-#srun -n ${NWORKERS} -N ${NWORKERS} spark-submit --master ${MASTER_URL} --executor-memory ${SLURM_MEM_PER_NODE}M /home/cjwu/project/cjwu/gitRepo/mirLibSpark/workdir/pi.py 1000
+#spark-submit --master ${MASTER_URL} --executor-memory ${SLURM_MEM_PER_NODE}M /home/cjwu/project/cjwu/gitRepo/mirLibSpark/workdir/pi.py 1000
 
 
-#srun -n ${NWORKERS} -N ${NWORKERS} spark-submit --master ${MASTER_URL} --executor-memory ${SLURM_MEM_PER_NODE}M ../src/mirLibPipeline.py ../paramfile_ATH_TAIR10_graham.txt
-spark-submit --master ${MASTER_URL} --executor-memory ${SLURM_MEM_PER_NODE}M ../src/mirLibPipeline.py ../paramfile_ATH_TAIR10_graham.txt
+spark-submit --master ${MASTER_URL} --executor-memory ${SLURM_MEM_PER_NODE}M ../src/mirLibPipeline.py ../paramfile_WHEAT_IWGSC_graham.txt
 
 kill $slaves_pid
 stop-all.sh
