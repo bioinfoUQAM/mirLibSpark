@@ -294,8 +294,7 @@ if __name__ == '__main__' :
     print('NB bowFrq_rdd: ', bowFrq_rdd.count())
 
     #= Create dict, chromo_strand as key to search bowtie blocs in the following dict 
-    #x = bowFrq_rdd.map(lambda e: ('', [  e[1][0], 0, [e[1][2]] ])).collect()
-    x = bowFrq_rdd.collect()
+    x = bowFrq_rdd.flatMap(mru.flatmap_mappings).map(lambda e: (e[1][2][1] + e[1][2][0], [e[1][2][2], e[1][0]]) ).collect()
     dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(x)
 
 
