@@ -414,6 +414,7 @@ if __name__ == '__main__' :
     print('creating dict_bowtie_chromo_strand')
     #= Create dict, chromo_strand as key to search bowtie blocs in the following dict 
     #x = bowFrq_rdd.flatMap(mru.flatmap_mappings).map(lambda e: (e[1][2][1] + e[1][2][0], [e[1][2][2], e[1][0]]) ).collect()
+    ##.map(lambda e: (e[1][2][1] + '_' + e[1][2][0] + '_' + str(e[1][2][2]), e[1][0]) )
     x = bowFrq_rdd.flatMap(mru.flatmap_mappings)\
                   .map(lambda e: (e[1][2][1] + '_' + e[1][2][0] + '_' + str(e[1][2][2])[:-2] + '00', e[1][0]) )\
                   .reduceByKey(lambda a, b: a+b)\
