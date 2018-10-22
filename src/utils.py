@@ -819,7 +819,6 @@ def perform_enrichment_analysis (diff_outs, pathway_description_file, list_mirna
   cmd = 'perl ' + project_path + '/src/'+ 'compute_enrichment.pl ' + rep_output + keyword + '/namecode.txt ' + rep_output + keyword +'/output_comput_enrich/ 1'
   os.system(cmd)
 
-
-
-
+def roundup(x): 
+  return x if x % 10 == 0 else x + 10 - x % 10
 

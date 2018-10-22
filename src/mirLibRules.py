@@ -13,6 +13,8 @@ from operator import itemgetter
 #bin = '../lib/'
 bin = ''
 
+
+
 def sort_DictBowtieCS(list_bowtie_chromo_strand):
   dict_bowtie_chromo_strand = {}
   for i in list_bowtie_chromo_strand:
