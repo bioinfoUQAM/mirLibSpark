@@ -331,7 +331,7 @@ class prog_dominant_profile () :
       poschr = elem[1][0]
       freq = elem[1][1]
    
-      if chrmo_strand not in dict_bowtie_chromo_strand.keys():
+      if chromo_strand not in dict_bowtie_chromo_strand.keys():
         dict_bowtie_chromo_strand[chromo_strand] = {}
 
       if poschr not in dict_bowtie_chromo_strand[chromo_strand].keys():
