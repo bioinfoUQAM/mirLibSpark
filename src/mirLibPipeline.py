@@ -328,7 +328,6 @@ if __name__ == '__main__' :
     for i in range(len(chromosomes)):
       ch = chromosomes[i]
       genome = ut.getGenome(genome_path, ".fa", ch)
-      #print('len_genome: ', ch, genome[ch][:30])
       broadcastVar_genome = sc.broadcast(genome)
       v = broadcastVar_genome.value
       prec_obj = mru.extract_precurosrs(v, pri_l_flank, pri_r_flank, pre_flank)
@@ -356,8 +355,8 @@ if __name__ == '__main__' :
       ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
       pri_vld_rdd = pri_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 3))\
                                 .filter(lambda e: any(e[1][3]))
-      print('NB pri_vld_rdd (mircheck): ', pri_vld_rdd.count())
-      print('current time:', datetime.datetime.now())
+      #print('NB pri_vld_rdd (mircheck): ', pri_vld_rdd.count())
+      #print('current time:', datetime.datetime.now())
 
 
       #= Filtering structure with branched loop
