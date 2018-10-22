@@ -338,6 +338,7 @@ if __name__ == '__main__' :
       #= Extraction of the pri-miRNA
       ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr])
       ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri]])
+      ## this is the only rdd requiring genome sequence, so the code structure could be improved, although this does not improve complexity.
       primir_rdd = excluKnownNon_rdd.filter(prec_obj.hasKey)\
                                     .flatMap(prec_obj.extract_prim_rule)
       #print('NB primir_rdd: ', primir_rdd.count())      
