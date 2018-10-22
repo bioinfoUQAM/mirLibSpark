@@ -94,10 +94,10 @@ Gap_Penalty=-15
 nbTargets=100
 #==================== Spark configuration
 sc_appname=mirLibSpark
-sc_partition=16
+sc_partition=64
 sc_mstrmemory=20g
 sc_execmemory=20g
 #==================== local mode
 sc_master=local[*]
 #==================== cluster mode
-sc_execcores=24
+sc_execcores=32
