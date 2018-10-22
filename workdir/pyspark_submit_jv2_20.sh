@@ -4,8 +4,8 @@
 #SBATCH --time=00:10:00
 #SBATCH --nodes=2
 #SBATCH --mem=115000M
-#SBATCH --cpus-per-task=16
-#SBATCH --ntasks-per-node=2
+#SBATCH --cpus-per-task=2
+#SBATCH --ntasks-per-node=16
 #SBATCH --error=jobout/%x-%j.err
 #SBATCH --output=jobout/%x-%j.out
 #SBATCH --mail-user=wu.chaojung@gmail.com
