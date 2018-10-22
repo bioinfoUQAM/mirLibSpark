@@ -292,19 +292,11 @@ if __name__ == '__main__' :
     ## in : ('seq', [nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     bowFrq_rdd = mergebowtie_rdd.join(sr_short_rdd)\
-                           .map(bowtie_obj.bowtie_freq_rearrange_rule)
+                           .map(bowtie_obj.bowtie_freq_rearrange_rule)\
+                           .persist()
     print('NB bowFrq_rdd: ', bowFrq_rdd.count())
     print('current time:', datetime.datetime.now())
 
-    #================================================================================================================
-    print('creating dict_bowtie_chromo_strand')
-    #= Create dict, chromo_strand as key to search bowtie blocs in the following dict 
-    x = bowFrq_rdd.flatMap(mru.flatmap_mappings).map(lambda e: (e[1][2][1] + e[1][2][0], [e[1][2][2], e[1][0]]) ).collect()
-    dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(x)
-    print('current time:', datetime.datetime.now())
-    #================================================================================================================
-
-    #broadcastVar_bowtie_chromo_strand = sc.broadcast(dict_bowtie_chromo_strand) 
 
     #= Filtering miRNA low frequency
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
@@ -414,6 +406,18 @@ if __name__ == '__main__' :
     print('current time:', datetime.datetime.now())
 
     
+
+
+    #================================================================================================================
+    print('creating dict_bowtie_chromo_strand')
+    #= Create dict, chromo_strand as key to search bowtie blocs in the following dict 
+    x = bowFrq_rdd.flatMap(mru.flatmap_mappings).map(lambda e: (e[1][2][1] + e[1][2][0], [e[1][2][2], e[1][0]]) ).collect()
+    dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(x)
+    print('current time:', datetime.datetime.now())
+    #================================================================================================================
+    #broadcastVar_bowtie_chromo_strand = sc.broadcast(dict_bowtie_chromo_strand) 
+
+
     #= Filtering by expression profile (< 20%)
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore']])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq])
