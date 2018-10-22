@@ -356,6 +356,8 @@ if __name__ == '__main__' :
       ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
       pri_vld_rdd = pri_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 3))\
                                 .filter(lambda e: any(e[1][3]))
+      print('NB pri_vld_rdd (mircheck): ', pri_vld_rdd.count())
+      print('current time:', datetime.datetime.now())
 
 
       #= Filtering structure with branched loop
@@ -376,7 +378,7 @@ if __name__ == '__main__' :
       #================================================================================================================
       mergeChromosomesResults_rdd = mergeChromosomesResults_rdd.union(premir_rdd).persist()#.checkpoint()
       broadcastVar_genome.unpersist()
-    print('mergeChromosomesResults: ', mergeChromosomesResults_rdd.count())
+    print('NB mergeChromosomesResults: ', mergeChromosomesResults_rdd.count())
     print('current time:', datetime.datetime.now())
     #180921 fake_a.txt takes 42 secs to run till this line (All chromo)
     #180921 fake_a.txt takes 307 secs to run till this line (split chromo)
@@ -386,7 +388,7 @@ if __name__ == '__main__' :
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre]])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold']])
     pre_fold_rdd = mergeChromosomesResults_rdd.map(lambda e: rnafold_obj.RNAfold_map_rule(e, 4))
-    print('pre_fold_rdd: ', pre_fold_rdd.count())
+    print('NB pre_fold_rdd: ', pre_fold_rdd.count())
     print('current time:', datetime.datetime.now())
 
     #= Validating pre-mirna with mircheck II -- replaced by mirdup
