@@ -258,6 +258,7 @@ if __name__ == '__main__' :
                             .map(lambda e: str(e.rstrip()))\
                             .persist()
     print('NB dmask_rdd: ', dmask_rdd.count())
+    print('current time:', datetime.datetime.now())
 
     mergebowtie_rdd = sc.emptyRDD()
     for i in range(len(chromosomes)):
@@ -284,6 +285,7 @@ if __name__ == '__main__' :
       #================================================================================================================
       mergebowtie_rdd = mergebowtie_rdd.union(bowtie_rdd).persist()
     print('NB mergebowtie_rdd: ', mergebowtie_rdd.count())
+    print('current time:', datetime.datetime.now())
 
     
     #= Getting the expression value for each reads
@@ -292,10 +294,9 @@ if __name__ == '__main__' :
     bowFrq_rdd = mergebowtie_rdd.join(sr_short_rdd)\
                            .map(bowtie_obj.bowtie_freq_rearrange_rule)
     print('NB bowFrq_rdd: ', bowFrq_rdd.count())
-
+    print('current time:', datetime.datetime.now())
 
     #================================================================================================================
-    print('current time:', datetime.datetime.now())
     print('creating dict_bowtie_chromo_strand')
     #= Create dict, chromo_strand as key to search bowtie blocs in the following dict 
     x = bowFrq_rdd.flatMap(mru.flatmap_mappings).map(lambda e: (e[1][2][1] + e[1][2][0], [e[1][2][2], e[1][0]]) ).collect()
@@ -323,6 +324,7 @@ if __name__ == '__main__' :
     flat_rdd = nbLoc_rdd.flatMap(mru.flatmap_mappings)
     #print('NB flat_rdd distinct (this step flats elements): ', flat_rdd.groupByKey().count())
     print('NB flat_rdd not distinct: ', flat_rdd.count())
+    print('current time:', datetime.datetime.now())
     
     #= Filtering known non-miRNA ##
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr])
@@ -383,16 +385,15 @@ if __name__ == '__main__' :
       mergeChromosomesResults_rdd = mergeChromosomesResults_rdd.union(premir_rdd).persist()#.checkpoint()
       broadcastVar_genome.unpersist()
     print('mergeChromosomesResults: ', mergeChromosomesResults_rdd.count())
+    print('current time:', datetime.datetime.now())
     #180921 fake_a.txt takes 42 secs to run till this line (All chromo)
     #180921 fake_a.txt takes 307 secs to run till this line (split chromo)
-    print('current time:', datetime.datetime.now())
 
     
     #= pre-miRNA folding
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre]])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold']])
     pre_fold_rdd = mergeChromosomesResults_rdd.map(lambda e: rnafold_obj.RNAfold_map_rule(e, 4))
-
     print('pre_fold_rdd: ', pre_fold_rdd.count())
     print('current time:', datetime.datetime.now())
 
