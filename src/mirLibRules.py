@@ -235,12 +235,8 @@ class extract_precurosrs ():
 
   def hasKey (self, e):
     mapping = e[1][2]
-    if mapping[1] in self.genome.keys(): return True
+    if mapping[1] in self.genome: return True
     else: return False
-
-
-
-
 
 class prog_RNAfold ():
 
@@ -331,10 +327,10 @@ class prog_dominant_profile () :
       poschr = elem[1][0]
       freq = elem[1][1]
    
-      if chromo_strand not in dict_bowtie_chromo_strand.keys():
+      if chromo_strand not in dict_bowtie_chromo_strand:
         dict_bowtie_chromo_strand[chromo_strand] = {}
 
-      if poschr not in dict_bowtie_chromo_strand[chromo_strand].keys():
+      if poschr not in dict_bowtie_chromo_strand[chromo_strand]:
         dict_bowtie_chromo_strand[chromo_strand][poschr] = freq
       else: dict_bowtie_chromo_strand[chromo_strand][poschr] += freq 
     
@@ -345,7 +341,7 @@ class prog_dominant_profile () :
     totalfrq = 0
     index = x+1
     while (x < index < y):
-      if index in bowbloc.keys(): totalfrq += bowbloc[index]
+      if index in bowbloc: totalfrq += bowbloc[index]
       index += 1
     return totalfrq
 
