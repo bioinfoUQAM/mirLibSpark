@@ -496,6 +496,7 @@ if __name__ == '__main__' :
   mergebowtie_rdd.unpersist()
   mergeChromosomesResults_rdd.unpersist()
   broadcastVar_d_ncRNA_CDS.unpersist()
+  bowFrq_rdd.unpersist()
   #broadcastVar_bowtie_chromo_strand.unpersist()
 
   #'''
