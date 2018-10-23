@@ -262,7 +262,7 @@ def getGenome__ (genome_path, file_ext):
     
   return genome
 
-def getGenome (genome_path, file_ext, chromosomeName):
+def getGenome (genome_path, file_ext, chromosomeName='All'):
   '''
   modified version of original getGenome__()
   this new function can take in either All as the entire genome, or one chromosome at a time.
