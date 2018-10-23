@@ -8,7 +8,7 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --error=jobout/%x-%j.err
 #SBATCH --output=jobout/%x-%j.out
-#SBATCH --mail-user=wu.chaojung@gmail.com
+#SBATCH --mail-user=g39103001@gm.ym.edu.tw
 #SBATCH --mail-type=ALL
 
 #= maximun --cpus-per-task=32
@@ -36,8 +36,9 @@ start-all.sh
 sleep 5
 MASTER_URL=$(grep -Po '(?=spark://).*' $SPARK_LOG_DIR/spark-${SPARK_IDENT_STRING}-org.apache.spark.deploy.master*.out)
 
-NWORKERS=$((SLURM_NTASKS - 0))
-SPARK_NO_DAEMONIZE=1 srun -n ${NWORKERS} -N ${NWORKERS} --label --output=$SPARK_LOG_DIR/spark-%j-workers.out start-slave.sh -m ${SLURM_MEM_PER_NODE}M -c ${SLURM_CPUS_PER_TASK} ${MASTER_URL} &
+NWORKERS=$((SLURM_NTASKS - 1))
+SPARK_NO_DAEMONIZE=1 
+srun -n ${NWORKERS} -N ${NWORKERS} --label --output=$SPARK_LOG_DIR/spark-%j-workers.out start-slave.sh -m ${SLURM_MEM_PER_NODE}M -c ${SLURM_CPUS_PER_TASK} ${MASTER_URL} &
 slaves_pid=$!
 
 

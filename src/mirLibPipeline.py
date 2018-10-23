@@ -175,7 +175,8 @@ if __name__ == '__main__' :
   print('\n====================== mirLibSpark =========================')
   print('====================== ' + appId + ' =================')
   print('============================================================\n')
-  print('begin time:', datetime.datetime.now())
+  time_a = datetime.datetime.now()
+  print('begin time:', time_a)
   #'''
   for infile in infiles :
     if infile[-1:] == '~': continue
@@ -245,7 +246,7 @@ if __name__ == '__main__' :
     #= Filtering short length
     ## in : ('seq', freq)
     ## out: ('seq', freq)
-    sr_short_rdd = sr_low_rdd.filter(lambda e: len(e[0]) > limit_len).persist()  # TO KEEP IT
+    sr_short_rdd = sr_low_rdd.filter(lambda e: len(e[0]) > limit_len).persist()  # TO KEEP IT, reused in 
     print('NB sr_short_rdd: ', sr_short_rdd.count())
 
     
@@ -297,6 +298,11 @@ if __name__ == '__main__' :
     print('NB bowFrq_rdd: ', bowFrq_rdd.count())
     print('current time:', datetime.datetime.now())
 
+    #= Filtering, keep miRNA length = 21, 22, 23, 24
+    ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
+    ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
+    mr_meyers2018len_rdd = bowFrq_rdd.filter(lambda e: len(e[0]) < 25 and len(e[0]) > 20)
+    #print('NB mr_low_rdd: ', mr_low_rdd.count())
 
     #= Filtering miRNA low frequency
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
@@ -338,6 +344,7 @@ if __name__ == '__main__' :
       #= Extraction of the pri-miRNA
       ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr])
       ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri]])
+      ## this is the only rdd requiring genome sequence, so the code structure could be improved, although this does not improve complexity.
       primir_rdd = excluKnownNon_rdd.filter(prec_obj.hasKey)\
                                     .flatMap(prec_obj.extract_prim_rule)
       #print('NB primir_rdd: ', primir_rdd.count())      
@@ -354,7 +361,8 @@ if __name__ == '__main__' :
       ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold']])
       ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
       pri_vld_rdd = pri_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 3))\
-                                .filter(lambda e: any(e[1][3]))
+                                .filter(lambda e: any(e[1][3]))\
+                                .filter(lambda e: (int(e[1][3][5]) - int(e[1][3][4])) < 301)
       #print('NB pri_vld_rdd (mircheck): ', pri_vld_rdd.count())
       #print('current time:', datetime.datetime.now())
 
@@ -377,7 +385,7 @@ if __name__ == '__main__' :
       #================================================================================================================
       mergeChromosomesResults_rdd = mergeChromosomesResults_rdd.union(premir_rdd).persist()#.checkpoint()
       broadcastVar_genome.unpersist()
-    print('NB mergeChromosomesResults: ', mergeChromosomesResults_rdd.count())
+    print('NB mergeChromosomesResults (extract, fold, check, re-extract): ', mergeChromosomesResults_rdd.count())
     print('current time:', datetime.datetime.now())
     #180921 fake_a.txt takes 42 secs to run till this line (All chromo)
     #180921 fake_a.txt takes 307 secs to run till this line (split chromo)
@@ -412,7 +420,14 @@ if __name__ == '__main__' :
     #================================================================================================================
     print('creating dict_bowtie_chromo_strand')
     #= Create dict, chromo_strand as key to search bowtie blocs in the following dict 
-    x = bowFrq_rdd.flatMap(mru.flatmap_mappings).map(lambda e: (e[1][2][1] + e[1][2][0], [e[1][2][2], e[1][0]]) ).collect()
+    #x = bowFrq_rdd.flatMap(mru.flatmap_mappings).map(lambda e: (e[1][2][1] + e[1][2][0], [e[1][2][2], e[1][0]]) ).collect()
+    ##.map(lambda e: (e[1][2][1] + '_' + e[1][2][0] + '_' + str(e[1][2][2]), e[1][0]) )
+    x = bowFrq_rdd.flatMap(mru.flatmap_mappings)\
+                  .map(lambda e: (e[1][2][1] + '_' + e[1][2][0] + '_' + str(e[1][2][2])[:-2]+ '00', e[1][0]) )\
+                  .reduceByKey(lambda a, b: a+b)\
+                  .filter(lambda e: e[1] > 15)\
+                  .map(lambda e: (e[0].split('_')[0] + e[0].split('_')[1], [int(e[0].split('_')[2]), e[1]]))\
+                  .collect()
     dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(x)
     print('current time:', datetime.datetime.now())
     #================================================================================================================
@@ -423,7 +438,7 @@ if __name__ == '__main__' :
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore']])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq])
     profile_rdd = pre_vld_rdd.map(lambda e: profile_obj.computeProfileFrq(e, dict_bowtie_chromo_strand))\
-                             .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)
+                             .filter(lambda e: e[1][0] / (float(e[1][5]) + 0.1) > 0.2)
 
     print('NB profile_rdd distinct: ', profile_rdd.groupByKey().count())
     libresults = profile_rdd.collect()
@@ -530,8 +545,9 @@ if __name__ == '__main__' :
   #===============================================================================================================
 
 
-
-  print('finish time:', datetime.datetime.now())
+  time_b = datetime.datetime.now()
+  print('finish time:', time_b)
+  print('total runnung time: ', time_b - time_a)
   print('====================== End of ' + appId + ' =============\n')
 
 

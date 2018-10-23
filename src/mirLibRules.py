@@ -13,6 +13,8 @@ from operator import itemgetter
 #bin = '../lib/'
 bin = ''
 
+
+
 def sort_DictBowtieCS(list_bowtie_chromo_strand):
   dict_bowtie_chromo_strand = {}
   for i in list_bowtie_chromo_strand:
@@ -332,7 +334,7 @@ class prog_dominant_profile () :
 
       if poschr not in dict_bowtie_chromo_strand[chromo_strand]:
         dict_bowtie_chromo_strand[chromo_strand][poschr] = freq
-      else: dict_bowtie_chromo_strand[chromo_strand][poschr] += freq 
+      #else: dict_bowtie_chromo_strand[chromo_strand][poschr] += freq 
     
     return dict_bowtie_chromo_strand
   

@@ -43,7 +43,7 @@ message=\nwrite your message (for stdout) here line1\nline2:
 #
 #==================== Absolute paths in user's computer, please modify this string: /home/cjwu/project/cjwu/gitRepo/
 project_path=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/
-input_path=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/input/
+input_path=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/input_ath/
 output_path=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/output/
 #
 genome_path=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/dbs/ATH_TAIR10/Genome/
@@ -53,10 +53,10 @@ bowtie_index_suffix=ATH_TAIR10
 known_non_file=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/dbs/ATH_TAIR10/TAIR10_ncRNA_CDS.gff
 target_file=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/dbs/ATH_TAIR10/Arabidopsis_thaliana.TAIR10.cdna.all.fa
 #
-perform_differnatial_analysis=yes
+perform_differnatial_analysis=no
 diffguide_file=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/diffguide_ath.txt
 #
-perform_KEGGpathways_enrichment_analysis=yes
+perform_KEGGpathways_enrichment_analysis=no
 gene_vs_pathway_file=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/dbs/ATH_TAIR10/ath_gene_vs_pathway.txt
 pathway_description_file=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/dbs/ATH_TAIR10/ath_pathway_description.txt
 #
@@ -75,7 +75,9 @@ mirdup_model=thaliana.model
 #==================== 
 limit_s_freq=10
 limit_m_freq=100
-limit_len=18
+limit_len=15
+#meyers_left=20
+#meyers_right=25
 limit_nbLoc=15
 pri_l_flank=500
 pri_r_flank=200

@@ -74,16 +74,20 @@ def find_RNAfold_path ():
 def pyspark_configuration(appMaster, appName, masterMemory, execMemory, execCores):
   from pyspark import SparkConf, SparkContext
   myConf = SparkConf()
-  myConf.setMaster(appMaster) #= 'local[2] or local[*]'
   myConf.setAppName(appName)  #= 'mirLibSpark'
-  myConf.set("spark.driver.memory", masterMemory)
   myConf.set("spark.driver.maxResultSize", '1500M') #= default 1g
-  myConf.set("spark.executor.memory", execMemory) 
-  myConf.set("spark.cores.max", execCores) 
-  
+  #
+  myConf.set("spark.driver.memory", masterMemory)
+  myConf.set("spark.executor.memory", execMemory)
+  myConf.setMaster(appMaster) #= 'local[2] or local[*]'
+  #
+  #= no need to configure the followings
+  #myConf.set("spark.cores.max", execCores) 
+  #
   # other keys: "spark.master" = 'spark://5.6.7.8:7077'
   #             "spark.driver.cores"
   #             "spark.default.parallelism"
+  
   return SparkContext(conf = myConf)
 
 def convertTOhadoop(rfile, hdfsFile):
@@ -816,7 +820,6 @@ def perform_enrichment_analysis (diff_outs, pathway_description_file, list_mirna
   cmd = 'perl ' + project_path + '/src/'+ 'compute_enrichment.pl ' + rep_output + keyword + '/namecode.txt ' + rep_output + keyword +'/output_comput_enrich/ 1'
   os.system(cmd)
 
-
-
-
+def roundup(x): 
+  return x if x % 10 == 0 else x + 10 - x % 10
 
