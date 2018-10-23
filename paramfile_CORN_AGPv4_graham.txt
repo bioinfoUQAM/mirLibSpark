@@ -11,7 +11,7 @@
 #
 #  note:
 #  perform_differnatial_analysis= yes or no
-#  perform_KEGGpzmaways_enrichment_analysis = yes or no
+#  perform_KEGGpathways_enrichment_analysis = yes or no
 #
 #  note:
 #  Viridiplantae.model is better than thaliana.model in terms of prediction, 
@@ -41,13 +41,13 @@ message=\nwrite your message (for stdout) here line1\nline2:
 #
 #
 #
-#==================== Absolute pzmas in user's computer, please modify this string: /home/cjwu/project/cjwu/gitRepo/
-project_pzma=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/
-input_pzma=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/input_zma/
-output_pzma=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/output/
+#==================== Absolute paths in user's computer, please modify this string: /home/cjwu/project/cjwu/gitRepo/
+project_path=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/
+input_path=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/input_zma/
+output_path=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/output/
 #
-genome_pzma=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/dbs/CORN_AGPv4/Genome/
-b_index_pzma=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/dbs/CORN_AGPv4/bowtie_index/
+genome_path=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/dbs/CORN_AGPv4/Genome/
+b_index_path=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/dbs/CORN_AGPv4/bowtie_index/
 bowtie_index_suffix=CORN_AGPv4
 #
 known_non_file=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/dbs/CORN_AGPv4/TAIR10_ncRNA_CDS.gff
@@ -56,9 +56,9 @@ target_file=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/dbs/CORN_AGPv4/Arabidops
 perform_differnatial_analysis=no
 diffguide_file=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/diffguide_zma.txt
 #
-perform_KEGGpzmaways_enrichment_analysis=no
-gene_vs_pzmaway_file=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/dbs/CORN_AGPv4/zma_gene_vs_pzmaway.txt
-pzmaway_description_file=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/dbs/CORN_AGPv4/zma_pzmaway_description.txt
+perform_KEGGpathways_enrichment_analysis=no
+gene_vs_pathway_file=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/dbs/CORN_AGPv4/zma_gene_vs_pathway.txt
+pathway_description_file=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/dbs/CORN_AGPv4/zma_pathway_description.txt
 #
 #
 #==================== User needs to define
