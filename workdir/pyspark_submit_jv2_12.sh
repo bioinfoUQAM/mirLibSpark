@@ -8,7 +8,7 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --error=jobout/%x-%j.err
 #SBATCH --output=jobout/%x-%j.out
-#SBATCH --mail-user=wu.chaojung@gmail.com
+#SBATCH --mail-user=g39103001@gm.ym.edu.tw
 #SBATCH --mail-type=ALL
 
 #= maximun --cpus-per-task=32
