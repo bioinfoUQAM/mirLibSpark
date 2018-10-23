@@ -175,7 +175,8 @@ if __name__ == '__main__' :
   print('\n====================== mirLibSpark =========================')
   print('====================== ' + appId + ' =================')
   print('============================================================\n')
-  print('begin time:', datetime.datetime.now())
+  time_a = datetime.datetime.now()
+  print('begin time:', time_a)
   #'''
   for infile in infiles :
     if infile[-1:] == '~': continue
@@ -539,8 +540,9 @@ if __name__ == '__main__' :
   #===============================================================================================================
 
 
-
-  print('finish time:', datetime.datetime.now())
+  time_b = datetime.datetime.now()
+  print('finish time:', time_b)
+  print('total runnung time: ', time_b - time_a)
   print('====================== End of ' + appId + ' =============\n')
 
 

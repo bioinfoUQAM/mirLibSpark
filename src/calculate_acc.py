@@ -2,6 +2,8 @@
 Author: Chao-Jung Wu
 Date: 2017-11-07
 '''
+from __future__ import print_function
+
 
 def calculate_F1_score (tp, tn, fp, fn):
   #= p: precision; r: recall
@@ -20,11 +22,22 @@ TN = 990
 FP = 10
 FN = 18
 
+#= no 300 filter
+#===========
+TP = 82
+FP = 90
+
+FN = 100 - TP
+TN = 1000 - FP
+#===========
   
 f1 = calculate_F1_score (TP, TN, FP, FN)
 acc = calculate_accuracy (TP, TN, FP, FN)
 
-print(f1)
-print(acc)
+print('TP\tTN\tFP\tFN\tF1\tAccuracy')
+data = [str(x) for x in [TP, TN, FP, FN, f1, acc]]
+line = '\t'.join(data)
+print(line)
+
 
 
