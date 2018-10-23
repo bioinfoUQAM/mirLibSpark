@@ -79,9 +79,9 @@ def pyspark_configuration(appMaster, appName, masterMemory, execMemory, execCore
   #
   myConf.set("spark.driver.memory", masterMemory)
   myConf.set("spark.executor.memory", execMemory)
-
+  myConf.setMaster(appMaster) #= 'local[2] or local[*]'
+  #
   #= no need to configure the followings
-  #myConf.setMaster(appMaster) #= 'local[2] or local[*]'
   #myConf.set("spark.cores.max", execCores) 
   #
   # other keys: "spark.master" = 'spark://5.6.7.8:7077'
