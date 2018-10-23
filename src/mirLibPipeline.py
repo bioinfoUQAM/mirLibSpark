@@ -431,7 +431,7 @@ if __name__ == '__main__' :
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore']])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq])
     profile_rdd = pre_vld_rdd.map(lambda e: profile_obj.computeProfileFrq(e, dict_bowtie_chromo_strand))\
-                             .filter(lambda e: e[1][0] / float(e[1][5]) > 0.2)
+                             .filter(lambda e: e[1][0] / (float(e[1][5]) + 0.1) > 0.2)
 
     print('NB profile_rdd distinct: ', profile_rdd.groupByKey().count())
     libresults = profile_rdd.collect()
