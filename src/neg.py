@@ -9,14 +9,13 @@ import random
 
 def collect_negtive_miRNA ():
   known_ath100 = []
-  #f_known = '/home/cloudera/Desktop/mirLibHadoop/test/high_conf_mature_ath_uniq.txt'
-  f_known = '/home/cloudera/Desktop/mirLibHadoop/test/mirbase_all_427_real_ath.txt'
+  f_known = '../input_samples/mirbase_all_349_real_ath_uniq.txt'
   with open (f_known, 'r') as fh:
     for i in fh:
       known_ath100.append(i.rstrip('\n').split('\t')[0])
 
-  genome_path = '/home/cloudera/workspace/mirLibHadoop/dbs/ATH/Genome/'
-  file_ext = '.fas'
+  genome_path = '../dbs/ATH_TAIR10/Genome/'
+  file_ext = '.fa'
   genome = ut.getGenome (genome_path, file_ext)
   genomeseq_all = ''
   for k, v in genome.items():
@@ -38,7 +37,7 @@ def collect_negtive_miRNA ():
   return negseqs
 
 negseqs = collect_negtive_miRNA ()
-outfile = '../negativeSet/neg_ath1000.txt'
+outfile = 'neg_ath1000.txt'
 fh_out = open (outfile, 'w')
 for s in negseqs:
   print >> fh_out, s+'\t500'
