@@ -246,7 +246,7 @@ if __name__ == '__main__' :
     #= Filtering short length
     ## in : ('seq', freq)
     ## out: ('seq', freq)
-    sr_short_rdd = sr_low_rdd.filter(lambda e: len(e[0]) > limit_len).persist()  # TO KEEP IT
+    sr_short_rdd = sr_low_rdd.filter(lambda e: len(e[0]) > limit_len).persist()  # TO KEEP IT, reused in 
     print('NB sr_short_rdd: ', sr_short_rdd.count())
 
     
@@ -298,11 +298,16 @@ if __name__ == '__main__' :
     print('NB bowFrq_rdd: ', bowFrq_rdd.count())
     print('current time:', datetime.datetime.now())
 
+    #= Filtering, keep miRNA length = 21, 22, 23, 24
+    ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
+    ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
+    mr_meyers2018len_rdd = bowFrq_rdd.filter(lambda e: len(e[0]) < 25 and len(e[0]) > 20)
+    #print('NB mr_low_rdd: ', mr_low_rdd.count())
 
     #= Filtering miRNA low frequency
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
-    mr_low_rdd = bowFrq_rdd.filter(lambda e: e[1][0] > limit_mrna_freq)
+    mr_meyers2018len_rdd = bowFrq_rdd.filter(lambda e: e[1][0] > limit_mrna_freq)
     #print('NB mr_low_rdd: ', mr_low_rdd.count())
     
     #= Filtering high nbLocations and zero location
