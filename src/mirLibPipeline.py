@@ -307,7 +307,7 @@ if __name__ == '__main__' :
     #= Filtering miRNA low frequency
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
-    mr_meyers2018len_rdd = bowFrq_rdd.filter(lambda e: e[1][0] > limit_mrna_freq)
+    mr_low_rdd = bowFrq_rdd.filter(lambda e: e[1][0] > limit_mrna_freq)
     #print('NB mr_low_rdd: ', mr_low_rdd.count())
     
     #= Filtering high nbLocations and zero location
