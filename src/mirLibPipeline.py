@@ -357,11 +357,13 @@ if __name__ == '__main__' :
       #print('pri_fold_rdd DATA: ', pri_fold_rdd.collect())
 
 
-      #= Validating pri-mirna with mircheck
+      #= Validating pri-mirna with mircheck, len(pri-mirna) < 301 nt
       ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold']])
       ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
       pri_vld_rdd = pri_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 3))\
                                 .filter(lambda e: any(e[1][3]))\
+                                .map(lambda e: (e[0] + e[1][2][0] + e[1][2][1] + e[1][2][2] + e[1][3][4] + e[1][3][5], e)  )
+                                .reduceByKey(lambda a, b: a)
                                 .filter(lambda e: (int(e[1][3][5]) - int(e[1][3][4])) < 301)
       #print('NB pri_vld_rdd (mircheck): ', pri_vld_rdd.count())
       #print('current time:', datetime.datetime.now())
