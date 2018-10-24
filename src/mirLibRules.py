@@ -208,6 +208,11 @@ class extract_precurosrs ():
     
     return newElems
 
+  def hasKey (self, e):
+    mapping = e[1][2]
+    if mapping[1] in self.genome: return True
+    else: return False
+    
   def extract_sub_seq(self, contig, posMir, fback_start, fback_stop):
     fold_len = fback_stop - fback_start + 1
     pos = posMir - fback_start + self.pre_flank          #= 0-based
@@ -235,10 +240,7 @@ class extract_precurosrs ():
     elem[1].append(self.extract_sub_seq(priSeq, posMir, fback_start, fback_stop))
     return elem
 
-  def hasKey (self, e):
-    mapping = e[1][2]
-    if mapping[1] in self.genome: return True
-    else: return False
+
 
 class prog_RNAfold ():
 
