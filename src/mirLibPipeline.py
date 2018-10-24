@@ -361,10 +361,10 @@ if __name__ == '__main__' :
       ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold']])
       ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
       pri_vld_rdd = pri_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 3))\
-                                .filter(lambda e: any(e[1][3]))\
-                                .map(lambda e: (e[0] + e[1][2][0] + e[1][2][1] + str(e[1][2][2]) + e[1][3][4] + e[1][3][5], e)  )\
-                                .reduceByKey(lambda a, b: a)\
-                                .map(lambda e: e[1])
+                                .filter(lambda e: any(e[1][3]))
+                                #.map(lambda e: (e[0] + e[1][2][0] + e[1][2][1] + str(e[1][2][2]) + e[1][3][4] + e[1][3][5], e)  )\
+                                #.reduceByKey(lambda a, b: a)\
+                                #.map(lambda e: e[1])
       #print('NB pri_vld_rdd (mircheck): ', pri_vld_rdd.count())
       #print('current time:', datetime.datetime.now())
 
@@ -417,6 +417,7 @@ if __name__ == '__main__' :
                               .map(mirdup_obj.run_miRdup)\
                               .filter(lambda e: e[1][4][3] == "true")
     print('NB pre_vld_rdd distinct (mirdup): ', pre_vld_rdd.groupByKey().count())
+    print('NB pre_vld_rdd NON distinct (mirdup): ', pre_vld_rdd.count())
     print('current time:', datetime.datetime.now())
 
     
