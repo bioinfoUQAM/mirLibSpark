@@ -253,7 +253,7 @@ if __name__ == '__main__' :
     #= Filtering with DustMasker
     ## in : ('seq', freq)
     ## out: 'seq'
-    dmask_rdd = sr_short_rdd.map(lambda e: '>s\n' + ut.tr_U_T(e[0]))\
+    dmask_rdd = sr_short_rdd.map(lambda e: '>s\n' + e[0])\
                             .pipe(dmask_cmd, dmask_env)\
                             .filter(lambda e: e.isupper() and not e.startswith('>'))\
                             .map(lambda e: str(e.rstrip()))\
