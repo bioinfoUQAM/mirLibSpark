@@ -453,7 +453,7 @@ if __name__ == '__main__' :
 
     print('NB profile_rdd distinct: ', profile_rdd.groupByKey().count())
     print('NB profile_rdd NON distinct: ', profile_rdd.count())
-    dict_bowtie_chromo_strand = ''
+    #dict_bowtie_chromo_strand = ''
     libresults = profile_rdd.collect()
    
     print('current time:', datetime.datetime.now())
