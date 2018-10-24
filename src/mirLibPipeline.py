@@ -335,8 +335,7 @@ if __name__ == '__main__' :
       ch = chromosomes[i]
       genome = ut.getGenome(genome_path, ".fa", ch)
       broadcastVar_genome = sc.broadcast(genome)
-      v = broadcastVar_genome.value
-      prec_obj = mru.extract_precurosrs(v, pri_l_flank, pri_r_flank, pre_flank)
+      prec_obj = mru.extract_precurosrs(broadcastVar_genome.value, pri_l_flank, pri_r_flank, pre_flank)
       #================================================================================================================
       #================================================================================================================
       #================================================================================================================
@@ -354,7 +353,8 @@ if __name__ == '__main__' :
       #================================================================================================================
       #================================================================================================================
       #================================================================================================================
-    v = ''
+    genome = ''
+    prec_obj = mru.extract_precurosrs(genome, pri_l_flank, pri_r_flank, pre_flank)
     print('NB mergeChromosomesResults (extract, fold, check, re-extract): ', mergeChromosomesResults_rdd.count())
     print('current time:', datetime.datetime.now())
     
@@ -362,7 +362,6 @@ if __name__ == '__main__' :
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri]])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold']])
     pri_fold_rdd = mergeChromosomesResults_rdd.map(lambda e: rnafold_obj.RNAfold_map_rule(e, 3))
-    #print('pri_fold_rdd DATA: ', pri_fold_rdd.collect())
 
     #= Validating pri-mirna with mircheck, len(pri-mirna) < 301 nt
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold']])
@@ -424,7 +423,6 @@ if __name__ == '__main__' :
                               .map(mirdup_obj.run_miRdup)\
                               .filter(lambda e: e[1][4][3] == "true")
     print('NB pre_vld_rdd distinct (mirdup): ', pre_vld_rdd.groupByKey().count())
-    print('NB pre_vld_rdd NON distinct (mirdup): ', pre_vld_rdd.count())
     print('current time:', datetime.datetime.now())
 
     
@@ -454,6 +452,8 @@ if __name__ == '__main__' :
                              .filter(lambda e: e[1][0] / (float(e[1][5]) + 0.1) > 0.2)
 
     print('NB profile_rdd distinct: ', profile_rdd.groupByKey().count())
+    print('NB profile_rdd NON distinct: ', profile_rdd.count())
+    dict_bowtie_chromo_strand = ''
     libresults = profile_rdd.collect()
    
     print('current time:', datetime.datetime.now())
