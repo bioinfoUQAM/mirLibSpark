@@ -550,11 +550,11 @@ class prog_varna ():
     return e[0]
 
 
-def matchRNAidRule (e, distResultSmallRNA):
+def matchRNAidRule (e, d_rna_index):
   ##in  : precursorSerial, miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore
   ##out : precursorSerial, miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore, miRNAindex
-  d_rna_index = {} # {seq: index}
-  for i in distResultSmallRNA: d_rna_index[ i[0] ] = i[1]
+  #d_rna_index = {} # {seq: index}
+  #for i in distResultSmallRNA: d_rna_index[ i[0] ] = i[1]
   miRNAseq = e[1]
   e.append(d_rna_index[miRNAseq]) 
   return e

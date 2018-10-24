@@ -484,7 +484,7 @@ if __name__ == '__main__' :
   for i in distResultSmallRNA: d_rna_index[ i[0] ] = i[1]
   ## out : ( PrecursorIndex, miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore, miRNAindex )
   PrecursorVis = Precursor_rdd.map(varna_obj.run_VARNA)\
-                              .map(lambda e: e.append(d_rna_index[e[1]])))\
+                              .map(lambda e: mru.matchRNAidRule(e, d_rna_index))\
                               .collect()
   ut.write_index (PrecursorVis, rep_output, appId)
   print('PrecursorVis done')
