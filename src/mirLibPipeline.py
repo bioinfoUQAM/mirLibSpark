@@ -364,16 +364,18 @@ if __name__ == '__main__' :
                                 .filter(lambda e: any(e[1][3]))\
                                 .map(lambda e: (e[0] + e[1][2][0] + e[1][2][1] + str(e[1][2][2]) + e[1][3][4] + e[1][3][5], e)  )\
                                 .reduceByKey(lambda a, b: a)\
-                                .map(lambda e: e[1])\
-                                .filter(lambda e: (int(e[1][3][5]) - int(e[1][3][4])) < 301)
+                                .map(lambda e: e[1])
       #print('NB pri_vld_rdd (mircheck): ', pri_vld_rdd.count())
       #print('current time:', datetime.datetime.now())
+
+      #= Filtering len(pri-mirna) < 301 nt
+      len300_rdd = pri_vld_rdd.filter(lambda e: (int(e[1][3][5]) - int(e[1][3][4])) < 301)
 
 
       #= Filtering structure with branched loop
       ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
       ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
-      one_loop_rdd = pri_vld_rdd.filter(lambda e: ut.containsOnlyOneLoop(e[1][3][2][int(e[1][3][4]) : int(e[1][3][5])+1]))
+      one_loop_rdd = len300_rdd.filter(lambda e: ut.containsOnlyOneLoop(e[1][3][2][int(e[1][3][4]) : int(e[1][3][5])+1]))
       #print('NB one_loop_rdd distinct : ', one_loop_rdd.groupByKey().count())
 
 
@@ -428,7 +430,7 @@ if __name__ == '__main__' :
     x = bowFrq_rdd.flatMap(mru.flatmap_mappings)\
                   .map(lambda e: (e[1][2][1] + '_' + e[1][2][0] + '_' + str(e[1][2][2])[:-2]+ '00', e[1][0]) )\
                   .reduceByKey(lambda a, b: a+b)\
-                  .filter(lambda e: e[1] > 15)\
+                  .filter(lambda e: e[1] > 20)\
                   .map(lambda e: (e[0].split('_')[0] + e[0].split('_')[1], [int(e[0].split('_')[2]), e[1]]))\
                   .collect()
     dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(x)
