@@ -208,6 +208,11 @@ class extract_precurosrs ():
     
     return newElems
 
+  def hasKey (self, e):
+    mapping = e[1][2]
+    if mapping[1] in self.genome: return True
+    else: return False
+    
   def extract_sub_seq(self, contig, posMir, fback_start, fback_stop):
     fold_len = fback_stop - fback_start + 1
     pos = posMir - fback_start + self.pre_flank          #= 0-based
@@ -235,10 +240,7 @@ class extract_precurosrs ():
     elem[1].append(self.extract_sub_seq(priSeq, posMir, fback_start, fback_stop))
     return elem
 
-  def hasKey (self, e):
-    mapping = e[1][2]
-    if mapping[1] in self.genome: return True
-    else: return False
+
 
 class prog_RNAfold ():
 
@@ -548,11 +550,11 @@ class prog_varna ():
     return e[0]
 
 
-def matchRNAidRule (e, distResultSmallRNA):
+def matchRNAidRule (e, d_rna_index):
   ##in  : precursorSerial, miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore
   ##out : precursorSerial, miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore, miRNAindex
-  d_rna_index = {} # {seq: index}
-  for i in distResultSmallRNA: d_rna_index[ i[0] ] = i[1]
+  #d_rna_index = {} # {seq: index}
+  #for i in distResultSmallRNA: d_rna_index[ i[0] ] = i[1]
   miRNAseq = e[1]
   e.append(d_rna_index[miRNAseq]) 
   return e

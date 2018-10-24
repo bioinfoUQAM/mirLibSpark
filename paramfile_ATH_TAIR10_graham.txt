@@ -75,7 +75,7 @@ mirdup_model=thaliana.model
 #==================== 
 limit_s_freq=10
 limit_m_freq=100
-limit_len=15
+limit_len=18
 #meyers_left=20
 #meyers_right=25
 limit_nbLoc=15
