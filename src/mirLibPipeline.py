@@ -355,8 +355,8 @@ if __name__ == '__main__' :
       #================================================================================================================
     genome = ''
     prec_obj = mru.extract_precurosrs(genome, pri_l_flank, pri_r_flank, pre_flank)
-    print('NB mergeChromosomesResults (extract, fold, check, re-extract): ', mergeChromosomesResults_rdd.count())
-    print('current time:', datetime.datetime.now())
+    print('NB mergeChromosomesResults: ', mergeChromosomesResults_rdd.count())
+    print('current time:', datetime.datetime.now()) #= BOTTLE NECK= this step takes about 2h30 for 11w lib
     
     #= pri-miRNA folding
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri]])
@@ -372,10 +372,10 @@ if __name__ == '__main__' :
                               .reduceByKey(lambda a, b: a)\
                               .map(lambda e: e[1])
     print('NB pri_vld_rdd (mircheck): ', pri_vld_rdd.count())
-    print('current time:', datetime.datetime.now())
+    print('current time:', datetime.datetime.now()) #= BOTTLE NECK= this step takes about 2h for 11w lib
 
 
-    #= Filtering len(pri-mirna) < 301 nt
+    #= Filtering len(pre-mirna) < 301 nt
     len300_rdd = pri_vld_rdd.filter(lambda e: (int(e[1][3][5]) - int(e[1][3][4])) < 301)
 
     #= Filtering structure with branched loop
@@ -388,8 +388,8 @@ if __name__ == '__main__' :
     #= Extraction of the pre-miRNA
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop'], ['preSeq',posMirPre]])
-    #premir_rdd = one_loop_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3)) ## use one-loop rule
-    premir_rdd = len300_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3)) ## ignore one-loop rule
+    premir_rdd = len300_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3)) ## use one-loop rule
+    #premir_rdd = len300_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3)) ## ignore one-loop rule
     #================================================================================================================
     #================================================================================================================
     #================================================================================================================
@@ -424,7 +424,7 @@ if __name__ == '__main__' :
                               .map(mirdup_obj.run_miRdup)\
                               .filter(lambda e: e[1][4][3] == "true")
     print('NB pre_vld_rdd distinct (mirdup): ', pre_vld_rdd.groupByKey().count())
-    print('current time:', datetime.datetime.now())
+    print('current time:', datetime.datetime.now()) #= 11w about 30 mins; OFTEN NOT RUNNING THROUGH THIS STEP BEFORE OUT-OF-TIME
 
     
 
@@ -457,7 +457,7 @@ if __name__ == '__main__' :
     #dict_bowtie_chromo_strand = ''
     libresults = profile_rdd.collect()
    
-    print('current time:', datetime.datetime.now())
+    print('current time:', datetime.datetime.now()) #= BOTTLE NECK= this step takes about 3h for 11w lib
 
     endLib = time.time() 
     timeDict[inBasename] = endLib - startLib

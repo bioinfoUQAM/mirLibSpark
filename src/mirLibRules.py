@@ -15,7 +15,8 @@ bin = ''
 
 
 
-def sort_DictBowtieCS(list_bowtie_chromo_strand):
+def sort_DictBowtieCS_ (list_bowtie_chromo_strand):
+  ''' defuct '''
   dict_bowtie_chromo_strand = {}
   for i in list_bowtie_chromo_strand:
     k = i[0]
