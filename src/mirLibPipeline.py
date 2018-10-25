@@ -247,7 +247,7 @@ if __name__ == '__main__' :
     #= Filtering short length
     ## in : ('seq', freq)
     ## out: ('seq', freq)
-    sr_short_rdd = sr_low_rdd.filter(lambda e: len(e[0]) > limit_len).persist()  # TO KEEP IT, reused in 
+    sr_short_rdd = sr_low_rdd.filter(lambda e: len(e[0]) > limit_len).persist()  # TO KEEP IT, reused in bowFrq_rdd 
     #print('NB sr_short_rdd: ', sr_short_rdd.count())
 
     
@@ -308,8 +308,9 @@ if __name__ == '__main__' :
     #= Filtering miRNA low frequency
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
-    mr_low_rdd = bowFrq_rdd.filter(lambda e: e[1][0] > limit_mrna_freq)
+    mr_low_rdd = mr_meyers2018len_rdd.filter(lambda e: e[1][0] > limit_mrna_freq)
     #print('NB mr_low_rdd: ', mr_low_rdd.count())
+    print(datetime.datetime.now(), 'mr_low_rdd')
     
     #= Filtering high nbLocations and zero location
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
@@ -365,14 +366,13 @@ if __name__ == '__main__' :
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold']])
     pri_fold_rdd = mergeChromosomesResults_rdd.map(lambda e: rnafold_obj.RNAfold_map_rule(e, 3))
 
-    #= Validating pri-mirna with mircheck, len(pri-mirna) < 301 nt
+    #= Validating pri-mirna with mircheck, keep unique precursors
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold']])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
     pri_vld_rdd = pri_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 3))\
                               .filter(lambda e: any(e[1][3]))\
                               .map(lambda e: (e[0] + e[1][2][0] + e[1][2][1] + str(e[1][2][2]) + e[1][3][4] + e[1][3][5], e)  )\
-                              .reduceByKey(lambda a, b: a)\
-                              .map(lambda e: e[1])
+                              .reduceByKey(lambda a, b: a[1])
     #print('NB pri_vld_rdd (mircheck): ', pri_vld_rdd.count())
     print(datetime.datetime.now(), 'pri_vld_rdd (mircheck)') #= BOTTLE NECK= this step takes about 2h for 11w lib
 
@@ -390,7 +390,7 @@ if __name__ == '__main__' :
     #= Extraction of the pre-miRNA
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop'], ['preSeq',posMirPre]])
-    premir_rdd = len300_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3)) ## use one-loop rule
+    premir_rdd = one_loop_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3)) ## use one-loop rule
     #premir_rdd = len300_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3)) ## ignore one-loop rule
     #================================================================================================================
     #================================================================================================================
