@@ -324,16 +324,18 @@ def containsOnlyOneLoop (folding):
     m = re.search(r'[(]+[.]+[)]+[.()]+[(]+[.]+[)]+', folding)
     if m:
       lenList = []
-      ON = 0
+      flag = 0
+      count = 0
       for i in folding:
         if i == '(': 
-            ON = 1
+            flag = 1
             count = 0
-        elif ON == 1 and i == '.': count += 1
-        elif ON == 1 and i == ')': 
-            ON = 0
+        elif flag == 1 and i == '.': count += 1
+        elif flag == 1 and i == ')': 
+            flag = 0
             lenList.append(count)
             count = 0
+            
       for j in lenList:
         if j > 5: count += 1
       if count < 2: return True
