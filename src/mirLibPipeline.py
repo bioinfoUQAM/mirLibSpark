@@ -436,7 +436,7 @@ if __name__ == '__main__' :
                   .filter(lambda e: e[1] > 90)\
                   .map(lambda e: (e[0].split('_')[0] + e[0].split('_')[1], [int(e[0].split('_')[2]), e[1]]))
     dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(x.collect())
-    print(datetime.datetime.now(), 'dict_bowtie_chromo_strand', sys.getsizeof(dict_bowtie_chromo_strand)) 
+    print(datetime.datetime.now(), 'dict_bowtie_chromo_strand, size = bytes', sys.getsizeof(dict_bowtie_chromo_strand)) 
     #================================================================================================================
     #broadcastVar_bowtie_chromo_strand = sc.broadcast(dict_bowtie_chromo_strand) 
 
@@ -451,7 +451,7 @@ if __name__ == '__main__' :
     print('NB profile_rdd NON distinct: ', profile_rdd.count())
     libresults = profile_rdd.collect()
     
-    print(datetime.datetime.now(), 'profile_rdd.collect()')#= BOTTLE NECK= this step takes about 3h for 11w lib
+    print(datetime.datetime.now(), 'profile_rdd.collect(), size = bytes', sys.getsizeof(libresults))#= BOTTLE NECK= this step takes about 3h for 11w lib
 
     endLib = time.time() 
     timeDict[inBasename] = endLib - startLib
