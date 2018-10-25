@@ -177,7 +177,7 @@ if __name__ == '__main__' :
   print('============================================================\n')
   time_a = datetime.datetime.now()
   print('begin time:', time_a)
-  #'''
+  
   for infile in infiles :
     if infile[-1:] == '~': continue
     print ("--Processing of the library: ", infile)
@@ -203,7 +203,7 @@ if __name__ == '__main__' :
     if distFile_rdd.isEmpty():
       print(infile, 'is an empty file, omit this file')
       continue
-    print('NB distFile_rdd: ', distFile_rdd.count())#
+    #print('NB distFile_rdd: ', distFile_rdd.count())#
 
     #= Unify different input formats to "seq freq" elements
     if input_type == 'a': #= raw
@@ -247,7 +247,7 @@ if __name__ == '__main__' :
     ## in : ('seq', freq)
     ## out: ('seq', freq)
     sr_short_rdd = sr_low_rdd.filter(lambda e: len(e[0]) > limit_len).persist()  # TO KEEP IT, reused in 
-    print('NB sr_short_rdd: ', sr_short_rdd.count())
+    #print('NB sr_short_rdd: ', sr_short_rdd.count())
 
     
     #= Filtering with DustMasker
@@ -258,7 +258,7 @@ if __name__ == '__main__' :
                             .filter(lambda e: e.isupper() and not e.startswith('>'))\
                             .map(lambda e: str(e.rstrip()))\
                             .persist()
-    print('NB dmask_rdd: ', dmask_rdd.count())
+    #print('NB dmask_rdd: ', dmask_rdd.count())
     print('current time:', datetime.datetime.now())
 
     mergebowtie_rdd = sc.emptyRDD()
@@ -285,7 +285,7 @@ if __name__ == '__main__' :
       #================================================================================================================
       #================================================================================================================
       mergebowtie_rdd = mergebowtie_rdd.union(bowtie_rdd).persist()
-    print('NB mergebowtie_rdd: ', mergebowtie_rdd.count())
+    #print('NB mergebowtie_rdd: ', mergebowtie_rdd.count())
     print('current time:', datetime.datetime.now())
 
     
@@ -295,7 +295,7 @@ if __name__ == '__main__' :
     bowFrq_rdd = mergebowtie_rdd.join(sr_short_rdd)\
                            .map(bowtie_obj.bowtie_freq_rearrange_rule)\
                            .persist()
-    print('NB bowFrq_rdd: ', bowFrq_rdd.count())
+    #print('NB bowFrq_rdd: ', bowFrq_rdd.count())
     print('current time:', datetime.datetime.now())
 
     #= Filtering, keep miRNA length = 21, 22, 23, 24
@@ -321,7 +321,7 @@ if __name__ == '__main__' :
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr])
     flat_rdd = nbLoc_rdd.flatMap(mru.flatmap_mappings)
     #print('NB flat_rdd distinct (this step flats elements): ', flat_rdd.groupByKey().count())
-    print('NB flat_rdd not distinct: ', flat_rdd.count())
+    #print('NB flat_rdd not distinct: ', flat_rdd.count())
     print('current time:', datetime.datetime.now())
     
     #= Filtering known non-miRNA ##
@@ -353,11 +353,12 @@ if __name__ == '__main__' :
       #================================================================================================================
       #================================================================================================================
       #================================================================================================================
-    genome = ''
-    prec_obj = mru.extract_precurosrs(genome, pri_l_flank, pri_r_flank, pre_flank)
-    print('NB mergeChromosomesResults: ', mergeChromosomesResults_rdd.count())
+    #print('NB mergeChromosomesResults: ', mergeChromosomesResults_rdd.count())
     print('current time:', datetime.datetime.now()) #= BOTTLE NECK= this step takes about 2h30 for 11w lib
     
+    ##genome = ''
+    ##prec_obj = mru.extract_precurosrs(genome, pri_l_flank, pri_r_flank, pre_flank)
+
     #= pri-miRNA folding
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri]])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold']])
@@ -371,7 +372,7 @@ if __name__ == '__main__' :
                               .map(lambda e: (e[0] + e[1][2][0] + e[1][2][1] + str(e[1][2][2]) + e[1][3][4] + e[1][3][5], e)  )\
                               .reduceByKey(lambda a, b: a)\
                               .map(lambda e: e[1])
-    print('NB pri_vld_rdd (mircheck): ', pri_vld_rdd.count())
+    #print('NB pri_vld_rdd (mircheck): ', pri_vld_rdd.count())
     print('current time:', datetime.datetime.now()) #= BOTTLE NECK= this step takes about 2h for 11w lib
 
 
@@ -407,7 +408,7 @@ if __name__ == '__main__' :
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold']])
     #pre_fold_rdd = mergeChromosomesResults_rdd.map(lambda e: rnafold_obj.RNAfold_map_rule(e, 4))
     pre_fold_rdd = premir_rdd.map(lambda e: rnafold_obj.RNAfold_map_rule(e, 4))
-    print('NB pre_fold_rdd: ', pre_fold_rdd.count())
+    #print('NB pre_fold_rdd: ', pre_fold_rdd.count())
     print('current time:', datetime.datetime.now())
 
     #= Validating pre-mirna with mircheck II -- replaced by mirdup
@@ -423,7 +424,7 @@ if __name__ == '__main__' :
     pre_vld_rdd = pre_fold_rdd.zipWithIndex()\
                               .map(mirdup_obj.run_miRdup)\
                               .filter(lambda e: e[1][4][3] == "true")
-    print('NB pre_vld_rdd distinct (mirdup): ', pre_vld_rdd.groupByKey().count())
+    #print('NB pre_vld_rdd distinct (mirdup): ', pre_vld_rdd.groupByKey().count())
     print('current time:', datetime.datetime.now()) #= 11w about 30 mins; OFTEN NOT RUNNING THROUGH THIS STEP BEFORE OUT-OF-TIME
 
     
@@ -441,7 +442,7 @@ if __name__ == '__main__' :
                   .map(lambda e: (e[0].split('_')[0] + e[0].split('_')[1], [int(e[0].split('_')[2]), e[1]]))\
                   .collect()
     dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(x)
-    print('current time:', datetime.datetime.now())
+    #print('current time:', datetime.datetime.now())
     #================================================================================================================
     #broadcastVar_bowtie_chromo_strand = sc.broadcast(dict_bowtie_chromo_strand) 
 
@@ -454,7 +455,6 @@ if __name__ == '__main__' :
 
     print('NB profile_rdd distinct: ', profile_rdd.groupByKey().count())
     print('NB profile_rdd NON distinct: ', profile_rdd.count())
-    #dict_bowtie_chromo_strand = ''
     libresults = profile_rdd.collect()
    
     print('current time:', datetime.datetime.now()) #= BOTTLE NECK= this step takes about 3h for 11w lib
