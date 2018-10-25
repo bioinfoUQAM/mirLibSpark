@@ -433,7 +433,7 @@ if __name__ == '__main__' :
     x = bowFrq_rdd.flatMap(mru.flatmap_mappings)\
                   .map(lambda e: (e[1][2][1] + '_' + e[1][2][0] + '_' + str(e[1][2][2])[:-2]+ '00', e[1][0]) )\
                   .reduceByKey(lambda a, b: a+b)\
-                  .filter(lambda e: e[1] > 20)\
+                  .filter(lambda e: e[1] > 90)\
                   .map(lambda e: (e[0].split('_')[0] + e[0].split('_')[1], [int(e[0].split('_')[2]), e[1]]))\
                   .collect()
     dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(x)
