@@ -336,8 +336,8 @@ if __name__ == '__main__' :
     mergeChromosomesResults_rdd = sc.emptyRDD()
     for i in range(len(chromosomes)):
       ch = chromosomes[i]
-      genome = ut.getGenome(genome_path, ".fa", ch)
-      broadcastVar_genome = sc.broadcast(genome)
+      #genome = ut.getGenome(genome_path, ".fa", ch)
+      broadcastVar_genome = sc.broadcast(ut.getGenome(genome_path, ".fa", ch))
       prec_obj = mru.extract_precurosrs(broadcastVar_genome.value, pri_l_flank, pri_r_flank, pre_flank)
       #================================================================================================================
       #================================================================================================================
@@ -359,9 +359,6 @@ if __name__ == '__main__' :
     #print('NB mergeChromosomesResults: ', mergeChromosomesResults_rdd.count())
     print(datetime.datetime.now(), 'mergeChromosomesResults_rdd') #= BOTTLE NECK= this step takes about 2h30 for 11w lib
     
-    ##genome = ''
-    ##prec_obj = mru.extract_precurosrs(genome, pri_l_flank, pri_r_flank, pre_flank)
-
     #= pri-miRNA folding
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri]])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold']])
