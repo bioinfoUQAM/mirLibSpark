@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=jv2-12-wheat-mirL11500M1n32pn-181022
 #SBATCH --account=def-banire
-#SBATCH --time=15:00:00
+#SBATCH --time=20:00:00
 #SBATCH --nodes=1
 #SBATCH --mem=115000M
 #SBATCH --cpus-per-task=32
