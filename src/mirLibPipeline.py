@@ -430,12 +430,12 @@ if __name__ == '__main__' :
     #= Create dict, chromo_strand as key to search bowtie blocs in the following dict 
     #x = bowFrq_rdd.flatMap(mru.flatmap_mappings).map(lambda e: (e[1][2][1] + e[1][2][0], [e[1][2][2], e[1][0]]) ).collect()
     ##.map(lambda e: (e[1][2][1] + '_' + e[1][2][0] + '_' + str(e[1][2][2]), e[1][0]) )
-    x = bowFrq_rdd.flatMap(mru.flatmap_mappings)\
+    x_rdd = bowFrq_rdd.flatMap(mru.flatmap_mappings)\
                   .map(lambda e: (e[1][2][1] + '_' + e[1][2][0] + '_' + str(e[1][2][2])[:-2]+ '00', e[1][0]) )\
                   .reduceByKey(lambda a, b: a+b)\
                   .filter(lambda e: e[1] > 90)\
                   .map(lambda e: (e[0].split('_')[0] + e[0].split('_')[1], [int(e[0].split('_')[2]), e[1]]))
-    dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(x.collect())
+    dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(x_rdd.collect())
     print(datetime.datetime.now(), 'dict_bowtie_chromo_strand, size = bytes', sys.getsizeof(dict_bowtie_chromo_strand)) 
     #================================================================================================================
     #broadcastVar_bowtie_chromo_strand = sc.broadcast(dict_bowtie_chromo_strand) 
