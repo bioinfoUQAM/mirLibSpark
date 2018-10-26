@@ -13,7 +13,10 @@ from operator import itemgetter
 #bin = '../lib/'
 bin = ''
 
-def sort_DictBowtieCS(list_bowtie_chromo_strand):
+
+
+def sort_DictBowtieCS_ (list_bowtie_chromo_strand):
+  ''' defuct '''
   dict_bowtie_chromo_strand = {}
   for i in list_bowtie_chromo_strand:
     k = i[0]
@@ -206,6 +209,11 @@ class extract_precurosrs ():
     
     return newElems
 
+  def hasKey (self, e):
+    mapping = e[1][2]
+    if mapping[1] in self.genome: return True
+    else: return False
+    
   def extract_sub_seq(self, contig, posMir, fback_start, fback_stop):
     fold_len = fback_stop - fback_start + 1
     pos = posMir - fback_start + self.pre_flank          #= 0-based
@@ -232,13 +240,6 @@ class extract_precurosrs ():
     
     elem[1].append(self.extract_sub_seq(priSeq, posMir, fback_start, fback_stop))
     return elem
-
-  def hasKey (self, e):
-    mapping = e[1][2]
-    if mapping[1] in self.genome.keys(): return True
-    else: return False
-
-
 
 
 
@@ -322,89 +323,32 @@ class prog_dominant_profile () :
   def __init__(self):
     self.env = os.environ
   
-  '''
   def get_bowtie_strandchromo_dict (self, bowtie_rdd_collect):
+    #= bowtie_rdd_collect = (key, [poschr, freq]) #= key = chromo + strand
     dict_bowtie_chromo_strand = {}
-    
+
     for elem in bowtie_rdd_collect :
-      bowties = elem[1][2]
-      freq = elem[1][0]
-      
-      for bowtie in bowties :
-        #= concatenate chromosome (bowtie[1]) and strand (bowtie[0])
-        chromo = bowtie[1]
-        strand = bowtie[0]
-        posChr = bowtie[2]
-        chromo_strand = chromo + strand
+      chromo_strand = elem[0]
+      poschr = elem[1][0]
+      freq = elem[1][1]
+   
+      if chromo_strand not in dict_bowtie_chromo_strand:
+        dict_bowtie_chromo_strand[chromo_strand] = {}
 
-        if chromo_strand not in dict_bowtie_chromo_strand.keys():
-          dict_bowtie_chromo_strand[chromo_strand] = []
-        new_elem = [posChr, freq]
-        dict_bowtie_chromo_strand[chromo_strand].append(new_elem)
-
-    #for k, v in dict_bowtie_chromo_strand.items():
-      #dict_bowtie_chromo_strand[k] = v.sort(key=lambda x: int(x[0]))
+      if poschr not in dict_bowtie_chromo_strand[chromo_strand]:
+        dict_bowtie_chromo_strand[chromo_strand][poschr] = freq
+      #else: dict_bowtie_chromo_strand[chromo_strand][poschr] += freq 
     
     return dict_bowtie_chromo_strand
-    '''
-
-
-  def get_bowtie_strandchromo_dict (self, bowtie_rdd_collect):
-    '''elem : (seq, [frq, nbloc, [bowties]])
-    '''
-    dict_bowtie_chromo_strand = {}
-    
-    for elem in bowtie_rdd_collect :
-      bowties = elem[1][2]
-      
-      for bowtie in bowties :
-        #= concatenate chromosome (bowtie[1]) and strand (bowtie[0])
-        chromo_strand = bowtie[1] + bowtie[0]
-        
-        if chromo_strand not in dict_bowtie_chromo_strand.keys():
-          dict_bowtie_chromo_strand[chromo_strand] = []
-        
-        dict_bowtie_chromo_strand[chromo_strand].append(elem)
-    
-    return dict_bowtie_chromo_strand
-
   
   def calculateTotalfrq (self, bowbloc, x, y):
-    ''' 
-    old elem in bowbloc = (id, [seq, frq, nbloc, [bowties]])
-    new elem in bowbloc = (seq, [frq, nbloc, [bowties]])
-    '''
+    #= bowbloc = {poschr: freq}
     totalfrq = 0
-    for elem in bowbloc :
-      bowties = elem[1][2]
-      frq = elem[1][0]
-      for bowtie in bowties :
-        posgen = bowtie[2]
-        if (x < posgen < y) :
-          totalfrq += frq
+    index = x+1
+    while (x < index < y):
+      if index in bowbloc: totalfrq += bowbloc[index]
+      index += 1
     return totalfrq
-
-
-    #totalfrq = 0
-    #for e in bowbloc :
-    #  posgen = e[0]
-    #  if (x < posgen < y) :
-    #    frq = e[1]
-    #    totalfrq += frq
-    #return totalfrq
-
-    #totalfrq = 0
-    #posgen = x
-    #while posgen < y:
-    #  for e in bowbloc :
-    #    posgen = e[0]
-    #    if x < posgen:
-    #      frq = e[1]
-    #      totalfrq += frq
-    #return totalfrq
-
-
-
 
   def profile_range (self, elem):
     ''' 
@@ -434,24 +378,6 @@ class prog_dominant_profile () :
 
     elem[1].append(totalfrq)
     return elem
-
-  def exp_profile_filter__ (self, elem, dict_bowtie_chromo_strand):
-    ''' 
-    defunct
-    old : elem = (id, [seq, frq, nbloc, [bowtie], [pri_miRNA], [pre_miRNA]])
-    new : elem = (seq, [frq, nbloc, [bowtie], [pri_miRNA], [pre_miRNA]])
-    '''
-    x, y = self.profile_range (elem)
-    bowtie_bloc_key = elem[1][2][1] + elem[1][2][0]  #chrom+strand
-    bowbloc = dict_bowtie_chromo_strand[bowtie_bloc_key]
-    totalfrq = self.calculateTotalfrq (bowbloc, x, y)
-    miRNAfrq = elem[1][0]
-    ratio = miRNAfrq / float(totalfrq)
-    
-    if ratio > 0.2 :
-        return True
-    return False
-
 
 class prog_miRanda ():
   def __init__ (self, Max_Score_cutoff, Max_Energy_cutoff, target_file, rep_tmp, miranda_exe, Gap_Penalty, nbTargets):
@@ -625,11 +551,11 @@ class prog_varna ():
     return e[0]
 
 
-def matchRNAidRule (e, distResultSmallRNA):
+def matchRNAidRule (e, d_rna_index):
   ##in  : precursorSerial, miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore
   ##out : precursorSerial, miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore, miRNAindex
-  d_rna_index = {} # {seq: index}
-  for i in distResultSmallRNA: d_rna_index[ i[0] ] = i[1]
+  #d_rna_index = {} # {seq: index}
+  #for i in distResultSmallRNA: d_rna_index[ i[0] ] = i[1]
   miRNAseq = e[1]
   e.append(d_rna_index[miRNAseq]) 
   return e
