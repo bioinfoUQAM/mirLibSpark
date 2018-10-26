@@ -372,7 +372,7 @@ if __name__ == '__main__' :
                               .map(lambda e: (e[0] + e[1][2][0] + e[1][2][1] + str(e[1][2][2]) + e[1][3][4] + e[1][3][5], e)  )\
                               .reduceByKey(lambda a, b: a)\
                               .map(lambda e: e[1])
-    #print('NB pri_vld_rdd (mircheck): ', pri_vld_rdd.count())
+    print('NB pri_vld_rdd (mircheck): ', pri_vld_rdd.count())
     print(datetime.datetime.now(), 'pri_vld_rdd (mircheck)') #= BOTTLE NECK= this step takes about 2h for 11w lib
 
 
@@ -421,7 +421,7 @@ if __name__ == '__main__' :
     pre_vld_rdd = pre_fold_rdd.zipWithIndex()\
                               .map(mirdup_obj.run_miRdup)\
                               .filter(lambda e: e[1][4][3] == "true")
-    #print('NB pre_vld_rdd distinct (mirdup): ', pre_vld_rdd.groupByKey().count())
+    print('NB pre_vld_rdd distinct (mirdup): ', pre_vld_rdd.groupByKey().count())
     print(datetime.datetime.now(), 'pre_vld_rdd distinct (mirdup)') #= 11w about 30 mins; OFTEN NOT RUNNING THROUGH THIS STEP BEFORE OUT-OF-TIME
     
 
@@ -436,7 +436,7 @@ if __name__ == '__main__' :
                   .filter(lambda e: e[1] > 90)\
                   .map(lambda e: (e[0].split('_')[0] + e[0].split('_')[1], [int(e[0].split('_')[2]), e[1]]))
     dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(x_rdd.collect())
-    print(datetime.datetime.now(), 'dict_bowtie_chromo_strand, size = bytes', sys.getsizeof(dict_bowtie_chromo_strand)) 
+    print(datetime.datetime.now(), 'dict_bowtie_chromo_strand') 
     #================================================================================================================
     #broadcastVar_bowtie_chromo_strand = sc.broadcast(dict_bowtie_chromo_strand) 
 
@@ -447,11 +447,11 @@ if __name__ == '__main__' :
     profile_rdd = pre_vld_rdd.map(lambda e: profile_obj.computeProfileFrq(e, dict_bowtie_chromo_strand))\
                              .filter(lambda e: e[1][0] / (float(e[1][5]) + 0.1) > 0.2)
 
-    print('NB profile_rdd distinct: ', profile_rdd.groupByKey().count())
-    print('NB profile_rdd NON distinct: ', profile_rdd.count())
-    libresults = profile_rdd.collect()
+    #print('NB profile_rdd distinct: ', profile_rdd.groupByKey().count())
+    #print('NB profile_rdd NON distinct: ', profile_rdd.count())
+    libresults = profile_rdd.take(2)#collect()
     
-    print(datetime.datetime.now(), 'profile_rdd.collect(), size = bytes', sys.getsizeof(libresults))#= BOTTLE NECK= this step takes about 3h for 11w lib
+    print(datetime.datetime.now(), 'profile_rdd.collect()')#= BOTTLE NECK= this step takes about 3h for 11w lib
 
     endLib = time.time() 
     timeDict[inBasename] = endLib - startLib
