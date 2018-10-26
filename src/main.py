@@ -1,3 +1,14 @@
+'''
+Graham manual 2018-10-26
+
+modify `$paramfile_ATH_TAIR10_graham.txt`
+do `$mkdir input` in project folder,
+do `$cp input_samples/100.txt input/`
+do `$ cd workdir`,
+do `$mkdir jobout` in workdir,
+do `$sbatch pyspark_submit_jv2_20_ath032.sh`
+'''
+
 import os
 
 #= use branch "jmajor" as my own master to develop features for managing the memory
