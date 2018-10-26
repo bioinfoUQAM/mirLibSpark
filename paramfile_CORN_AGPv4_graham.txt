@@ -1,4 +1,4 @@
-#== wheat inhouse genome settings
+#== arabidopsis thaliana settings
 #  date:2018-09-21
 #  author: M.A.Remita
 #  author: Chao-Jung Wu
@@ -35,7 +35,7 @@
 #
 ########################################################################
 #
-message=\nwrite your message (for stdout) here line1\nline2: \n
+message=\nwrite your message (for stdout) here line1\nline2:
 #
 ########################################################################
 #
@@ -43,44 +43,40 @@ message=\nwrite your message (for stdout) here line1\nline2: \n
 #
 #==================== Absolute paths in user's computer, please modify this string: /home/cjwu/project/cjwu/gitRepo/
 project_path=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/
-input_path=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/input/
-#input_path=/home/cloudera/vm_share/Wheat_field_libraries/
+input_path=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/input_zma/
 output_path=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/output/
 #
-genome_path=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/dbs/WHEAT_IWGSC/Genome/
-b_index_path=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/dbs/WHEAT_IWGSC/bowtie_index/
-bowtie_index_suffix=WHEAT_IWGSC
+genome_path=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/dbs/CORN_AGPv4/Genome/
+b_index_path=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/dbs/CORN_AGPv4/bowtie_index/
+bowtie_index_suffix=CORN_AGPv4
 #
-known_non_file=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/dbs/ATH_TAIR10/TAIR10_ncRNA_CDS.gff
-#
-target_file=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/dbs/WHEAT_IWGSC/mRNA_contigs_smaller.fasta
-#target_file=/home/cloudera/vm_share/dbs/WHEAT_IWGSC/Triticum_aestivum.IWGSC.cdna.all.fa
+known_non_file=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/dbs/CORN_AGPv4/TAIR10_ncRNA_CDS.gff
+target_file=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/dbs/CORN_AGPv4/Arabidopsis_thaliana.TAIR10.cdna.all.fa
 #
 perform_differnatial_analysis=no
-diffguide_file=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/diffguide_wheat.txt
+diffguide_file=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/diffguide_zma.txt
 #
 perform_KEGGpathways_enrichment_analysis=no
-gene_vs_pathway_file=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/dbs/WHEAT_IWGSC/ko_gene_vs_pathway.txt
-pathway_description_file=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/dbs/WHEAT_IWGSC/ko_pathway_description.txt
+gene_vs_pathway_file=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/dbs/CORN_AGPv4/zma_gene_vs_pathway.txt
+pathway_description_file=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/dbs/CORN_AGPv4/zma_pathway_description.txt
 #
 #
 #==================== User needs to define
-input_type=c
-adapter=TGGAATTCTCGGGTGCCAAGGAACTC
-#input_type=a
-#adapter=none
+input_type=a
+adapter=none
 #
 #
 #
 #====================  Ideally, do not change the following parameters since they are already tuned.
-chromosomes=1A,1B,1D,2A,2B,2D,3A,3B,3D,4A,4B,4D,5A,5B,5D,6A,6B,6D,7A,7B,7D
-#chromosomes=3A
+chromosomes=1,2,3,4,5,6,7,8,9,10,Mt,Pt
 #mirdup_model=Viridiplantae.model
 mirdup_model=thaliana.model
 #==================== 
 limit_s_freq=10
 limit_m_freq=100
-limit_len=18
+limit_len=15
+#meyers_left=20
+#meyers_right=25
 limit_nbLoc=15
 pri_l_flank=500
 pri_r_flank=200
@@ -94,10 +90,10 @@ Gap_Penalty=-15
 nbTargets=100
 #==================== Spark configuration
 sc_appname=mirLibSpark
-sc_partition=64
+sc_partition=20
 sc_mstrmemory=20g
 sc_execmemory=20g
 #==================== local mode
 sc_master=local[*]
 #==================== cluster mode
-sc_execcores=32
+sc_execcores=60

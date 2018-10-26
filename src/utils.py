@@ -74,16 +74,20 @@ def find_RNAfold_path ():
 def pyspark_configuration(appMaster, appName, masterMemory, execMemory, execCores):
   from pyspark import SparkConf, SparkContext
   myConf = SparkConf()
-  myConf.setMaster(appMaster) #= 'local[2] or local[*]'
   myConf.setAppName(appName)  #= 'mirLibSpark'
+  myConf.set("spark.driver.maxResultSize", '1500M') #= default 1g
+  #
   myConf.set("spark.driver.memory", masterMemory)
-  #myConf.set("spark.driver.maxResultSize", '1500M') #= default 1g
-  myConf.set("spark.executor.memory", execMemory) 
-  myConf.set("spark.cores.max", execCores) 
-  
+  myConf.set("spark.executor.memory", execMemory)
+  myConf.setMaster(appMaster) #= 'local[2] or local[*]'
+  #
+  #= no need to configure the followings
+  #myConf.set("spark.cores.max", execCores) 
+  #
   # other keys: "spark.master" = 'spark://5.6.7.8:7077'
   #             "spark.driver.cores"
   #             "spark.default.parallelism"
+  
   return SparkContext(conf = myConf)
 
 def convertTOhadoop(rfile, hdfsFile):
@@ -258,7 +262,7 @@ def getGenome__ (genome_path, file_ext):
     
   return genome
 
-def getGenome (genome_path, file_ext, chromosomeName):
+def getGenome (genome_path, file_ext, chromosomeName='All'):
   '''
   modified version of original getGenome__()
   this new function can take in either All as the entire genome, or one chromosome at a time.
@@ -310,10 +314,34 @@ def containsOnlyOneLoop (folding):
                 folding3 = '...((.....)).....)))))..((((((...((......'      #True
                 folding4 = '....((((...)))...((((......))))).....'          #False
                 folding5 = '...((.....)).....))))).....((...))...'          #False
+
+    update: 2018-10-24 adapte to Meyers 2018 criteria, the second-on loop needs to be smaller than 5 nt. 
     '''
+    #m = re.search(r'[(]+[.]+[)]+[.()]+[(]+[.]+[)]+', folding)
+    #if m: return False
+    #return True
+
     m = re.search(r'[(]+[.]+[)]+[.()]+[(]+[.]+[)]+', folding)
-    if m: return False
+    if m:
+      lenList = []
+      flag = 0
+      count = 0
+      for i in folding:
+        if i == '(': 
+            flag = 1
+            count = 0
+        elif flag == 1 and i == '.': count += 1
+        elif flag == 1 and i == ')': 
+            flag = 0
+            lenList.append(count)
+            count = 0
+            
+      for j in lenList:
+        if j > 5: count += 1
+      if count < 2: return True
+      return False
     return True
+
 
 def writeToFile (results, outfile):
     ## in: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq]) 
@@ -816,7 +844,6 @@ def perform_enrichment_analysis (diff_outs, pathway_description_file, list_mirna
   cmd = 'perl ' + project_path + '/src/'+ 'compute_enrichment.pl ' + rep_output + keyword + '/namecode.txt ' + rep_output + keyword +'/output_comput_enrich/ 1'
   os.system(cmd)
 
-
-
-
+def roundup(x): 
+  return x if x % 10 == 0 else x + 10 - x % 10
 

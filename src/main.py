@@ -1,6 +1,10 @@
 import os
 
-#cmd = 'sudo mount -t vboxsf 1_Projects /home/cloudera/vm_dropbox_projects/';os.system(cmd)
+#= use branch "bowtiedict2" as master to develop features for managing the size of dict_bowtie_chromo_strand
+#= branch "bowtiedict2_f4": improve "get_bowtie_strandchromo_dict" size when collect()
+
+
+#cmd = 'sudo mount -t vboxsf Projects /home/cloudera/vm_dropbox_projects/';os.system(cmd)
 #cmd = 'sudo mount -t vboxsf VM_Share /home/cloudera/vm_share/';os.system(cmd)
 
 
