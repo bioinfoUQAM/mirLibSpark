@@ -314,10 +314,34 @@ def containsOnlyOneLoop (folding):
                 folding3 = '...((.....)).....)))))..((((((...((......'      #True
                 folding4 = '....((((...)))...((((......))))).....'          #False
                 folding5 = '...((.....)).....))))).....((...))...'          #False
+
+    update: 2018-10-24 adapte to Meyers 2018 criteria, the second-on loop needs to be smaller than 5 nt. 
     '''
+    #m = re.search(r'[(]+[.]+[)]+[.()]+[(]+[.]+[)]+', folding)
+    #if m: return False
+    #return True
+
     m = re.search(r'[(]+[.]+[)]+[.()]+[(]+[.]+[)]+', folding)
-    if m: return False
+    if m:
+      lenList = []
+      flag = 0
+      count = 0
+      for i in folding:
+        if i == '(': 
+            flag = 1
+            count = 0
+        elif flag == 1 and i == '.': count += 1
+        elif flag == 1 and i == ')': 
+            flag = 0
+            lenList.append(count)
+            count = 0
+            
+      for j in lenList:
+        if j > 5: count += 1
+      if count < 2: return True
+      return False
     return True
+
 
 def writeToFile (results, outfile):
     ## in: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq]) 
