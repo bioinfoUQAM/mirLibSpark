@@ -137,6 +137,8 @@ if __name__ == '__main__' :
 
   #= end of paramDict naming =================================================================================
 
+  strands = ['+', '-']########
+
   #= make required folders if not exist
   reps = [rep_output, rep_tmp]
   ut.makedirs_reps (reps)
@@ -437,23 +439,23 @@ if __name__ == '__main__' :
     #print(datetime.datetime.now(), 'dict_bowtie_chromo_strand')
     #================================================================================================================
     #================================================================================================================
-    strands = ['+', '-']
     mergeProfileChromo_rdd = sc.emptyRDD()
     x_rdd = bowFrq_rdd.flatMap(mru.flatmap_mappings)
     for i in range(len(chromosomes)):
       ch = chromosomes[i]
-      for strand in strands:
-        chromo_strand = ch + '_' + strand
-        y_rdd = x_rdd.map(lambda e: (e[1][2][1] + '_' + e[1][2][0], [e[1][2][2], e[1][0]]) )\
-                     .filter(lambda e: mru.y_rdd_hasKey(e, chromo_strand))
-        dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(y_rdd.collect())
-        #
-        profile_rdd = pre_vld_rdd.map(lambda e: (e[1][2][1] + '_' + e[1][2][0], e)\
-                                 .filter(lambda e: mru.y_rdd_hasKey(e, chromo_strand))\
-                                 .map(lambda e: e[1])\
-                                 .map(lambda e: profile_obj.computeProfileFrq(e, dict_bowtie_chromo_strand))\
-                                 .filter(lambda e: e[1][0] / (float(e[1][5]) + 0.1) > 0.2)
-        #mergeProfileChromo_rdd = mergeProfileChromo_rdd.union(profile_rdd).persist()
+      #for strand in strands:
+      strand = '+'
+      chromo_strand = ch + '_' + strand
+      y_rdd = x_rdd.map(lambda e: (e[1][2][1] + '_' + e[1][2][0], [e[1][2][2], e[1][0]]) )\
+                   .filter(lambda e: mru.y_rdd_hasKey(e, chromo_strand))
+      dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(y_rdd.collect())
+      #
+      profile_rdd = pre_vld_rdd.map(lambda e: (e[1][2][1] + '_' + e[1][2][0], e)\
+                               .filter(lambda e: mru.y_rdd_hasKey(e, chromo_strand))\
+                               .map(lambda e: e[1])\
+                               .map(lambda e: profile_obj.computeProfileFrq(e, dict_bowtie_chromo_strand))\
+                               .filter(lambda e: e[1][0] / (float(e[1][5]) + 0.1) > 0.2)
+      #mergeProfileChromo_rdd = mergeProfileChromo_rdd.union(profile_rdd).persist()
     print(datetime.datetime.now(), 'mergeProfileChromo_rdd')
     #================================================================================================================
     #broadcastVar_bowtie_chromo_strand = sc.broadcast(dict_bowtie_chromo_strand) 
