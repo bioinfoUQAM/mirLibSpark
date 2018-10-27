@@ -432,12 +432,16 @@ if __name__ == '__main__' :
       ch = chromosomes[i]
       for strand in strands:
         chromo_strand = ch + strand
+        print(chromo_strand)
         y_rdd = x_rdd.map(lambda e: (e[1][2][1] + e[1][2][0], [e[1][2][2], e[1][0]]) )\
-                     .filter(lambda e: mru.y_rdd_hasKey(e, chromo_strand))
+                     .filter(lambda e: e[0] == chromo_strand)
         dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(y_rdd.collect())
+        for k, v in dict_bowtie_chromo_strand.items():
+          print(k, v)
+          break
         #
         profile_rdd = pre_vld_rdd.map(lambda e: (e[1][2][1] + e[1][2][0], e))\
-                                 .filter(lambda e: mru.y_rdd_hasKey(e, chromo_strand))\
+                                 .filter(lambda e: e[0] == chromo_strand)\
                                  .map(lambda e: e[1])\
                                  .map(lambda e: profile_obj.computeProfileFrq(e, dict_bowtie_chromo_strand))\
                                  .filter(lambda e: e[1][0] / (float(e[1][5]) + 0.1) > 0.2)
@@ -453,10 +457,8 @@ if __name__ == '__main__' :
     #profile_rdd = pre_vld_rdd.map(lambda e: profile_obj.computeProfileFrq(e, dict_bowtie_chromo_strand))\
     #                         .filter(lambda e: e[1][0] / (float(e[1][5]) + 0.1) > 0.2)
 
-    #print('NB profile_rdd distinct: ', profile_rdd.groupByKey().count())
-    #print('NB profile_rdd NON distinct: ', profile_rdd.count())
-    #libresults = profile_rdd.collect()
-    #libresults = profile_rdd.take(2)#collect()
+    print('NB mergeProfileChromo_rdd distinct: ', mergeProfileChromo_rdd.groupByKey().count())
+    print('NB mergeProfileChromo_rdd NON distinct: ', mergeProfileChromo_rdd    .count())
     libresults = mergeProfileChromo_rdd.collect()
     
     print(datetime.datetime.now(), 'mergeProfileChromo_rdd.collect()')#= BOTTLE NECK= this step takes about 3h for 11w lib
