@@ -265,7 +265,6 @@ if __name__ == '__main__' :
                             .map(lambda e: str(e.rstrip()))\
                             .persist()
     if reporting == 1: print('NB dmask_rdd: ', dmask_rdd.count())
-    print(datetime.datetime.now(), 'dmask_rdd')
 
     mergebowtie_rdd = sc.emptyRDD()
     for i in range(len(chromosomes)):
@@ -297,20 +296,18 @@ if __name__ == '__main__' :
                            .map(bowtie_obj.bowtie_freq_rearrange_rule)\
                            .persist()
     if reporting == 1: print('NB bowFrq_rdd: ', bowFrq_rdd.count())
-    print(datetime.datetime.now(), 'bowFrq_rdd')
 
     #= Filtering, keep miRNA length = 21, 22, 23, 24
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     mr_meyers2018len_rdd = bowFrq_rdd.filter(lambda e: len(e[0]) < 25 and len(e[0]) > 20)
-    if reporting == 1: print('NB mr_low_rdd: ', mr_meyers2018len_rdd.count())
+    if reporting == 1: print('NB mr_meyers2018len_rdd: ', mr_meyers2018len_rdd.count())
 
     #= Filtering miRNA low frequency
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     mr_low_rdd = mr_meyers2018len_rdd.filter(lambda e: e[1][0] > limit_mrna_freq)
     if reporting == 1: print('NB mr_low_rdd: ', mr_low_rdd.count())
-    print(datetime.datetime.now(), 'mr_low_rdd')
     
     #= Filtering high nbLocations and zero location
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
