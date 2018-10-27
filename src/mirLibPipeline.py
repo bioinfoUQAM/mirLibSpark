@@ -76,7 +76,7 @@ if __name__ == '__main__' :
   project_path = paramDict['project_path'][:-1]
   rep_input = paramDict['input_path']
   rep_output = paramDict['output_path']
-  #rep_tmp = project_path + '/tmp/'   
+  rep_output_appId = rep_output + appId + '/'
   rep_tmp = '../tmp/'    
 
   #= print appId to a file
@@ -141,7 +141,7 @@ if __name__ == '__main__' :
   #= end of paramDict naming =================================================================================
 
   #= make required folders if not exist
-  reps = [rep_output, rep_tmp]
+  reps = [rep_output, rep_tmp, rep_output_appId]
   ut.makedirs_reps (reps)
 
   #= addFile
@@ -545,7 +545,7 @@ if __name__ == '__main__' :
   print('total runnung time: ', time_b - time_a)
   print('====================== End of ' + appId + ' =============\n')
 
-
+  os.system('mv ' + rep_output + '*' + appId + '* ' + rep_output_appId)
   #os.system('rm -fr ' + rep_tmp)
 
 
