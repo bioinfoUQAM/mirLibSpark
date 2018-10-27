@@ -29,7 +29,7 @@ import mirLibRules as mru
 
 #= 1: display intermediate rdd.collect(), this makes the time longer
 #= 0: not reporting rdd.collect() makes the time shorter
-reporting = 1 
+reporting = 0 
 
 if __name__ == '__main__' :
 
