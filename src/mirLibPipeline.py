@@ -374,7 +374,7 @@ if __name__ == '__main__' :
                               .map(lambda e: (e[0] + e[1][2][0] + e[1][2][1] + str(e[1][2][2]) + e[1][3][4] + e[1][3][5], e)  )\
                               .reduceByKey(lambda a, b: a)\
                               .map(lambda e: e[1])
-    print('NB pri_vld_rdd (mircheck): ', pri_vld_rdd.count())
+    #print('NB pri_vld_rdd (mircheck): ', pri_vld_rdd.count())
     print(datetime.datetime.now(), 'pri_vld_rdd (mircheck)') #= BOTTLE NECK= this step takes about 2h for 11w lib
 
 
@@ -392,14 +392,7 @@ if __name__ == '__main__' :
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop'], ['preSeq',posMirPre]])
     premir_rdd = one_loop_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3)) ## use one-loop rule
-    #premir_rdd = len300_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3)) ## ignore one-loop rule
     #================================================================================================================
-    #================================================================================================================
-    #================================================================================================================
-    #================================================================================================================
-    #mergeChromosomesResults_rdd = mergeChromosomesResults_rdd.union(premir_rdd).persist()#.checkpoint()
-    #broadcastVar_genome.unpersist()
-    #print('NB mergeChromosomesResults (extract, fold, check, re-extract): ', mergeChromosomesResults_rdd.count())
 
     
     #= pre-miRNA folding
@@ -423,38 +416,33 @@ if __name__ == '__main__' :
     pre_vld_rdd = pre_fold_rdd.zipWithIndex()\
                               .map(mirdup_obj.run_miRdup)\
                               .filter(lambda e: e[1][4][3] == "true")
-    print('NB pre_vld_rdd distinct (mirdup): ', pre_vld_rdd.groupByKey().count())
+    #print('NB pre_vld_rdd distinct (mirdup): ', pre_vld_rdd.groupByKey().count())
     print(datetime.datetime.now(), 'pre_vld_rdd distinct (mirdup)') #= 11w about 30 mins; OFTEN NOT RUNNING THROUGH THIS STEP BEFORE OUT-OF-TIME
     
+    
+    
+    #= Filtering by expression profile (< 20%)
+    ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore']])
+    ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq])
     mergeProfileChromo_rdd = sc.emptyRDD()
     x_rdd = bowFrq_rdd.flatMap(mru.flatmap_mappings)\
                       .map(lambda e: (e[1][2][1] + e[1][2][0], [e[1][2][2], e[1][0]]) )
-
     keys_chromo_strand = x_rdd.map(lambda e: (e[0], 1)).reduceByKey(lambda a, b: a+b).map(lambda e: e[0]).collect()
     for chromo_strand in keys_chromo_strand:
       y_rdd = x_rdd.filter(lambda e: e[0] == chromo_strand)
       dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(y_rdd.collect())
       profile_rdd = pre_vld_rdd.map(lambda e: (e[1][2][1] + e[1][2][0], e))\
                                .filter(lambda e: e[0] == chromo_strand)\
-                               .map(lambda e: e[1])\
-                               .map(lambda e: profile_obj.computeProfileFrq(e, dict_bowtie_chromo_strand))\
+                               .map(lambda e: profile_obj.computeProfileFrq(e[1], dict_bowtie_chromo_strand))\
                                .filter(lambda e: e[1][0] / (float(e[1][5]) + 0.1) > 0.2)
       mergeProfileChromo_rdd = mergeProfileChromo_rdd.union(profile_rdd).persist()
     print(datetime.datetime.now(), 'mergeProfileChromo_rdd')
     #================================================================================================================
-    #broadcastVar_bowtie_chromo_strand = sc.broadcast(dict_bowtie_chromo_strand) 
-
-
-    #= Filtering by expression profile (< 20%)
-    ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore']])
-    ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq])
-    #profile_rdd = pre_vld_rdd.map(lambda e: profile_obj.computeProfileFrq(e, dict_bowtie_chromo_strand))\
-    #                         .filter(lambda e: e[1][0] / (float(e[1][5]) + 0.1) > 0.2)
-
-    print('NB mergeProfileChromo_rdd distinct: ', mergeProfileChromo_rdd.groupByKey().count())
-    print('NB mergeProfileChromo_rdd NON distinct: ', mergeProfileChromo_rdd.count())
-    libresults = mergeProfileChromo_rdd.collect()
     
+    #= collecting final miRNA predictions
+    print('NB mergeProfileChromo_rdd distinct: ', mergeProfileChromo_rdd.groupByKey().count())
+    #print('NB mergeProfileChromo_rdd NON distinct: ', mergeProfileChromo_rdd.count())
+    libresults = mergeProfileChromo_rdd.collect()
     print(datetime.datetime.now(), 'mergeProfileChromo_rdd.collect()')#= BOTTLE NECK= this step takes about 3h for 11w lib
 
     endLib = time.time() 
