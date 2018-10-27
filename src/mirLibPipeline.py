@@ -27,6 +27,9 @@ from os import listdir
 import utils as ut
 import mirLibRules as mru
 
+#= 1: display intermediate rdd.collect(), this makes the time longer
+#= 0: not reporting rdd.collect() makes the time shorter
+reporting = 0 
 
 if __name__ == '__main__' :
 
@@ -164,6 +167,9 @@ if __name__ == '__main__' :
 
   #= Fetch library files in rep_input
   infiles = [f for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
+  if len(infiles) == 0: 
+    sys.stderr.write('ERROR: input file is missing')
+    sys.exit()
   print('============================================================\n')
   print('infiles:')
   for infile in infiles: print(infile)
@@ -185,12 +191,10 @@ if __name__ == '__main__' :
 
     inBasename = os.path.splitext(infile)[0] #= lib name
     infile = rep_input+infile
-    inKvfile = rep_tmp + inBasename + '.kv.txt'
 
     if input_type == 'd': #= fastq
-      ut.convert_fastq_file_to_KeyValue(infile, inKvfile)
-      infile = inKvfile
-      
+      infile = ut.convert_fastq_file_to_KeyValue(infile, rep_tmp, inBasename)
+
     print ("  Start of miRNA prediction...", end="\n")
     print(datetime.datetime.now(), 'start')
     startLib = time.time()
@@ -205,7 +209,7 @@ if __name__ == '__main__' :
     if distFile_rdd.isEmpty():
       print(infile, 'is an empty file, omit this file')
       continue
-    #print('NB distFile_rdd: ', distFile_rdd.count())#
+    if reporting == 1: print('NB distFile_rdd: ', distFile_rdd.count())#
 
     #= Unify different input formats to "seq freq" elements
     if input_type == 'a': #= raw
@@ -243,13 +247,13 @@ if __name__ == '__main__' :
     ## in : ('seq', freq)
     ## out: ('seq', freq)
     sr_low_rdd = collapse_rdd.filter(lambda e: int(e[1]) > limit_srna_freq)
-    #print('NB sr_low_rdd: ', sr_low_rdd.count())
+    if reporting == 1: print('NB sr_low_rdd: ', sr_low_rdd.count())
     
     #= Filtering short length
     ## in : ('seq', freq)
     ## out: ('seq', freq)
     sr_short_rdd = sr_low_rdd.filter(lambda e: len(e[0]) > limit_len).persist()  # TO KEEP IT, reused in bowFrq_rdd 
-    #print('NB sr_short_rdd: ', sr_short_rdd.count())
+    if reporting == 1: print('NB sr_short_rdd: ', sr_short_rdd.count())
 
     
     #= Filtering with DustMasker
@@ -260,8 +264,7 @@ if __name__ == '__main__' :
                             .filter(lambda e: e.isupper() and not e.startswith('>'))\
                             .map(lambda e: str(e.rstrip()))\
                             .persist()
-    #print('NB dmask_rdd: ', dmask_rdd.count())
-    print(datetime.datetime.now(), 'dmask_rdd')
+    if reporting == 1: print('NB dmask_rdd: ', dmask_rdd.count())
 
     mergebowtie_rdd = sc.emptyRDD()
     for i in range(len(chromosomes)):
@@ -269,8 +272,6 @@ if __name__ == '__main__' :
       p = b_index_path + ch + '/' + bowtie_index_suffix
       bowtie_obj = mru.prog_bowtie(p)
       bowtie_cmd, bowtie_env = bowtie_obj.Bowtie_pipe_cmd()
-      #================================================================================================================
-      #================================================================================================================
       #================================================================================================================
       #================================================================================================================
       #= Mapping with Bowtie
@@ -281,13 +282,10 @@ if __name__ == '__main__' :
                             .map(bowtie_obj.bowtie_rearrange_map)\
                             .groupByKey()\
                             .map(lambda e: (e[0], [len(list(e[1])), list(e[1])]))
-      #print('NB bowtie_rdd: ', bowtie_rdd.count())
-      #================================================================================================================
-      #================================================================================================================
-      #================================================================================================================
-      #================================================================================================================
       mergebowtie_rdd = mergebowtie_rdd.union(bowtie_rdd).persist()
-    #print('NB mergebowtie_rdd: ', mergebowtie_rdd.count())
+      #================================================================================================================
+      #================================================================================================================
+    if reporting == 1: print('NB mergebowtie_rdd: ', mergebowtie_rdd.count())
     print(datetime.datetime.now(), 'mergebowtie_rdd')
 
     
@@ -297,66 +295,55 @@ if __name__ == '__main__' :
     bowFrq_rdd = mergebowtie_rdd.join(sr_short_rdd)\
                            .map(bowtie_obj.bowtie_freq_rearrange_rule)\
                            .persist()
-    #print('NB bowFrq_rdd: ', bowFrq_rdd.count())
-    print(datetime.datetime.now(), 'bowFrq_rdd')
+    if reporting == 1: print('NB bowFrq_rdd: ', bowFrq_rdd.count())
 
     #= Filtering, keep miRNA length = 21, 22, 23, 24
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     mr_meyers2018len_rdd = bowFrq_rdd.filter(lambda e: len(e[0]) < 25 and len(e[0]) > 20)
-    #print('NB mr_low_rdd: ', mr_low_rdd.count())
+    if reporting == 1: print('NB mr_meyers2018len_rdd: ', mr_meyers2018len_rdd.count())
 
     #= Filtering miRNA low frequency
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     mr_low_rdd = mr_meyers2018len_rdd.filter(lambda e: e[1][0] > limit_mrna_freq)
-    #print('NB mr_low_rdd: ', mr_low_rdd.count())
-    print(datetime.datetime.now(), 'mr_low_rdd')
+    if reporting == 1: print('NB mr_low_rdd: ', mr_low_rdd.count())
     
     #= Filtering high nbLocations and zero location
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     nbLoc_rdd = mr_low_rdd.filter(lambda e: e[1][1] > 0 and e[1][1] < limit_nbLoc)
-    #print('NB nbLoc_rdd: ', nbLoc_rdd.count())
+    if reporting == 1: print('NB nbLoc_rdd: ', nbLoc_rdd.count())
     
     #= Flatmap the RDD
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr])
     flat_rdd = nbLoc_rdd.flatMap(mru.flatmap_mappings)
-    #print('NB flat_rdd distinct (this step flats elements): ', flat_rdd.groupByKey().count())
-    #print('NB flat_rdd not distinct: ', flat_rdd.count())
     print(datetime.datetime.now(), 'flat_rdd')
     
     #= Filtering known non-miRNA ##
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr])
     excluKnownNon_rdd = flat_rdd.filter(kn_obj.knFilterByCoor)
-    #print('excluKnownNon_rdd distinct: ', excluKnownNon_rdd.groupByKey().count())
+    if reporting == 1: print('excluKnownNon_rdd distinct: ', excluKnownNon_rdd.groupByKey().count())
 
     mergeChromosomesResults_rdd = sc.emptyRDD()
     for i in range(len(chromosomes)):
       ch = chromosomes[i]
-      #genome = ut.getGenome(genome_path, ".fa", ch)
       broadcastVar_genome = sc.broadcast(ut.getGenome(genome_path, ".fa", ch))
       prec_obj = mru.extract_precurosrs(broadcastVar_genome.value, pri_l_flank, pri_r_flank, pre_flank)
-      #================================================================================================================
-      #================================================================================================================
       #================================================================================================================
       #================================================================================================================
       #= Extraction of the pri-miRNA
       ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr])
       ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri]])
-      ## this is the only rdd requiring genome sequence, so the code structure could be improved, although this does not improve complexity.
       primir_rdd = excluKnownNon_rdd.filter(prec_obj.hasKey)\
                                     .flatMap(prec_obj.extract_prim_rule)
-      #print('NB primir_rdd: ', primir_rdd.count())      
       mergeChromosomesResults_rdd = mergeChromosomesResults_rdd.union(primir_rdd).persist()#.checkpoint()
       broadcastVar_genome.unpersist()
       #================================================================================================================
       #================================================================================================================
-      #================================================================================================================
-      #================================================================================================================
-    #print('NB mergeChromosomesResults: ', mergeChromosomesResults_rdd.count())
+    if reporting == 1: print('NB mergeChromosomesResults: ', mergeChromosomesResults_rdd.groupByKey().count())
     print(datetime.datetime.now(), 'mergeChromosomesResults_rdd') #= BOTTLE NECK= this step takes about 2h30 for 11w lib
     
     #= pri-miRNA folding
@@ -367,93 +354,97 @@ if __name__ == '__main__' :
     #= Validating pri-mirna with mircheck, keep unique precursors
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold']])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
-    pri_vld_rdd = pri_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 3))\
+    pri_mircheck_rdd = pri_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 3))\
                               .filter(lambda e: any(e[1][3]))\
                               .map(lambda e: (e[0] + e[1][2][0] + e[1][2][1] + str(e[1][2][2]) + e[1][3][4] + e[1][3][5], e)  )\
                               .reduceByKey(lambda a, b: a)\
                               .map(lambda e: e[1])
-    print('NB pri_vld_rdd (mircheck): ', pri_vld_rdd.count())
-    print(datetime.datetime.now(), 'pri_vld_rdd (mircheck)') #= BOTTLE NECK= this step takes about 2h for 11w lib
+    if reporting == 1: print('NB pri_mircheck_rdd: ', pri_mircheck_rdd.groupByKey().count())
+    print(datetime.datetime.now(), 'pri_mircheck_rdd') #= BOTTLE NECK= this step takes about 2h for 11w lib
 
 
     #= Filtering len(pre-mirna) < 301 nt
-    len300_rdd = pri_vld_rdd.filter(lambda e: (int(e[1][3][5]) - int(e[1][3][4])) < 301)
-
+    len300_rdd = pri_mircheck_rdd.filter(lambda e: (int(e[1][3][5]) - int(e[1][3][4])) < 301)
+    if reporting == 1: print('NB len300_rdd: ', len300_rdd.groupByKey().count())
+    
     #= Filtering structure with branched loop
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
-    one_loop_rdd = len300_rdd.filter(lambda e: ut.containsOnlyOneLoop(e[1][3][2][int(e[1][3][4]) : int(e[1][3][5])+1]))
-    #print('NB one_loop_rdd distinct : ', one_loop_rdd.groupByKey().count())
+    one_loop_rdd = len300_rdd.filter(lambda e: ut.containsOnlyOneLoop(e[1][3][2][int(e[1][3][4]) : int(e[1][3][5])+1]))\
+                             .repartition(partition)
+    if reporting == 1: print('NB one_loop_rdd distinct : ', one_loop_rdd.groupByKey().count())
 
 
     #= Extraction of the pre-miRNA
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop'], ['preSeq',posMirPre]])
-    premir_rdd = one_loop_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3)) ## use one-loop rule
-    #premir_rdd = len300_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3)) ## ignore one-loop rule
-    #================================================================================================================
-    #================================================================================================================
-    #================================================================================================================
-    #================================================================================================================
-    #mergeChromosomesResults_rdd = mergeChromosomesResults_rdd.union(premir_rdd).persist()#.checkpoint()
-    #broadcastVar_genome.unpersist()
-    #print('NB mergeChromosomesResults (extract, fold, check, re-extract): ', mergeChromosomesResults_rdd.count())
+    premir_rdd = one_loop_rdd.map(lambda e: prec_obj.extract_prem_rule(e, 3))
 
     
     #= pre-miRNA folding
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre]])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold']])
-    #pre_fold_rdd = mergeChromosomesResults_rdd.map(lambda e: rnafold_obj.RNAfold_map_rule(e, 4))
     pre_fold_rdd = premir_rdd.map(lambda e: rnafold_obj.RNAfold_map_rule(e, 4))
     #print('NB pre_fold_rdd: ', pre_fold_rdd.count())
     print(datetime.datetime.now(), 'pre_fold_rdd') 
 
-    #= Validating pre-mirna with mircheck II -- replaced by mirdup
+
+
+    #================================================================================================================
+    #= DEFUNCT: Validating pre-mirna with mircheck II -- replaced by mirdup
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold']])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mkPred','mkStart','mkStop']])
     #pre_vld_rdd0 = pre_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 4))\
                               #.filter(lambda e: any(e[1][4]))
-    #print('NB pre_vld_rdd0 distinct (mircheck II): (', pre_vld_rdd0.groupByKey().count()), ')')
+    #================================================================================================================
+   
+
 
     #= Validating pre-mirna with miRdup zipWithUniqueId
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold']])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore']])
-    pre_vld_rdd = pre_fold_rdd.zipWithIndex()\
+    pre_mirdup_rdd = pre_fold_rdd.zipWithIndex()\
                               .map(mirdup_obj.run_miRdup)\
-                              .filter(lambda e: e[1][4][3] == "true")
-    print('NB pre_vld_rdd distinct (mirdup): ', pre_vld_rdd.groupByKey().count())
-    print(datetime.datetime.now(), 'pre_vld_rdd distinct (mirdup)') #= 11w about 30 mins; OFTEN NOT RUNNING THROUGH THIS STEP BEFORE OUT-OF-TIME
+                              .filter(lambda e: e[1][4][3] == "true")\
+                              .repartition(partition)
+    if reporting == 1: print('NB pre_mirdup_rdd distinct: ', pre_mirdup_rdd.groupByKey().count())
+    print(datetime.datetime.now(), 'pre_mirdup_rdd distinct') #= 11w about 30 mins; OFTEN NOT RUNNING THROUGH THIS STEP BEFORE OUT-OF-TIME
     
-
-
-    #================================================================================================================
-    #= Create dict, chromo_strand as key to search bowtie blocs in the following dict 
-    x_rdd = bowFrq_rdd.flatMap(mru.flatmap_mappings)\
-                  .map(lambda e: (e[1][2][1] + '_' + e[1][2][0] + '_' + str(e[1][2][2])[:-2]+ '00', e[1][0]) )\
-                  .reduceByKey(lambda a, b: a+b)\
-                  .filter(lambda e: e[1] > 90)\
-                  .map(lambda e: (e[0].split('_')[0] + e[0].split('_')[1], [int(e[0].split('_')[2]), e[1]]))
-    dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(x_rdd.collect())
-    print(datetime.datetime.now(), 'dict_bowtie_chromo_strand') 
-    #================================================================================================================
-    #broadcastVar_bowtie_chromo_strand = sc.broadcast(dict_bowtie_chromo_strand) 
-
-
+    
     #= Filtering by expression profile (< 20%)
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore']])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq])
-    profile_rdd = pre_vld_rdd.map(lambda e: profile_obj.computeProfileFrq(e, dict_bowtie_chromo_strand))\
-                             .filter(lambda e: e[1][0] / (float(e[1][5]) + 0.1) > 0.2)
-
-    #print('NB profile_rdd distinct: ', profile_rdd.groupByKey().count())
-    #print('NB profile_rdd NON distinct: ', profile_rdd.count())
-    libresults = profile_rdd.take(2)#collect()
+    mergeProfileChromo_rdd = sc.emptyRDD()
+    x_rdd = bowFrq_rdd.flatMap(mru.flatmap_mappings)\
+                      .map(lambda e: (e[1][2][1] + e[1][2][0], [e[1][2][2], e[1][0]]) )
+    #= keys = ['3A+', '5D-', ...]
+    profile_key_rdd = pre_mirdup_rdd.map(lambda e: (e[1][2][1] + e[1][2][0], e))
+    keys_chromo_strand = profile_key_rdd.map(lambda e: (e[0], 1)).reduceByKey(lambda a, b: a+b).map(lambda e: e[0]).collect()
+    #================================================================================================================
+    #================================================================================================================
+    for chromo_strand in keys_chromo_strand:
+      y_rdd = x_rdd.filter(lambda e: e[0] == chromo_strand)\
+                   .repartition(partition)
+      dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(y_rdd.collect())
+      profile_value_rdd = profile_key_rdd.filter(lambda e: e[0] == chromo_strand)\
+                                         .repartition(partition)\
+                                         .map(lambda e: profile_obj.computeProfileFrq(e[1], dict_bowtie_chromo_strand))\
+                                         .filter(lambda e: e[1][0] / (float(e[1][5]) + 0.1) > 0.2)
+      mergeProfileChromo_rdd = mergeProfileChromo_rdd.union(profile_value_rdd).repartition(partition).persist()
+    #================================================================================================================
+    #================================================================================================================
+    if reporting == 1: print('NB mergeProfileChromo_rdd NON distinct: ', mergeProfileChromo_rdd.count())
+    print('NB mergeProfileChromo_rdd distinct: ', mergeProfileChromo_rdd.groupByKey().count()) #= always report the nb of final prediction
+    print(datetime.datetime.now(), 'mergeProfileChromo_rdd')
     
-    print(datetime.datetime.now(), 'profile_rdd.collect()')#= BOTTLE NECK= this step takes about 3h for 11w lib
+    #= collecting final miRNA predictions
+    libresults = mergeProfileChromo_rdd.collect()
+    print(datetime.datetime.now(), 'libresults=mergeProfileChromo_rdd.collect()')#= BOTTLE NECK= this step takes about 3h for 11w lib
 
     endLib = time.time() 
     timeDict[inBasename] = endLib - startLib
-    print ("  End of miRNA prediction     ", end="\n")
+    print ('miRNA predcition time for lib ', inBasename, ': ', timeDict[inBasename])
+    print ('  End of miRNA prediction     ', end='\n')
 
     #= write results to a file
     eachLiboutFile = rep_output  +  appId + '_miRNAprediction_' + inBasename + '.txt'
@@ -464,6 +455,11 @@ if __name__ == '__main__' :
   ut.writeTimeLibToFile (timeDict, outTime, appId, paramDict)
 
   
+  #===============================================================================================================
+  #=
+  #= Post processing after miRNA prediction
+  #=
+  #===============================================================================================================
   #= make summary table of all libraries in one submission with expressions in the field
   keyword = appId + '_miRNAprediction_'
   infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
@@ -475,7 +471,7 @@ if __name__ == '__main__' :
                              .zipWithIndex()
   
 
-  #= varna
+  #= varna precursor visualization
   varna_obj = mru.prog_varna(appId, rep_output) 
   ## in : ([miRNAseq, strand, chromo, posChr, preSeq, posMirPre, preFold, mkPred, newfbstart, newfbstop, mpPred, mpScore], zipindex)
   Precursor_rdd = sc.parallelize(Precursor, partition)\
@@ -491,7 +487,7 @@ if __name__ == '__main__' :
   print('PrecursorVis done')
   
   
-  #= miranda
+  #= miranda target prediction
   ## in : ('miRNAseq', zipindex)
   ## out: ('miRNAseq', [[target1 and its scores], [target2 and its scores]])
   sc.addFile(miranda_binary)
@@ -511,8 +507,6 @@ if __name__ == '__main__' :
   #print( master_distinctTG )
 
 
-
-  
   #= clear caches (memory leak)
   broadcastVar_paramDict.unpersist()
   dmask_rdd.unpersist()
@@ -521,20 +515,15 @@ if __name__ == '__main__' :
   mergeChromosomesResults_rdd.unpersist()
   broadcastVar_d_ncRNA_CDS.unpersist()
   bowFrq_rdd.unpersist()
-  #broadcastVar_bowtie_chromo_strand.unpersist()
+  mergeProfileChromo_rdd.unpersist()
 
-  #'''
 
   #= end of spark context, stop to allow running multiple SparkContexts
   sc.stop() 
-
-  #===============================================================================================================
-  #===============================================================================================================
-  #===============================================================================================================
-  #===============================================================================================================
-  #appId = 'local-1538502520294'
   print(datetime.datetime.now(), 'sc stop time')
-
+  #===============================================================================================================
+  #===============================================================================================================
+  ##appId = 'local-1538502520294'
   #= diff analysis 
   if perform_differnatial_analysis == 'yes':
     diff_outs = ut.diff_output(diffguide_file, rep_output, appId)
@@ -547,8 +536,6 @@ if __name__ == '__main__' :
     #= KEGG enrichment analysis 
     ut.perform_enrichment_analysis (diff_outs, pathway_description_file, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId, project_path)
     print('\nKEGG pathway enrichment analysis done')
-  #===============================================================================================================
-  #===============================================================================================================
   #===============================================================================================================
   #===============================================================================================================
 

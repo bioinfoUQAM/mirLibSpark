@@ -14,15 +14,18 @@ from operator import itemgetter
 bin = ''
 
 
-
-def sort_DictBowtieCS_ (list_bowtie_chromo_strand):
-  ''' defuct '''
-  dict_bowtie_chromo_strand = {}
-  for i in list_bowtie_chromo_strand:
-    k = i[0]
-    v = i[1]
-    dict_bowtie_chromo_strand[k] = v.sort(key=lambda x: x[0])
-  return dict_bowtie_chromo_strand
+#def y_rdd_hasKey(key, chromo_strand):
+#  if key == chromo_strand: return True
+#  return False
+  
+#def sort_DictBowtieCS_ (list_bowtie_chromo_strand):
+#  ''' defuct '''
+#  dict_bowtie_chromo_strand = {}
+#  for i in list_bowtie_chromo_strand:
+#    k = i[0]
+#    v = i[1]
+#    dict_bowtie_chromo_strand[k] = v.sort(key=lambda x: x[0])
+#  return dict_bowtie_chromo_strand
     
 def rearrange_rule(kv_arg, kv_sep):
   '''
