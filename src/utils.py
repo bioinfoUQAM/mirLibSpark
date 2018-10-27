@@ -165,6 +165,11 @@ def convert_fastq_file_to_KeyValue(infile, outfile):
   fh.close()
   fh_out.close()
 
+
+#============
+
+#===========
+
 def find_str(s, char):
     ''' zero based indexing '''
     index = 0
