@@ -546,7 +546,7 @@ if __name__ == '__main__' :
   print('====================== End of ' + appId + ' =============\n')
 
   os.system('mv ' + rep_output + '*' + appId + '* ' + rep_output_appId)
-  #os.system('rm -fr ' + rep_tmp)
+  os.system('rm -fr ' + rep_tmp)
 
 
 
