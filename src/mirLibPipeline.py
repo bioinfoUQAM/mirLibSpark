@@ -432,9 +432,8 @@ if __name__ == '__main__' :
       ch = chromosomes[i]
       for strand in strands:
         chromo_strand = ch + '_' + strand
-        y_rdd = bowFrq_rdd.flatMap(mru.flatmap_mappings)
-                          .map(lambda e: (e[1][2][1] + '_' + e[1][2][0], [e[1][2][2], e[1][0]]) )\
-                          .filter(lambda e: mru.y_rdd_hasKey(e, chromo_strand))
+        y_rdd = x_rdd.map(lambda e: (e[1][2][1] + '_' + e[1][2][0], [e[1][2][2], e[1][0]]) )\
+                     .filter(lambda e: mru.y_rdd_hasKey(e, chromo_strand))
         dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(y_rdd.collect())
         #
         profile_rdd = pre_vld_rdd.map(lambda e: (e[1][2][1] + '_' + e[1][2][0], e))\
