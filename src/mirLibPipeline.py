@@ -431,7 +431,7 @@ if __name__ == '__main__' :
       profile_value_rdd = profile_key_rdd.filter(lambda e: e[0] == chromo_strand)\
                                          .map(lambda e: profile_obj.computeProfileFrq(e[1], dict_bowtie_chromo_strand))\
                                          .filter(lambda e: e[1][0] / (float(e[1][5]) + 0.1) > 0.2)
-      mergeProfileChromo_rdd = mergeProfileChromo_rdd.union(profile_rdd).persist()
+      mergeProfileChromo_rdd = mergeProfileChromo_rdd.union(profile_value_rdd).persist()
     #================================================================================================================
     #================================================================================================================
     if reporting == 1: print('NB mergeProfileChromo_rdd distinct: ', mergeProfileChromo_rdd.groupByKey().count())
