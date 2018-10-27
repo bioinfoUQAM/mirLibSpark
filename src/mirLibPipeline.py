@@ -336,7 +336,6 @@ if __name__ == '__main__' :
       ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr])
       ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri]])
       primir_rdd = excluKnownNon_rdd.filter(prec_obj.hasKey)\
-                                    .repartition(partition)\
                                     .flatMap(prec_obj.extract_prim_rule)
       mergeChromosomesResults_rdd = mergeChromosomesResults_rdd.union(primir_rdd).persist()#.checkpoint()
       broadcastVar_genome.unpersist()
