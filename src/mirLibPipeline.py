@@ -434,39 +434,12 @@ if __name__ == '__main__' :
     for chromo_strand in keys_chromo_strand:
       y_rdd = x_rdd.filter(lambda e: e[0] == chromo_strand)
       dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(y_rdd.collect())
-      for k, v in dict_bowtie_chromo_strand.items():
-        print(k, v)
-        break
-        #
       profile_rdd = pre_vld_rdd.map(lambda e: (e[1][2][1] + e[1][2][0], e))\
                                .filter(lambda e: e[0] == chromo_strand)\
                                .map(lambda e: e[1])\
                                .map(lambda e: profile_obj.computeProfileFrq(e, dict_bowtie_chromo_strand))\
                                .filter(lambda e: e[1][0] / (float(e[1][5]) + 0.1) > 0.2)
       mergeProfileChromo_rdd = mergeProfileChromo_rdd.union(profile_rdd).persist()
-
-
-
-    '''
-    for i in range(len(chromosomes)):
-      ch = chromosomes[i]
-      for strand in strands:
-        chromo_strand = ch + strand
-        print(chromo_strand)
-        y_rdd = x_rdd.map(lambda e: (e[1][2][1] + e[1][2][0], [e[1][2][2], e[1][0]]) )\
-                     .filter(lambda e: e[0] == chromo_strand)
-        dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(y_rdd.collect())
-        for k, v in dict_bowtie_chromo_strand.items():
-          print(k, v)
-          break
-        #
-        profile_rdd = pre_vld_rdd.map(lambda e: (e[1][2][1] + e[1][2][0], e))\
-                                 .filter(lambda e: e[0] == chromo_strand)\
-                                 .map(lambda e: e[1])\
-                                 .map(lambda e: profile_obj.computeProfileFrq(e, dict_bowtie_chromo_strand))\
-                                 .filter(lambda e: e[1][0] / (float(e[1][5]) + 0.1) > 0.2)
-        mergeProfileChromo_rdd = mergeProfileChromo_rdd.union(profile_rdd).persist()
-    '''
     print(datetime.datetime.now(), 'mergeProfileChromo_rdd')
     #================================================================================================================
     #broadcastVar_bowtie_chromo_strand = sc.broadcast(dict_bowtie_chromo_strand) 
