@@ -436,7 +436,7 @@ if __name__ == '__main__' :
                      .filter(lambda e: mru.y_rdd_hasKey(e, chromo_strand))
         dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(y_rdd.collect())
         #
-        profile_rdd = pre_vld_rdd.map(lambda e: (e[1][2][1] + '_' + e[1][2][0], e))\
+        profile_rdd = pre_vld_rdd.map(lambda e: (e[1][2][1] + e[1][2][0], e))\
                                  .filter(lambda e: mru.y_rdd_hasKey(e, chromo_strand))\
                                  .map(lambda e: e[1])\
                                  .map(lambda e: profile_obj.computeProfileFrq(e, dict_bowtie_chromo_strand))\
