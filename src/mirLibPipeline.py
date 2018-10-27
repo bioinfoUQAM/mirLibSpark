@@ -443,7 +443,7 @@ if __name__ == '__main__' :
 
     endLib = time.time() 
     timeDict[inBasename] = endLib - startLib
-    print ('total time of ', inBasename, timeDict[inBasename])
+    print ('miRNA predcition time for lib ', inBasename, ': ', timeDict[inBasename])
     print ('  End of miRNA prediction     ', end='\n')
 
     #= write results to a file
@@ -455,6 +455,11 @@ if __name__ == '__main__' :
   ut.writeTimeLibToFile (timeDict, outTime, appId, paramDict)
 
   
+  #===============================================================================================================
+  #=
+  #= Post processing after miRNA prediction
+  #=
+  #===============================================================================================================
   #= make summary table of all libraries in one submission with expressions in the field
   keyword = appId + '_miRNAprediction_'
   infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
