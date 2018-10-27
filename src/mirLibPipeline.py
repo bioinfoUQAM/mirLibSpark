@@ -455,11 +455,11 @@ if __name__ == '__main__' :
 
     #print('NB profile_rdd distinct: ', profile_rdd.groupByKey().count())
     #print('NB profile_rdd NON distinct: ', profile_rdd.count())
-    libresults = profile_rdd.collect()
+    #libresults = profile_rdd.collect()
     #libresults = profile_rdd.take(2)#collect()
-    #libresults = mergeProfileChromo_rdd.collect()
+    libresults = mergeProfileChromo_rdd.collect()
     
-    print(datetime.datetime.now(), 'profile_rdd.collect()')#= BOTTLE NECK= this step takes about 3h for 11w lib
+    print(datetime.datetime.now(), 'mergeProfileChromo_rdd.collect()')#= BOTTLE NECK= this step takes about 3h for 11w lib
 
     endLib = time.time() 
     timeDict[inBasename] = endLib - startLib
