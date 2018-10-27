@@ -393,13 +393,11 @@ if __name__ == '__main__' :
 
 
     #================================================================================================================
-    #= defunct
-    #= Validating pre-mirna with mircheck II -- replaced by mirdup
+    #= DEFUNCT: Validating pre-mirna with mircheck II -- replaced by mirdup
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold']])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mkPred','mkStart','mkStop']])
     #pre_vld_rdd0 = pre_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 4))\
                               #.filter(lambda e: any(e[1][4]))
-    #print('NB pre_vld_rdd0 distinct (mircheck II): (', pre_vld_rdd0.groupByKey().count()), ')')
     #================================================================================================================
    
 
