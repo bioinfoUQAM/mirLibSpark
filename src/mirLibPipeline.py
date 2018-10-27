@@ -418,16 +418,17 @@ if __name__ == '__main__' :
     mergeProfileChromo_rdd = sc.emptyRDD()
     x_rdd = bowFrq_rdd.flatMap(mru.flatmap_mappings)\
                       .map(lambda e: (e[1][2][1] + e[1][2][0], [e[1][2][2], e[1][0]]) )
-    keys_chromo_strand = x_rdd.map(lambda e: (e[0], 1)).reduceByKey(lambda a, b: a+b).map(lambda e: e[0]).collect()
+    #= keys = ['3A+', '5D-', ...]
+    profile_key_rdd = pre_vld_rdd.map(lambda e: (e[1][2][1] + e[1][2][0], e))
+    keys_chromo_strand = profile_key_rdd.map(lambda e: (e[0], 1)).reduceByKey(lambda a, b: a+b).map(lambda e: e[0]).collect()
     #================================================================================================================
     #================================================================================================================
     for chromo_strand in keys_chromo_strand:
       y_rdd = x_rdd.filter(lambda e: e[0] == chromo_strand)
       dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(y_rdd.collect())
-      profile_rdd = pre_vld_rdd.map(lambda e: (e[1][2][1] + e[1][2][0], e))\
-                               .filter(lambda e: e[0] == chromo_strand)\
-                               .map(lambda e: profile_obj.computeProfileFrq(e[1], dict_bowtie_chromo_strand))\
-                               .filter(lambda e: e[1][0] / (float(e[1][5]) + 0.1) > 0.2)
+      profile_value_rdd = profile_key_rdd.filter(lambda e: e[0] == chromo_strand)\
+                                         .map(lambda e: profile_obj.computeProfileFrq(e[1], dict_bowtie_chromo_strand))\
+                                         .filter(lambda e: e[1][0] / (float(e[1][5]) + 0.1) > 0.2)
       mergeProfileChromo_rdd = mergeProfileChromo_rdd.union(profile_rdd).persist()
     #================================================================================================================
     #================================================================================================================
