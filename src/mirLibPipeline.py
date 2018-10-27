@@ -176,8 +176,6 @@ if __name__ == '__main__' :
   #= Time processing of libraries
   timeDict = {}
 
-  #== test checkpoint()
-  #sc.setCheckpointDir(rep_output)
     
   print('\n====================== mirLibSpark =========================')
   print('====================== ' + appId + ' =================')
@@ -262,6 +260,7 @@ if __name__ == '__main__' :
     dmask_rdd = sr_short_rdd.map(lambda e: '>s\n' + e[0])\
                             .pipe(dmask_cmd, dmask_env)\
                             .filter(lambda e: e.isupper() and not e.startswith('>'))\
+                            .repartition(partition)\
                             .map(lambda e: str(e.rstrip()))\
                             .persist()
     if reporting == 1: print('NB dmask_rdd: ', dmask_rdd.count())
@@ -318,7 +317,8 @@ if __name__ == '__main__' :
     #= Flatmap the RDD
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr])
-    flat_rdd = nbLoc_rdd.flatMap(mru.flatmap_mappings)
+    flat_rdd = nbLoc_rdd.repartition(partition)\
+                        .flatMap(mru.flatmap_mappings)
     print(datetime.datetime.now(), 'flat_rdd')
     
     #= Filtering known non-miRNA ##
@@ -338,6 +338,7 @@ if __name__ == '__main__' :
       ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr])
       ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri]])
       primir_rdd = excluKnownNon_rdd.filter(prec_obj.hasKey)\
+                                    .repartition(partition)\
                                     .flatMap(prec_obj.extract_prim_rule)
       mergeChromosomesResults_rdd = mergeChromosomesResults_rdd.union(primir_rdd).persist()#.checkpoint()
       broadcastVar_genome.unpersist()
