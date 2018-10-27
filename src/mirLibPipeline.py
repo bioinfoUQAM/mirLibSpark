@@ -458,7 +458,7 @@ if __name__ == '__main__' :
     #                         .filter(lambda e: e[1][0] / (float(e[1][5]) + 0.1) > 0.2)
 
     print('NB mergeProfileChromo_rdd distinct: ', mergeProfileChromo_rdd.groupByKey().count())
-    print('NB mergeProfileChromo_rdd NON distinct: ', mergeProfileChromo_rdd    .count())
+    print('NB mergeProfileChromo_rdd NON distinct: ', mergeProfileChromo_rdd.count())
     libresults = mergeProfileChromo_rdd.collect()
     
     print(datetime.datetime.now(), 'mergeProfileChromo_rdd.collect()')#= BOTTLE NECK= this step takes about 3h for 11w lib
