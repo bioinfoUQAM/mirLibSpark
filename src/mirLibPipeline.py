@@ -27,7 +27,9 @@ from os import listdir
 import utils as ut
 import mirLibRules as mru
 
-reporting = 1 #= 1: display intermediate rdd.collect()
+#= 1: display intermediate rdd.collect(), this makes the time longer
+#= 0: not reporting rdd.collect() makes the time shorter
+reporting = 1 
 
 if __name__ == '__main__' :
 
