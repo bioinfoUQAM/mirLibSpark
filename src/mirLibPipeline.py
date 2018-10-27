@@ -432,8 +432,8 @@ if __name__ == '__main__' :
       mergeProfileChromo_rdd = mergeProfileChromo_rdd.union(profile_value_rdd).persist()
     #================================================================================================================
     #================================================================================================================
-    if reporting == 1: print('NB mergeProfileChromo_rdd distinct: ', mergeProfileChromo_rdd.groupByKey().count())
     if reporting == 1: print('NB mergeProfileChromo_rdd NON distinct: ', mergeProfileChromo_rdd.count())
+    print('NB mergeProfileChromo_rdd distinct: ', mergeProfileChromo_rdd.groupByKey().count()) #= always report the nb of final prediction
     print(datetime.datetime.now(), 'mergeProfileChromo_rdd')
     
     #= collecting final miRNA predictions
