@@ -464,7 +464,7 @@ if __name__ == '__main__' :
     #print('NB profile_rdd distinct: ', profile_rdd.groupByKey().count())
     #print('NB profile_rdd NON distinct: ', profile_rdd.count())
     #libresults = profile_rdd.take(2)#collect()
-    libresults = mergeProfileChromo_rdd.take(2)#collect()
+    libresults = mergeProfileChromo_rdd.collect()
     
     print(datetime.datetime.now(), 'profile_rdd.collect()')#= BOTTLE NECK= this step takes about 3h for 11w lib
 
@@ -538,6 +538,7 @@ if __name__ == '__main__' :
   mergeChromosomesResults_rdd.unpersist()
   broadcastVar_d_ncRNA_CDS.unpersist()
   bowFrq_rdd.unpersist()
+  mergeProfileChromo_rdd.unpersist()
   #broadcastVar_bowtie_chromo_strand.unpersist()
 
   #'''
