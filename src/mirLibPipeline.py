@@ -428,13 +428,29 @@ if __name__ == '__main__' :
 
     #================================================================================================================
     #= Create dict, chromo_strand as key to search bowtie blocs in the following dict 
-    x_rdd = bowFrq_rdd.flatMap(mru.flatmap_mappings)\
-                  .map(lambda e: (e[1][2][1] + '_' + e[1][2][0] + '_' + str(e[1][2][2])[:-2]+ '00', e[1][0]) )\
-                  .reduceByKey(lambda a, b: a+b)\
-                  .filter(lambda e: e[1] > 90)\
-                  .map(lambda e: (e[0].split('_')[0] + e[0].split('_')[1], [int(e[0].split('_')[2]), e[1]]))
-    dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(x_rdd.collect())
-    print(datetime.datetime.now(), 'dict_bowtie_chromo_strand') 
+    #x_rdd = bowFrq_rdd.flatMap(mru.flatmap_mappings)\
+    #              .map(lambda e: (e[1][2][1] + '_' + e[1][2][0] + '_' + str(e[1][2][2])[:-2]+ '00', e[1][0]) )\
+    #              .reduceByKey(lambda a, b: a+b)\
+    #              .filter(lambda e: e[1] > 90)\
+    #              .map(lambda e: (e[0].split('_')[0] + e[0].split('_')[1], [int(e[0].split('_')[2]), e[1]]))
+    #dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(x_rdd.collect())
+    #print(datetime.datetime.now(), 'dict_bowtie_chromo_strand')
+    #================================================================================================================
+    #================================================================================================================
+    strands = ['+', '-']
+    mergeProfileChromo_rdd = sc.emptyRDD()
+    x_rdd = bowFrq_rdd.flatMap(mru.flatmap_mappings)
+    for i in range(len(chromosomes)):
+      ch = chromosomes[i]
+      for strand in strands:
+        strand = '+'
+        chromo_strand = ch + '_' + strand
+        y_rdd = x_rdd.map(lambda e: (e[1][2][1] + '_' + e[1][2][0], [e[1][2][2], e[1][0]]) )\
+                     .filter(lambda e: mru.y_rdd_hasKey(e, chromo_strand))
+        profile_rdd = pre_vld_rdd.map(lambda e: profile_obj.computeProfileFrq(e, y_rdd.collect()))\
+                                 .filter(lambda e: e[1][0] / (float(e[1][5]) + 0.1) > 0.2)
+        mergeProfileChromo_rdd = mergeProfileChromo_rdd.union(profile_rdd).persist()
+    print(datetime.datetime.now(), 'mergeProfileChromo_rdd')
     #================================================================================================================
     #broadcastVar_bowtie_chromo_strand = sc.broadcast(dict_bowtie_chromo_strand) 
 
@@ -442,12 +458,13 @@ if __name__ == '__main__' :
     #= Filtering by expression profile (< 20%)
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore']])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq])
-    profile_rdd = pre_vld_rdd.map(lambda e: profile_obj.computeProfileFrq(e, dict_bowtie_chromo_strand))\
-                             .filter(lambda e: e[1][0] / (float(e[1][5]) + 0.1) > 0.2)
+    #profile_rdd = pre_vld_rdd.map(lambda e: profile_obj.computeProfileFrq(e, dict_bowtie_chromo_strand))\
+    #                         .filter(lambda e: e[1][0] / (float(e[1][5]) + 0.1) > 0.2)
 
     #print('NB profile_rdd distinct: ', profile_rdd.groupByKey().count())
     #print('NB profile_rdd NON distinct: ', profile_rdd.count())
-    libresults = profile_rdd.take(2)#collect()
+    #libresults = profile_rdd.take(2)#collect()
+    libresults = mergeProfileChromo_rdd.take(2)#collect()
     
     print(datetime.datetime.now(), 'profile_rdd.collect()')#= BOTTLE NECK= this step takes about 3h for 11w lib
 

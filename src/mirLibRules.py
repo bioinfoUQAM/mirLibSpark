@@ -14,7 +14,11 @@ from operator import itemgetter
 bin = ''
 
 
-
+def y_rdd_hasKey(e, chromo_strand):
+  key = e[0]
+  if key == chromo_strand: return True
+  return False
+  
 def sort_DictBowtieCS_ (list_bowtie_chromo_strand):
   ''' defuct '''
   dict_bowtie_chromo_strand = {}
