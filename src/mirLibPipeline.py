@@ -138,8 +138,6 @@ if __name__ == '__main__' :
 
   #= end of paramDict naming =================================================================================
 
-  strands = ['+', '-']########
-
   #= make required folders if not exist
   reps = [rep_output, rep_tmp]
   ut.makedirs_reps (reps)
