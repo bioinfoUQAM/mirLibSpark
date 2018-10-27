@@ -445,9 +445,13 @@ if __name__ == '__main__' :
       for strand in strands:
         strand = '+'
         chromo_strand = ch + '_' + strand
-        y_rdd_collect = x_rdd.map(lambda e: (e[1][2][1] + '_' + e[1][2][0], [e[1][2][2], e[1][0]]) )\
-                     .filter(lambda e: mru.y_rdd_hasKey(e, chromo_strand)).collect()
-        profile_rdd = pre_vld_rdd.map(lambda e: profile_obj.computeProfileFrq(e, y_rdd_collect))\
+        y_rdd = x_rdd.map(lambda e: (e[1][2][1] + '_' + e[1][2][0], [e[1][2][2], e[1][0]]) )\
+                     .filter(lambda e: mru.y_rdd_hasKey(e, chromo_strand))
+        dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(y_rdd.collect())
+        profile_rdd = pre_vld_rdd.map(lambda e: (e[1][2][1] + '_' + e[1][2][0], e)\
+                                 .filter(lambda e: mru.y_rdd_hasKey(e, chromo_strand))\
+                                 .map(lambda e: e[1])\
+                                 .map(lambda e: profile_obj.computeProfileFrq(e, dict_bowtie_chromo_strand))\
                                  .filter(lambda e: e[1][0] / (float(e[1][5]) + 0.1) > 0.2)
         mergeProfileChromo_rdd = mergeProfileChromo_rdd.union(profile_rdd).persist()
     print(datetime.datetime.now(), 'mergeProfileChromo_rdd')
