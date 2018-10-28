@@ -430,7 +430,7 @@ if __name__ == '__main__' :
     #= REPARTITION x3     =#
     #======================#
     for chromo_strand in keys_chromo_strand:
-      y_rdd = x_rdd.filter(lambda e: e[0] == chromo_strand)#.repartition(partition)
+      y_rdd = x_rdd.filter(lambda e: e[0] == chromo_strand).repartition(partition)
       broadcastVar_dict_bowtie_chromo_strand = sc.broadcast(profile_obj.get_bowtie_strandchromo_dict(y_rdd.collect()))
       profile_value_rdd = profile_key_rdd.filter(lambda e: e[0] == chromo_strand)\
                                          .repartition(partition)\
