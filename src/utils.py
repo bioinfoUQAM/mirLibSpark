@@ -7,6 +7,10 @@ update: 2018-09-18
 version: 1.00.01
 
 support python3 print syntax
+
+
+#= 2018-10-28 note:
+find a time to refactor diff analysis and enrichment analysis, make them into objects
 '''
 from __future__ import print_function
 import os
