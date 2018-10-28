@@ -311,11 +311,15 @@ if __name__ == '__main__' :
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     mr_low_rdd = mr_meyers2018len_rdd.filter(lambda e: e[1][0] > limit_mrna_freq)
     if reporting == 1: print('NB mr_low_rdd: ', mr_low_rdd.count())
-    
+  
+
+    #======================#
+    #= REPARTITION  No.0  =#
+    #======================#
     #= Filtering high nbLocations and zero location
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
-    nbLoc_rdd = mr_low_rdd.filter(lambda e: e[1][1] > 0 and e[1][1] < limit_nbLoc)
+    nbLoc_rdd = mr_low_rdd.filter(lambda e: e[1][1] > 0 and e[1][1] < limit_nbLoc).repartition(partition)
     if reporting == 1: print('NB nbLoc_rdd: ', nbLoc_rdd.count())
     
     #= Flatmap the RDD
@@ -373,7 +377,7 @@ if __name__ == '__main__' :
     
 
     #======================#
-    #= REPARTITION        =#
+    #= REPARTITION  No.1  =#
     #======================#
     #= Filtering structure with branched loop
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
@@ -408,7 +412,7 @@ if __name__ == '__main__' :
    
 
     #======================#
-    #= REPARTITION        =#
+    #= REPARTITION  No.2  =#
     #======================#
     #= Validating pre-mirna with miRdup zipWithUniqueId
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold']])
@@ -436,7 +440,7 @@ if __name__ == '__main__' :
     #================================================================================================================
     #================================================================================================================
     #======================#
-    #= REPARTITION x2     =#
+    #= REPARTITION   No.3 =#
     #======================#
     for chromo_strand in keys_chromo_strand:
       y_rdd = x_rdd.filter(lambda e: e[0] == chromo_strand)
@@ -446,7 +450,6 @@ if __name__ == '__main__' :
                                               .map(lambda e: profile_obj.computeProfileFrq(e[1], broadcastVar_dict_bowtie_chromo_strand.value))\
                                               .filter(lambda e: e[1][0] / (float(e[1][5]) + 0.1) > 0.2)
       mergeProfileChromo_rdd = mergeProfileChromo_rdd.union(profile_value_rdd)\
-                                                     .repartition(partition)\
                                                      .persist()
     #================================================================================================================
     #================================================================================================================
