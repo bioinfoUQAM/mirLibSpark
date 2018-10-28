@@ -77,7 +77,7 @@ if __name__ == '__main__' :
   rep_input = paramDict['input_path']
   rep_output = paramDict['output_path']
   rep_output_appId = rep_output + appId + '/'
-  rep_tmp = project_path + '/tmp/' #= do not use '../tmp/', because mirDup can not find files   
+  rep_tmp = '../tmp/'
 
   #= print appId to a file
   outfile = project_path + '/appId.txt'
@@ -544,7 +544,7 @@ if __name__ == '__main__' :
   print('====================== End of ' + appId + ' =============\n')
 
   os.system('mv ' + rep_output + '*' + appId + '* ' + rep_output_appId)
-  os.system('rm -fr ' + rep_tmp)
+  #= do not remove all files (rm *) in rep_tmp while there is another application running.
 
 
 
