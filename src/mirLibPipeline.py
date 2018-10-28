@@ -27,8 +27,8 @@ from os import listdir
 import utils as ut
 import mirLibRules as mru
 
-#= 1: display intermediate rdd.collect(), this makes the time longer
-#= 0: not reporting rdd.collect() makes the time shorter
+#= 1: display intermediate rdd.count(), this makes the time longer
+#= 0: not reporting rdd.count() makes the time shorter
 reporting = 0 
 
 if __name__ == '__main__' :
@@ -425,7 +425,8 @@ if __name__ == '__main__' :
     x_rdd = bowFrq_rdd.flatMap(mru.flatmap_mappings)\
                       .map(lambda e: (e[1][2][1] + e[1][2][0], [e[1][2][2], e[1][0]]) )
     #= keys = ['3A+', '5D-', ...]
-    profile_keyvalue_rdd = pre_mirdup_rdd.map(lambda e: (e[1][2][1] + e[1][2][0], e))
+    profile_keyvalue_rdd = pre_mirdup_rdd.map(lambda e: (e[1][2][1] + e[1][2][0], e))\
+                                         .persist()
     keys_chromo_strand = profile_keyvalue_rdd.map(lambda e: (e[0], 1))\
                                              .reduceByKey(lambda a, b: a+b)\
                                              .map(lambda e: e[0])\
@@ -532,6 +533,7 @@ if __name__ == '__main__' :
   bowFrq_rdd.unpersist()
   mergeProfileChromo_rdd.unpersist()
   broadcastVar_dict_bowtie_chromo_strand.unpersist()
+  profile_keyvalue_rdd.unpersist()
 
 
   #= end of spark context, stop to allow running multiple SparkContexts
