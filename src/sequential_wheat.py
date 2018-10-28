@@ -407,6 +407,7 @@ print(time_a, 'start')
 dict_mirna = readFasta (infile)
 for k, v in dict_mirna.items(): 
     print('1st item after readFasta (infile): ', k, v)
+    break
 print(datetime.datetime.now(), 'dict_mirna = readFasta (infile)')
 filterFreq (limit_srna_freq, dict_mirna)
 print(datetime.datetime.now(), 'filterFreq (limit_srna_freq, dict_mirna)')
