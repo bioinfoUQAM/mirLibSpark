@@ -26,9 +26,11 @@ import datetime
 #
 import utils as ut
 import mirLibRules as mru
+import uuid
 
 
 
+uid = uuid.uuid4().hex
 adapter='TGGAATTCTCGGGTGCCAAGGAACTC'
 #adapter='none'
 
@@ -138,9 +140,10 @@ def filterdust (dict_mirna):
   #= echo $'>seq1\nCGTGGCTATGATAGCGATATTCGTTTTTTT' | dustmasker
   dict_mirna2 = dict_mirna.copy()
   for k in dict_mirna2.keys():
-      cmd = 'echo $\'>seq1\n' + k + '\' | dustmasker > ' + rep_tmp + 'dustmasker.tmp2'
+      tmpfile = rep_tmp + uid + '_dustmasker.tmp2'
+      cmd = 'echo $\'>seq1\n' + k + '\' | dustmasker > ' + tmpfile
       os.system(cmd)
-      with open (rep_tmp + 'dustmasker.tmp2', 'r') as fh:
+      with open (tmpfile, 'r') as fh:
         data = fh.readlines()
         if len(data) == 2: 
           del dict_mirna[k]
@@ -148,10 +151,11 @@ def filterdust (dict_mirna):
 def bowtiemap (dict_mirna):
 
   for k in dict_mirna.keys():
-    cmd = 'bowtie --mm -a -v 0 --suppress 1,5,6,7,8 -c ' + bowtie_index + ' '+ k + ' > ' + rep_tmp + 'bowtiemap.tmp2 2>/dev/null'
+    tmpfile = rep_tmp + uid + '_bowtiemap.tmp2'
+    cmd = 'bowtie --mm -a -v 0 --suppress 1,5,6,7,8 -c ' + bowtie_index + ' ' + k + ' >' + tmpfile + ' 2>/dev/null'
     os.system(cmd)
     locs = []
-    with open (rep_tmp + 'bowtiemap.tmp2', 'r') as fh:
+    with open (tmpfile, 'r') as fh:
       for line in fh:
         data = line.rstrip('\n').split('\t') #= +	Chr2	1040947
         strand = data[0]
@@ -200,9 +204,10 @@ def fold1 (dict_mirna):
     for i in range(len(v[2])):
       prims = v[2][i][3]
       for j in range(len(prims)):
-        cmd = 'echo ' + prims[j][0] + '| RNAfold  > ' + rep_tmp + 'rnafold.tmp2'
+        tmpfile = rep_tmp + uid + '_rnafold.tmp2'
+        cmd = 'echo ' + prims[j][0] + '| RNAfold  > ' + tmpfile
         os.system(cmd)
-        with open (rep_tmp + 'rnafold.tmp2', 'r') as fh:
+        with open (tmpfile, 'r') as fh:
           fh.readline()
           for line in fh:
             fold = line.split(' (')[0]
@@ -213,12 +218,13 @@ def check (dict_mirna):
     for i in range(len(v[2])):
       prims = v[2][i][3]
       for j in range(len(prims)):
+        tmpfile = rep_tmp + uid + '_testcheck_tmp.txt'
         miRNA_start = int(prims[j][1])
         miRNA_stop = miRNA_start + len(k) -1
         folding = prims[j][2]
-        cmd = 'perl eval_mircheck.pl \"' + folding + '\" ' + str(miRNA_start) + ' ' + str(miRNA_stop) + ' def > ' + rep_tmp + 'testcheck_tmp.txt'
+        cmd = 'perl eval_mircheck.pl \"' + folding + '\" ' + str(miRNA_start) + ' ' + str(miRNA_stop) + ' def > ' + tmpfile
         os.system(cmd)
-        with open (rep_tmp + 'testcheck_tmp.txt', 'r') as fh:
+        with open (tmpfile, 'r') as fh:
           for line in fh:
             check = line.rstrip('\n').split('\t')
             if 'prime' in check[0]:
@@ -261,10 +267,11 @@ def fold2 (dict_mirna):
       pres = v[2][i][3]
       for j in range(len(pres)):
         if len(pres[j]) == 0: continue
+        tmpfile = rep_tmp + uid + '_rnafold2.tmp2'
         preSeq = pres[j][6]
-        cmd = 'echo ' + preSeq + '| RNAfold  > ' + rep_tmp + 'rnafold2.tmp2'
+        cmd = 'echo ' + preSeq + '| RNAfold  > ' + tmpfile
         os.system(cmd)
-        with open (rep_tmp + 'rnafold2.tmp2', 'r') as fh:
+        with open (tmpfile, 'r') as fh:
           fh.readline()
           for line in fh:
             fold = line.split(' (')[0]
@@ -283,11 +290,12 @@ def mirdupcheck (dict_mirna):
         miseq = k
         fold = pres[j][8]
         #print(preSeq, miseq, fold)
+        tmpfile = rep_tmp + uid + '_mirdupcheck.tmp2'
   
-        with open (rep_tmp + 'mirdupcheck.tmp2', 'w') as fhtmp:
+        with open (tmpfile, 'w') as fhtmp:
           print('seqx\t' + miseq + '\t' + preSeq + '\t' + fold, file=fhtmp)
 
-        cmd = 'java -jar ../lib/miRdup_1.4/miRdup.jar -v ' + rep_tmp + 'mirdupcheck.tmp2 -c ../lib/miRdup_1.4//model/thaliana.model -r ' + RNAfold_path + ' 1>/dev/null'
+        cmd = 'java -jar ../lib/miRdup_1.4/miRdup.jar -v ' + tmpfile + ' -c ../lib/miRdup_1.4//model/thaliana.model -r ' + RNAfold_path + ' 1>/dev/null'
         os.system(cmd)
 
         with open (pred_file, 'r') as fh_tmp :
