@@ -549,7 +549,7 @@ if __name__ == '__main__' :
 
   time_b = datetime.datetime.now()
   print(time_b, 'finish time')
-  print('total runnung time: ', time_b - time_a)
+  print('total running time: ', time_b - time_a)
   print('====================== End of ' + appId + ' =============\n')
 
   os.system('mv ' + rep_output + '*' + appId + '* ' + rep_output_appId)
