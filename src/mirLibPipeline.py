@@ -79,7 +79,6 @@ if __name__ == '__main__' :
   project_path = paramDict['project_path'][:-1]
   rep_input = paramDict['input_path']
   rep_output = paramDict['output_path'] + '/' + appId + '/'
-  #rep_output_appId = rep_output + appId + '/'
   rep_tmp = '../tmp' + appId + '/'
 
   #= print appId to a file
@@ -170,9 +169,6 @@ if __name__ == '__main__' :
 
   #= Fetch library files in rep_input
   infiles = [f for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
-  if len(infiles) == 0: 
-    sys.stderr.write('ERROR: input file is missing')
-    sys.exit()
   print('============================================================\n')
   print('infiles:')
   for infile in infiles: print(infile)

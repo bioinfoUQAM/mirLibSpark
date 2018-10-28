@@ -41,10 +41,15 @@ def validate_options(paramDict):
   if perform_KEGGpathways_enrichment_analysis == 'yes' and perform_differnatial_analysis == 'no':
     sys.stderr.write("KEGG pathway enrichment analysis must be done after differential expression analysis.\nExit the program.")
     sys.exit()
+  
+  infiles = [f.split('.')[0] for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
+  if len(infiles) == 0: 
+    sys.stderr.write('ERROR: input file is missing')
+    sys.exit()
 
   #= verify if input folder contain all files requisted by diffguide file
   if perform_differnatial_analysis == 'yes':
-    infiles = [f.split('.')[0] for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
+
     #testInfiles = [f.split('.')[0] for f in infiles]
     diffguide, neededInfiles = __read_diffguide(diffguide_file)
     for infile in neededInfiles:
