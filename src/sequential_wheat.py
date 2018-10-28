@@ -361,7 +361,7 @@ def createBowFrqDict (dict_mirna):
 
 def keepTrue(dict_mirna):
   dict_mirna2 = dict_mirna.copy()
-  count = 0
+  count = 0 #= count distinct chromo strand posChr valide precursor
   for k, v in dict_mirna2.items():
     TRUE = 0
     frq = v[0]
@@ -375,7 +375,7 @@ def keepTrue(dict_mirna):
         item = items[i]
         if not len(item) == 0: 
           TRUE = 1
-          count += 1
+      if TRUE == 1: count += 1
     if TRUE == 0:
       del dict_mirna[k]
   return count
@@ -409,11 +409,11 @@ extractPre_fromPri (dict_mirna)
 fold2 (dict_mirna)
 mirdupcheck (dict_mirna)
 filterProfile (dict_mirna)
-nbTrue = keepTrue(dict_mirna)
+nbDistinctTrue = keepTrue(dict_mirna)
 
 for k, v in dict_mirna.items(): print(k, v)
 
-print('nbTrue: ', nbTrueDistinct)
+print('nbDistinctTrue: ', nbDistinctTrue)
 print('nbUniqueMiRNA: ', len(dict_mirna))
 
 
