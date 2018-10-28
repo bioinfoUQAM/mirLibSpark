@@ -77,7 +77,7 @@ if __name__ == '__main__' :
   rep_input = paramDict['input_path']
   rep_output = paramDict['output_path']
   rep_output_appId = rep_output + appId + '/'
-  rep_tmp = '../tmp/'
+  rep_tmp = '../tmp' + appId + '/'
 
   #= print appId to a file
   outfile = project_path + '/appId.txt'
