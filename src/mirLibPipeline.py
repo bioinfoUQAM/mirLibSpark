@@ -365,6 +365,10 @@ if __name__ == '__main__' :
     len300_rdd = pri_mircheck_rdd.filter(lambda e: (int(e[1][3][5]) - int(e[1][3][4])) < 301)
     if reporting == 1: print('NB len300_rdd: ', len300_rdd.groupByKey().count())
     
+
+    #======================#
+    #= REPARTITION        =#
+    #======================#
     #= Filtering structure with branched loop
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
@@ -397,7 +401,9 @@ if __name__ == '__main__' :
     #================================================================================================================
    
 
-
+    #======================#
+    #= REPARTITION        =#
+    #======================#
     #= Validating pre-mirna with miRdup zipWithUniqueId
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold']])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore']])
@@ -420,9 +426,11 @@ if __name__ == '__main__' :
     keys_chromo_strand = profile_key_rdd.map(lambda e: (e[0], 1)).reduceByKey(lambda a, b: a+b).map(lambda e: e[0]).collect()
     #================================================================================================================
     #================================================================================================================
+    #======================#
+    #= REPARTITION x3     =#
+    #======================#
     for chromo_strand in keys_chromo_strand:
-      y_rdd = x_rdd.filter(lambda e: e[0] == chromo_strand)\
-                   .repartition(partition)
+      y_rdd = x_rdd.filter(lambda e: e[0] == chromo_strand)#.repartition(partition)
       dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(y_rdd.collect())
       profile_value_rdd = profile_key_rdd.filter(lambda e: e[0] == chromo_strand)\
                                          .repartition(partition)\
