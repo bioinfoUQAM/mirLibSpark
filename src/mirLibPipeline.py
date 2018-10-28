@@ -15,6 +15,9 @@ Le programme implemente le pipeline d'analyse des sRAN et prediction des miRNAs.
   - 5 prediction/validation du miRNA
   - 6 validaiton/filtrage avec l'expression
 
+#= programming note 181028:
+#= repartition(num) is better than partitionBy(num) because the latter we might consider segregating chromosomes. But the number of chrs are different in each species. So it is not easyo to say a number that suits everyone.
+
 '''
 
 from __future__ import print_function
@@ -345,7 +348,7 @@ if __name__ == '__main__' :
       #================================================================================================================
       #================================================================================================================
     if reporting == 1: print('NB mergeChromosomesResults: ', mergeChromosomesResults_rdd.groupByKey().count())
-    print(datetime.datetime.now(), 'mergeChromosomesResults_rdd') #= BOTTLE NECK= this step takes about 2h30 for 11w lib
+    print(datetime.datetime.now(), 'mergeChromosomesResults_rdd') #= BOTTLE NECK
     
     #= pri-miRNA folding
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri]])
@@ -361,7 +364,7 @@ if __name__ == '__main__' :
                                    .reduceByKey(lambda a, b: a)\
                                    .map(lambda e: e[1])
     if reporting == 1: print('NB pri_mircheck_rdd: ', pri_mircheck_rdd.groupByKey().count())
-    print(datetime.datetime.now(), 'pri_mircheck_rdd') #= BOTTLE NECK= this step takes about 2h for 11w lib
+    print(datetime.datetime.now(), 'pri_mircheck_rdd') #= BOTTLE NECK
 
 
     #= Filtering len(pre-mirna) < 301 nt
@@ -415,7 +418,7 @@ if __name__ == '__main__' :
                                  .filter(lambda e: e[1][4][3] == "true")\
                                  .repartition(partition)
     if reporting == 1: print('NB pre_mirdup_rdd distinct: ', pre_mirdup_rdd.groupByKey().count())
-    print(datetime.datetime.now(), 'pre_mirdup_rdd distinct') #= 11w about 30 mins; OFTEN NOT RUNNING THROUGH THIS STEP BEFORE OUT-OF-TIME
+    print(datetime.datetime.now(), 'pre_mirdup_rdd distinct') #= BOTTLE NECK
     
     
     #= Filtering by expression profile (< 20%)
@@ -455,7 +458,7 @@ if __name__ == '__main__' :
     
     #= collecting final miRNA predictions
     libresults = mergeProfileChromo_rdd.collect()
-    print(datetime.datetime.now(), 'libresults=mergeProfileChromo_rdd.collect()')#= BOTTLE NECK= this step takes about 3h for 11w lib
+    print(datetime.datetime.now(), 'libresults=mergeProfileChromo_rdd.collect()')#= BOTTLE NECK
 
     endLib = time.time() 
     timeDict[inBasename] = endLib - startLib
