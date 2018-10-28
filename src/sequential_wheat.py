@@ -62,6 +62,19 @@ extr_obj = mru.extract_precurosrs (genome, pri_l_flank, pri_r_flank, pre_flank)
 
 RNAfold_path = ut.find_RNAfold_path ()
 
+
+def find_str(s, char):
+    ''' zero based indexing '''
+    index = 0
+    if char in s:
+        c = char[0]
+        for ch in s:
+            if ch == c:
+                if s[index:index+len(char)] == char:
+                    return index
+            index += 1
+    return -1000
+
 def trim_adapter (seq, ad):
   '''
   example:  adapter ad =                  TGGAATTCTCGGGTGCCAAGGAACTC
