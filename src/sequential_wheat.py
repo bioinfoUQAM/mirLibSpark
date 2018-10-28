@@ -19,6 +19,8 @@ import sys
 import os
 import os.path
 import time
+import datetime
+
 
 
 #
@@ -388,34 +390,58 @@ infile = '../input_samples/11w2013_t2_1.fasta'
 
 
 
+time_a = datetime.datetime.now()
 
 
 #dict_mirna = readRaw (infile)
+
+print(time_a, 'start')
 dict_mirna = readFasta (infile)
 
+print(datetime.datetime.now(), 'dict_mirna = readFasta (infile)')
 
 filterFreq (limit_srna_freq, dict_mirna)
+print(datetime.datetime.now(), 'filterFreq (limit_srna_freq, dict_mirna)')
 filterShort (limit_len, dict_mirna)
+print(datetime.datetime.now(), 'filterShort (limit_len, dict_mirna)')
 filterdust (dict_mirna)
+print(datetime.datetime.now(), 'filterdust (dict_mirna)')
 bowtiemap (dict_mirna)
+print(datetime.datetime.now(), 'bowtiemap (dict_mirna)')
 dict_bowtie_chromo_strand = createBowFrqDict (dict_mirna)
+print(datetime.datetime.now(), 'dict_bowtie_chromo_strand = createBowFrqDict (dict_mirna)')
 filterMirnaFreq (limit_mrna_freq, dict_mirna)
+print(datetime.datetime.now(), 'filterMirnaFreq (limit_mrna_freq, dict_mirna)')
 filterNbLoc (limit_nbloc, dict_mirna)
+print(datetime.datetime.now(), 'filterNbLoc (limit_nbloc, dict_mirna)')
 extractPri (dict_mirna)
+print(datetime.datetime.now(), 'extractPri (dict_mirna)')
 fold1 (dict_mirna)
+print(datetime.datetime.now(), 'fold1 (dict_mirna)')
 check (dict_mirna)
+print(datetime.datetime.now(), 'check (dict_mirna)')
 filterOneLoop (dict_mirna)
+print(datetime.datetime.now(), 'filterOneLoop (dict_mirna)')
 extractPre_fromPri (dict_mirna)
+print(datetime.datetime.now(), 'extractPre_fromPri (dict_mirna)')
 fold2 (dict_mirna)
+print(datetime.datetime.now(), 'fold2 (dict_mirna)')
 mirdupcheck (dict_mirna)
+print(datetime.datetime.now(), 'mirdupcheck (dict_mirna)')
 filterProfile (dict_mirna)
+print(datetime.datetime.now(), 'filterProfile (dict_mirna)')
 nbDistinctTrue = keepTrue(dict_mirna)
+print(datetime.datetime.now(), 'nbDistinctTrue = keepTrue(dict_mirna)')
+
 
 for k, v in dict_mirna.items(): print(k, v)
 
 print('nbDistinctTrue: ', nbDistinctTrue)
 print('nbUniqueMiRNA: ', len(dict_mirna))
 
+time_b = datetime.datetime.now()
+print(time_b, 'finish time')
+print('total running time: ', time_b - time_a)
 
 
 '''
