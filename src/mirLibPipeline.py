@@ -561,8 +561,4 @@ if __name__ == '__main__' :
   print('total running time: ', time_b - time_a)
   print('====================== End of ' + appId + ' =============\n')
 
-  #os.system('mv ' + rep_output + '*' + appId + '* ' + rep_output_appId)
-  #= do not remove all files (rm *) in rep_tmp while there is another application running.
-
-
 
