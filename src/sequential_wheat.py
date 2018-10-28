@@ -397,9 +397,8 @@ time_a = datetime.datetime.now()
 
 print(time_a, 'start')
 dict_mirna = readFasta (infile)
-
+for k, v in dict_mirna.items(): print(k, v)
 print(datetime.datetime.now(), 'dict_mirna = readFasta (infile)')
-
 filterFreq (limit_srna_freq, dict_mirna)
 print(datetime.datetime.now(), 'filterFreq (limit_srna_freq, dict_mirna)')
 filterShort (limit_len, dict_mirna)
