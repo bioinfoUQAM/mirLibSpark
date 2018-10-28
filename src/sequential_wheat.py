@@ -81,7 +81,7 @@ def readFasta(infile):
   dict_mirna = {}
   with open (infile, 'r') as fh:
     for line in fh:
-      if not line.startswith ('>')
+      if not line.startswith ('>'):
         seq = line.rstrip('\n')
         if not adapter = 'none': seq = trim_adapter (seq, adapter)
         if not seq in dict_mirna: dict_mirna[seq] = [1]
