@@ -82,8 +82,8 @@ if __name__ == '__main__' :
   rep_tmp = '../tmp' + appId + '/'
 
   #= print appId to a file
-  outfile = project_path + '/appId.txt'
-  with open (outfile, 'w') as fh: print(appId, file=fh) 
+  #outfile = project_path + '/appId.txt'
+  #with open (outfile, 'w') as fh: print(appId, file=fh) 
 
   #= genome
   genome_path = paramDict['genome_path'] 

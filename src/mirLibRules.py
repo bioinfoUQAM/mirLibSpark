@@ -10,7 +10,6 @@ import os
 import utils as ut
 from operator import itemgetter
 
-#bin = '../lib/'
 bin = ''
 
     
