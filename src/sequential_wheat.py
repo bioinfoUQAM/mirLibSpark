@@ -83,7 +83,7 @@ def readFasta(infile):
     for line in fh:
       if not line.startswith ('>'):
         seq = line.rstrip('\n')
-        if not adapter = 'none': seq = trim_adapter (seq, adapter)
+        if not adapter == 'none': seq = trim_adapter (seq, adapter)
         if not seq in dict_mirna: dict_mirna[seq] = [1]
         else: dict_mirna[seq][0] += 1
   return dict_mirna
@@ -396,7 +396,7 @@ extractPre_fromPri (dict_mirna)
 fold2 (dict_mirna)
 mirdupcheck (dict_mirna)
 filterProfile (dict_mirna)
-nbTrueDistinct = keepTrue(dict_mirna)
+nbTrue = keepTrue(dict_mirna)
 
 for k, v in dict_mirna.items(): print(k, v)
 
@@ -405,7 +405,14 @@ print('nbUniqueMiRNA: ', len(dict_mirna))
 
 
 
+'''
+#= final report one sequence example
+AAGACTCATGAATTCATACGACAT [238, 1, [['+', '3', 15682287, [[], ['TGTTTTGCTTATGTTATGCTTATGTTTTTCTTATTTTTGTTCGATTATTTTATTTTTCTTAGTTTATTAGTCAGGACACATCAAAAAATTGCTACCATATTGTGACAATCTAATGAACACATCAGAAAGCCAAAGAAACTGGAGAAATAAGTGTGTGTTGGGCATAAAAAAAGAATAGAGATTTGGTGTTGATATGGTTTAAGACTCATGAATTCATACGACATGACCCTCCATAAAATATGTAACTACCCCAATCCTTTCTAAACATGACTCTGGTGTTGTAGAACTTATGATCGTCTACTTTTACTACTACGTCTTGAACGGGCTTGATTATGTTGTTATATACGATCTCCAAGTTGCGAAAGTAGCTAACTTTGTCAAAGCCTTCATCGGAGAAGTGACCAGATCCCATCTGTGTAATTGTGTGTCAGCCAAAACTTTGCGAATTCACAACCTCACCACCCCATTGCACGTCGTATATATAAGCTAAATTTGGAAATTTGCAGTTAACCAATATCCAACCAATGAATGGTTGGATCCCAAACTTAGCCACCAGTTCCCAGACTCTTGATCCTATATAATTGTTTATCAACGATGATATTTAACTTTTAAATTAGAAATGTAAAATTCATTAACTAAAACAAAAGATACAATCTCAAATATTTTTCCTCGGATGTAGAGACGGAGTAATGGTGCCTCCAACAACAATGTTGTTACTTGTTTG', 200, '.......(((...(((((((((.......((((((((..((((.((.((((..((((((..(((((((((....(.((((....................)))).)...))))))))).....))))))..)))).)).)))))))))))).......)))))))))...)))....(((((.(((((.(((...(((...((((((((((.(((.(((((((.......(((.....(((((.....................)))))....))))))))))))).))))))..))))))).))).))))).)))))(((((((..((((.(((((((((((((((((.....((((((....))))))......((((....((((......)))))))).((((...))))(((((((((((.((..((.........))..)).)))).............)))))))))))))))))...(((((.(((((....(((........))).(((((((((.....))))))))).))))).)))))(((((...(((.(.((((..((((.((((.((((((....)))))).))))....(((((...((((.((((.......))))..))))...)))))........................))))..)))).))).)...))))).........))))))).))))))))))).', '5prime', 200, 299, 'AAGAATAGAGATTTGGTGTTGATATGGTTTAAGACTCATGAATTCATACGACATGACCCTCCATAAAATATGTAACTACCCCAATCCTTTCTAAACATGACTCTGGTGTTGTAGAACTTATGATCGTCTACTTTTACTACTACGTCTTGAACGGGCTTGA', 30, '.......(((((.(((((.(((...(((...((((((((((.(((.(((((((.......(((.....(((((.....................)))))....))))))))))))).))))))..))))))).))).))))).)))))............', 'true', '0.67', 2380.0]]]]]
 
+
+seq [freq, nbLoc,[[strand, chromo, posChr, [[], [ priSeq, 200, priFold, '5prime', 200, 299, preSeq, 30, preFold, 'true', '0.67', 2380.0]]]]]
+
+'''
 
 
 
