@@ -239,7 +239,8 @@ if __name__ == '__main__' :
     #= colapse seq and calculate frequency
       ## in : u'seq1', u'seq2', u'seq1'
       ## out: ('seq', freq)
-      collapse_rdd = trim_adapter_rdd.map(lambda word: (word, 1)).reduceByKey(lambda a, b: a+b)
+      collapse_rdd = trim_adapter_rdd.map(lambda word: (word, 1))\
+                                     .reduceByKey(lambda a, b: a+b)
   
     #= Filtering sRNA low frequency
     ## in : ('seq', freq)
@@ -280,7 +281,8 @@ if __name__ == '__main__' :
                             .map(bowtie_obj.bowtie_rearrange_map)\
                             .groupByKey()\
                             .map(lambda e: (e[0], [len(list(e[1])), list(e[1])]))
-      mergebowtie_rdd = mergebowtie_rdd.union(bowtie_rdd).persist()
+      mergebowtie_rdd = mergebowtie_rdd.union(bowtie_rdd)\
+                                       .persist()
       #================================================================================================================
       #================================================================================================================
     if reporting == 1: print('NB mergebowtie_rdd: ', mergebowtie_rdd.count())
@@ -291,8 +293,8 @@ if __name__ == '__main__' :
     ## in : ('seq', [nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     bowFrq_rdd = mergebowtie_rdd.join(sr_short_rdd)\
-                           .map(bowtie_obj.bowtie_freq_rearrange_rule)\
-                           .persist()
+                                .map(bowtie_obj.bowtie_freq_rearrange_rule)\
+                                .persist()
     if reporting == 1: print('NB bowFrq_rdd: ', bowFrq_rdd.count())
 
     #= Filtering, keep miRNA length = 21, 22, 23, 24
@@ -337,7 +339,8 @@ if __name__ == '__main__' :
       ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri]])
       primir_rdd = excluKnownNon_rdd.filter(prec_obj.hasKey)\
                                     .flatMap(prec_obj.extract_prim_rule)
-      mergeChromosomesResults_rdd = mergeChromosomesResults_rdd.union(primir_rdd).persist()#.checkpoint()
+      mergeChromosomesResults_rdd = mergeChromosomesResults_rdd.union(primir_rdd)\
+                                                               .persist()
       broadcastVar_genome.unpersist()
       #================================================================================================================
       #================================================================================================================
@@ -353,10 +356,10 @@ if __name__ == '__main__' :
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold']])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
     pri_mircheck_rdd = pri_fold_rdd.map(lambda e: mircheck_obj.mirCheck_map_rule(e, 3))\
-                              .filter(lambda e: any(e[1][3]))\
-                              .map(lambda e: (e[0] + e[1][2][0] + e[1][2][1] + str(e[1][2][2]) + e[1][3][4] + e[1][3][5], e)  )\
-                              .reduceByKey(lambda a, b: a)\
-                              .map(lambda e: e[1])
+                                   .filter(lambda e: any(e[1][3]))\
+                                   .map(lambda e: (e[0] + e[1][2][0] + e[1][2][1] + str(e[1][2][2]) + e[1][3][4] + e[1][3][5], e)  )\
+                                   .reduceByKey(lambda a, b: a)\
+                                   .map(lambda e: e[1])
     if reporting == 1: print('NB pri_mircheck_rdd: ', pri_mircheck_rdd.groupByKey().count())
     print(datetime.datetime.now(), 'pri_mircheck_rdd') #= BOTTLE NECK= this step takes about 2h for 11w lib
 
@@ -408,9 +411,9 @@ if __name__ == '__main__' :
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold']])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore']])
     pre_mirdup_rdd = pre_fold_rdd.zipWithIndex()\
-                              .map(mirdup_obj.run_miRdup)\
-                              .filter(lambda e: e[1][4][3] == "true")\
-                              .repartition(partition)
+                                 .map(mirdup_obj.run_miRdup)\
+                                 .filter(lambda e: e[1][4][3] == "true")\
+                                 .repartition(partition)
     if reporting == 1: print('NB pre_mirdup_rdd distinct: ', pre_mirdup_rdd.groupByKey().count())
     print(datetime.datetime.now(), 'pre_mirdup_rdd distinct') #= 11w about 30 mins; OFTEN NOT RUNNING THROUGH THIS STEP BEFORE OUT-OF-TIME
     
@@ -422,21 +425,27 @@ if __name__ == '__main__' :
     x_rdd = bowFrq_rdd.flatMap(mru.flatmap_mappings)\
                       .map(lambda e: (e[1][2][1] + e[1][2][0], [e[1][2][2], e[1][0]]) )
     #= keys = ['3A+', '5D-', ...]
-    profile_key_rdd = pre_mirdup_rdd.map(lambda e: (e[1][2][1] + e[1][2][0], e))
-    keys_chromo_strand = profile_key_rdd.map(lambda e: (e[0], 1)).reduceByKey(lambda a, b: a+b).map(lambda e: e[0]).collect()
+    profile_keyvalue_rdd = pre_mirdup_rdd.map(lambda e: (e[1][2][1] + e[1][2][0], e))
+    keys_chromo_strand = profile_keyvalue_rdd.map(lambda e: (e[0], 1))\
+                                             .reduceByKey(lambda a, b: a+b)\
+                                             .map(lambda e: e[0])\
+                                             .collect()
     #================================================================================================================
     #================================================================================================================
     #======================#
     #= REPARTITION x3     =#
     #======================#
     for chromo_strand in keys_chromo_strand:
-      y_rdd = x_rdd.filter(lambda e: e[0] == chromo_strand).repartition(partition)
+      y_rdd = x_rdd.filter(lambda e: e[0] == chromo_strand)\
+                   .repartition(partition)
       broadcastVar_dict_bowtie_chromo_strand = sc.broadcast(profile_obj.get_bowtie_strandchromo_dict(y_rdd.collect()))
-      profile_value_rdd = profile_key_rdd.filter(lambda e: e[0] == chromo_strand)\
-                                         .repartition(partition)\
-                                         .map(lambda e: profile_obj.computeProfileFrq(e[1], broadcastVar_dict_bowtie_chromo_strand.value))\
-                                         .filter(lambda e: e[1][0] / (float(e[1][5]) + 0.1) > 0.2)
-      mergeProfileChromo_rdd = mergeProfileChromo_rdd.union(profile_value_rdd).repartition(partition).persist()
+      profile_value_rdd = profile_keyvalue_rdd.filter(lambda e: e[0] == chromo_strand)\
+                                              .repartition(partition)\
+                                              .map(lambda e: profile_obj.computeProfileFrq(e[1], broadcastVar_dict_bowtie_chromo_strand.value))\
+                                              .filter(lambda e: e[1][0] / (float(e[1][5]) + 0.1) > 0.2)
+      mergeProfileChromo_rdd = mergeProfileChromo_rdd.union(profile_value_rdd)\
+                                                     .repartition(partition)\
+                                                     .persist()
     #================================================================================================================
     #================================================================================================================
     if reporting == 1: print('NB mergeProfileChromo_rdd NON distinct: ', mergeProfileChromo_rdd.count())
