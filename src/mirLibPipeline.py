@@ -431,10 +431,10 @@ if __name__ == '__main__' :
     #======================#
     for chromo_strand in keys_chromo_strand:
       y_rdd = x_rdd.filter(lambda e: e[0] == chromo_strand)#.repartition(partition)
-      dict_bowtie_chromo_strand = profile_obj.get_bowtie_strandchromo_dict(y_rdd.collect())
+      broadcastVar_dict_bowtie_chromo_strand = sc.broadcast(profile_obj.get_bowtie_strandchromo_dict(y_rdd.collect()))
       profile_value_rdd = profile_key_rdd.filter(lambda e: e[0] == chromo_strand)\
                                          .repartition(partition)\
-                                         .map(lambda e: profile_obj.computeProfileFrq(e[1], dict_bowtie_chromo_strand))\
+                                         .map(lambda e: profile_obj.computeProfileFrq(e[1], broadcastVar_dict_bowtie_chromo_strand.value))\
                                          .filter(lambda e: e[1][0] / (float(e[1][5]) + 0.1) > 0.2)
       mergeProfileChromo_rdd = mergeProfileChromo_rdd.union(profile_value_rdd).repartition(partition).persist()
     #================================================================================================================
@@ -522,6 +522,7 @@ if __name__ == '__main__' :
   broadcastVar_d_ncRNA_CDS.unpersist()
   bowFrq_rdd.unpersist()
   mergeProfileChromo_rdd.unpersist()
+  broadcastVar_dict_bowtie_chromo_strand.unpersist()
 
 
   #= end of spark context, stop to allow running multiple SparkContexts
