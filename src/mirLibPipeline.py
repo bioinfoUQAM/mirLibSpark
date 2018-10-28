@@ -430,7 +430,7 @@ if __name__ == '__main__' :
 
     #= get chromo_strand key list
     #= keys = ['3A+', '5D-', ...]
-    keys_chromo_strand = profile_keyvalue_rdd.map(lambda e: (e[0]))\
+    keys_chromo_strand = profile_keyvalue_rdd.map(lambda e: e[0])\
                                              .reduceByKey(lambda a, b: a)\
                                              .collect()
 
