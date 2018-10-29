@@ -289,6 +289,6 @@ miRDP duration:  162 sec
 #=
  [mirdeep] cjwu [~/project/cjwu/gitRepo/mirLibSpark/mirdeep_p]
  $ sbatch submit_runmirdeepp.sh
-Submitted batch job 8726450
+Submitted batch job 8726491
 
 
