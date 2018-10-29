@@ -262,3 +262,33 @@ tail -n 50 jobout/*ID*.out
  8718409     cjwu def-banire_c jv2-12-wheat-m  PD N/A                 2:00:00     1   64 (null) 300000M  (Resources) 
  8718411     cjwu def-banire_c jv2-12-wheat-m  PD N/A                 2:00:00     1   64 (null) 300000M  (Resources) 
 
+
+
+#= mirdeep in cloudera
+ [mirdeep] cloudera [~/Desktop/mirLibSpark/mirdeep_p]
+ $ time python run_mirdeep_p.py 2>/dev/null
+start processing neg_ath1000.txt
+miRDP duration:  ../tmp/neg_ath1000.fa 112 sec
+57
+start processing high_conf_mature_ath_uniq_raw.txt
+miRDP duration:  ../tmp/high_conf_mature_ath_uniq_raw.fa 26 sec
+75
+miRDP duration:  138 sec
+
+#= mirdeep in graham
+ [mirdeep] cjwu [~/project/cjwu/gitRepo/mirLibSpark/mirdeep_p]
+ $ time python run_mirdeep_p.py 2>/dev/null
+start processing neg_ath1000.txt
+miRDP duration:  ../tmp/neg_ath1000.fa 131 sec
+57
+start processing high_conf_mature_ath_uniq_raw.txt
+miRDP duration:  ../tmp/high_conf_mature_ath_uniq_raw.fa 31 sec
+75
+miRDP duration:  162 sec
+
+#=
+ [mirdeep] cjwu [~/project/cjwu/gitRepo/mirLibSpark/mirdeep_p]
+ $ sbatch submit_runmirdeepp.sh
+Submitted batch job 8726450
+
+
