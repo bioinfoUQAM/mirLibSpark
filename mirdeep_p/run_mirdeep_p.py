@@ -1,5 +1,5 @@
 '''
-time python run_mirdeep_P.py 2>/dev/null
+command line: time python run_mirdeep_p.py 2>/dev/null
 
 mirdeep-p is distributed as many small scripts, step by step, like a pipeline, only without a wrapping script.
 
@@ -18,6 +18,9 @@ import os
 import time
 from os import listdir
 
+project_path = '/home/cjwu/project/cjwu/gitRepo/mirLibSpark/mirdeep_p/'
+
+
 rep_input = '../input_mirdeep/'
 
 options = ['tair9', 'tair10']
@@ -25,8 +28,10 @@ len_pri = '250' #'700'
 
 
 def loadModule_graham ():
+  '''
+  The order of the load may not be correct, because I met problem sometimes the modules were not loaded correctly. See what is the bug when I have time.
+  '''
   cmd = 'module load nixpkgs/16.09';os.system(cmd)
-  cmd = 'module load spark/2.3.0';os.system(cmd)
   cmd = 'module load gcc/5.4.0';os.system(cmd)
   cmd = 'module load viennarna/2.4.9';os.system(cmd)
   cmd = 'module load bowtie/1.1.2';os.system(cmd)
@@ -80,20 +85,20 @@ def init_mirdeep_p (op):
 
 
 def run_mirdp_new (infile):
-  cmd = 'bowtie -a -v 0 bowtie-index/' + genome[:-3] + ' -f ' + infile + '>indata.aln 2>/dev/null';print(cmd);os.system(cmd)
-  cmd = 'perl convert_bowtie_to_blast.pl indata.aln ' + infile + ' ' + genome + ' >indata.bst 2>/dev/null';print(cmd);os.system(cmd)
-  cmd = 'perl filter_alignments.pl indata.bst -c 15 >indata_filter15.bst 2>/dev/null';print(cmd);os.system(cmd)
-  cmd = 'perl overlap.pl indata_filter15.bst ncRNA_CDS.gff -b >indata_id_overlap_ncRNA_CDS 2>/dev/null';print(cmd);os.system(cmd)
-  cmd = 'perl alignedselected.pl indata_filter15.bst -g indata_id_overlap_ncRNA_CDS >indata_filter15_ncRNA_CDS.bst 2>/dev/null';print(cmd);os.system(cmd)
-  cmd = 'perl filter_alignments.pl indata_filter15_ncRNA_CDS.bst -b ' + infile + ' > indata_filtered.fa 2>/dev/null';print(cmd);os.system(cmd)
-  cmd = 'perl excise_candidate.pl ' + genome + ' indata_filter15_ncRNA_CDS.bst ' + len_pri + ' >indata_precursors.fa 2>/dev/null';print(cmd);os.system(cmd)
-  cmd = 'cat indata_precursors.fa | RNAfold --noPS > indata_structures';print(cmd);os.system(cmd)
-  cmd = 'bowtie-build -f indata_precursors.fa bowtie-index/indata_precursors >/dev/null 2>/dev/null';print(cmd);os.system(cmd)
-  cmd = 'bowtie -a -v 0 bowtie-index/indata_precursors -f indata_filtered.fa > indata_precursors.aln 2>/dev/null';print(cmd);os.system(cmd)
-  cmd = 'perl convert_bowtie_to_blast.pl indata_precursors.aln indata_filtered.fa indata_precursors.fa >indata_precursors.bst 2>/dev/null';print(cmd);os.system(cmd)
-  cmd = 'sort +3 -25 indata_precursors.bst >indata_signatures';print(cmd);os.system(cmd)
-  cmd = 'perl miRDP.pl indata_signatures indata_structures > result_new_predictions';print(cmd);os.system(cmd)
-  cmd = 'perl rm_redundant_meet_plant.pl chromosome_length indata_precursors.fa indata_predictions indata_nr_prediction indata_filter_P_prediction';print(cmd);os.system(cmd)
+  cmd = 'bowtie -a -v 0 bowtie-index/' + genome[:-3] + ' -f ' + infile + '>indata.aln 2>/dev/null';os.system(cmd)
+  cmd = 'perl convert_bowtie_to_blast.pl indata.aln ' + infile + ' ' + genome + ' >indata.bst 2>/dev/null';os.system(cmd)
+  cmd = 'perl filter_alignments.pl indata.bst -c 15 >indata_filter15.bst 2>/dev/null';os.system(cmd)
+  cmd = 'perl overlap.pl indata_filter15.bst ncRNA_CDS.gff -b >indata_id_overlap_ncRNA_CDS 2>/dev/null';os.system(cmd)
+  cmd = 'perl alignedselected.pl indata_filter15.bst -g indata_id_overlap_ncRNA_CDS >indata_filter15_ncRNA_CDS.bst 2>/dev/null';os.system(cmd)
+  cmd = 'perl filter_alignments.pl indata_filter15_ncRNA_CDS.bst -b ' + infile + ' > indata_filtered.fa 2>/dev/null';os.system(cmd)
+  cmd = 'perl excise_candidate.pl ' + genome + ' indata_filter15_ncRNA_CDS.bst ' + len_pri + ' >indata_precursors.fa 2>/dev/null';os.system(cmd)
+  cmd = 'cat indata_precursors.fa | RNAfold --noPS > indata_structures';os.system(cmd)
+  cmd = 'bowtie-build -f indata_precursors.fa bowtie-index/indata_precursors >/dev/null 2>/dev/null';os.system(cmd)
+  cmd = 'bowtie -a -v 0 bowtie-index/indata_precursors -f indata_filtered.fa > indata_precursors.aln 2>/dev/null';os.system(cmd)
+  cmd = 'perl convert_bowtie_to_blast.pl indata_precursors.aln indata_filtered.fa indata_precursors.fa >indata_precursors.bst 2>/dev/null';os.system(cmd)
+  cmd = 'sort +3 -25 indata_precursors.bst >indata_signatures';os.system(cmd)
+  cmd = 'perl miRDP.pl indata_signatures indata_structures > result_new_predictions';os.system(cmd)
+  cmd = 'perl rm_redundant_meet_plant.pl chromosome_length indata_precursors.fa indata_predictions indata_nr_prediction indata_filter_P_prediction';os.system(cmd)
 
 
 
@@ -130,8 +135,9 @@ def run_miRDP ():
 
     os.system('cat result_* > result_combinded.txt')
     os.system('cut -f1 result_combinded.txt | grep \'seq_\' | sort | uniq | wc -l')
-    os.system('rm -f indata* *.gff* precursors_250_structure *.fa chromosome_length result_combinded.txt bowtie-index/*precursors*')
+    os.system('rm -f indata* *.gff* precursors_250_structure result_combinded.txt bowtie-index/*precursors*')
   
+  os.system('rm -f indata* *.gff* precursors_250_structure *.fa chromosome_length result_combinded.txt bowtie-index/*precursors*')
   totaltime = format(totaltime, '.0f')
   os.system('rm *.pl')
   print 'miRDP duration: ', totaltime, 'sec'
