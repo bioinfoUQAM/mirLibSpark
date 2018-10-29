@@ -26,7 +26,6 @@ len_pri = '250' #'700'
 
 def loadModule_graham ():
   cmd = 'module load nixpkgs/16.09';os.system(cmd)
-  cmd = 'module load spark/2.3.0';os.system(cmd)
   cmd = 'module load gcc/5.4.0';os.system(cmd)
   cmd = 'module load viennarna/2.4.9';os.system(cmd)
   cmd = 'module load bowtie/1.1.2';os.system(cmd)
