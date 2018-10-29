@@ -137,7 +137,7 @@ def run_miRDP ():
   print 'miRDP duration: ', totaltime, 'sec'
 
 
-#loadModule_graham ()
+loadModule_graham ()
 genome, f_annotated = init_mirdeep_p ('tair10')
 run_miRDP ()
 
