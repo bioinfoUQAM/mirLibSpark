@@ -290,5 +290,11 @@ miRDP duration:  162 sec
  [mirdeep] cjwu [~/project/cjwu/gitRepo/mirLibSpark/mirdeep_p]
  $ sbatch submit_runmirdeepp.sh
 Submitted batch job 8726491
-
+57
+75
+start processing neg_ath1000.txt
+miRDP duration:  ../tmp/neg_ath1000.fa 157 sec
+start processing high_conf_mature_ath_uniq_raw.txt
+miRDP duration:  ../tmp/high_conf_mature_ath_uniq_raw.fa 37 sec
+miRDP duration:  194 sec
 

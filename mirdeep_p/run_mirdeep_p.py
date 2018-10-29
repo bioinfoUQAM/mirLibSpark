@@ -18,6 +18,9 @@ import os
 import time
 from os import listdir
 
+project_path = '/home/cjwu/project/cjwu/gitRepo/mirLibSpark/mirdeep_p/'
+
+
 rep_input = '../input_mirdeep/'
 
 options = ['tair9', 'tair10']
