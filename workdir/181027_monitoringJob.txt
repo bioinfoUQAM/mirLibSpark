@@ -212,12 +212,12 @@ $ squeue -u cjwu
  8717345     cjwu def-banire_c jv2-20-ath100t  PD N/A                10:00:00     1    1 (null) 115000M  (Resources) 
  8717350     cjwu def-banire_c jv2-20-ath100t  PD N/A                10:00:00     1    1 (null) 115000M  (Resources) 
  8717352     cjwu def-banire_c jv2-20-ath100t  PD N/A                10:00:00     1    1 (null) 115000M  (Resources) 
- 8717355     cjwu def-banire_c jv2-20-ath100t  PD N/A                10:00:00     1    2 (null) 115000M  (Resources) 
- 8717357     cjwu def-banire_c jv2-20-ath100t  PD N/A                10:00:00     1    2 (null) 115000M  (Resources) 
- 8717360     cjwu def-banire_c jv2-20-ath100t  PD N/A                10:00:00     1    2 (null) 115000M  (Resources) 
- 8717363     cjwu def-banire_c jv2-20-ath100t  PD N/A                10:00:00     1    3 (null) 115000M  (Resources) 
- 8717365     cjwu def-banire_c jv2-20-ath100t  PD N/A                10:00:00     1    3 (null) 115000M  (Resources) 
- 8717367     cjwu def-banire_c jv2-20-ath100t  PD N/A                10:00:00     1    3 (null) 115000M  (Resources) 
+ 8717355     cjwu def-banire_c jv2-20-ath100t  PD N/A                10:00:00     1    2 (null) 115000M  (Resources) #= Lib 100 0:25:01.723834  1501.724
+ 8717357     cjwu def-banire_c jv2-20-ath100t  PD N/A                10:00:00     1    2 (null) 115000M  (Resources) #= Lib 100 0:24:50.958005  1490.958
+ 8717360     cjwu def-banire_c jv2-20-ath100t  PD N/A                10:00:00     1    2 (null) 115000M  (Resources) #= Lib 100 0:23:46.129529  1426.130
+ 8717363     cjwu def-banire_c jv2-20-ath100t  PD N/A                10:00:00     1    3 (null) 115000M  (Resources) #= Lib 100 0:17:31.062906  1051.063
+ 8717365     cjwu def-banire_c jv2-20-ath100t  PD N/A                10:00:00     1    3 (null) 115000M  (Resources) #= Lib 100 0:18:04.193155  1084.193
+ 8717367     cjwu def-banire_c jv2-20-ath100t  PD N/A                10:00:00     1    3 (null) 115000M  (Resources) #= Lib 100 0:17:59.295244  1079.295
  8717371     cjwu def-banire_c jv2-20-ath100t  PD N/A                 3:00:00     1    4 (null) 115000M  (Resources) #= Lib 100	0:13:59.781305	839.781
  8717373     cjwu def-banire_c jv2-20-ath100t  PD N/A                 3:00:00     1    4 (null) 115000M  (Resources) #= Lib 100	0:13:56.026565	836.027
  8717374     cjwu def-banire_c jv2-20-ath100t  PD N/A                 3:00:00     1    4 (null) 115000M  (Resources) #= Lib 100	0:13:57.480079	837.480
@@ -227,8 +227,8 @@ $ squeue -u cjwu
  8717385     cjwu def-banire_c jv2-20-ath100t  PD N/A                 1:00:00     1   16 (null) 115000M  (Resources) #= Lib 100	0:04:16.832545	256.833 
  8717387     cjwu def-banire_c jv2-20-ath100t  PD N/A                 1:00:00     1   16 (null) 115000M  (Resources) #= Lib 100	0:04:50.507933	290.508 
  8717389     cjwu def-banire_c jv2-20-ath100t  PD N/A                 1:00:00     1   16 (null) 115000M  (Resources) #= Lib 100	0:04:24.875275	264.875
- 8717392     cjwu def-banire_c jv2-20-ath100t  PD N/A                   30:00     1   32 (null) 115000M  (Resources) 
- 8717396     cjwu def-banire_c jv2-20-ath100t  PD N/A                   30:00     1   32 (null) 115000M  (Resources) 
+ 8717392     cjwu def-banire_c jv2-20-ath100t  PD N/A                   30:00     1   32 (null) 115000M  (Resources) #= Lib 100 0:03:26.913134  206.913
+ 8717396     cjwu def-banire_c jv2-20-ath100t  PD N/A                   30:00     1   32 (null) 115000M  (Resources) #= Lib 100 0:03:24.050803  204.051
  8717399     cjwu def-banire_c jv2-20-ath100t  PD N/A                   30:00     1   32 (null) 115000M  (Resources) 
  8717404     cjwu def-banire_c jv2-20-ath100t  PD N/A                   10:00     1   64 (null) 115000M  (Resources) 
  8717407     cjwu def-banire_c jv2-20-ath100t  PD N/A                   10:00     1   64 (null) 115000M  (Resources) 
