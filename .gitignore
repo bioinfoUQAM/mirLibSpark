@@ -1,8 +1,10 @@
 */genome/
 .DS_Store
-input/
+input*/
 output/
-tmp/
+src/jobout*/
+workdir/*/
+tmp*/
 misc/
 dbs/
 dbs/WHEAT*/mRNA_contigs.fasta
