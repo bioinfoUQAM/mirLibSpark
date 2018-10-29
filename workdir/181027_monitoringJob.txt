@@ -206,8 +206,9 @@ x tail -n 50 jobout/jv2-12-wheat-mirL11500M1n08pn-181028-8703799.out #= Lib 11w2
 
 
 #=== ath 100.txt time experiment
+tail -n 50 jobout_ath_experiment/*ID*.out
 $ squeue -u cjwu
-   JOBID     USER      ACCOUNT           NAME  ST START_TIME        TIME_LEFT NODES CPUS   GRES MIN_MEM NODELIST (REASON) 
+   JOBID     USER      ACCOUNT           NAME  ST START_TIME        TIME_LEFT NODES CPUS   GRES MIN_MEM NODELIST (REASON) RESULT_TIME
  8717345     cjwu def-banire_c jv2-20-ath100t  PD N/A                10:00:00     1    1 (null) 115000M  (Resources) 
  8717350     cjwu def-banire_c jv2-20-ath100t  PD N/A                10:00:00     1    1 (null) 115000M  (Resources) 
  8717352     cjwu def-banire_c jv2-20-ath100t  PD N/A                10:00:00     1    1 (null) 115000M  (Resources) 
@@ -232,3 +233,31 @@ $ squeue -u cjwu
  8717404     cjwu def-banire_c jv2-20-ath100t  PD N/A                   10:00     1   64 (null) 115000M  (Resources) 
  8717407     cjwu def-banire_c jv2-20-ath100t  PD N/A                   10:00     1   64 (null) 115000M  (Resources) 
  8717408     cjwu def-banire_c jv2-20-ath100t  PD N/A                   10:00     1   64 (null) 115000M  (Resources) 
+
+
+#=== wheat 11w time experiment
+tail -n 50 jobout/*ID*.out
+ $ squeue -u cjwu
+   JOBID     USER      ACCOUNT           NAME  ST START_TIME        TIME_LEFT NODES CPUS   GRES MIN_MEM NODELIST (REASON) 
+ 8718372     cjwu def-banire_c jv2-12-wheat-m  PD N/A              2-12:00:00     1    1 (null) 115000M  (Priority) 
+ 8718378     cjwu def-banire_c jv2-12-wheat-m  PD N/A              2-12:00:00     1    1 (null) 115000M  (Priority) 
+ 8718379     cjwu def-banire_c jv2-12-wheat-m  PD N/A              2-12:00:00     1    1 (null) 115000M  (Priority) 
+ 8718377     cjwu def-banire_c jv2-12-wheat-m  PD N/A              2-12:00:00     1    2 (null) 115000M  (Priority) 
+ 8718380     cjwu def-banire_c jv2-12-wheat-m  PD N/A              2-12:00:00     1    2 (null) 115000M  (Priority) 
+ 8718381     cjwu def-banire_c jv2-12-wheat-m  PD N/A              2-12:00:00     1    2 (null) 115000M  (Priority) 
+ 8718382     cjwu def-banire_c jv2-12-wheat-m  PD N/A              1-16:00:00     1    4 (null) 115000M  (Priority) 
+ 8718383     cjwu def-banire_c jv2-12-wheat-m  PD N/A              1-16:00:00     1    4 (null) 115000M  (Priority) 
+ 8718384     cjwu def-banire_c jv2-12-wheat-m  PD N/A              1-16:00:00     1    4 (null) 115000M  (Priority) 
+ 8718389     cjwu def-banire_c jv2-12-wheat-m  PD N/A                20:00:00     1    8 (null) 115000M  (Resources) 
+ 8718390     cjwu def-banire_c jv2-12-wheat-m  PD N/A                20:00:00     1    8 (null) 115000M  (Resources) 
+ 8718391     cjwu def-banire_c jv2-12-wheat-m  PD N/A                20:00:00     1    8 (null) 115000M  (Resources) 
+ 8718392     cjwu def-banire_c jv2-12-wheat-m  PD N/A                 6:00:00     1   16 (null) 115000M  (Resources) 
+ 8718397     cjwu def-banire_c jv2-12-wheat-m  PD N/A                 6:00:00     1   16 (null) 115000M  (Resources) 
+ 8718398     cjwu def-banire_c jv2-12-wheat-m  PD N/A                 6:00:00     1   16 (null) 115000M  (Resources) 
+ 8718399     cjwu def-banire_c jv2-12-wheat-m  PD N/A                 6:00:00     1   32 (null) 115000M  (Resources) 
+ 8718401     cjwu def-banire_c jv2-12-wheat-m  PD N/A                 6:00:00     1   32 (null) 115000M  (Resources) 
+ 8718406     cjwu def-banire_c jv2-12-wheat-m  PD N/A                 6:00:00     1   32 (null) 115000M  (Resources) 
+ 8718408     cjwu def-banire_c jv2-12-wheat-m  PD N/A                 2:00:00     1   64 (null) 300000M  (Resources) 
+ 8718409     cjwu def-banire_c jv2-12-wheat-m  PD N/A                 2:00:00     1   64 (null) 300000M  (Resources) 
+ 8718411     cjwu def-banire_c jv2-12-wheat-m  PD N/A                 2:00:00     1   64 (null) 300000M  (Resources) 
+
