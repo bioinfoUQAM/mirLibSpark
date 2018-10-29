@@ -1,0 +1,263 @@
+2018-10-27
+
+tail -n 25 jobout/jv2-12-wheat-mirL11500M1n32pn-181022-8646038.out  #= v1, 0h57 begin (report=0), 3h10 mergeProfileChromo_rdd
+tail -n 25 jobout/jv2-12-wheat-mirL11500M1n32pn-181022-8662197.out  #= v2, 9h58 begin (report=1), 13h02 pre_fold_rdd, Run time 03h29m38s, OUT OF MEMORY
+tail -n 25 jobout/jv2-12-wheat-mirL11500M1n32pn-181022-8662267.out  #= v3, 11h51 begin (report=0),13h46 pre_vld_rdd,  Run time 02h06m34s, OUT_OF_MEMORY
+
+x tail -n 50 jobout/jv2-12-wheat-mirL11500M1n32pn-181022-8646038.out #= TIME OUT
+
+
+#= test repartition
+
+ $ sbatch pyspark_submit_jv2_12_wheat032.sh 
+Submitted batch job 8670619
+
+ $ sbatch pyspark_submit_jv2_12_wheat016.sh 
+Submitted batch job 8670642
+
+
+$ squeue -u cjwu
+   JOBID     USER      ACCOUNT           NAME  ST START_TIME        TIME_LEFT NODES CPUS   GRES MIN_MEM NODELIST (REASON) 
+ 8646038     cjwu def-banire_c jv2-12-wheat-m   R 2018-10-27T00:56    5:49:41     1   32 (null) 115000M gra661 (None) 
+ 8670619     cjwu def-banire_c jv2-12-wheat-m   R 2018-10-27T15:06   19:59:01     1   32 (null) 115000M gra675 (None) 
+ 8670642     cjwu def-banire_c jv2-12-wheat-m  PD N/A              1-06:00:00     1   16 (null) 115000M  (Resources) 
+ 8668419     cjwu def-banire_c jv2-12-wheat-m  PD 2018-10-28T08:50 1-06:00:00     1   16 (null) 115000M  (Resources) 
+
+x tail -n 20 jobout/jv2-12-wheat-mirL11500M1n32pn-181022-8670619.out
+
+
+
+ $ squeue -u cjwu
+   JOBID     USER      ACCOUNT           NAME  ST START_TIME        TIME_LEFT NODES CPUS   GRES MIN_MEM NODELIST (REASON) 
+ 8675038     cjwu def-banire_c jv2-20-ath100t   R 2018-10-27T18:14      23:17     1   32 (null) 115000M gra413 (None) 
+ 8646038     cjwu def-banire_c jv2-12-wheat-m   R 2018-10-27T00:56    2:35:33     1   32 (null) 115000M gra661 (None) 
+ 8674968     cjwu def-banire_c jv2-12-wheat-m   R 2018-10-27T17:56   19:35:17     1   32 (null) 115000M gra404 (None) 
+ 8674969     cjwu def-banire_c jv2-12-wheat-m   R 2018-10-27T17:56   19:35:17     1   32 (null) 115000M gra405 (None) 
+ 8674970     cjwu def-banire_c jv2-12-wheat-m   R 2018-10-27T17:56   19:35:17     1   32 (null) 115000M gra407 (None) 
+ 8675110     cjwu def-banire_c jv2-20-ath100t  PD N/A                   30:00     1   32 (null) 115000M  (Resources)
+
+
+#= 8675038 some repartition, which made wheat 2h20m
+Lib 100 0:03:28.329542  208.330
+Lib high_conf_mature_ath_uniq_raw       0:00:52.657612  52.658
+Lib neg_ath1000 0:00:51.581872  51.582
+
+
+#===================================================
+#===================================================
+#= 8675110   3 more repartition added
+Lib 100 0:03:46.258992  226.259
+Lib high_conf_mature_ath_uniq_raw       0:01:05.680962  65.681
+Lib neg_ath1000 0:01:10.211846  70.212
+
+
+x tail -n 20 jobout_ath_experiment/jv2-20-ath100txt-mirL-181022-8675283.out #= 224 secs #=mv: cannot move '/home/cjwu/project/cjwu/gitRepo/mirLibSpark/output/local-1540681023315' to a subdirectory of itself, '/home/cjwu/project/cjwu/gitRepo/mirLibSpark/output/local-1540681023315/local-1540681023315'
+x tail -n 20 jobout_ath_experiment/jv2-20-ath100txt-mirL-181022-8675284.out #= 228 secs #= mv
+
+x tail -n 50 jobout/jv2-12-wheat-mirL11500M1n32pn-181022-8674968.out #= ERROR No such file or directory: '../tmp/mdup_1917.txt'
+x tail -n 50 jobout/jv2-12-wheat-mirL11500M1n32pn-181022-8674969.out #= ERROR No such file or directory: '../tmp/mdup
+x tail -n 50 jobout/jv2-12-wheat-mirL11500M1n32pn-181022-8674970.out #= ERROR No such file or directory: '../tmp/mdup
+#===================================================
+#===================================================
+
+
+
+#= remove 2 reparitions
+x tail -n 50 jobout_ath_experiment/jv2-20-ath100txt-mirL-181022-8675413.out #= 254 secs
+x tail -n 50 jobout_ath_experiment/jv2-20-ath100txt-mirL-181022-8675414.out #= 254 secs
+
+#= remove one more repartition
+x tail -n 50 jobout_ath_experiment/jv2-20-ath100txt-mirL-181022-8675534.out #=205 secs #= NB=59
+x tail -n 50 jobout_ath_experiment/jv2-20-ath100txt-mirL-181022-8675536.out #=213 secs
+
+x tail -n 50 jobout/jv2-12-wheat-mirL11500M1n32pn-181022-8675578.out #= Lib 11w2013_t2_1	2:15:47.144947	8147.14; error after precursorvis, likely because of rm tmp/*
+x tail -n 50 jobout/jv2-12-wheat-mirL11500M1n32pn-181022-8675579.out #= Lib 11w2013_t2_1	2:11:10.519019	7870.519; total running time:  2:35:44.171793
+
+
+#= rep_tmp = project_path + '/tmp/'
+x tail -n 50 jobout/jv2-12-wheat-mirL11500M1n32pn-181022-8676177.out #= Lib 11w2013_t2_1	2:15:09.342930	8109.343; error miranda tmp/
+x tail -n 50 jobout/jv2-12-wheat-mirL11500M1n32pn-181022-8676178.out #= Lib 11w2013_t2_1	2:10:18.670162	7818.670
+
+#= rep_tmp = '../tmp/', inactivate rm tmp/*
+x tail -n 50 jobout/jv2-13-wheat-mirL11500M1n32pn-181027-8677142.out #= ERROR No such file or directory: '../tmp/mdup
+x tail -n 50 jobout_ath_experiment/jv2-20-ath100txt-mirL-181022-8677410.out #= ok, 206 secs
+
+#= rm repartition line 433
+x tail -n 50 jobout_ath_experiment/jv2-20-ath100txt-mirL-181022-8679393.out #= Lib 100	0:03:24.348837	204.349 #= NB=62
+
+#= broadcastVar_dict_bowtie_chromo_strand
+x tail -n 50 jobout_ath_experiment/jv2-20-ath100txt-mirL-181022-8679928.out #= Lib 100	0:03:22.322349	202.322 #= NB=62
+x tail -n 50 jobout/jv2-12-wheat-mirL11500M1n32pn-181022-8680118.out #= Lib 11w2013_t2_1	2:07:11.083799	7631.084 #=NB = 297
+
+#= add back repartition line 433 because I think it is needed after reading blogs
+x tail -n 50 jobout_ath_experiment/jv2-20-ath100txt-mirL-181022-8681346.out #= Lib 100	0:03:24.194691	204.195 #= NB=59 #= total 12m50s (include post processing)
+x tail -n 50 jobout/jv2-12-wheat-mirL11500M1n32pn-181022-8681347.out #= Lib 11w2013_t2_1	2:12:37.514462	7957.514 #= NB= 302
+
+
+#= change output/ to output/appId/
+x tail -n 50 jobout_ath_experiment/jv2-20-ath100txt-mirL-181022-8681875.out #= ok
+x ls ../output/local-1540698013627/  #= ok
+
+
+#= improve script style
+x tail -n 50 jobout_ath_experiment/jv2-20-ath100txt-mirL-181022-8682742.out #= ok
+
+
+
+2018-10-28
+
+
+#= profile_keyvalue_rdd.persist(), line 428-9
+x tail -n 50 jobout_ath_experiment/jv2-20-ath100txt-mirL-181022-8683515.out #= Lib 100	0:03:25.761389	205.761
+x tail -n 50 jobout/jv2-12-wheat-mirL11500M1n32pn-181022-8683525.out #= Lib 11w2013_t2_1	2:12:37.556303	7957.556 #= total running time:  2:37:14
+
+#= dict_bowtie_chromo_strand[chromo_strand][poschr] += freq (line 343 mirLibRules.py) 
+x tail -n 50 jobout_ath_experiment/jv2-20-ath100txt-mirL-181022-8684137.out #= Lib 100	0:03:25.422023	205.422 #= NB = 54
+
+#= rm line433 repartition, because I still do not feel it is needed.
+(a) 8687216 wheat cpu = 1 x 32 x 1
+(b) 8687332 wheat cpu = 1 x 8 x 4
+
+x tail -n 50 jobout/jv2-12-wheat-mirL11500M1n32pn-181022-8687216.out #= Lib 11w2013_t2_1	2:07:53.783054	7673.78, total running time:  2:27:00.258537 #= NB=244
+x tail -n 50 jobout/jv2-13-wheat-mirL11500M1n32pn-181027-8687332.out #= Lib 11w2013_t2_1	2:20:35.621689	8435.622, total running time:  2:39:20.629176 #= NB=244
+
+(b) is slower than (a)
+
+#= revert
+ [(HEAD detached at b83f591)] cjwu [~/project/cjwu/gitRepo/mirLibSpark/workdir]
+x tail -n 50 jobout_ath_experiment/jv2-20-ath100txt-mirL-181022-8690199.out
+
+
+#= REVERT without any modification
+x tail -n 50 jobout_ath_experiment/jv2-20-ath100txt-mirL-181022-8692020.out #= ok
+x tail -n 50 jobout_ath_experiment/jv2-20-ath100txt-mirL-181022-8691724.out #= ok
+
+
+#= improve style
+x tail -n 50 jobout_ath_experiment/jv2-20-ath100txt-mirL-181022-8694338.out #= slower!! Lib 100	0:05:03.706422	303.706 
+
+#= REVERT with monir modification
+x tail -n 50 jobout_ath_experiment/jv2-20-ath100txt-mirL-181022-8697076.out #= Lib 100	0:03:24.749828	204.750 
+
+
+#=================
+#=
+#= MERGE appIdoutput with jmajor
+#=
+#=================
+
+#= use wheat 11w library to do time experiment
+64 cpu
+ $ sbatch pyspark_submit_jv2_12_wheat064.sh
+Submitted batch job 8697570
+
+16 cpu
+ $ sbatch pyspark_submit_jv2_12_wheat016.sh
+Submitted batch job 8697491
+
+8 cpu
+ $ sbatch pyspark_submit_jv2_12_wheat008.sh
+Submitted batch job 8697492
+
+4 cpu
+ $ sbatch pyspark_submit_jv2_12_wheat004.sh
+Submitted batch job 8697498
+
+2 cpu
+ $ sbatch pyspark_submit_jv2_12_wheat002.sh
+Submitted batch job 8697502
+
+1 cpu
+ $ sbatch pyspark_submit_jv2_12_wheat001.sh
+Submitted batch job 8697511
+
+
+   JOBID     USER      ACCOUNT           NAME  ST START_TIME        TIME_LEFT NODES CPUS   GRES MIN_MEM NODELIST (REASON) 
+ 8697492     cjwu def-banire_c jv2-12-wheat-m   R 2018-10-28T11:51   19:46:21     1    8 (null) 115000M gra812 (None) 
+ 8697498     cjwu def-banire_c jv2-12-wheat-m  PD N/A              1-16:00:00     1    4 (null) 115000M  (Priority) 
+ 8697502     cjwu def-banire_c jv2-12-wheat-m  PD N/A              2-12:00:00     1    2 (null) 115000M  (Priority) 
+ 8697511     cjwu def-banire_c jv2-12-wheat-m  PD N/A              2-12:00:00     1    1 (null) 115000M  (Priority) 
+ 8697570     cjwu def-banire_c jv2-12-wheat-m  PD N/A                 2:00:00     1   64 (null) 300000M  (Resources) 
+ 8697491     cjwu def-banire_c jv2-12-wheat-m  PD 2018-10-28T17:50    6:00:00     1   16 (null) 115000M  (Resources) 
+ 8700990     cjwu def-banire_c jv2-12-wheat-m  PD N/A                 6:00:00     1   32 (null) 115000M  (Resources)
+
+
+tail -n 50 jobout/jv2-12-wheat-mirL11500M1n08pn-181028-8697492.out #= out of memory, because ../tmp/
+tail -n 50 jobout/jv2-12-wheat-mirL11500M1n16pn-181028-8697491.out #= Lib 11w2013_t2_1	3:40:13.300419	13213.300 #= NB=243
+tail -n 50 jobout/jv2-12-wheat-mirL11500M1n32pn-181028-8700990.out #= Lib 11w2013_t2_1	2:06:02.622468	7562.622 #= NB=244
+
+
+#= sequential_wheat.py
+30 mins not enough
+#- unique job id
+ $ sbatch submit_sequential_wheat_test_v2.sh 
+tail -n 50 ../src/jobout_sequential/sequential-181028-8699673.out
+
+
+#= write to login node tmp files
+ $ sbatch pyspark_submit_jv2_12_wheat008.sh 
+Submitted batch job 8704160
+x tail -n 50 jobout/jv2-12-wheat-mirL11500M1n08pn-181028-8704160.out #= Lib 11w2013_t2_1	6:28:51.022760	23331.023 #= 244
+
+#= increase memory $ sbatch pyspark_submit_jv2_12_wheat008.sh #= --executor-memory 10000M
+Submitted batch job 8703799
+x tail -n 50 jobout/jv2-12-wheat-mirL11500M1n08pn-181028-8703799.out #= Lib 11w2013_t2_1	6:23:52.582280	23032.582 #= NB=244
+
+
+
+#=== ath 100.txt time experiment
+tail -n 50 jobout_ath_experiment/*ID*.out
+$ squeue -u cjwu
+   JOBID     USER      ACCOUNT           NAME  ST START_TIME        TIME_LEFT NODES CPUS   GRES MIN_MEM NODELIST (REASON) RESULT_TIME
+ 8717345     cjwu def-banire_c jv2-20-ath100t  PD N/A                10:00:00     1    1 (null) 115000M  (Resources) 
+ 8717350     cjwu def-banire_c jv2-20-ath100t  PD N/A                10:00:00     1    1 (null) 115000M  (Resources) 
+ 8717352     cjwu def-banire_c jv2-20-ath100t  PD N/A                10:00:00     1    1 (null) 115000M  (Resources) 
+ 8717355     cjwu def-banire_c jv2-20-ath100t  PD N/A                10:00:00     1    2 (null) 115000M  (Resources) 
+ 8717357     cjwu def-banire_c jv2-20-ath100t  PD N/A                10:00:00     1    2 (null) 115000M  (Resources) 
+ 8717360     cjwu def-banire_c jv2-20-ath100t  PD N/A                10:00:00     1    2 (null) 115000M  (Resources) 
+ 8717363     cjwu def-banire_c jv2-20-ath100t  PD N/A                10:00:00     1    3 (null) 115000M  (Resources) 
+ 8717365     cjwu def-banire_c jv2-20-ath100t  PD N/A                10:00:00     1    3 (null) 115000M  (Resources) 
+ 8717367     cjwu def-banire_c jv2-20-ath100t  PD N/A                10:00:00     1    3 (null) 115000M  (Resources) 
+ 8717371     cjwu def-banire_c jv2-20-ath100t  PD N/A                 3:00:00     1    4 (null) 115000M  (Resources) #= Lib 100	0:13:59.781305	839.781
+ 8717373     cjwu def-banire_c jv2-20-ath100t  PD N/A                 3:00:00     1    4 (null) 115000M  (Resources) #= Lib 100	0:13:56.026565	836.027
+ 8717374     cjwu def-banire_c jv2-20-ath100t  PD N/A                 3:00:00     1    4 (null) 115000M  (Resources) #= Lib 100	0:13:57.480079	837.480
+ 8717378     cjwu def-banire_c jv2-20-ath100t  PD N/A                 1:30:00     1    8 (null) 115000M  (Resources) #= Lib 100	0:08:20.643353	500.643
+ 8717380     cjwu def-banire_c jv2-20-ath100t  PD N/A                 1:30:00     1    8 (null) 115000M  (Resources) #= Lib 100	0:08:30.395033	510.395
+ 8717382     cjwu def-banire_c jv2-20-ath100t  PD N/A                 1:30:00     1    8 (null) 115000M  (Resources) #= Lib 100	0:08:13.135192	493.135
+ 8717385     cjwu def-banire_c jv2-20-ath100t  PD N/A                 1:00:00     1   16 (null) 115000M  (Resources) #= Lib 100	0:04:16.832545	256.833 
+ 8717387     cjwu def-banire_c jv2-20-ath100t  PD N/A                 1:00:00     1   16 (null) 115000M  (Resources) #= Lib 100	0:04:50.507933	290.508 
+ 8717389     cjwu def-banire_c jv2-20-ath100t  PD N/A                 1:00:00     1   16 (null) 115000M  (Resources) #= Lib 100	0:04:24.875275	264.875
+ 8717392     cjwu def-banire_c jv2-20-ath100t  PD N/A                   30:00     1   32 (null) 115000M  (Resources) 
+ 8717396     cjwu def-banire_c jv2-20-ath100t  PD N/A                   30:00     1   32 (null) 115000M  (Resources) 
+ 8717399     cjwu def-banire_c jv2-20-ath100t  PD N/A                   30:00     1   32 (null) 115000M  (Resources) 
+ 8717404     cjwu def-banire_c jv2-20-ath100t  PD N/A                   10:00     1   64 (null) 115000M  (Resources) 
+ 8717407     cjwu def-banire_c jv2-20-ath100t  PD N/A                   10:00     1   64 (null) 115000M  (Resources) 
+ 8717408     cjwu def-banire_c jv2-20-ath100t  PD N/A                   10:00     1   64 (null) 115000M  (Resources) 
+
+
+#=== wheat 11w time experiment
+tail -n 50 jobout/*ID*.out
+ $ squeue -u cjwu
+   JOBID     USER      ACCOUNT           NAME  ST START_TIME        TIME_LEFT NODES CPUS   GRES MIN_MEM NODELIST (REASON) 
+ 8718372     cjwu def-banire_c jv2-12-wheat-m  PD N/A              2-12:00:00     1    1 (null) 115000M  (Priority) 
+ 8718378     cjwu def-banire_c jv2-12-wheat-m  PD N/A              2-12:00:00     1    1 (null) 115000M  (Priority) 
+ 8718379     cjwu def-banire_c jv2-12-wheat-m  PD N/A              2-12:00:00     1    1 (null) 115000M  (Priority) 
+ 8718377     cjwu def-banire_c jv2-12-wheat-m  PD N/A              2-12:00:00     1    2 (null) 115000M  (Priority) 
+ 8718380     cjwu def-banire_c jv2-12-wheat-m  PD N/A              2-12:00:00     1    2 (null) 115000M  (Priority) 
+ 8718381     cjwu def-banire_c jv2-12-wheat-m  PD N/A              2-12:00:00     1    2 (null) 115000M  (Priority) 
+ 8718382     cjwu def-banire_c jv2-12-wheat-m  PD N/A              1-16:00:00     1    4 (null) 115000M  (Priority) 
+ 8718383     cjwu def-banire_c jv2-12-wheat-m  PD N/A              1-16:00:00     1    4 (null) 115000M  (Priority) 
+ 8718384     cjwu def-banire_c jv2-12-wheat-m  PD N/A              1-16:00:00     1    4 (null) 115000M  (Priority) 
+ 8718389     cjwu def-banire_c jv2-12-wheat-m  PD N/A                20:00:00     1    8 (null) 115000M  (Resources) 
+ 8718390     cjwu def-banire_c jv2-12-wheat-m  PD N/A                20:00:00     1    8 (null) 115000M  (Resources) 
+ 8718391     cjwu def-banire_c jv2-12-wheat-m  PD N/A                20:00:00     1    8 (null) 115000M  (Resources) 
+ 8718392     cjwu def-banire_c jv2-12-wheat-m  PD N/A                 6:00:00     1   16 (null) 115000M  (Resources) 
+ 8718397     cjwu def-banire_c jv2-12-wheat-m  PD N/A                 6:00:00     1   16 (null) 115000M  (Resources) 
+ 8718398     cjwu def-banire_c jv2-12-wheat-m  PD N/A                 6:00:00     1   16 (null) 115000M  (Resources) 
+ 8718399     cjwu def-banire_c jv2-12-wheat-m  PD N/A                 6:00:00     1   32 (null) 115000M  (Resources) 
+ 8718401     cjwu def-banire_c jv2-12-wheat-m  PD N/A                 6:00:00     1   32 (null) 115000M  (Resources) 
+ 8718406     cjwu def-banire_c jv2-12-wheat-m  PD N/A                 6:00:00     1   32 (null) 115000M  (Resources) 
+ 8718408     cjwu def-banire_c jv2-12-wheat-m  PD N/A                 2:00:00     1   64 (null) 300000M  (Resources) 
+ 8718409     cjwu def-banire_c jv2-12-wheat-m  PD N/A                 2:00:00     1   64 (null) 300000M  (Resources) 
+ 8718411     cjwu def-banire_c jv2-12-wheat-m  PD N/A                 2:00:00     1   64 (null) 300000M  (Resources) 
+

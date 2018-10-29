@@ -79,11 +79,12 @@ if __name__ == '__main__' :
   project_path = paramDict['project_path'][:-1]
   rep_input = paramDict['input_path']
   rep_output = paramDict['output_path'] + '/' + appId + '/'
-  rep_tmp = '../tmp' + appId + '/'
+  #rep_tmp = '../tmp' + appId + '/' #= do not write files in worker node, eventually it reduces your useable memory.
+  rep_tmp = project_path + '/tmp' + '/' + appId + '/'
 
   #= print appId to a file
-  outfile = project_path + '/appId.txt'
-  with open (outfile, 'w') as fh: print(appId, file=fh) 
+  #outfile = project_path + '/appId.txt'
+  #with open (outfile, 'w') as fh: print(appId, file=fh) 
 
   #= genome
   genome_path = paramDict['genome_path'] 

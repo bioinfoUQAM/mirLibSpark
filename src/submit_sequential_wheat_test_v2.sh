@@ -1,9 +1,9 @@
 #!/bin/bash
-#SBATCH --job-name=sequential-181024
+#SBATCH --job-name=sequential-181028
 #SBATCH --account=def-banire
 #SBATCH --time=20:30:00
 #SBATCH --nodes=1
-#SBATCH --mem=5000M
+#SBATCH --mem=64000M
 #SBATCH --cpus-per-task=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --error=jobout_sequential/%x-%j.err
@@ -20,5 +20,5 @@ module load bowtie/1.1.2
 module load blast+/2.6.0
 
 
-time python sequential.py
+time python sequential_wheat.py
 

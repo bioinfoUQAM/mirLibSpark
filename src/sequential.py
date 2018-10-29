@@ -47,7 +47,7 @@ genome_path = '../dbs/ATH_TAIR10/Genome/'
 bowtie_index = '../dbs/ATH_TAIR10/bowtie_index/All/ATH_TAIR10'
 pri_l_flank = 500 #20
 pri_r_flank = 200 #160
-pre_flank = 30
+pre_flank = 10
 
 genome = ut.getGenome(genome_path, ".fa")
 extr_obj = mru.extract_precurosrs (genome, pri_l_flank, pri_r_flank, pre_flank)

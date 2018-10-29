@@ -4,8 +4,8 @@
 #SBATCH --time=00:30:00
 #SBATCH --nodes=1
 #SBATCH --mem=115000M
-#SBATCH --cpus-per-task=8
-#SBATCH --ntasks-per-node=4
+#SBATCH --cpus-per-task=32
+#SBATCH --ntasks-per-node=1
 #SBATCH --error=jobout_ath_experiment/%x-%j.err
 #SBATCH --output=jobout_ath_experiment/%x-%j.out
 #SBATCH --mail-user=g39103001@gm.ym.edu.tw
