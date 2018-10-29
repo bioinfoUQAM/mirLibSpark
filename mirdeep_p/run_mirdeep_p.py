@@ -18,10 +18,13 @@ import os
 import time
 from os import listdir
 
-project_path = '/home/cjwu/project/cjwu/gitRepo/mirLibSpark/mirdeep_p/'
+#project_path = '/home/cjwu/project/cjwu/gitRepo/mirLibSpark'
+project_path = '/home/cloudera/workspace/mirLibSpark'
+
+mirdeep_path = project_path + '/mirdeep_p/'
 
 
-rep_input = '../input_mirdeep/'
+rep_input = project_path + '/input_mirdeep/'
 
 options = ['tair9', 'tair10']
 len_pri = '250' #'700'
@@ -39,7 +42,7 @@ def loadModule_graham ():
 
 def convert_raw_to_fasta500 (infile, rep_input):
   inBasename = os.path.splitext(infile)[0]
-  outfile = '../tmp/' + inBasename + '.fa'
+  outfile = project_path + '/tmp/' + inBasename + '.fa'
   fh_out = open (outfile, 'w')
   nb = 0
   with open (rep_input + infile, 'r') as fh:
@@ -53,29 +56,29 @@ def convert_raw_to_fasta500 (infile, rep_input):
   return outfile
 
 def init_mirdeep_p (op):
-  os.system('cp miRDP1.3/* .')
-  os.system('mkdir bowtie-index 2>/dev/null')
+  os.system('cp ' + mirdeep_path + 'miRDP1.3/* .')
+  os.system('mkdir ' + mirdeep_path + 'bowtie-index 2>/dev/null')
   if op == options[0]:
     genome = 'TAIR9_genome.fa'
-    rep = 'tair9/'
+    rep = mirdeep_path + 'tair9/'
     f_annotated = 'annotated_miRNA_extended.fa'
     #os.system('bowtie-build -f ' + genome + ' bowtie-index/' + genome[:-3] + ' >/dev/null') 
     os.system('cp ' + rep + 'ath.gff .')#= miRBase v15
     #os.system('cp ' + rep + 'annotated_miRNA_extended.fa .')
-    os.system('cp genome/' + genome + ' .')
+    os.system('cp ' + mirdeep_path + 'genome/' + genome + ' .')
     os.system('cp ' + rep + 'ncRNA_CDS.gff .')#
     os.system('cp ' + rep + 'chromosome_length .')#
     os.system('perl fetch_extended_precursors.pl ' + genome + ' ath.gff3.edited >' + f_annotated)
     os.system('bowtie-build -f annotated_miRNA_extended.fa bowtie-index/annotated_miRNA_extended.fa >/dev/null')
   elif op == options[1]:
     genome = 'ATH_TAIR10.fa'
-    rep = 'tair10/'
+    rep = mirdeep_path + 'tair10/'
     f_annotated = 'annotated_miRNA_v21_extended.fa'
     #os.system('bowtie-build -f ' + genome + ' bowtie-index/' + genome[:-3] + ' >/dev/null') 
-    os.system('cp ../dbs/ATH_TAIR10/bowtie_index/All/*.ebwt bowtie-index/')
+    os.system('cp ' + project_path + '/dbs/ATH_TAIR10/bowtie_index/All/*.ebwt bowtie-index/')
     os.system('cp ' + rep + 'ath.gff3.edited .')#= miRBase v21
     os.system('cp ' + rep + 'annotated_miRNA_v21_extended.fa .')
-    os.system('cp genome/' + genome + ' .')
+    os.system('cp ' + mirdeep_path + 'genome/' + genome + ' .')
     os.system('cp ' + rep + 'ncRNA_CDS.gff .')#
     os.system('cp ' + rep + 'chromosome_length .')#
     #os.system('perl fetch_extended_precursors.pl ' + genome + ' ath.gff3.edited >' + f_annotated)
