@@ -69,3 +69,26 @@ CPU Efficiency: 39.78% of 20:30:28 core-walltime
 Job Wall-clock time: 20:30:28
 Memory Utilized: 15.31 GB
 Memory Efficiency: 24.50% of 62.50 GB
+
+Job ID: 8718391
+Cluster: graham
+User/Group: cjwu/cjwu
+State: TIMEOUT (exit code 0)
+Nodes: 1
+Cores per node: 8
+CPU Utilized: 15:45:44
+CPU Efficiency: 9.85% of 6-16:03:04 core-walltime
+Job Wall-clock time: 20:00:23
+Memory Utilized: 57.26 GB
+Memory Efficiency: 50.99% of 112.30 GB
+
+Job ID: 8730538
+Cluster: graham
+User/Group: cjwu/cjwu
+State: COMPLETED (exit code 0)
+Cores: 1
+CPU Utilized: 02:46:12
+CPU Efficiency: 80.39% of 03:26:44 core-walltime
+Job Wall-clock time: 03:26:44
+Memory Utilized: 818.34 MB
+Memory Efficiency: 16.37% of 4.88 GB

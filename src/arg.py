@@ -11,6 +11,7 @@ import sys
 
 
 def find_project_path ():
+  import os
   cwd = os.getcwd()
   project_path = cwd.split('/mirLibSpark')[0] + '/mirLibSpark'
   return project_path
