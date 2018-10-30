@@ -29,6 +29,7 @@ from os import listdir
 #
 import utils as ut
 import mirLibRules as mru
+import arg
 
 #= 1: display intermediate rdd.count(), this makes the time longer
 #= 0: not reporting rdd.count() makes the time shorter
@@ -40,12 +41,10 @@ if __name__ == '__main__' :
     sys.stderr.write('Three arguments required\nUsage: spark-submit mirLibPipeline.py <path to paramfile> 2>/dev/null\n')
     sys.exit()
 
-  paramfile = sys.argv[1]
-  paramDict = ut.readParam (paramfile)
+  print('\nInitiating and verifying parameters ...')
+  paramDict = arg.init_params ()
   #= EXMAMINE OPTIONS 
-  print('\nVerifying parameters ...')
   print('============================================================\n')
-  ut.validate_options(paramDict)
   for k, v in sorted(paramDict.items()): print(k, ': ', v)
 
   #= spark configuration
@@ -53,11 +52,11 @@ if __name__ == '__main__' :
   appName = paramDict['sc_appname']                 #"mirLibSpark"
   mstrMemory = paramDict['sc_mstrmemory']           #"4g"
   execMemory = paramDict['sc_execmemory']           #"4g"
-  execCores = paramDict['sc_execcores']             #2
+  #execCores = paramDict['sc_execcores']             #2
   partition = int(paramDict['sc_partition'])
 
   #= Spark context
-  sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, execCores)
+  sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory)
 
   #= Spark application ID
   appId = str(sc.applicationId)

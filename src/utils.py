@@ -80,7 +80,7 @@ def find_RNAfold_path ():
   return path_RNAfold
 	  
 # Configure a spark context
-def pyspark_configuration(appMaster, appName, masterMemory, execMemory, execCores):
+def pyspark_configuration(appMaster, appName, masterMemory, execMemory):
   from pyspark import SparkConf, SparkContext
   myConf = SparkConf()
   myConf.setAppName(appName)  #= 'mirLibSpark'
