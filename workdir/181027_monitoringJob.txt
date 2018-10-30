@@ -312,4 +312,21 @@ Submitted batch job 8729424 #=  Lib 100	0:03:28.576746	208.577
 
 #= sequential.py 100.txt 
 $ sbatch sequential_submit.sh 
-Submitted batch job 8730538 
+Submitted batch job 8730538
+
+
+#= sequential, wheat, wall=100h
+ $ sbatch submit_sequential_wheat_test_v2.sh 
+Submitted batch job 8735554 
+
+#= wheat, using plantae model
+ $ sbatch pyspark_submit_jv2_12_wheat032_2.sh
+Submitted batch job 8735820
+
+
+
+
+#= corn, using ath model, high conf (75 elements)
+ $ sbatch pyspark_submit_jv2_20_zma032.sh 
+Submitted batch job 8735896
+tail -n 50 jobout_ath_experiment/*8735896*.out
