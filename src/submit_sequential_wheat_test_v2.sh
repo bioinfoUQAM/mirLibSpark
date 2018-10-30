@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=sequential-181028
 #SBATCH --account=def-banire
-#SBATCH --time=20:30:00
+#SBATCH --time=100:00:00
 #SBATCH --nodes=1
 #SBATCH --mem=64000M
 #SBATCH --cpus-per-task=1

@@ -18,9 +18,13 @@ import os
 import time
 from os import listdir
 
-#project_path = '/home/cjwu/project/cjwu/gitRepo/mirLibSpark'
-project_path = '/home/cloudera/workspace/mirLibSpark'
+def find_project_path ():
+  cwd = os.getcwd()
+  project_path = cwd.split('/mirLibSpark')[0] + '/mirLibSpark'
+  return project_path
 
+
+project_path = find_project_path ()
 mirdeep_path = project_path + '/mirdeep_p/'
 
 
