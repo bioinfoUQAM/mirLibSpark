@@ -190,7 +190,7 @@ if __name__ == '__main__' :
     inBasename = os.path.splitext(infile)[0] #= lib name
     infile = rep_input+infile
 
-    if input_type == 'd': #= fastq
+    if input_type == 'q': #= fastq
       infile = ut.convert_fastq_file_to_KeyValue(infile, rep_tmp, inBasename)
 
     print ("  Start of miRNA prediction...", end="\n")
@@ -210,23 +210,23 @@ if __name__ == '__main__' :
     if reporting == 1: print('NB distFile_rdd: ', distFile_rdd.count())#
 
     #= Unify different input formats to "seq freq" elements
-    if input_type == 'a': #= raw
+    if input_type == 'w': #= raw
     ## in : u'seq\tfreq'
     ## out: ('seq', freq)
       ## note that type_a does not need to collapse nor trim.
       collapse_rdd = distFile_rdd.map(lambda line: mru.rearrange_rule(line, '\t'))
     else:
-      if input_type == 'b': #= reads
+      if input_type == 'r': #= reads
       ## in : u'seq1', u'seq2', u'seq1'
       ## out: u'seq1', u'seq2', u'seq1'
         input_rdd = distFile_rdd
 
-      elif input_type == 'c': #= fasta
+      elif input_type == 'a': #= fasta
       ## in : u'>name1\nseq1', u'>name2\nseq2', u'>name3\nseq1'
       ## out: u'seq1', u'seq2', u'seq1'
         input_rdd = distFile_rdd.filter(lambda line: not line[0] == '>')
 
-      elif input_type == 'd': #= processed fastq
+      elif input_type == 'q': #= processed fastq
       ## in : u'seq\tquality'
       ## out: u'seq1', u'seq2', u'seq1'
         input_rdd = distFile_rdd.map(lambda word: word.split('\t')[0])
