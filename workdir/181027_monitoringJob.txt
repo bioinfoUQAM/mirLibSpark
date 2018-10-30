@@ -327,6 +327,11 @@ Submitted batch job 8735820
 
 
 #= corn, using ath model, high conf (75 elements)
+#= mirdup ath model
  $ sbatch pyspark_submit_jv2_20_zma032.sh 
 Submitted batch job 8735896
-tail -n 50 jobout_ath_experiment/*8735896*.out
+tail -n 50 jobout_ath_experiment/*8735896*.out #= NB= 26 #= Lib high_conf_mature_zma	0:04:36.580129	276.580
+
+#= mirdup plantae model
+ $ sbatch pyspark_submit_jv2_20_zma032.sh 
+Submitted batch job 8738500
