@@ -210,7 +210,7 @@ git log: commit 359b7925c70c9b12fbb7be5de3a2ec8d18d54c5c
 tail -n 50 jobout_ath_experiment/*ID*.out
 $ squeue -u cjwu
    JOBID     USER      ACCOUNT           NAME  ST START_TIME        TIME_LEFT NODES CPUS   GRES MIN_MEM NODELIST (REASON) RESULT_TIME
- 8717345     cjwu def-banire_c jv2-20-ath100t  PD N/A                10:00:00     1    1 (null) 115000M  (Resources) #= Lib 100 0:50:32.044056  3032.044
+ 8717345     cjwu def-banire_c jv2-20-ath100t  PD N/A                10:00:00     1    1 (null) 115000M  (Resources) #= Lib 100 0:50:32.044056  3032.044 #= 14.06 GB
  8717350     cjwu def-banire_c jv2-20-ath100t  PD N/A                10:00:00     1    1 (null) 115000M  (Resources) #= Lib 100 0:49:54.099411  2994.099
  8717352     cjwu def-banire_c jv2-20-ath100t  PD N/A                10:00:00     1    1 (null) 115000M  (Resources) #= Lib 100 0:48:35.257673  2915.258
  8717355     cjwu def-banire_c jv2-20-ath100t  PD N/A                10:00:00     1    2 (null) 115000M  (Resources) #= Lib 100 0:25:01.723834  1501.724
@@ -221,7 +221,7 @@ $ squeue -u cjwu
  8717367     cjwu def-banire_c jv2-20-ath100t  PD N/A                10:00:00     1    3 (null) 115000M  (Resources) #= Lib 100 0:17:59.295244  1079.295
  8717371     cjwu def-banire_c jv2-20-ath100t  PD N/A                 3:00:00     1    4 (null) 115000M  (Resources) #= Lib 100	0:13:59.781305	839.781
  8717373     cjwu def-banire_c jv2-20-ath100t  PD N/A                 3:00:00     1    4 (null) 115000M  (Resources) #= Lib 100	0:13:56.026565	836.027
- 8717374     cjwu def-banire_c jv2-20-ath100t  PD N/A                 3:00:00     1    4 (null) 115000M  (Resources) #= Lib 100	0:13:57.480079	837.480
+ 8717374     cjwu def-banire_c jv2-20-ath100t  PD N/A                 3:00:00     1    4 (null) 115000M  (Resources) #= Lib 100	0:13:57.480079	837.480 #= 12.03 GB
  8717378     cjwu def-banire_c jv2-20-ath100t  PD N/A                 1:30:00     1    8 (null) 115000M  (Resources) #= Lib 100	0:08:20.643353	500.643
  8717380     cjwu def-banire_c jv2-20-ath100t  PD N/A                 1:30:00     1    8 (null) 115000M  (Resources) #= Lib 100	0:08:30.395033	510.395
  8717382     cjwu def-banire_c jv2-20-ath100t  PD N/A                 1:30:00     1    8 (null) 115000M  (Resources) #= Lib 100	0:08:13.135192	493.135
@@ -230,7 +230,7 @@ $ squeue -u cjwu
  8717389     cjwu def-banire_c jv2-20-ath100t  PD N/A                 1:00:00     1   16 (null) 115000M  (Resources) #= Lib 100	0:04:24.875275	264.875
  8717392     cjwu def-banire_c jv2-20-ath100t  PD N/A                   30:00     1   32 (null) 115000M  (Resources) #= Lib 100 0:03:26.913134  206.913
  8717396     cjwu def-banire_c jv2-20-ath100t  PD N/A                   30:00     1   32 (null) 115000M  (Resources) #= Lib 100	0:03:55.032537	235.033
- 8717399     cjwu def-banire_c jv2-20-ath100t  PD N/A                   30:00     1   32 (null) 115000M  (Resources) #= Lib 100	0:03:24.050803	204.051
+ 8717399     cjwu def-banire_c jv2-20-ath100t  PD N/A                   30:00     1   32 (null) 115000M  (Resources) #= Lib 100	0:03:24.050803	204.051 #= 10.23 GB
  8717404     cjwu def-banire_c jv2-20-ath100t  PD N/A                   10:00     1   64 (null) 115000M  (Resources) 
  8717407     cjwu def-banire_c jv2-20-ath100t  PD N/A                   10:00     1   64 (null) 115000M  (Resources) 
  8717408     cjwu def-banire_c jv2-20-ath100t  PD N/A                   10:00     1   64 (null) 115000M  (Resources) 
@@ -249,15 +249,15 @@ tail -n 50 jobout/*ID*.out
  8718382     cjwu def-banire_c jv2-12-wheat-m  PD N/A              1-16:00:00     1    4 (null) 115000M  (Priority) 
  8718383     cjwu def-banire_c jv2-12-wheat-m  PD N/A              1-16:00:00     1    4 (null) 115000M  (Priority) 
  8718384     cjwu def-banire_c jv2-12-wheat-m  PD N/A              1-16:00:00     1    4 (null) 115000M  (Priority) 
- 8718389     cjwu def-banire_c jv2-12-wheat-m  PD N/A                20:00:00     1    8 (null) 115000M  (Resources) 
+ 8718389     cjwu def-banire_c jv2-12-wheat-m  PD N/A                20:00:00     1    8 (null) 115000M  (Resources) #= Lib 11w2013_t2_1	6:32:41.012157	23561.012 #= NB=244 #=  
  8718390     cjwu def-banire_c jv2-12-wheat-m  PD N/A                20:00:00     1    8 (null) 115000M  (Resources) #= ERROR around mirdup calling: pre_mirdup_rdd = pre_fold_rdd.zipWithIndex()
  8718391     cjwu def-banire_c jv2-12-wheat-m  PD N/A                20:00:00     1    8 (null) 115000M  (Resources) 
- 8718392     cjwu def-banire_c jv2-12-wheat-m  PD N/A                 6:00:00     1   16 (null) 115000M  (Resources) #= Lib 11w2013_t2_1	3:31:46.622734	12706.623
- 8718397     cjwu def-banire_c jv2-12-wheat-m  PD N/A                 6:00:00     1   16 (null) 115000M  (Resources) #= Lib 11w2013_t2_1	3:52:39.217317	13959.217
+ 8718392     cjwu def-banire_c jv2-12-wheat-m  PD N/A                 6:00:00     1   16 (null) 115000M  (Resources) #= Lib 11w2013_t2_1	3:31:46.622734	12706.623 #= 60.84 GB
+ 8718397     cjwu def-banire_c jv2-12-wheat-m  PD N/A                 6:00:00     1   16 (null) 115000M  (Resources) #= Lib 11w2013_t2_1	3:52:39.217317	13959.217 #= 63.01 GB
  8718398     cjwu def-banire_c jv2-12-wheat-m  PD N/A                 6:00:00     1   16 (null) 115000M  (Resources) #= Lib 11w2013_t2_1	3:49:20.443700	13760.444
  8718399     cjwu def-banire_c jv2-12-wheat-m  PD N/A                 6:00:00     1   32 (null) 115000M  (Resources) #= Lib 11w2013_t2_1        2:19:19.613830  8359.614
- 8718401     cjwu def-banire_c jv2-12-wheat-m  PD N/A                 6:00:00     1   32 (null) 115000M  (Resources) #= Lib 11w2013_t2_1        2:12:59.247738  7979.248
- 8718406     cjwu def-banire_c jv2-12-wheat-m  PD N/A                 6:00:00     1   32 (null) 115000M  (Resources) #= Lib 11w2013_t2_1        2:10:34.307753  7834.308
+ 8718401     cjwu def-banire_c jv2-12-wheat-m  PD N/A                 6:00:00     1   32 (null) 115000M  (Resources) #= Lib 11w2013_t2_1        2:12:59.247738  7979.248 #= 64.85 GB
+ 8718406     cjwu def-banire_c jv2-12-wheat-m  PD N/A                 6:00:00     1   32 (null) 115000M  (Resources) #= Lib 11w2013_t2_1        2:10:34.307753  7834.308 #= 59.27 GB
  8718408     cjwu def-banire_c jv2-12-wheat-m  PD N/A                 2:00:00     1   64 (null) 300000M  (Resources) 
  8718409     cjwu def-banire_c jv2-12-wheat-m  PD N/A                 2:00:00     1   64 (null) 300000M  (Resources) 
  8718411     cjwu def-banire_c jv2-12-wheat-m  PD N/A                 2:00:00     1   64 (null) 300000M  (Resources) 
@@ -289,7 +289,7 @@ miRDP duration:  162 sec
 #=
  [mirdeep] cjwu [~/project/cjwu/gitRepo/mirLibSpark/mirdeep_p]
  $ sbatch submit_runmirdeepp.sh
-Submitted batch job 8726491
+Submitted batch job 8726491 #= seff MEM=8.75 MB
 57
 75
 start processing neg_ath1000.txt
@@ -304,5 +304,12 @@ miRDP duration:  194 sec
 #= mem verbose
  [verbose] cjwu [~/project/cjwu/gitRepo/mirLibSpark/workdir]
  $ sbatch --mem-bind=verbose pyspark_submit_jv2_20_ath032.sh 
-Submitted batch job 8729424
+Submitted batch job 8729424 #=  Lib 100	0:03:28.576746	208.577
 
+#= mirdeep 100.txt
+8726964     cjwu def-banire_c runmirdeepp-18  PD N/A                20:00:00     1    1 (null)   5000M  (Resources)
+
+
+#= sequential.py 100.txt 
+$ sbatch sequential_submit.sh 
+Submitted batch job 8730538 
