@@ -35,7 +35,7 @@ def getOpt (parser):
                                wheatD: Aegilops_tauschii.ASM34733v1.\
                                Please use provided script to construct the dbs folder for selected species from ensembl-release40.')
     parser.add_argument('--input_type', default='w', choices=['raw', 'w', 'reads','r', 'fasta', 'a', 'fastq', 'q'])
-    parser.add_argument('--adapter', help='example = TGGAATTCTCGGGTGCCAAGGAACTC')
+    parser.add_argument('--adapter', default='no', help='example = TGGAATTCTCGGGTGCCAAGGAACTC')
     parser.add_argument('--bowtie_index_suffix')
     parser.add_argument('--genome_path')
     parser.add_argument('--b_index_path')
@@ -127,16 +127,16 @@ def getOpt (parser):
     #
     if args.bowtie_index_suffix == None: args.bowtie_index_suffix = bowtie_index_suffix
     #
-    key = 'dbs/' + args.bowtie_index_suffix + '/Genome/'
+    key = '/dbs/' + args.bowtie_index_suffix + '/Genome/'
     if args.genome_path == None: args.genome_path = args.project_path + key   
     # 
-    key = 'dbs/' + args.bowtie_index_suffix + '/bowtie_index/'
+    key = '/dbs/' + args.bowtie_index_suffix + '/bowtie_index/'
     if args.b_index_path == None: args.b_index_path = args.project_path + key   
     #= only ath is provided for know_non miRNA list
-    key = 'dbs/' + 'ATH_TAIR10' + '/TAIR10_ncRNA_CDS.gff'
+    key = '/dbs/' + 'ATH_TAIR10' + '/TAIR10_ncRNA_CDS.gff'
     if args.known_non_file == None: args.known_non_file = args.project_path + key   
     #
-    key = 'dbs/' + args.bowtie_index_suffix + '/' + filename1
+    key = '/dbs/' + args.bowtie_index_suffix + '/' + filename1
     if args.target_file == None: args.target_file = args.project_path + key
     #
     if args.perform_differnatial_analysis == True:
@@ -153,10 +153,10 @@ def getOpt (parser):
                           Exit the program.')
         sys.exit()
     #
-    key = 'dbs/' + args.bowtie_index_suffix + '/' + filename2
+    key = '/dbs/' + args.bowtie_index_suffix + '/' + filename2
     if args.gene_vs_pathway_file == None: args.gene_vs_pathway_file = args.project_path + key
     #
-    key = 'dbs/' + args.bowtie_index_suffix + '/' + filename3
+    key = '/dbs/' + args.bowtie_index_suffix + '/' + filename3
     if args.pathway_description_file == None: args.pathway_description_file = args.project_path + key
     #
     if args.input_type == 'raw': args.input_type = 'w'
