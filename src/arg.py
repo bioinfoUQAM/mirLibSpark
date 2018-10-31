@@ -19,33 +19,34 @@ def find_project_path ():
 def getOpt (parser): 
     project_path = find_project_path ()
     #
+    parser.add_argument('--dummy', action='store_true')
     parser.add_argument('--message')
     parser.add_argument('--project_path', default = project_path)
     parser.add_argument('--input_path')
     parser.add_argument('--output_path')
     parser.add_argument('--species', default = 'ath',\
                          choices=['ath', 'wheat', 'corn', 'rice', 'potato', 'brome', 'wheatD'], \
-                         help='Please use provided script to construct the dbs folder for selected species from ensembl-release40.\
-                               ath: 	Arabidopsis_thaliana.TAIR10;\
+                         help='ath: 	Arabidopsis_thaliana.TAIR10;\
                                wheat: 	Triticum_aestivum.IWGSC;\
                                corn: 	Zea_mays.AGPv4;\
                                rice: 	Oryza_sativa.IRGSP-1.0;\
                                potato: Solanum_tuberosum.SolTub_3.0;\
                                brome: 	Brachypodium_distachyon.Brachypodium_distachyon_v3.0;\
-                               wheatD: Aegilops_tauschii.ASM34733v1')
+                               wheatD: Aegilops_tauschii.ASM34733v1.\
+                               Please use provided script to construct the dbs folder for selected species from ensembl-release40.')
+    parser.add_argument('--input_type', default='w', choices=['raw', 'w', 'reads','r', 'fasta', 'a', 'fastq', 'q'])
+    parser.add_argument('--adapter', help='example = TGGAATTCTCGGGTGCCAAGGAACTC')
     parser.add_argument('--bowtie_index_suffix')
     parser.add_argument('--genome_path')
     parser.add_argument('--b_index_path')
     parser.add_argument('--known_non_file', help='Only ath is provided.')
     parser.add_argument('--chromosomes', choices=['All', 'split'], help='Only ath has options. Other species have only one default choice. Genomes larger than 1G are splitted by chromosomes, otherwise all choromsomes are in one file.')
     parser.add_argument('--target_file')
-    parser.add_argument('--perform_differnatial_analysis', default='no', choices=['yes', 'no'])
+    parser.add_argument('--perform_differnatial_analysis', action='store_true')
     parser.add_argument('--diffguide_file')
-    parser.add_argument('--perform_KEGGpathways_enrichment_analysis', default='no', choices=['yes', 'no'])
+    parser.add_argument('--perform_KEGGpathways_enrichment_analysis', action='store_true')
     parser.add_argument('--gene_vs_pathway_file')
     parser.add_argument('--pathway_description_file')
-    parser.add_argument('--input_type', default='w', choices=['raw', 'w', 'reads','r', 'fasta', 'a', 'fastq', 'q'])
-    parser.add_argument('--adapter', default='no', help='example = TGGAATTCTCGGGTGCCAAGGAACTC')
     parser.add_argument('--mirdup_model', default='thaliana.model',\
                          choices=['Viridiplantae.model', 'thaliana.model'])
     parser.add_argument('--limit_s_freq', default='10')
@@ -138,13 +139,15 @@ def getOpt (parser):
     key = 'dbs/' + args.bowtie_index_suffix + '/' + filename1
     if args.target_file == None: args.target_file = args.project_path + key
     #
-    if args.perform_differnatial_analysis == 'yes': 
+    if args.perform_differnatial_analysis == True:
+      args.perform_differnatial_analysis = 'yes' 
       if args.diffguide_file == None: 
         sys.stderr.write('diffguide_file is required for perform_differnatial_analysis.\n\
                           Exit the program.')
         sys.exit()
     #
-    if args.perform_KEGGpathways_enrichment_analysis == 'yes': 
+    if args.perform_KEGGpathways_enrichment_analysis == True:
+      args.perform_KEGGpathways_enrichment_analysis = 'yes'
       if args.perform_differnatial_analysis == 'no': 
         sys.stderr.write('perform_differnatial_analysis is required for perform_KEGGpathways_enrichment_analysis.\n\
                           Exit the program.')
@@ -165,6 +168,12 @@ def getOpt (parser):
     paramDict = vars(args)
     #= add additional parameters in dict
     paramDict['sc_appname'] = 'mirLibSpark'
+    if args.dummy == True:
+      for k, v in sorted(paramDict.items()): print(k, ': ', v)
+      print('============================================================\n')
+      sys.stderr.write('Display registered parameters.\n\
+                        Exit the program.')
+      sys.exit()
     return paramDict
 
 
