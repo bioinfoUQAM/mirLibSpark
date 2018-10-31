@@ -363,9 +363,11 @@ if __name__ == '__main__' :
     if reporting == 1: print('NB pri_mircheck_rdd: ', pri_mircheck_rdd.groupByKey().count())
     print(datetime.datetime.now(), 'pri_mircheck_rdd') #= BOTTLE NECK
 
+    slim_priseq_rdd = pri_mircheck_rdd.map(mru.slimrule)
+
 
     #= Filtering len(pre-mirna) < 301 nt
-    len300_rdd = pri_mircheck_rdd.filter(lambda e: (int(e[1][3][5]) - int(e[1][3][4])) < 301)
+    len300_rdd = slim_priseq_rdd.filter(lambda e: (int(e[1][3][5]) - int(e[1][3][4])) < 301)
     if reporting == 1: print('NB len300_rdd: ', len300_rdd.groupByKey().count())
     
 
