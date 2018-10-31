@@ -363,11 +363,9 @@ if __name__ == '__main__' :
     if reporting == 1: print('NB pri_mircheck_rdd: ', pri_mircheck_rdd.groupByKey().count())
     print(datetime.datetime.now(), 'pri_mircheck_rdd') #= BOTTLE NECK
 
-    slim_priseq_rdd = pri_mircheck_rdd.map(mru.slimrule)
-
 
     #= Filtering len(pre-mirna) < 301 nt
-    len300_rdd = slim_priseq_rdd.filter(lambda e: (int(e[1][3][5]) - int(e[1][3][4])) < 301)
+    len300_rdd = pri_mircheck_rdd.filter(lambda e: (int(e[1][3][5]) - int(e[1][3][4])) < 301)
     if reporting == 1: print('NB len300_rdd: ', len300_rdd.groupByKey().count())
     
 
@@ -451,13 +449,17 @@ if __name__ == '__main__' :
                                                      .persist()
       #================================================================================================================
       #================================================================================================================
-    if reporting == 1: print('NB mergeProfileChromo_rdd NON distinct: ', mergeProfileChromo_rdd.count())
-    print('NB mergeProfileChromo_rdd distinct: ', mergeProfileChromo_rdd.groupByKey().count()) #= always report the nb of final prediction
-    print(datetime.datetime.now(), 'mergeProfileChromo_rdd')
+
+    slim_rdd = mergeProfileChromo_rdd.map(mru.slimrule)
+
+
+    if reporting == 1: print('NB slim_rdd NON distinct: ', slim_rdd.count())
+    print('NB slim_rdd distinct: ', slim_rdd.groupByKey().count()) #= always report the nb of final prediction
+    print(datetime.datetime.now(), 'slim_rdd')
     
     #= collecting final miRNA predictions
-    libresults = mergeProfileChromo_rdd.collect()
-    print(datetime.datetime.now(), 'libresults=mergeProfileChromo_rdd.collect()')#= BOTTLE NECK
+    libresults = slim_rdd.collect()
+    print(datetime.datetime.now(), 'libresults=slim_rdd.collect()')#= BOTTLE NECK
 
     endLib = time.time() 
     timeDict[inBasename] = endLib - startLib
