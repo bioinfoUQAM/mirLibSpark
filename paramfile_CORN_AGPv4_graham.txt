@@ -50,8 +50,8 @@ genome_path=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/dbs/CORN_AGPv4/Genome/
 b_index_path=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/dbs/CORN_AGPv4/bowtie_index/
 bowtie_index_suffix=CORN_AGPv4
 #
-known_non_file=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/dbs/CORN_AGPv4/TAIR10_ncRNA_CDS.gff
-target_file=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/dbs/CORN_AGPv4/Arabidopsis_thaliana.TAIR10.cdna.all.fa
+known_non_file=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/dbs/ATH_TAIR10/TAIR10_ncRNA_CDS.gff
+target_file=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/dbs/ATH_TAIR10/Arabidopsis_thaliana.TAIR10.cdna.all.fa
 #
 perform_differnatial_analysis=no
 diffguide_file=/home/cjwu/project/cjwu/gitRepo/mirLibSpark/diffguide_zma.txt
@@ -69,8 +69,8 @@ adapter=none
 #
 #====================  Ideally, do not change the following parameters since they are already tuned.
 chromosomes=1,2,3,4,5,6,7,8,9,10,Mt,Pt
-#mirdup_model=Viridiplantae.model
-mirdup_model=thaliana.model
+mirdup_model=Viridiplantae.model
+#mirdup_model=thaliana.model
 #==================== 
 limit_s_freq=10
 limit_m_freq=100

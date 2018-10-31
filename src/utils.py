@@ -7,6 +7,10 @@ update: 2018-09-18
 version: 1.00.01
 
 support python3 print syntax
+
+
+#= 2018-10-28 note:
+find a time to refactor diff analysis and enrichment analysis, make them into objects
 '''
 from __future__ import print_function
 import os
@@ -37,10 +41,15 @@ def validate_options(paramDict):
   if perform_KEGGpathways_enrichment_analysis == 'yes' and perform_differnatial_analysis == 'no':
     sys.stderr.write("KEGG pathway enrichment analysis must be done after differential expression analysis.\nExit the program.")
     sys.exit()
+  
+  infiles = [f.split('.')[0] for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
+  if len(infiles) == 0: 
+    sys.stderr.write('ERROR: input file is missing')
+    sys.exit()
 
   #= verify if input folder contain all files requisted by diffguide file
   if perform_differnatial_analysis == 'yes':
-    infiles = [f.split('.')[0] for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
+
     #testInfiles = [f.split('.')[0] for f in infiles]
     diffguide, neededInfiles = __read_diffguide(diffguide_file)
     for infile in neededInfiles:
@@ -140,14 +149,17 @@ def convert_seq_freq_file_to_KeyValue(infile, outfile, v_sep):
   fh.close()
   fh_out.close()
 
-def convert_fastq_file_to_KeyValue(infile, outfile):
+def convert_fastq_file_to_KeyValue(infile, rep_tmp, inBasename):
   '''
   1: @SEQ_ID
   2: GATTTGGGGTTCAAAGCAGTATCGATCAAATAGTAAATCCATTTGTTCAACTCACAGTTT
   3: +
   4: !''*((((***+))%%%++)(%%%%).1***-+*''))**55CCF>>>>>>CCCCCCC65
+  outfile:
+  seq\tquality(4th line)
   '''
   fh = open (infile, 'r')
+  outfile = rep_tmp + inBasename + '.fastqKV'
   fh_out = open (outfile, 'w')
   i = 1
   for line in fh:
@@ -164,6 +176,7 @@ def convert_fastq_file_to_KeyValue(infile, outfile):
       continue
   fh.close()
   fh_out.close()
+  return outfile
 
 def find_str(s, char):
     ''' zero based indexing '''
@@ -177,26 +190,12 @@ def find_str(s, char):
             index += 1
     return -1000
 
-'''
-#ORIGINAL FUNCTION
-'''
-def trim_adapter__ (seq, ad):
-  while len(ad) > 0:
-    len_ad = len(ad)
-    if seq[-len_ad:] == ad:
-      seq = seq[:-len_ad]
-      return seq
-    ad = ad[:-1]
-  return seq
-
-'''
-#NEW FUNCTION
-'''
 def trim_adapter (seq, ad):
   '''
   example:  adapter ad =                  TGGAATTCTCGGGTGCCAAGGAACTC
             seq =        NTACCGATCTGAGCCATTGGAATTCTCGGGTGCCAAGGAACTCCAGTCACN
             return =     NTACCGATCTGAGCCAT
+  updated: 2018-10
   '''
   while len(ad) > 6:
     len_ad = len(ad)
@@ -237,7 +236,6 @@ def getChromosomeName (file):
         desc = line
         break
   fh.close()
-
   return desc.split()[0][1:]
 
 def getFastaSeq (file):
@@ -252,7 +250,6 @@ def getFastaSeq (file):
 def getGenome__ (genome_path, file_ext):
   ''' defunct '''
   genome = dict()
-  
   files = [each for each in os.listdir(genome_path) if each.endswith(file_ext)]
   for namefile in files :
     file = genome_path+namefile
@@ -271,8 +268,7 @@ def getGenome (genome_path, file_ext, chromosomeName='All'):
   genome = dict()
   if chromosomeName == 'All':
     files = [each for each in os.listdir(genome_path) if each.endswith(file_ext)]
-  else:
-    files = [ chromosomeName + file_ext ]
+  else: files = [ chromosomeName + file_ext ]
 
   for namefile in files :
     file = genome_path + namefile
@@ -421,9 +417,6 @@ def writeTimeLibToFile (timeDict, outfile, appId, paramDict):
  
   fh_out.close()
 
-###########################
-## WORK IN PROGRESS ==> precursor geno loci summary
-###########################
 def writeSummaryExpressionToFile (infiles, rep_output, appId):
   '''
   ## in : [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq]
@@ -569,7 +562,6 @@ def writeTargetsToFile (mirna_and_targets, rep_output, appId):
       if count < (topKscored +1) and target not in seen:
         targetcollect.append( target + ' ('+ str(score_cur).split('.')[0] +')' )
         seen.append(target)
-    #data = [mirnaseq, targetcollect[0], ','.join(targetcollect)]
     data = [mirnaseq, ','.join(targetcollect)]
     line = '\t'.join(data)
     print(line, file=fh_out2)
@@ -659,7 +651,6 @@ def __write_html (DATA, rep_output, appId):
     #mircheck = i[8:11]	
     strand = i[2]
  
-    #path = rep_output + appId + '_' + serial.zfill(4) + '_' + chromo + '_' + poschromo + '.jpg'
     path = appId + '_' + serial.zfill(4) + '_' + chromo + '_' + poschromo + '.jpg'
 
     l='  <tr>';print(l, file=fh_out)
@@ -688,9 +679,9 @@ def randomStrGen (n):
   return ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(n))
 
 def get_nonMirna_coors (infile):
-  #infile = '../dbs/TAIR10_ncRNA_CDS.gff'
+  #= infile = '../dbs/TAIR10_ncRNA_CDS.gff'
   idnb = 0
-  d_ncRNA_CDS = {} #= {1: ['+', 'Chr5', '26939753', '26939884'], 2: ['+', 'Chr5', '26939972', '26940240'], 3: ['+', 'Chr5', '26940312', '26940396'], 4: ['+', 'Chr5', '26940532', '26940578']}
+  d_ncRNA_CDS = {} #= {1: ['+', 'Chr5', '26939753', '26939884'], 2: ['+', 'Chr5', '26939972', '26940240'], 3: ['+', 'Chr5', '26940312', '26940396']}
   with open (infile, 'r') as fh:
     for i in fh:
       data = i.split('\t') #= ['Chr1', 'TAIR10', 'CDS', '3760', '3913', '.', '+', '0', 'Parent=AT1G01010.1,AT1G01010.1-Protein;\n']

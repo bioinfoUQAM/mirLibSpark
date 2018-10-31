@@ -1,0 +1,96 @@
+ $ seff 8718392
+Job ID: 8718392
+Cluster: graham
+User/Group: cjwu/cjwu
+State: COMPLETED (exit code 0)
+Nodes: 1
+Cores per node: 16
+CPU Utilized: 02:55:53
+CPU Efficiency: 4.56% of 2-16:13:52 core-walltime
+Job Wall-clock time: 04:00:52
+Memory Utilized: 60.84 GB
+Memory Efficiency: 54.17% of 112.30 GB
+
+
+Job ID: 8718406
+Cluster: graham
+User/Group: cjwu/cjwu
+State: COMPLETED (exit code 0)
+Nodes: 1
+Cores per node: 32
+CPU Utilized: 03:20:28
+CPU Efficiency: 4.17% of 3-08:01:36 core-walltime
+Job Wall-clock time: 02:30:03
+Memory Utilized: 59.27 GB
+Memory Efficiency: 52.78% of 112.30 GB
+
+Job ID: 8717399
+Cluster: graham
+User/Group: cjwu/cjwu
+State: COMPLETED (exit code 0)
+Nodes: 1
+Cores per node: 32
+CPU Utilized: 00:02:45
+CPU Efficiency: 0.72% of 06:22:56 core-walltime
+Job Wall-clock time: 00:11:58
+Memory Utilized: 10.23 GB
+Memory Efficiency: 9.11% of 112.30 GB
+
+Job ID: 8717374
+Cluster: graham
+User/Group: cjwu/cjwu
+State: COMPLETED (exit code 0)
+Nodes: 1
+Cores per node: 4
+CPU Utilized: 00:01:54
+CPU Efficiency: 1.06% of 02:59:40 core-walltime
+Job Wall-clock time: 00:44:55
+Memory Utilized: 12.03 GB
+Memory Efficiency: 10.71% of 112.30 GB
+
+Job ID: 8726491
+Cluster: graham
+User/Group: cjwu/cjwu
+State: COMPLETED (exit code 0)
+Cores: 1
+CPU Utilized: 00:03:16
+CPU Efficiency: 96.08% of 00:03:24 core-walltime
+Job Wall-clock time: 00:03:24
+Memory Utilized: 8.75 MB
+Memory Efficiency: 0.18% of 4.88 GB
+
+Job ID: 8699673
+Cluster: graham
+User/Group: cjwu/cjwu
+State: TIMEOUT (exit code 0)
+Cores: 1
+CPU Utilized: 08:09:31
+CPU Efficiency: 39.78% of 20:30:28 core-walltime
+Job Wall-clock time: 20:30:28
+Memory Utilized: 15.31 GB
+Memory Efficiency: 24.50% of 62.50 GB
+
+Job ID: 8718391
+Cluster: graham
+User/Group: cjwu/cjwu
+State: TIMEOUT (exit code 0)
+Nodes: 1
+Cores per node: 8
+CPU Utilized: 15:45:44
+CPU Efficiency: 9.85% of 6-16:03:04 core-walltime
+Job Wall-clock time: 20:00:23
+Memory Utilized: 57.26 GB
+Memory Efficiency: 50.99% of 112.30 GB
+
+Job ID: 8730538
+Cluster: graham
+User/Group: cjwu/cjwu
+State: COMPLETED (exit code 0)
+Cores: 1
+CPU Utilized: 02:46:12
+CPU Efficiency: 80.39% of 03:26:44 core-walltime
+Job Wall-clock time: 03:26:44
+Memory Utilized: 818.34 MB
+Memory Efficiency: 16.37% of 4.88 GB
+
+

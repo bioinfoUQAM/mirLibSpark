@@ -10,20 +10,17 @@ import os
 import utils as ut
 from operator import itemgetter
 
-#bin = '../lib/'
 bin = ''
 
+   
+def slimrule (e):
+  ## in: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq])
+  ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['slimmed',posMirPri,'slimmed', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq])
+  data = e[1][3]
+  data[0] = 'slimmed'
+  data[2] = 'slimmed'
+  return (e[0], [e[1][0], e[1][1], e[1][2], data, e[1][4], e[1][5]])
 
-
-def sort_DictBowtieCS_ (list_bowtie_chromo_strand):
-  ''' defuct '''
-  dict_bowtie_chromo_strand = {}
-  for i in list_bowtie_chromo_strand:
-    k = i[0]
-    v = i[1]
-    dict_bowtie_chromo_strand[k] = v.sort(key=lambda x: x[0])
-  return dict_bowtie_chromo_strand
-    
 def rearrange_rule(kv_arg, kv_sep):
   '''
   ## in : u'seq\tfreq'
@@ -337,7 +334,7 @@ class prog_dominant_profile () :
 
       if poschr not in dict_bowtie_chromo_strand[chromo_strand]:
         dict_bowtie_chromo_strand[chromo_strand][poschr] = freq
-      #else: dict_bowtie_chromo_strand[chromo_strand][poschr] += freq 
+      else: dict_bowtie_chromo_strand[chromo_strand][poschr] += freq 
     
     return dict_bowtie_chromo_strand
   
@@ -522,12 +519,8 @@ class prog_varna ():
 
 
   def __editing___run_VARNA_prog (self, preSEQ, preFOLD, miRNApos, title, filename):
-    #-highlightRegion "48-63:fill=#bcffdd;81-102:fill=#bcffdd"
-    cmd = 'java -cp ../lib/VARNAv3-93.jar fr.orsay.lri.varna.applications.VARNAcmd -sequenceDBN "'+ preSEQ +'" -structureDBN "' + preFOLD + '" -highlightRegion "'+ miRNApos + ':fill=#ff0000" -title "' + title + '" -o '+ filename +'.jpg'
-    # os.system(cmd)
-
+    ''' this does not work yet ''' 
     FNULL = open(os.devnull, 'w')
-
     cmd = ['java', '-cp', '../lib/VARNAv3-93.jar', 'fr.orsay.lri.varna.applications.VARNAcmd', '-sequenceDBN', '"' + preSEQ + '"', '-structureDBN', '"' + preFOLD + '"', '-highlightRegion', '"' + miRNApos + ':fill=#ff0000"', '-title', '"' + title + '"', '-o', filename + '.jpg']
     sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
     out = sproc.communicate() #= this line is essential!
