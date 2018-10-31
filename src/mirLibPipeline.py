@@ -449,13 +449,17 @@ if __name__ == '__main__' :
                                                      .persist()
       #================================================================================================================
       #================================================================================================================
-    if reporting == 1: print('NB mergeProfileChromo_rdd NON distinct: ', mergeProfileChromo_rdd.count())
-    print('NB mergeProfileChromo_rdd distinct: ', mergeProfileChromo_rdd.groupByKey().count()) #= always report the nb of final prediction
-    print(datetime.datetime.now(), 'mergeProfileChromo_rdd')
+
+    slim_rdd = mergeProfileChromo_rdd.map(mru.slimrule)
+
+
+    if reporting == 1: print('NB slim_rdd NON distinct: ', slim_rdd.count())
+    print('NB slim_rdd distinct: ', slim_rdd.groupByKey().count()) #= always report the nb of final prediction
+    print(datetime.datetime.now(), 'slim_rdd')
     
     #= collecting final miRNA predictions
-    libresults = mergeProfileChromo_rdd.collect()
-    print(datetime.datetime.now(), 'libresults=mergeProfileChromo_rdd.collect()')#= BOTTLE NECK
+    libresults = slim_rdd.collect()
+    print(datetime.datetime.now(), 'libresults=slim_rdd.collect()')#= BOTTLE NECK
 
     endLib = time.time() 
     timeDict[inBasename] = endLib - startLib
