@@ -69,6 +69,7 @@ def getOpt (parser):
     #
     args = parser.parse_args()
     #
+    args.project_path = args.project_path.rstrip('/')
     if args.input_path == None: args.input_path = args.project_path + '/input/'
     if args.output_path == None: args.output_path = args.project_path + '/output/'
     #

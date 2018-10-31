@@ -37,13 +37,8 @@ reporting = 0
 
 if __name__ == '__main__' :
 
-  if not len(sys.argv) == 2:
-    sys.stderr.write('Three arguments required\nUsage: spark-submit mirLibPipeline.py <path to paramfile> 2>/dev/null\n')
-    sys.exit()
-
   print('\nInitiating and verifying parameters ...')
   paramDict = arg.init_params ()
-  #= EXMAMINE OPTIONS 
   print('============================================================\n')
   for k, v in sorted(paramDict.items()): print(k, ': ', v)
 

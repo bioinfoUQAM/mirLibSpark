@@ -28,7 +28,7 @@ module load blast+/2.6.0
 pip install --user requests
 pip install --user -r requirements.txt
 
-export _JAVA_OPTIONS="-Xms3g -Xmx4g"
+export _JAVA_OPTIONS="-Xms2g -Xmx4g"
 export SPARK_IDENT_STRING=$SLURM_JOBID
 export SPARK_WORKER_DIR=$SLURM_TMPDIR
 start-all.sh
@@ -46,7 +46,8 @@ slaves_pid=$!
 #spark-submit --master ${MASTER_URL} --executor-memory ${SLURM_MEM_PER_NODE}M /home/cjwu/project/cjwu/gitRepo/mirLibSpark/workdir/pi.py 1000
 
 
-spark-submit --master ${MASTER_URL} --executor-memory ${SLURM_MEM_PER_NODE}M ../src/mirLibPipeline.py ../paramfile_WHEAT_IWGSC_graham.txt
+#spark-submit --master ${MASTER_URL} --executor-memory ${SLURM_MEM_PER_NODE}M ../src/mirLibPipeline.py ../paramfile_WHEAT_IWGSC_graham.txt
+spark-submit --master ${MASTER_URL} --executor-memory ${SLURM_MEM_PER_NODE}M ../src/mirLibPipeline.py --species wheat
 
 kill $slaves_pid
 stop-all.sh
