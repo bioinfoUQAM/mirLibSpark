@@ -92,3 +92,4 @@ CPU Efficiency: 80.39% of 03:26:44 core-walltime
 Job Wall-clock time: 03:26:44
 Memory Utilized: 818.34 MB
 Memory Efficiency: 16.37% of 4.88 GB
+

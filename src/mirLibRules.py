@@ -12,7 +12,16 @@ from operator import itemgetter
 
 bin = ''
 
-    
+
+   
+def slimrule (e):
+  ## in: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq])
+  ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['slimmed',posMirPri,'slimmed', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq])
+  data = e[1][3]
+  data[0] = 'slimmed'
+  data[2] = 'slimmed'
+  return (e[0], [e[1][0], e[1][1], e[1][2], data, e[1][4], e[1][5]])
+
 def rearrange_rule(kv_arg, kv_sep):
   '''
   ## in : u'seq\tfreq'

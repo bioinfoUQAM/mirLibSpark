@@ -318,3 +318,6 @@ tail -n 50 jobout_ath_experiment/*8735896*.out #= NB= 26 #= Lib high_conf_mature
 Submitted batch job 8738500
 
 
+#= rmPri
+8762942     cjwu def-banire_c jv2-20-ath100t  PD N/A                   30:00     1   32 (null) 115000M  (Resources)  #= Lib 100	0:03:27.431855	207.432 #= 10.07 GB #= NB=54
+

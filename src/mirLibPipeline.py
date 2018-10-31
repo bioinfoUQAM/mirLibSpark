@@ -201,7 +201,7 @@ if __name__ == '__main__' :
     if distFile_rdd.isEmpty():
       print(infile, 'is an empty file, omit this file')
       continue
-    if reporting == 1: print('NB distFile_rdd: ', distFile_rdd.count())#
+    if reporting == 1: print(datetime.datetime.now(), 'NB distFile_rdd: ', distFile_rdd.count())#
 
     #= Unify different input formats to "seq freq" elements
     if input_type == 'w': #= raw
@@ -240,14 +240,14 @@ if __name__ == '__main__' :
     ## in : ('seq', freq)
     ## out: ('seq', freq)
     sr_low_rdd = collapse_rdd.filter(lambda e: int(e[1]) > limit_srna_freq)
-    if reporting == 1: print('NB sr_low_rdd: ', sr_low_rdd.count())
+    if reporting == 1: print(datetime.datetime.now(), 'NB sr_low_rdd: ', sr_low_rdd.count())
+
     
     #= Filtering short length
     ## in : ('seq', freq)
     ## out: ('seq', freq)
     sr_short_rdd = sr_low_rdd.filter(lambda e: len(e[0]) > limit_len).persist()  # TO KEEP IT, reused in bowFrq_rdd 
-    if reporting == 1: print('NB sr_short_rdd: ', sr_short_rdd.count())
-
+    if reporting == 1: print(datetime.datetime.now(), 'NB sr_short_rdd: ', sr_short_rdd.count())
     
     #= Filtering with DustMasker
     ## in : ('seq', freq)
@@ -257,7 +257,8 @@ if __name__ == '__main__' :
                             .filter(lambda e: e.isupper() and not e.startswith('>'))\
                             .map(lambda e: str(e.rstrip()))\
                             .persist()
-    if reporting == 1: print('NB dmask_rdd: ', dmask_rdd.count())
+    if reporting == 1: print(datetime.datetime.now(), 'NB dmask_rdd: ', dmask_rdd.count())
+
 
     mergebowtie_rdd = sc.emptyRDD()
     for i in range(len(chromosomes)):
@@ -279,7 +280,7 @@ if __name__ == '__main__' :
                                        .persist()
       #================================================================================================================
       #================================================================================================================
-    if reporting == 1: print('NB mergebowtie_rdd: ', mergebowtie_rdd.count())
+    if reporting == 1: print(datetime.datetime.now(), 'NB mergebowtie_rdd: ', mergebowtie_rdd.count())
     print(datetime.datetime.now(), 'mergebowtie_rdd')
 
     
@@ -289,25 +290,25 @@ if __name__ == '__main__' :
     bowFrq_rdd = mergebowtie_rdd.join(sr_short_rdd)\
                                 .map(bowtie_obj.bowtie_freq_rearrange_rule)\
                                 .persist()
-    if reporting == 1: print('NB bowFrq_rdd: ', bowFrq_rdd.count())
+    if reporting == 1: print(datetime.datetime.now(), 'NB bowFrq_rdd: ', bowFrq_rdd.count())
 
     #= Filtering, keep miRNA length = 21, 22, 23, 24
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     mr_meyers2018len_rdd = bowFrq_rdd.filter(lambda e: len(e[0]) < 25 and len(e[0]) > 20)
-    if reporting == 1: print('NB mr_meyers2018len_rdd: ', mr_meyers2018len_rdd.count())
+    if reporting == 1: print(datetime.datetime.now(), 'NB mr_meyers2018len_rdd: ', mr_meyers2018len_rdd.count())
 
     #= Filtering miRNA low frequency
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     mr_low_rdd = mr_meyers2018len_rdd.filter(lambda e: e[1][0] > limit_mrna_freq)
-    if reporting == 1: print('NB mr_low_rdd: ', mr_low_rdd.count())
-    
+    if reporting == 1: print(datetime.datetime.now(), 'NB mr_low_rdd: ', mr_low_rdd.count())
+  
     #= Filtering high nbLocations and zero location
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     nbLoc_rdd = mr_low_rdd.filter(lambda e: e[1][1] > 0 and e[1][1] < limit_nbLoc)
-    if reporting == 1: print('NB nbLoc_rdd: ', nbLoc_rdd.count())
+    if reporting == 1: print(datetime.datetime.now(), 'NB nbLoc_rdd: ', nbLoc_rdd.count())
     
     #= Flatmap the RDD
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
@@ -319,7 +320,8 @@ if __name__ == '__main__' :
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr])
     excluKnownNon_rdd = flat_rdd.filter(kn_obj.knFilterByCoor)
-    if reporting == 1: print('excluKnownNon_rdd distinct: ', excluKnownNon_rdd.groupByKey().count())
+    if reporting == 1: print(datetime.datetime.now(), 'excluKnownNon_rdd distinct: ', excluKnownNon_rdd.groupByKey().count())
+
 
     mergeChromosomesResults_rdd = sc.emptyRDD()
     for i in range(len(chromosomes)):
@@ -338,7 +340,7 @@ if __name__ == '__main__' :
       broadcastVar_genome.unpersist()
       #================================================================================================================
       #================================================================================================================
-    if reporting == 1: print('NB mergeChromosomesResults: ', mergeChromosomesResults_rdd.groupByKey().count())
+    if reporting == 1: print(datetime.datetime.now(), 'NB mergeChromosomesResults: ', mergeChromosomesResults_rdd.groupByKey().count())
     print(datetime.datetime.now(), 'mergeChromosomesResults_rdd') #= BOTTLE NECK
     
     #= pri-miRNA folding
@@ -354,14 +356,14 @@ if __name__ == '__main__' :
                                    .map(lambda e: (e[0] + e[1][2][0] + e[1][2][1] + str(e[1][2][2]) + e[1][3][4] + e[1][3][5], e)  )\
                                    .reduceByKey(lambda a, b: a)\
                                    .map(lambda e: e[1])
-    if reporting == 1: print('NB pri_mircheck_rdd: ', pri_mircheck_rdd.groupByKey().count())
+    if reporting == 1: print(datetime.datetime.now(), 'NB pri_mircheck_rdd: ', pri_mircheck_rdd.groupByKey().count())
     print(datetime.datetime.now(), 'pri_mircheck_rdd') #= BOTTLE NECK
 
 
     #= Filtering len(pre-mirna) < 301 nt
     len300_rdd = pri_mircheck_rdd.filter(lambda e: (int(e[1][3][5]) - int(e[1][3][4])) < 301)
-    if reporting == 1: print('NB len300_rdd: ', len300_rdd.groupByKey().count())
-    
+    if reporting == 1: print(datetime.datetime.now(), 'NB len300_rdd: ', len300_rdd.groupByKey().count())
+  
 
     #======================#
     #= REPARTITION        =#
@@ -371,7 +373,8 @@ if __name__ == '__main__' :
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
     one_loop_rdd = len300_rdd.filter(lambda e: ut.containsOnlyOneLoop(e[1][3][2][int(e[1][3][4]) : int(e[1][3][5])+1]))\
                              .repartition(partition)
-    if reporting == 1: print('NB one_loop_rdd distinct : ', one_loop_rdd.groupByKey().count())
+    if reporting == 1: print(datetime.datetime.now(), 'NB one_loop_rdd distinct : ', one_loop_rdd.groupByKey().count())
+
 
 
     #= Extraction of the pre-miRNA
@@ -408,7 +411,7 @@ if __name__ == '__main__' :
                                  .map(mirdup_obj.run_miRdup)\
                                  .filter(lambda e: e[1][4][3] == "true")\
                                  .repartition(partition)
-    if reporting == 1: print('NB pre_mirdup_rdd distinct: ', pre_mirdup_rdd.groupByKey().count())
+    if reporting == 1: print(datetime.datetime.now(), 'NB pre_mirdup_rdd distinct: ', pre_mirdup_rdd.groupByKey().count())
     print(datetime.datetime.now(), 'pre_mirdup_rdd distinct') #= BOTTLE NECK
     
     
@@ -443,13 +446,17 @@ if __name__ == '__main__' :
                                                      .persist()
       #================================================================================================================
       #================================================================================================================
-    if reporting == 1: print('NB mergeProfileChromo_rdd NON distinct: ', mergeProfileChromo_rdd.count())
-    print('NB mergeProfileChromo_rdd distinct: ', mergeProfileChromo_rdd.groupByKey().count()) #= always report the nb of final prediction
-    print(datetime.datetime.now(), 'mergeProfileChromo_rdd')
+
+    slim_rdd = mergeProfileChromo_rdd.map(mru.slimrule)
+
+
+    if reporting == 1: print(datetime.datetime.now(), 'NB slim_rdd NON distinct: ', slim_rdd.count())
+    print('NB slim_rdd distinct: ', slim_rdd.groupByKey().count()) #= always report the nb of final prediction
+    print(datetime.datetime.now(), 'slim_rdd')
     
     #= collecting final miRNA predictions
-    libresults = mergeProfileChromo_rdd.collect()
-    print(datetime.datetime.now(), 'libresults=mergeProfileChromo_rdd.collect()')#= BOTTLE NECK
+    libresults = slim_rdd.collect()
+    print(datetime.datetime.now(), 'libresults=slim_rdd.collect()')#= BOTTLE NECK
 
     endLib = time.time() 
     timeDict[inBasename] = endLib - startLib
