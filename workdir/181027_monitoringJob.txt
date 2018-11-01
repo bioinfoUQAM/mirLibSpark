@@ -323,3 +323,16 @@ x 8762942     cjwu def-banire_c jv2-20-ath100t  PD N/A     30:00     1   32 (nul
 
 
 
+#= test master
+#= ath 8789405
+
+
+#= memorystore Xms3g Xmx6g and wheat parameters
+ [memorystore] cjwu [~/project/cjwu/init_mirLibSpark/workdir]
+ $ sbatch pyspark_submit_jv2_12_wheat032.sh 
+Submitted batch job 8791519
+
+#= Xms8g Xmx16g
+ [memorystore] cjwu [~/project/cjwu/init_mirLibSpark/workdir]
+ $ sbatch pyspark_submit_jv2_12_wheat032.sh 
+Submitted batch job 8791542
