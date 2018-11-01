@@ -34,7 +34,7 @@ pip install --user requests
 pip install --user -r requirements.txt
 #
 #= JAVA memory allocation (space for else than RDD operations)
-export _JAVA_OPTIONS="-Xms3g -Xmx4g"
+export _JAVA_OPTIONS="-Xms3g -Xmx6g"
 #= identify the Spark cluster with the Slurm jobid
 export SPARK_IDENT_STRING=$SLURM_JOBID
 export SPARK_WORKER_DIR=$SLURM_TMPDIR
