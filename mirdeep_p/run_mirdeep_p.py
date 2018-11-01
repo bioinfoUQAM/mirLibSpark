@@ -23,17 +23,6 @@ def find_project_path ():
   project_path = cwd.split('/mirLibSpark')[0] + '/mirLibSpark'
   return project_path
 
-
-project_path = find_project_path ()
-mirdeep_path = project_path + '/mirdeep_p/'
-
-
-rep_input = project_path + '/input_mirdeep/'
-
-options = ['tair9', 'tair10']
-len_pri = '250' #'700'
-
-
 def loadModule_graham ():
   '''
   The order of the load may not be correct, because I met problem sometimes the modules were not loaded correctly. See what is the bug when I have time.
@@ -150,6 +139,12 @@ def run_miRDP ():
   print 'miRDP duration: ', totaltime, 'sec'
 
 
+project_path = find_project_path ()
+mirdeep_path = project_path + '/mirdeep_p/'
+rep_input = project_path + '/input_mirdeep/'
+options = ['tair9', 'tair10']
+len_pri = '250' #'700'
+#
 loadModule_graham ()
 genome, f_annotated = init_mirdeep_p ('tair10')
 run_miRDP ()

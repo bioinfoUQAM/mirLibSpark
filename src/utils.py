@@ -80,7 +80,7 @@ def find_RNAfold_path ():
   return path_RNAfold
 	  
 # Configure a spark context
-def pyspark_configuration(appMaster, appName, masterMemory, execMemory, execCores):
+def pyspark_configuration(appMaster, appName, masterMemory, execMemory):
   from pyspark import SparkConf, SparkContext
   myConf = SparkConf()
   myConf.setAppName(appName)  #= 'mirLibSpark'
@@ -285,7 +285,8 @@ def readParam (paramfile, sep = '='):
   for line in DATA:
     if line.startswith('message'): 
       msg = line.rstrip('\r\n')[8:].split('\\n')
-      for i in msg: print(i)
+      paramDict['message'] = '\n'.join(msg)
+    #  for i in msg: print(i)
     elif not line.startswith("#"):
       data = line.rstrip('\r\n').split(sep)
       paramDict[data[0]] = data[1]

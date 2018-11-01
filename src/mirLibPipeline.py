@@ -29,6 +29,7 @@ from os import listdir
 #
 import utils as ut
 import mirLibRules as mru
+import arg
 
 #= 1: display intermediate rdd.count(), this makes the time longer
 #= 0: not reporting rdd.count() makes the time shorter
@@ -36,16 +37,9 @@ reporting = 0
 
 if __name__ == '__main__' :
 
-  if not len(sys.argv) == 2:
-    sys.stderr.write('Three arguments required\nUsage: spark-submit mirLibPipeline.py <path to paramfile> 2>/dev/null\n')
-    sys.exit()
-
-  paramfile = sys.argv[1]
-  paramDict = ut.readParam (paramfile)
-  #= EXMAMINE OPTIONS 
-  print('\nVerifying parameters ...')
+  print('\nInitiating and verifying parameters ...')
+  paramDict = arg.init_params ()
   print('============================================================\n')
-  ut.validate_options(paramDict)
   for k, v in sorted(paramDict.items()): print(k, ': ', v)
 
   #= spark configuration
@@ -53,11 +47,11 @@ if __name__ == '__main__' :
   appName = paramDict['sc_appname']                 #"mirLibSpark"
   mstrMemory = paramDict['sc_mstrmemory']           #"4g"
   execMemory = paramDict['sc_execmemory']           #"4g"
-  execCores = paramDict['sc_execcores']             #2
+  #execCores = paramDict['sc_execcores']             #2
   partition = int(paramDict['sc_partition'])
 
   #= Spark context
-  sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, execCores)
+  sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory)
 
   #= Spark application ID
   appId = str(sc.applicationId)
@@ -76,7 +70,7 @@ if __name__ == '__main__' :
   #= paths
   input_type = paramDict['input_type']
   adapter = ut.tr_U_T (paramDict['adapter'])
-  project_path = paramDict['project_path'][:-1]
+  project_path = paramDict['project_path']
   rep_input = paramDict['input_path']
   rep_output = paramDict['output_path'] + '/' + appId + '/'
   #rep_tmp = '../tmp' + appId + '/' #= do not write files in worker node, often mirdup has problem, OUT-OF-MEMORY
@@ -98,7 +92,7 @@ if __name__ == '__main__' :
   #= bowtie
   b_index_path = paramDict['b_index_path']
   chromosomes = paramDict['chromosomes'].split(',')
-  bowtie_index_suffix = paramDict['bowtie_index_suffix']
+  bowtie_index_prefix = paramDict['bowtie_index_prefix']
 
   #= file and list of known non miRNA
   known_non = paramDict['known_non_file'] 
@@ -190,7 +184,7 @@ if __name__ == '__main__' :
     inBasename = os.path.splitext(infile)[0] #= lib name
     infile = rep_input+infile
 
-    if input_type == 'd': #= fastq
+    if input_type == 'fastq':
       infile = ut.convert_fastq_file_to_KeyValue(infile, rep_tmp, inBasename)
 
     print ("  Start of miRNA prediction...", end="\n")
@@ -210,23 +204,23 @@ if __name__ == '__main__' :
     if reporting == 1: print(datetime.datetime.now(), 'NB distFile_rdd: ', distFile_rdd.count())#
 
     #= Unify different input formats to "seq freq" elements
-    if input_type == 'a': #= raw
+    if input_type == 'raw':
     ## in : u'seq\tfreq'
     ## out: ('seq', freq)
       ## note that type_a does not need to collapse nor trim.
       collapse_rdd = distFile_rdd.map(lambda line: mru.rearrange_rule(line, '\t'))
     else:
-      if input_type == 'b': #= reads
+      if input_type == 'reads':
       ## in : u'seq1', u'seq2', u'seq1'
       ## out: u'seq1', u'seq2', u'seq1'
         input_rdd = distFile_rdd
 
-      elif input_type == 'c': #= fasta
+      elif input_type == 'fasta':
       ## in : u'>name1\nseq1', u'>name2\nseq2', u'>name3\nseq1'
       ## out: u'seq1', u'seq2', u'seq1'
         input_rdd = distFile_rdd.filter(lambda line: not line[0] == '>')
 
-      elif input_type == 'd': #= processed fastq
+      elif input_type == 'fastq': #= processed fastq
       ## in : u'seq\tquality'
       ## out: u'seq1', u'seq2', u'seq1'
         input_rdd = distFile_rdd.map(lambda word: word.split('\t')[0])
@@ -253,7 +247,6 @@ if __name__ == '__main__' :
     ## out: ('seq', freq)
     sr_short_rdd = sr_low_rdd.filter(lambda e: len(e[0]) > limit_len).persist()  # TO KEEP IT, reused in bowFrq_rdd 
     if reporting == 1: print(datetime.datetime.now(), 'NB sr_short_rdd: ', sr_short_rdd.count())
-
     
     #= Filtering with DustMasker
     ## in : ('seq', freq)
@@ -268,7 +261,7 @@ if __name__ == '__main__' :
     mergebowtie_rdd = sc.emptyRDD()
     for i in range(len(chromosomes)):
       ch = chromosomes[i]
-      p = b_index_path + ch + '/' + bowtie_index_suffix
+      p = b_index_path + ch + '/' + bowtie_index_prefix
       bowtie_obj = mru.prog_bowtie(p)
       bowtie_cmd, bowtie_env = bowtie_obj.Bowtie_pipe_cmd()
       #================================================================================================================
@@ -308,7 +301,7 @@ if __name__ == '__main__' :
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     mr_low_rdd = mr_meyers2018len_rdd.filter(lambda e: e[1][0] > limit_mrna_freq)
     if reporting == 1: print(datetime.datetime.now(), 'NB mr_low_rdd: ', mr_low_rdd.count())
-    
+  
     #= Filtering high nbLocations and zero location
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
@@ -368,7 +361,7 @@ if __name__ == '__main__' :
     len300_rdd = pri_mircheck_rdd.filter(lambda e: (int(e[1][3][5]) - int(e[1][3][4])) < 301)
     if reporting == 1: print(datetime.datetime.now(), 'NB len300_rdd: ', len300_rdd.groupByKey().count())
     
-
+  
     #======================#
     #= REPARTITION        =#
     #======================#
@@ -378,6 +371,7 @@ if __name__ == '__main__' :
     one_loop_rdd = len300_rdd.filter(lambda e: ut.containsOnlyOneLoop(e[1][3][2][int(e[1][3][4]) : int(e[1][3][5])+1]))\
                              .repartition(partition)
     if reporting == 1: print(datetime.datetime.now(), 'NB one_loop_rdd distinct : ', one_loop_rdd.groupByKey().count())
+
 
 
     #= Extraction of the pre-miRNA
