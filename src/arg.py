@@ -72,7 +72,9 @@ def getOpt (parser):
     #
     args.project_path = args.project_path.rstrip('/')
     if args.input_path == None: args.input_path = args.project_path + '/input/'
+    else: args.input_path = args.input_path.rstrip('/') + '/'
     if args.output_path == None: args.output_path = args.project_path + '/output/'
+    else: args.output_path = args.output_path.rstrip('/') + '/'
     #
     if args.species == 'ath': 
       bowtie_index_suffix = 'ATH_TAIR10'
@@ -170,9 +172,9 @@ def getOpt (parser):
     paramDict = vars(args)
     #= add additional parameters in dict
     paramDict['sc_appname'] = 'mirLibSpark'
-    if args.dummy == False: args.dummy == 'False'
+    if args.dummy == False: paramDict['dummy'] == 'False'
     if args.dummy == True:
-      args.dummy = 'True'
+      paramDict['dummy'] = 'True'
       for k, v in sorted(paramDict.items()): print(k + ': ' +v)
       print('============================================================\n')
       sys.stderr.write('Display registered parameters.\n\
@@ -194,6 +196,8 @@ def init_params ():
 if __name__ == '__main__' :
   paramDict = init_params ()
   for k in sorted(paramDict): print(k, ':', paramDict[k])
+
+
 
 
 
