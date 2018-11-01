@@ -28,7 +28,7 @@ module load blast+/2.6.0
 pip install --user requests
 pip install --user -r requirements.txt
 
-export _JAVA_OPTIONS="-Xms3g -Xmx6g"
+export _JAVA_OPTIONS="-Xms8g -Xmx16g"
 export SPARK_IDENT_STRING=$SLURM_JOBID
 export SPARK_WORKER_DIR=$SLURM_TMPDIR
 start-all.sh
