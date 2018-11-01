@@ -45,9 +45,8 @@ slaves_pid=$!
 #= example:
 #spark-submit --master ${MASTER_URL} --executor-memory ${SLURM_MEM_PER_NODE}M /home/cjwu/project/cjwu/gitRepo/mirLibSpark/workdir/pi.py 1000
 
-
-#spark-submit --master ${MASTER_URL} --executor-memory ${SLURM_MEM_PER_NODE}M ../src/mirLibPipeline.py ../paramfile_WHEAT_IWGSC_graham.txt
 spark-submit --master ${MASTER_URL} --executor-memory ${SLURM_MEM_PER_NODE}M ../src/mirLibPipeline.py --species wheat
+
 
 kill $slaves_pid
 stop-all.sh

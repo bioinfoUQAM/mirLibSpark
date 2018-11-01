@@ -78,10 +78,7 @@ slaves_pid=$!
 #= example:
 #spark-submit --master ${MASTER_URL} --executor-memory ${SLURM_MEM_PER_NODE}M /home/cjwu/project/cjwu/gitRepo/mirLibSpark/workdir/pi.py 1000
 #
-#spark-submit --master ${MASTER_URL} --executor-memory ${SLURM_MEM_PER_NODE}M ../src/mirLibPipeline.py ../paramfile_ATH_TAIR10_graham.txt
-spark-submit --master ${MASTER_URL} --executor-memory ${SLURM_MEM_PER_NODE}M ../src/mirLibPipeline.py --input_path /home/cjwu/project/cjwu/gitRepo/mirLibSpark/input_ath/
-
-
+spark-submit --master ${MASTER_URL} --executor-memory ${SLURM_MEM_PER_NODE}M ../src/mirLibPipeline.py --input_path /home/cjwu/project/cjwu/init_mirLibSpark/input_ath/ 
 
 ## --------------------------------------
 ## 4. Clean up
