@@ -99,7 +99,7 @@ def getOpt (parser):
       filename3 = 'zma_pathway_description.txt'
       chromosomes = '1,2,3,4,5,6,7,8,9,10,Mt,Pt'
       args.chromosomes = chromosomes
-   elif args.species == 'rice': 
+    elif args.species == 'rice': 
       bowtie_index_prefix = 'RICE_IRGSP_1'
       filename1 = 'Oryza_sativa.IRGSP-1.0.cdna.all.fa'
       filename2 = 'osa_gene_vs_pathway.txt'
@@ -176,6 +176,7 @@ def getOpt (parser):
     paramDict['sc_appname'] = 'mirLibSpark'
     if args.dummy == False: paramDict['dummy'] = 'False'
     elif args.dummy == True:
+      paramDict['dummy'] = 'True'
       for k, v in sorted(paramDict.items()): print(k + ': ' +v)
       print('============================================================\n')
       sys.stderr.write('Display registered parameters.\n\
