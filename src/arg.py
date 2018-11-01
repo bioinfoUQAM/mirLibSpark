@@ -173,9 +173,8 @@ def getOpt (parser):
     paramDict = vars(args)
     #= add additional parameters in dict
     paramDict['sc_appname'] = 'mirLibSpark'
-    if args.dummy == False: paramDict['dummy'] == 'False'
-    if args.dummy == True:
-      paramDict['dummy'] = 'True'
+    if args.dummy == False: paramDict['dummy'] = 'False'
+    elif args.dummy == True:
       for k, v in sorted(paramDict.items()): print(k + ': ' +v)
       print('============================================================\n')
       sys.stderr.write('Display registered parameters.\n\
