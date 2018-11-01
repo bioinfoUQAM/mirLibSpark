@@ -13,7 +13,8 @@ import sys
 def find_project_path ():
   import os
   cwd = os.getcwd()
-  project_path = cwd.split('/mirLibSpark')[0] + '/mirLibSpark'
+  #project_path = cwd.split('/mirLibSpark')[0] + '/mirLibSpark'
+  project_path = cwd.split('/src')[0].split('/workdir')[0]
   return project_path
 
 def getOpt (parser): 
@@ -36,7 +37,7 @@ def getOpt (parser):
                                Please use provided script to construct the dbs folder for selected species from ensembl-release40.')
     parser.add_argument('--input_type', default='w', choices=['raw', 'w', 'reads','r', 'fasta', 'a', 'fastq', 'q'])
     parser.add_argument('--adapter', default='none', help='example = TGGAATTCTCGGGTGCCAAGGAACTC')
-    parser.add_argument('--bowtie_index_suffix')
+    parser.add_argument('--bowtie_index_prefix')
     parser.add_argument('--genome_path')
     parser.add_argument('--b_index_path')
     parser.add_argument('--known_non_file', help='Only ath is provided.')
@@ -77,7 +78,7 @@ def getOpt (parser):
     else: args.output_path = args.output_path.rstrip('/') + '/'
     #
     if args.species == 'ath': 
-      bowtie_index_suffix = 'ATH_TAIR10'
+      bowtie_index_prefix = 'ATH_TAIR10'
       filename1 = 'Arabidopsis_thaliana.TAIR10.cdna.all.fa'
       filename2 = 'ath_gene_vs_pathway.txt'
       filename3 = 'ath_pathway_description.txt'
@@ -85,60 +86,60 @@ def getOpt (parser):
       if args.chromosomes == None: args.chromosomes = 'All'
       elif args.chromosomes == 'split': args.chromosomes = chromosomes
     elif args.species == 'wheat': 
-      bowtie_index_suffix = 'WHEAT_IWGSC'
+      bowtie_index_prefix = 'WHEAT_IWGSC'
       filename1 = 'mRNA_contigs_smaller.fasta'
       filename2 = 'ko_gene_vs_pathway.txt'
       filename3 = 'ko_pathway_description.txt'
       chromosomes = '1A,1B,1D,2A,2B,2D,3A,3B,3D,4A,4B,4D,5A,5B,5D,6A,6B,6D,7A,7B,7D'
       args.chromosomes = chromosomes
     elif args.species == 'corn': 
-      bowtie_index_suffix = 'CORN_AGPv4'
+      bowtie_index_prefix = 'CORN_AGPv4'
       filename1 = 'Zea_mays.AGPv4.cdna.all.fa.gz'
       filename2 = 'zma_gene_vs_pathway.txt'
       filename3 = 'zma_pathway_description.txt'
       chromosomes = '1,2,3,4,5,6,7,8,9,10,Mt,Pt'
       args.chromosomes = chromosomes
     elif args.species == 'rice': 
-      bowtie_index_suffix = 'RICE_IRGSP_1'
+      bowtie_index_prefix = 'RICE_IRGSP_1'
       filename1 = 'Oryza_sativa.IRGSP-1.0.cdna.all.fa'
       filename2 = 'osa_gene_vs_pathway.txt'
       filename3 = 'osa_pathway_description.txt'
       chromosome = '1,2,3,4,5,6,7,8,9,10,11,12,Mt,Pt'
       args.chromosomes = 'All'
     elif args.species == 'potato': 
-      bowtie_index_suffix = 'POTATO_SolTub_3'
+      bowtie_index_prefix = 'POTATO_SolTub_3'
       filename1 = 'Solanum_tuberosum.SolTub_3.0.cdna.all.fa'
       filename2 = 'sot_gene_vs_pathway.txt'
       filename3 = 'sot_pathway_description.txt'
       chromosomes = '1,2,3,4,5,6,7,8,9,10,11,12'
       args.chromosomes = 'All'
     elif args.species == 'brome': 
-      bowtie_index_suffix = 'STIFFBROME'
+      bowtie_index_prefix = 'STIFFBROME'
       filename1 = 'Brachypodium_distachyon.Brachypodium_distachyon_v3.0.cdna.all.fa'
       filename2 = 'bdi_gene_vs_pathway.txt'
       filename3 = 'bdi_pathway_description.txt'
       chromosomes = '1,2,3,4,5'
       args.chromosomes = 'All'
     elif args.species == 'wheatD': 
-      bowtie_index_suffix = 'WHEAT_D'
+      bowtie_index_prefix = 'WHEAT_D'
       filename1 = 'Aegilops_tauschii.ASM34733v1.cdna.all.fa'
       filename2 = 'ats_gene_vs_pathway.txt'
       filename3 = 'ats_pathway_description.txt'
       chromosomes = 'toplevel'
       args.chromosomes = 'All'
     #
-    if args.bowtie_index_suffix == None: args.bowtie_index_suffix = bowtie_index_suffix
+    if args.bowtie_index_prefix == None: args.bowtie_index_prefix = bowtie_index_prefix
     #
-    key = '/dbs/' + args.bowtie_index_suffix + '/Genome/'
+    key = '/dbs/' + args.bowtie_index_prefix + '/Genome/'
     if args.genome_path == None: args.genome_path = args.project_path + key   
     # 
-    key = '/dbs/' + args.bowtie_index_suffix + '/bowtie_index/'
+    key = '/dbs/' + args.bowtie_index_prefix + '/bowtie_index/'
     if args.b_index_path == None: args.b_index_path = args.project_path + key   
     #= only ath is provided for know_non miRNA list
     key = '/dbs/' + 'ATH_TAIR10' + '/TAIR10_ncRNA_CDS.gff'
     if args.known_non_file == None: args.known_non_file = args.project_path + key   
     #
-    key = '/dbs/' + args.bowtie_index_suffix + '/' + filename1
+    key = '/dbs/' + args.bowtie_index_prefix + '/' + filename1
     if args.target_file == None: args.target_file = args.project_path + key
     #
     if args.perform_differnatial_analysis == False: args.perform_differnatial_analysis = 'False'
@@ -157,10 +158,10 @@ def getOpt (parser):
                           Exit the program.')
         sys.exit()
     #
-    key = '/dbs/' + args.bowtie_index_suffix + '/' + filename2
+    key = '/dbs/' + args.bowtie_index_prefix + '/' + filename2
     if args.gene_vs_pathway_file == None: args.gene_vs_pathway_file = args.project_path + key
     #
-    key = '/dbs/' + args.bowtie_index_suffix + '/' + filename3
+    key = '/dbs/' + args.bowtie_index_prefix + '/' + filename3
     if args.pathway_description_file == None: args.pathway_description_file = args.project_path + key
     #
     if args.input_type == 'w': args.input_type = 'raw'
