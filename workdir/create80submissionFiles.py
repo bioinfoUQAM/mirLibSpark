@@ -50,7 +50,7 @@ S002B24  S002B2B  S002B32  S002B39  S002B40  S002B47  S002B4E  S002B55  S002B5C 
 S002B25  S002B2C  S002B33  S002B3A  S002B41  S002B48  S002B4F  S002B56  S002B5D  S002B64  S002B6B'.split('  ')
 
 for i in range(1, 81):
-  outfile = str(i) + '.fake.sh'
+  outfile = str(i) + '.sh'
   fh = open (outfile, 'w')
   ID = folders[i-1]
   stringToPrint(ID, fh)
