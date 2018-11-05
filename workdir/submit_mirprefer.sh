@@ -6,8 +6,8 @@
 #SBATCH --mem=20000M
 #SBATCH --cpus-per-task=32
 #SBATCH --ntasks-per-node=1
-#SBATCH --error=jobout_ath_experiment/%x-%j.err
-#SBATCH --output=jobout_ath_experiment/%x-%j.out
+#SBATCH --error=jobout/%x-%j.err
+#SBATCH --output=jobout/%x-%j.out
 #SBATCH --mail-user=g39103001@gm.ym.edu.tw
 #SBATCH --mail-type=ALL
 
@@ -30,7 +30,7 @@ module load blast+/2.6.0
 #
 #= JAVA memory allocation (space for else than RDD operations)
 export _JAVA_OPTIONS="-Xms3g -Xmx6g"
-
+python ../miR_PREFeR.py -L -k pipeline config.example
 
 ## --------------------------------------
 ## footnotes
