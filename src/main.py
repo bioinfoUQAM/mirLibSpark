@@ -68,11 +68,11 @@ cmd = 'cp ../input_samples/fake_a3.txt ../input';os.system(cmd)
 #cmd = 'free -m';os.system(cmd)
 
 #########################################################################################
-cmd = 'time spark-submit mirLibPipeline.py ../paramfile_ATH_TAIR10.txt 2>/dev/null';os.system(cmd)
+cmd = 'time spark-submit mirLibPipeline.py 2>/dev/null';os.system(cmd)
 #########################################################################################
 
 #########################################################################################
-#cmd = 'time spark-submit mirLibPipeline.py ../paramfile_WHEAT_IWGSC.txt 2>/dev/null';os.system(cmd)
+#cmd = 'time spark-submit mirLibPipeline.py --species wheat 2>/dev/null';os.system(cmd)
 #########################################################################################
 
 
