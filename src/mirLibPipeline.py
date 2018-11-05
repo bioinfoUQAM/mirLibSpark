@@ -182,7 +182,8 @@ if __name__ == '__main__' :
   print(time_a, 'begin time')
   
   for infile in infiles :
-    if infile[-1:] == '~': continue
+    if infile[-1:] == '~': 
+      print('omitting infile');continue
     print ("--Processing of the library: ", infile)
 
     inBasename = os.path.splitext(infile)[0] #= lib name
