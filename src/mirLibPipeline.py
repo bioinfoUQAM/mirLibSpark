@@ -167,7 +167,7 @@ if __name__ == '__main__' :
 
 
   #= Fetch library files in rep_input
-  infiles = paramDict['infiles'] #[f for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
+  infiles = [f for f in listdir(rep_input) if os.path.isfile(os.path.join(rep_input, f))]
   print('============================================================\n')
   print('infiles:')
   for infile in infiles: print(infile)

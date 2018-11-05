@@ -178,11 +178,6 @@ def getOpt (parser):
     #= add additional parameters in dict
     paramDict['sc_appname'] = 'mirLibSpark'
     #
-    from os import listdir
-    import os.path
-    infiles = [f for f in listdir(args.input_path) if (os.path.isfile(os.path.join(args.input_path, f)) and not f.endswith('~'))]
-    paramDict['infiles'] = infiles
-    #
     if args.dummy == False: paramDict['dummy'] = 'False'
     elif args.dummy == True:
       paramDict['dummy'] = 'True'
