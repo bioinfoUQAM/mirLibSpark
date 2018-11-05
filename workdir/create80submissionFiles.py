@@ -1,8 +1,14 @@
+'''
+Chao-Jung Wu
+2018-11-02
+
+v0.0.02
+'''
 from __future__ import print_function
 
-def stringToPrint(ID, fh):
+def stringToPrint(i, ID, fh):
   str = '#!/bin/bash';print(str, file=fh)
-  str = '#SBATCH --job-name=wheat032_80libexp-181102_' + ID;print(str, file=fh)
+  str = '#SBATCH --job-name=wheat032_80libexp-181102_' + ID + i;print(str, file=fh)
   str = '#SBATCH --account=def-banire';print(str, file=fh)
   str = '#SBATCH --time=06:00:00';print(str, file=fh)
   str = '#SBATCH --nodes=1';print(str, file=fh)
@@ -23,7 +29,7 @@ def stringToPrint(ID, fh):
   str = '';print(str, file=fh)
   str = 'pip install --user requests';print(str, file=fh)
   str = 'pip install --user -r requirements.txt';print(str, file=fh)
-  str = 'export _JAVA_OPTIONS="-Xms8g -Xmx16g"';print(str, file=fh)
+  str = 'export _JAVA_OPTIONS="-Xms2g -Xmx6g"';print(str, file=fh)
   str = 'export SPARK_IDENT_STRING=$SLURM_JOBID';print(str, file=fh)
   str = 'export SPARK_WORKER_DIR=$SLURM_TMPDIR';print(str, file=fh)
   str = '';print(str, file=fh)
@@ -53,13 +59,6 @@ for i in range(1, 81):
   outfile = str(i) + '.sh'
   fh = open (outfile, 'w')
   ID = folders[i-1]
-  stringToPrint(ID, fh)
+  stringToPrint(str(i), ID, fh)
   fh.close()
-
-
-
-
-
-
-
 
