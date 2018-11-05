@@ -53,6 +53,9 @@ def getOpt (parser):
     parser.add_argument('--limit_s_freq', default='10')
     parser.add_argument('--limit_m_freq', default='100')
     parser.add_argument('--limit_len', default='18')
+    parser.add_argument('--miRNA_len_upperlimit', default='25')
+    parser.add_argument('--miRNA_len_lowerlimit', default='20')
+    parser.add_argument('--premirna_max_len', default='301')
     parser.add_argument('--limit_nbLoc', default='15')
     parser.add_argument('--pri_l_flank', default='500')
     parser.add_argument('--pri_r_flank', default='200')
@@ -174,6 +177,7 @@ def getOpt (parser):
     paramDict = vars(args)
     #= add additional parameters in dict
     paramDict['sc_appname'] = 'mirLibSpark'
+    #
     if args.dummy == False: paramDict['dummy'] = 'False'
     elif args.dummy == True:
       paramDict['dummy'] = 'True'

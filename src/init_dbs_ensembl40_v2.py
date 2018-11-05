@@ -235,12 +235,23 @@ if __name__ == '__main__' :
     URL_irregulars = []
     if option == '1': option1_forSmallGenome (key, URL_cdna, URL_ncrna, URL_toplevel, IDs, URL_dna_prefix, URL_irregulars)
     elif option == '2': option2_forLargeGenome (key, URL_cdna, URL_ncrna, IDs, URL_dna_prefix, URL_irregulars)
+  ##======================================================
+  #if organism == 'wheat': #= 15G
+  #  key = 'WHEAT_IWGSC'
+  #  URL_cdna = 'ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/triticum_aestivum/cdna/Triticum_aestivum.IWGSC.cdna.all.fa.gz'
+  #  URL_ncrna = ''
+  #  IDs = '1A 1B 1D 2A 2B 2D 3A 3B 3D 4A 4B 4D 5A 5B 5D 6A 6B 6D 7A 7B 7D'.split(' ')
+  #  URL_dna_prefix = 'ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/triticum_aestivum/dna/Triticum_aestivum.IWGSC.dna.chromosome.'
+  #  URL_irregulars = []
+  #  if option == '1': print('option 1 not provided for ' + organism + ', switching to option 2 ...')
+  #  option = '2'
+  #  option2_forLargeGenome (key, URL_cdna, URL_ncrna, IDs, URL_dna_prefix, URL_irregulars)
   #======================================================
   if organism == 'wheat': #= 15G
     key = 'WHEAT_IWGSC'
     URL_cdna = 'ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/triticum_aestivum/cdna/Triticum_aestivum.IWGSC.cdna.all.fa.gz'
     URL_ncrna = ''
-    IDs = '1A 1B 1D 2A 2B 2D 3A 3B 3D 4A 4B 4D 5A 5B 5D 6A 6B 6D 7A 7B 7D'.split(' ')
+    IDs = '1A 1B 1D 2A 2B 2D 3A 3B 3D 4A 4B 4D 5A 5B 5D 6A 6B 6D 7A 7B 7D Un'.split(' ')
     URL_dna_prefix = 'ftp://ftp.ensemblgenomes.org/pub/plants/' + ensembl_version + '/fasta/triticum_aestivum/dna/Triticum_aestivum.IWGSC.dna.chromosome.'
     URL_irregulars = []
     if option == '1': print('option 1 not provided for ' + organism + ', switching to option 2 ...')

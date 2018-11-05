@@ -84,10 +84,14 @@ if __name__ == '__main__' :
   genome_path = paramDict['genome_path'] 
 
   #= cutoffs
-  limit_srna_freq = int(paramDict['limit_s_freq'])  #10       # exclude sRNA freq < limit_srna_freq
-  limit_mrna_freq = int(paramDict['limit_m_freq'])  #200      # exclude miRNA freq < limit_mrna_freq
-  limit_len = int(paramDict['limit_len'])           #18       # exclude RNA length < limit_len
-  limit_nbLoc = int(paramDict['limit_nbLoc'])       #3        # exculde nbLoc mapped with bowtie  > limit_nbLoc
+  limit_srna_freq = int(paramDict['limit_s_freq'])               #sRNA freq, 			keep > 10, so keep 11, 12, 13 ...
+  limit_mrna_freq = int(paramDict['limit_m_freq'])               #miRNA freq,			keep > 100, so keep 101, 102, 103, ...
+  limit_len = int(paramDict['limit_len'])                        #sRNA length,			keep > 18, so keep 19, 20, 21, ...
+  limit_nbLoc = int(paramDict['limit_nbLoc'])                    #nbLoc mapped with bowtie,	keep < 15, so keep 14, 13, 12, ...
+  miRNA_len_upperlimit = int(paramDict['miRNA_len_upperlimit'])  #				keep < 25, so keep 24, 23, 22, ...
+  miRNA_len_lowerlimit = int(paramDict['miRNA_len_lowerlimit'])  #				keep > 20, so keep 21, 22, 23, ...
+  premirna_max_len = int(paramDict['premirna_max_len'])          # 				keep < 301, so keep 300, 299, 298, ...
+
 
   #= bowtie
   b_index_path = paramDict['b_index_path']
@@ -178,7 +182,8 @@ if __name__ == '__main__' :
   print(time_a, 'begin time')
   
   for infile in infiles :
-    if infile[-1:] == '~': continue
+    if infile[-1:] == '~': 
+      print('omitting infile');continue
     print ("--Processing of the library: ", infile)
 
     inBasename = os.path.splitext(infile)[0] #= lib name
@@ -293,7 +298,7 @@ if __name__ == '__main__' :
     #= Filtering, keep miRNA length = 21, 22, 23, 24
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
-    mr_meyers2018len_rdd = bowFrq_rdd.filter(lambda e: len(e[0]) < 25 and len(e[0]) > 20)
+    mr_meyers2018len_rdd = bowFrq_rdd.filter(lambda e: len(e[0]) < miRNA_len_upperlimit and len(e[0]) > miRNA_len_lowerlimit)
     if reporting == 1: print(datetime.datetime.now(), 'NB mr_meyers2018len_rdd: ', mr_meyers2018len_rdd.count())
 
     #= Filtering miRNA low frequency
@@ -358,7 +363,7 @@ if __name__ == '__main__' :
 
 
     #= Filtering len(pre-mirna) < 301 nt
-    len300_rdd = pri_mircheck_rdd.filter(lambda e: (int(e[1][3][5]) - int(e[1][3][4])) < 301)
+    len300_rdd = pri_mircheck_rdd.filter(lambda e: (int(e[1][3][5]) - int(e[1][3][4])) < premirna_max_len)
     if reporting == 1: print(datetime.datetime.now(), 'NB len300_rdd: ', len300_rdd.groupByKey().count())
     
   
