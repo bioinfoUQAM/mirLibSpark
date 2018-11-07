@@ -41,7 +41,7 @@ def stringToPrint(i, ID, fh):
   str = 'srun -n ${NWORKERS} -N ${NWORKERS} --label --output=$SPARK_LOG_DIR/spark-%j-workers.out start-slave.sh -m ${SLURM_MEM_PER_NODE}M -c ${SLURM_CPUS_PER_TASK} ${MASTER_URL} &';print(str, file=fh)
   str = 'slaves_pid=$!';print(str, file=fh)
   str = '';print(str, file=fh)
-  str = 'spark-submit --master ${MASTER_URL} --executor-memory ${SLURM_MEM_PER_NODE}M ../src/mirLibPipeline.py --species wheat --mirdup_model Viridiplantae.model --input_type q --mcheck_param mey --input_path /home/cjwu/project/cjwu/gitRepo/wheatExp_mirLibSpark/' + ID;print(str, file=fh)
+  str = 'spark-submit --master ${MASTER_URL} --executor-memory ${SLURM_MEM_PER_NODE}M ../src/mirLibPipeline.py --species wheat --mirdup_model Viridiplantae.model --input_type q --input_path /home/cjwu/project/cjwu/gitRepo/wheatExp_mirLibSpark/' + ID;print(str, file=fh)
   str = '';print(str, file=fh)
   str = 'kill $slaves_pid';print(str, file=fh)
   str = 'stop-all.sh';print(str, file=fh)
