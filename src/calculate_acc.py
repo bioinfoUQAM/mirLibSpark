@@ -22,10 +22,9 @@ TN = 990
 FP = 10
 FN = 18
 
-#= no 300 filter
 #===========
-TP = 74
-FP = 1
+TP = 72
+FP = 2
 
 FN = 100 - TP
 TN = 1000 - FP
