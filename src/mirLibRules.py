@@ -356,6 +356,14 @@ class prog_dominant_profile () :
       index += 1
     return totalfrq
 
+  def variants_frq (self, bowbloc, posgen):
+    '''
+    meyers 2018 takes into account the expression (freq) or 4 variants of both miRNA and corresponding miRNA*.
+    I conclude and simplfy those positions as miRNA=(p, p+1, p-1), miRNA*=(p-2, p-1, p-3)
+    '''
+    x, y = posgen -3, posgen + 1
+    return self.calculateTotalfrq (bowbloc, x, y)
+
   def profile_range (self, elem):
     ''' 
     define x, y with pre_vld_rdd
@@ -380,9 +388,15 @@ class prog_dominant_profile () :
     x, y = self.profile_range (elem)
     bowtie_bloc_key = elem[1][2][1] + elem[1][2][0]  #=chrom+strand
     bowbloc = dict_bowtie_chromo_strand[bowtie_bloc_key]
-    totalfrq = self.calculateTotalfrq (bowbloc, x, y)
 
-    elem[1].append(totalfrq)
+    #
+    posgen = int(elem[1][2][2])
+    varfrq = self.variants_frq (bowbloc, posgen)
+    #
+
+    totalfrq = self.calculateTotalfrq (bowbloc, x, y)
+    result = str(totalfrq) + ',' + str(varfrq)
+    elem[1].append(result)
     return elem
 
 class prog_miRanda ():
