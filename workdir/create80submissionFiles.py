@@ -8,7 +8,7 @@ from __future__ import print_function
 
 def stringToPrint(i, ID, fh):
   str = '#!/bin/bash';print(str, file=fh)
-  str = '#SBATCH --job-name=wheat032_80libexp-181102_' + ID + i;print(str, file=fh)
+  str = '#SBATCH --job-name=wheat032_80libexp-181102_' + ID + '_' + i;print(str, file=fh)
   str = '#SBATCH --account=def-banire';print(str, file=fh)
   str = '#SBATCH --time=06:00:00';print(str, file=fh)
   str = '#SBATCH --nodes=1';print(str, file=fh)
