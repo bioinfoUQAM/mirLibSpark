@@ -35,7 +35,7 @@ def stringToPrint(i, ID, fh):
   str = '';print(str, file=fh)
   str = 'start-all.sh';print(str, file=fh)
   str = 'sleep 5';print(str, file=fh)
-  str = "MASTER_URL=$(grep -Po '(?=spark://).*' $SPARK_LOG_DIR/spar;print(str, file=fh)k-${SPARK_IDENT_STRING}-org.apache.spark.deploy.master*.out)";print(str, file=fh)
+  str = "MASTER_URL=$(grep -Po '(?=spark://).*' $SPARK_LOG_DIR/spark-${SPARK_IDENT_STRING}-org.apache.spark.deploy.master*.out)";print(str, file=fh)
   str = 'NWORKERS=$((SLURM_NTASKS - 1))';print(str, file=fh)
   str = 'SPARK_NO_DAEMONIZE=1';print(str, file=fh)
   str = 'srun -n ${NWORKERS} -N ${NWORKERS} --label --output=$SPARK_LOG_DIR/spark-%j-workers.out start-slave.sh -m ${SLURM_MEM_PER_NODE}M -c ${SLURM_CPUS_PER_TASK} ${MASTER_URL} &';print(str, file=fh)
