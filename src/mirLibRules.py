@@ -360,8 +360,9 @@ class prog_dominant_profile () :
     '''
     meyers 2018 takes into account the expression (freq) or 4 variants of both miRNA and corresponding miRNA*.
     I conclude and simplfy those positions as miRNA=(p, p+1, p-1), miRNA*=(p-2, p-1, p-3)
+    but my current pipeline design can only collect frq of the same chrmo_strand
     '''
-    x, y = posgen -3, posgen + 1
+    x, y = posgen -2, posgen + 2
     return self.calculateTotalfrq (bowbloc, x, y)
 
   def profile_range (self, elem):
