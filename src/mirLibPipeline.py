@@ -33,7 +33,7 @@ import arg
 
 #= 1: display intermediate rdd.count(), this makes the time longer
 #= 0: not reporting rdd.count() makes the time shorter
-reporting = 0
+#reporting = 1
 
 if __name__ == '__main__' :
 
@@ -67,6 +67,7 @@ if __name__ == '__main__' :
   paramDict = broadcastVar_paramDict.value
 
   #= Parameters and cutoffs =========================
+  reporting = int(paramDict['reporting'])
   #= paths
   input_type = paramDict['input_type']
   adapter = ut.tr_U_T (paramDict['adapter'])
@@ -454,7 +455,7 @@ if __name__ == '__main__' :
 
 
     if reporting == 1: print(datetime.datetime.now(), 'NB slim_rdd NON distinct: ', slim_rdd.count())
-    print('NB slim_rdd distinct: ', slim_rdd.groupByKey().count(), '\t\tremoved sequences along with their variants not dominating the expression within precursor range') #= always report the nb of final prediction
+    print('NB slim_rdd distinct: ', slim_rdd.groupByKey().count(), '\t\tremoved sequences not dominating the expression within precursor range (expressions of their variants are considered)') #= always report the nb of final prediction
     print(datetime.datetime.now(), 'slim_rdd')
     
     #= collecting final miRNA predictions
