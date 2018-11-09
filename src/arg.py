@@ -21,6 +21,7 @@ def getOpt (parser):
     project_path = find_project_path ()
     #
     parser.add_argument('--dummy', action='store_true')
+    parser.add_argument('--reporting', default='0', action='store_true')
     parser.add_argument('--message', default = 'None')
     parser.add_argument('--project_path', default = project_path)
     parser.add_argument('--input_path')
@@ -73,6 +74,8 @@ def getOpt (parser):
     parser.add_argument('--sc_master', default='local[*]')
     #
     args = parser.parse_args()
+    #
+    if args.reporting == True: args.reporting = '1'
     #
     args.project_path = args.project_path.rstrip('/')
     if args.input_path == None: args.input_path = args.project_path + '/input/'
