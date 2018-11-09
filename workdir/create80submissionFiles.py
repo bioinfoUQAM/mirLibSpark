@@ -3,12 +3,15 @@ Chao-Jung Wu
 2018-11-02
 
 v0.0.03
+
+update: 2018-11-08
+change Xmx from 6g to 4g
 '''
 from __future__ import print_function
 
 def stringToPrint(i, ID, fh):
   line = '#!/bin/bash';print(line, file=fh)
-  line = '#SBATCH --job-name=wheat032_80libexp-181102_' + ID + '_' + i;print(line, file=fh)
+  line = '#SBATCH --job-name=wheat032_80libexp-181109_' + ID + '_' + i;print(line, file=fh)
   line = '#SBATCH --account=def-banire';print(line, file=fh)
   line = '#SBATCH --time=06:00:00';print(line, file=fh)
   line = '#SBATCH --nodes=1';print(line, file=fh)
@@ -29,7 +32,7 @@ def stringToPrint(i, ID, fh):
   line = '';print(line, file=fh)
   line = 'pip install --user requests';print(line, file=fh)
   line = 'pip install --user -r requirements.txt';print(line, file=fh)
-  line = 'export _JAVA_OPTIONS="-Xms3g -Xmx6g"';print(line, file=fh)
+  line = 'export _JAVA_OPTIONS="-Xms3g -Xmx4g"';print(line, file=fh)
   line = 'export SPARK_IDENT_STRING=$SLURM_JOBID';print(line, file=fh)
   line = 'export SPARK_WORKER_DIR=$SLURM_TMPDIR';print(line, file=fh)
   line = '';print(line, file=fh)
