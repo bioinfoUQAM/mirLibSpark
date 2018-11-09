@@ -117,6 +117,7 @@ if __name__ == '__main__' :
   mcheck_param = paramDict['mcheck_param']          #'def'    # def : default parameters / mey : meyers parameters
 
   #= miRdup parameter
+  inactivateMirdup = paramDict['inactivateMirdup']
   mirdup_model = project_path + '/lib/miRdup_1.4/model/' + paramDict['mirdup_model']
   mirdup_jar = project_path + '/lib/miRdup_1.4/miRdup.jar'
   #mirdup_limit =  float(paramDict['mirdup_limit'])
@@ -411,12 +412,18 @@ if __name__ == '__main__' :
     #= Validating pre-mirna with miRdup zipWithUniqueId
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold']])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore']])
-    pre_mirdup_rdd = pre_fold_rdd.zipWithIndex()\
-                                 .map(mirdup_obj.run_miRdup)\
-                                 .filter(lambda e: e[1][4][3] == "true")\
-                                 .repartition(partition)
-    if reporting == 1: print(datetime.datetime.now(), 'NB pre_mirdup_rdd distinct: ', pre_mirdup_rdd.groupByKey().count(), '\t\tremoved sequences not satisfying miRdup model')
-    print(datetime.datetime.now(), 'pre_mirdup_rdd distinct') #= BOTTLE NECK
+    if inactivateMirdup == '0':
+      pre_mirdup_rdd = pre_fold_rdd.zipWithIndex()\
+                                   .map(mirdup_obj.run_miRdup)\
+                                   .filter(lambda e: e[1][4][3] == "true")\
+                                   .repartition(partition)
+      if reporting == 1: print(datetime.datetime.now(), 'NB pre_mirdup_rdd distinct: ', pre_mirdup_rdd.groupByKey().count(), '\t\tremoved sequences not satisfying miRdup model')
+      print(datetime.datetime.now(), 'pre_mirdup_rdd distinct') #= BOTTLE NECK
+    if inactivateMirdup == '1':
+      pre_mirdup_rdd = pre_fold_rdd.map(mirdup_obj.run_miRdup_dummy)\
+                                   .repartition(partition)
+      if reporting == 1: print(datetime.datetime.now(), 'NB pre_mirdup_rdd distinct: ', pre_mirdup_rdd.groupByKey().count(), '\t\tremoved sequences not satisfying miRdup model')
+      print(datetime.datetime.now(), 'pre_mirdup_rdd distinct') #= BOTTLE NECK
     
     
     #= Filtering by expression profile (< 20%)

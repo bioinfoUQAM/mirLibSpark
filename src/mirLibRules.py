@@ -469,7 +469,7 @@ class prog_miRdup ():
     self.mirdup_jar = mirdup_jar
     self.path_RNAfold = path_RNAfold
     
-  def __inactivate_run_miRdup (self, e):
+  def run_miRdup (self, e):
     '''
     java -jar ../lib/miRdup_1.4/miRdup.jar -v ../lib/miRdup_1.4/testFiles/julie_sequencesToValidate2.txt -c ../lib/miRdup_1.4//model/Viridiplantae.model -r /usr/local/bin/
     '''
@@ -502,12 +502,12 @@ class prog_miRdup ():
     e[0][1][4].append(mirdup_score)
     return e[0]
 
-  def run_miRdup (self, e):
+  def run_miRdup_dummy (self, e):
     mirdup_pred = 'true'
     mirdup_score = 'na'
-    e[0][1][4].append(mirdup_pred)
-    e[0][1][4].append(mirdup_score)
-    return e[0]
+    e[1][4].append(mirdup_pred)
+    e[1][4].append(mirdup_score)
+    return e
 
 
 class prog_knownNonMiRNA ():

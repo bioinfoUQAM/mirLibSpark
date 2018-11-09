@@ -49,6 +49,7 @@ def getOpt (parser):
     parser.add_argument('--perform_KEGGpathways_enrichment_analysis', action='store_true')
     parser.add_argument('--gene_vs_pathway_file')
     parser.add_argument('--pathway_description_file')
+    parser.add_argument('--inactivateMirdup', default='0', action='store_true')
     parser.add_argument('--mirdup_model', default='thaliana.model',\
                          choices=['Viridiplantae.model', 'thaliana.model'])
     parser.add_argument('--limit_s_freq', default='10')
@@ -62,7 +63,6 @@ def getOpt (parser):
     parser.add_argument('--pri_r_flank', default='200')
     parser.add_argument('--pre_flank', default='10')
     parser.add_argument('--temperature', default='25', help='Celsius')
-    #parser.add_argument('--mirdup_limit', default='0.98')
     parser.add_argument('--mcheck_param', default='def')
     parser.add_argument('--Max_Score_cutoff', default='170')
     parser.add_argument('--Max_Energy_cutoff', default='-15')
@@ -76,6 +76,7 @@ def getOpt (parser):
     args = parser.parse_args()
     #
     if args.reporting == True: args.reporting = '1'
+    if args.inactivateMirdup == True: args.inactivateMirdup = '1'
     #
     args.project_path = args.project_path.rstrip('/')
     if args.input_path == None: args.input_path = args.project_path + '/input/'
