@@ -452,7 +452,6 @@ if __name__ == '__main__' :
                                               .repartition(partition)\
                                               .map(lambda e: profile_obj.computeProfileFrq(e[1], broadcastVar_dict_bowtie_chromo_strand.value))\
                                               .filter(lambda e: int(e[1][5].split(',')[1]) / (float(e[1][5].split(',')[0]) + 0.1) > 0.2)
-                                              #.filter(lambda e: (e[1][0] + int(e[1][5].split(',')[1])) / (float(e[1][5].split(',')[0]) + 0.1) > 0.2)
       mergeProfileChromo_rdd = mergeProfileChromo_rdd.union(profile_value_rdd)\
                                                      .repartition(partition)\
                                                      .persist()
