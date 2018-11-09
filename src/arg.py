@@ -62,7 +62,7 @@ def getOpt (parser):
     parser.add_argument('--pri_r_flank', default='200')
     parser.add_argument('--pre_flank', default='10')
     parser.add_argument('--temperature', default='25', help='Celsius')
-    parser.add_argument('--mirdup_limit', default='0.98')
+    #parser.add_argument('--mirdup_limit', default='0.98')
     parser.add_argument('--mcheck_param', default='def')
     parser.add_argument('--Max_Score_cutoff', default='170')
     parser.add_argument('--Max_Energy_cutoff', default='-15')
