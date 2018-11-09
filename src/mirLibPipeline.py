@@ -119,7 +119,8 @@ if __name__ == '__main__' :
   #= miRdup parameter
   mirdup_model = project_path + '/lib/miRdup_1.4/model/' + paramDict['mirdup_model']
   mirdup_jar = project_path + '/lib/miRdup_1.4/miRdup.jar'
-  mirdup_limit =  float(paramDict['mirdup_limit'])
+  #mirdup_limit =  float(paramDict['mirdup_limit'])
+  mirdup_limit =  0.98 # not tunable
 
   #= miRanda parameter
   target_file = paramDict['target_file']
@@ -246,13 +247,13 @@ if __name__ == '__main__' :
     ## in : ('seq', freq)
     ## out: ('seq', freq)
     sr_low_rdd = collapse_rdd.filter(lambda e: int(e[1]) > limit_srna_freq)
-    if reporting == 1: print(datetime.datetime.now(), 'NB sr_low_rdd: ', sr_low_rdd.count(), '\t\tlow expression removed if counts <=', limit_srna_freq)
+    if reporting == 1: print(datetime.datetime.now(), 'NB sr_low_rdd: ', sr_low_rdd.count(), '\t\tremoved low expression if counts <=', limit_srna_freq)
     
     #= Filtering short length
     ## in : ('seq', freq)
     ## out: ('seq', freq)
     sr_short_rdd = sr_low_rdd.filter(lambda e: len(e[0]) > limit_len).persist()  # TO KEEP IT, reused in bowFrq_rdd 
-    if reporting == 1: print(datetime.datetime.now(), 'NB sr_short_rdd: ', sr_short_rdd.count(), '\t\tshort sequences removed if length <=', limit_len)
+    if reporting == 1: print(datetime.datetime.now(), 'NB sr_short_rdd: ', sr_short_rdd.count(), '\t\tremoved short sequences if length <=', limit_len)
     
     #= Filtering with DustMasker
     ## in : ('seq', freq)
@@ -262,7 +263,7 @@ if __name__ == '__main__' :
                             .filter(lambda e: e.isupper() and not e.startswith('>'))\
                             .map(lambda e: str(e.rstrip()))\
                             .persist()
-    if reporting == 1: print(datetime.datetime.now(), 'NB dmask_rdd: ', dmask_rdd.count(), '\t\t\tlow complexity sequences removed by dustmasker')
+    if reporting == 1: print(datetime.datetime.now(), 'NB dmask_rdd: ', dmask_rdd.count(), '\t\t\tremoved low complexity sequences by dustmasker')
 
     mergebowtie_rdd = sc.emptyRDD()
     for i in range(len(chromosomes)):
