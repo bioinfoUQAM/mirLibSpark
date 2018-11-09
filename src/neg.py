@@ -1,6 +1,8 @@
 '''
 script to create negative miRNA in raw format
 
+random position in the genome with length ranging from 18 to 25.
+
 author: Chao-Jung Wu
 date: 2017-08-17
 '''
