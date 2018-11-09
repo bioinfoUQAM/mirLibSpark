@@ -11,7 +11,7 @@ from __future__ import print_function
 
 def stringToPrint(i, ID, fh):
   line = '#!/bin/bash';print(line, file=fh)
-  line = '#SBATCH --job-name=wheat032_80libexp-181109_' + ID + '_' + i;print(line, file=fh)
+  line = '#SBATCH --job-name=181109_wheat032_80libexp_' + ID + '_' + i;print(line, file=fh)
   line = '#SBATCH --account=def-banire';print(line, file=fh)
   line = '#SBATCH --time=06:00:00';print(line, file=fh)
   line = '#SBATCH --nodes=1';print(line, file=fh)
