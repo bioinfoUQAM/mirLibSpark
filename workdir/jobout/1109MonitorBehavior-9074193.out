@@ -1,0 +1,168 @@
+Requirement already satisfied (use --upgrade to upgrade): requests in /home/cjwu/.local/lib/python2.7/site-packages
+Requirement already satisfied (use --upgrade to upgrade): idna<2.8,>=2.5 in /home/cjwu/.local/lib/python2.7/site-packages (from requests)
+Requirement already satisfied (use --upgrade to upgrade): chardet<3.1.0,>=3.0.2 in /home/cjwu/.local/lib/python2.7/site-packages (from requests)
+Requirement already satisfied (use --upgrade to upgrade): urllib3<1.24,>=1.21.1 in /home/cjwu/.local/lib/python2.7/site-packages (from requests)
+Requirement already satisfied (use --upgrade to upgrade): certifi>=2017.4.17 in /home/cjwu/.local/lib/python2.7/site-packages (from requests)
+Requirement already satisfied (use --upgrade to upgrade): statsmodels in /home/cjwu/.local/lib/python2.7/site-packages (from -r requirements.txt (line 4))
+Requirement already satisfied (use --upgrade to upgrade): seaborn in /home/cjwu/.local/lib/python2.7/site-packages (from -r requirements.txt (line 5))
+Requirement already satisfied (use --upgrade to upgrade): scipy in /home/cjwu/.local/lib/python2.7/site-packages (from statsmodels->-r requirements.txt (line 4))
+Requirement already satisfied (use --upgrade to upgrade): pandas in /home/cjwu/.local/lib/python2.7/site-packages (from statsmodels->-r requirements.txt (line 4))
+Requirement already satisfied (use --upgrade to upgrade): patsy in /home/cjwu/.local/lib/python2.7/site-packages (from statsmodels->-r requirements.txt (line 4))
+Requirement already satisfied (use --upgrade to upgrade): numpy>=1.8.2 in /home/cjwu/.local/lib/python2.7/site-packages (from scipy->statsmodels->-r requirements.txt (line 4))
+Requirement already satisfied (use --upgrade to upgrade): pytz>=2011k in /home/cjwu/.local/lib/python2.7/site-packages (from pandas->statsmodels->-r requirements.txt (line 4))
+Requirement already satisfied (use --upgrade to upgrade): python-dateutil>=2.5.0 in /home/cjwu/.local/lib/python2.7/site-packages (from pandas->statsmodels->-r requirements.txt (line 4))
+Requirement already satisfied (use --upgrade to upgrade): six in /home/cjwu/.local/lib/python2.7/site-packages (from patsy->statsmodels->-r requirements.txt (line 4))
+starting org.apache.spark.deploy.master.Master, logging to /home/cjwu/.spark/2.3.0/log/spark-9074193-org.apache.spark.deploy.master.Master-1-gra788.out
+localhost: starting org.apache.spark.deploy.worker.Worker, logging to /home/cjwu/.spark/2.3.0/log/spark-cjwu-org.apache.spark.deploy.worker.Worker-1-gra788.out
+
+Initiating and verifying parameters ...
+============================================================
+
+Gap_Penalty :  -15
+Max_Energy_cutoff :  -15
+Max_Score_cutoff :  170
+adapter :  none
+b_index_path :  /project/6001780/cjwu/gitRepo/testprofile/dbs/ATH_TAIR10/bowtie_index/
+bowtie_index_prefix :  ATH_TAIR10
+chromosomes :  All
+diffguide_file :  none
+dummy :  False
+gene_vs_pathway_file :  /project/6001780/cjwu/gitRepo/testprofile/dbs/ATH_TAIR10/ath_gene_vs_pathway.txt
+genome_path :  /project/6001780/cjwu/gitRepo/testprofile/dbs/ATH_TAIR10/Genome/
+input_path :  /home/cjwu/project/cjwu/gitRepo/testprofile/input_ath/
+input_type :  raw
+known_non_file :  /project/6001780/cjwu/gitRepo/testprofile/dbs/ATH_TAIR10/TAIR10_ncRNA_CDS.gff
+limit_len :  19
+limit_m_freq :  100
+limit_nbLoc :  15
+limit_s_freq :  10
+mcheck_param :  def
+message :  None
+miRNA_len_lowerlimit :  21
+miRNA_len_upperlimit :  24
+mirdup_model :  thaliana.model
+nbTargets :  100
+output_path :  /project/6001780/cjwu/gitRepo/testprofile/output/
+pathway_description_file :  /project/6001780/cjwu/gitRepo/testprofile/dbs/ATH_TAIR10/ath_pathway_description.txt
+perform_KEGGpathways_enrichment_analysis :  False
+perform_differnatial_analysis :  False
+pre_flank :  10
+premirna_max_len :  300
+pri_l_flank :  500
+pri_r_flank :  200
+project_path :  /project/6001780/cjwu/gitRepo/testprofile
+reporting :  1
+sc_appname :  mirLibSpark
+sc_execmemory :  20g
+sc_master :  local[*]
+sc_mstrmemory :  20g
+sc_partition :  64
+species :  ath
+target_file :  /project/6001780/cjwu/gitRepo/testprofile/dbs/ATH_TAIR10/Arabidopsis_thaliana.TAIR10.cdna.all.fa
+temperature :  25
+============================================================
+
+infiles:
+100.txt
+neg_ath1000.txt
+high_conf_mature_ath_uniq_raw.txt
+
+====================== mirLibSpark =========================
+====================== local-1541850896407 =================
+============================================================
+
+2018-11-10 06:54:59.307494 begin time
+--Processing of the library:  100.txt
+  Start of miRNA prediction...
+2018-11-10 06:54:59.307610 start
+2018-11-10 06:55:01.051056 NB distFile_rdd:  1838879 		input instances
+2018-11-10 06:55:01.666889 NB sr_low_rdd:  41723 		removed low expression if counts <= 9
+2018-11-10 06:55:02.250194 NB sr_short_rdd:  41650 		removed short sequences if length <= 18
+2018-11-10 06:55:03.114708 NB dmask_rdd:  41431 			removed low complexity sequences by dustmasker
+2018-11-10 06:55:03.729514 NB mergebowtie_rdd:  38148 		removed sequences failed genomic alignment
+2018-11-10 06:55:05.868423 mergebowtie_rdd
+2018-11-10 06:55:05.915955 NB bowFrq_rdd:  38148
+2018-11-10 06:55:07.094713 NB mr_meyers2018len_rdd:  36353 	removed sequences if length >=  25 and <= 20
+2018-11-10 06:55:07.349023 NB mr_low_rdd:  1874 			removed sequences with counts <=  99
+2018-11-10 06:55:07.613098 NB nbLoc_rdd:  1778 			removed sequences with numbers of genomic alignment >=  16
+2018-11-10 06:55:07.859808 flat_rdd
+2018-11-10 06:55:07.859862 excluKnownNon_rdd distinct:  1778 	removed sequences known for not being a miRNA (CDS|rRNA|snoRNA|snRNA|tRNA)
+2018-11-10 06:55:26.261618 NB mergeChromosomesResults:  1778
+2018-11-10 06:55:33.338343 mergeChromosomesResults_rdd
+2018-11-10 06:55:33.353690 NB pri_mircheck_rdd:  127 		removed sequences failed mircheck
+2018-11-10 06:57:41.611154 pri_mircheck_rdd
+2018-11-10 06:57:41.611490 NB len300_rdd:  100 		removed sequences with precursor length >=  301
+2018-11-10 06:57:42.211796 NB one_loop_rdd distinct :  79 		removed sequences with precursor second loop not satisfying meyers2018
+2018-11-10 06:57:42.779850 pre_fold_rdd
+2018-11-10 06:57:46.178653 NB pre_mirdup_rdd distinct:  79 		removed sequences not satisfying miRdup model
+2018-11-10 06:57:47.789370 pre_mirdup_rdd distinct
+2018-11-10 06:57:51.822407 NB slim_rdd NON distinct:  160
+NB slim_rdd distinct:  71 		removed sequences not dominating the expression within precursor range (expressions of their variants are considered)
+2018-11-10 06:57:55.450068 slim_rdd
+2018-11-10 06:57:55.593070 libresults=slim_rdd.collect()
+miRNA prediction time for lib  100 :  176.285528898
+  End of miRNA prediction     
+--Processing of the library:  neg_ath1000.txt
+  Start of miRNA prediction...
+2018-11-10 06:57:55.628246 start
+2018-11-10 06:57:55.726900 NB distFile_rdd:  1000 		input instances
+2018-11-10 06:57:55.862129 NB sr_low_rdd:  1000 		removed low expression if counts <= 9
+2018-11-10 06:57:56.014140 NB sr_short_rdd:  881 		removed short sequences if length <= 18
+2018-11-10 06:57:56.258793 NB dmask_rdd:  864 			removed low complexity sequences by dustmasker
+2018-11-10 06:57:56.690462 NB mergebowtie_rdd:  862 		removed sequences failed genomic alignment
+2018-11-10 06:57:57.915599 mergebowtie_rdd
+2018-11-10 06:57:57.954460 NB bowFrq_rdd:  862
+2018-11-10 06:57:58.719126 NB mr_meyers2018len_rdd:  485 	removed sequences if length >=  25 and <= 20
+2018-11-10 06:57:58.990000 NB mr_low_rdd:  485 			removed sequences with counts <=  99
+2018-11-10 06:57:59.232398 NB nbLoc_rdd:  475 			removed sequences with numbers of genomic alignment >=  16
+2018-11-10 06:57:59.470171 flat_rdd
+2018-11-10 06:57:59.470232 excluKnownNon_rdd distinct:  475 	removed sequences known for not being a miRNA (CDS|rRNA|snoRNA|snRNA|tRNA)
+2018-11-10 06:58:14.136550 NB mergeChromosomesResults:  475
+2018-11-10 06:58:18.393522 mergeChromosomesResults_rdd
+2018-11-10 06:58:18.414289 NB pri_mircheck_rdd:  12 		removed sequences failed mircheck
+2018-11-10 06:59:03.381459 pri_mircheck_rdd
+2018-11-10 06:59:03.381800 NB len300_rdd:  10 		removed sequences with precursor length >=  301
+2018-11-10 06:59:03.889459 NB one_loop_rdd distinct :  9 		removed sequences with precursor second loop not satisfying meyers2018
+2018-11-10 06:59:04.390727 pre_fold_rdd
+2018-11-10 06:59:07.017194 NB pre_mirdup_rdd distinct:  9 		removed sequences not satisfying miRdup model
+2018-11-10 06:59:07.995098 pre_mirdup_rdd distinct
+2018-11-10 06:59:10.030538 NB slim_rdd NON distinct:  12
+NB slim_rdd distinct:  9 		removed sequences not dominating the expression within precursor range (expressions of their variants are considered)
+2018-11-10 06:59:12.320381 slim_rdd
+2018-11-10 06:59:12.451768 libresults=slim_rdd.collect()
+miRNA prediction time for lib  neg_ath1000 :  76.8235650063
+  End of miRNA prediction     
+--Processing of the library:  high_conf_mature_ath_uniq_raw.txt
+  Start of miRNA prediction...
+2018-11-10 06:59:12.460694 start
+2018-11-10 06:59:12.551800 NB distFile_rdd:  100 		input instances
+2018-11-10 06:59:12.708205 NB sr_low_rdd:  100 		removed low expression if counts <= 9
+2018-11-10 06:59:12.875978 NB sr_short_rdd:  100 		removed short sequences if length <= 18
+2018-11-10 06:59:13.174868 NB dmask_rdd:  100 			removed low complexity sequences by dustmasker
+2018-11-10 06:59:13.638379 NB mergebowtie_rdd:  100 		removed sequences failed genomic alignment
+2018-11-10 06:59:14.869214 mergebowtie_rdd
+2018-11-10 06:59:14.909628 NB bowFrq_rdd:  100
+2018-11-10 06:59:15.715829 NB mr_meyers2018len_rdd:  91 	removed sequences if length >=  25 and <= 20
+2018-11-10 06:59:15.962658 NB mr_low_rdd:  91 			removed sequences with counts <=  99
+2018-11-10 06:59:16.208069 NB nbLoc_rdd:  91 			removed sequences with numbers of genomic alignment >=  16
+2018-11-10 06:59:16.461150 flat_rdd
+2018-11-10 06:59:16.461208 excluKnownNon_rdd distinct:  91 	removed sequences known for not being a miRNA (CDS|rRNA|snoRNA|snRNA|tRNA)
+2018-11-10 06:59:30.937951 NB mergeChromosomesResults:  91
+2018-11-10 06:59:34.659685 mergeChromosomesResults_rdd
+2018-11-10 06:59:34.678126 NB pri_mircheck_rdd:  85 		removed sequences failed mircheck
+2018-11-10 06:59:46.544657 pri_mircheck_rdd
+2018-11-10 06:59:46.544774 NB len300_rdd:  85 		removed sequences with precursor length >=  301
+2018-11-10 06:59:47.121466 NB one_loop_rdd distinct :  84 		removed sequences with precursor second loop not satisfying meyers2018
+2018-11-10 06:59:47.641404 pre_fold_rdd
+2018-11-10 06:59:51.089484 NB pre_mirdup_rdd distinct:  84 		removed sequences not satisfying miRdup model
+2018-11-10 06:59:52.839691 pre_mirdup_rdd distinct
+2018-11-10 06:59:56.138777 NB slim_rdd NON distinct:  227
+NB slim_rdd distinct:  84 		removed sequences not dominating the expression within precursor range (expressions of their variants are considered)
+2018-11-10 06:59:59.526605 slim_rdd
+2018-11-10 06:59:59.668384 libresults=slim_rdd.collect()
+miRNA prediction time for lib  high_conf_mature_ath_uniq_raw :  47.207736969
+  End of miRNA prediction     
+Lib 100	0:02:56.285529	176.286
+Lib high_conf_mature_ath_uniq_raw	0:00:47.207737	47.208
+Lib neg_ath1000	0:01:16.823565	76.824
+PrecursorVis done
