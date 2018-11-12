@@ -140,6 +140,7 @@ def run_miRDP ():
 
 
 project_path = find_project_path ()
+project_path = '/home/cjwu/project/cjwu/gitRepo/testprofile/mirdeep_p'
 mirdeep_path = project_path + '/mirdeep_p/'
 rep_input = project_path + '/input_mirdeep/'
 options = ['tair9', 'tair10']
