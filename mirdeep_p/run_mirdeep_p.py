@@ -130,7 +130,7 @@ def run_miRDP ():
     print 'miRDP duration: ', infile, duration, 'sec'
 
     os.system('cat result_* > result_combinded.txt')
-    os.system('cut -f1 result_combinded.txt | grep \'seq_\' | sort | uniq | wc -l')
+    os.system('cut -f1 result_combinded.txt | grep \'mature_seq\' | sort | uniq | wc -l')
     os.system('rm -f indata* *.gff* precursors_250_structure result_combinded.txt bowtie-index/*precursors*')
   
   os.system('rm -f indata* *.gff* precursors_250_structure *.fa chromosome_length result_combinded.txt bowtie-index/*precursors*')
