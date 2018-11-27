@@ -20,7 +20,8 @@ def find_project_path ():
 def getOpt (parser): 
     project_path = find_project_path ()
     #
-    parser.add_argument('--dummy', action='store_true')
+    parser.add_argument('--dummy', action='store_true', help='display configurations and exit')
+    parser.add_argument('--reporting', default='0', action='store_true', help='report the number of instances passing each of the parameters. Activating this option will result in significant prolonged execution time')
     parser.add_argument('--message', default = 'None')
     parser.add_argument('--project_path', default = project_path)
     parser.add_argument('--input_path')
@@ -48,20 +49,20 @@ def getOpt (parser):
     parser.add_argument('--perform_KEGGpathways_enrichment_analysis', action='store_true')
     parser.add_argument('--gene_vs_pathway_file')
     parser.add_argument('--pathway_description_file')
+    parser.add_argument('--inactivateMirdup', default='0', action='store_true')
     parser.add_argument('--mirdup_model', default='thaliana.model',\
                          choices=['Viridiplantae.model', 'thaliana.model'])
     parser.add_argument('--limit_s_freq', default='10')
     parser.add_argument('--limit_m_freq', default='100')
-    parser.add_argument('--limit_len', default='18')
-    parser.add_argument('--miRNA_len_upperlimit', default='25')
-    parser.add_argument('--miRNA_len_lowerlimit', default='20')
-    parser.add_argument('--premirna_max_len', default='301')
+    parser.add_argument('--limit_len', default='19')
+    parser.add_argument('--miRNA_len_upperlimit', default='24')
+    parser.add_argument('--miRNA_len_lowerlimit', default='21')
+    parser.add_argument('--premirna_max_len', default='300')
     parser.add_argument('--limit_nbLoc', default='15')
     parser.add_argument('--pri_l_flank', default='500')
     parser.add_argument('--pri_r_flank', default='200')
     parser.add_argument('--pre_flank', default='10')
     parser.add_argument('--temperature', default='25', help='Celsius')
-    parser.add_argument('--mirdup_limit', default='0.98')
     parser.add_argument('--mcheck_param', default='def')
     parser.add_argument('--Max_Score_cutoff', default='170')
     parser.add_argument('--Max_Energy_cutoff', default='-15')
@@ -73,6 +74,9 @@ def getOpt (parser):
     parser.add_argument('--sc_master', default='local[*]')
     #
     args = parser.parse_args()
+    #
+    if args.reporting == True: args.reporting = '1'
+    if args.inactivateMirdup == True: args.inactivateMirdup = '1'
     #
     args.project_path = args.project_path.rstrip('/')
     if args.input_path == None: args.input_path = args.project_path + '/input/'

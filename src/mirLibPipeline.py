@@ -33,7 +33,7 @@ import arg
 
 #= 1: display intermediate rdd.count(), this makes the time longer
 #= 0: not reporting rdd.count() makes the time shorter
-reporting = 0 
+#reporting = 1
 
 if __name__ == '__main__' :
 
@@ -67,6 +67,7 @@ if __name__ == '__main__' :
   paramDict = broadcastVar_paramDict.value
 
   #= Parameters and cutoffs =========================
+  reporting = int(paramDict['reporting'])
   #= paths
   input_type = paramDict['input_type']
   adapter = ut.tr_U_T (paramDict['adapter'])
@@ -84,13 +85,13 @@ if __name__ == '__main__' :
   genome_path = paramDict['genome_path'] 
 
   #= cutoffs
-  limit_srna_freq = int(paramDict['limit_s_freq'])               #sRNA freq, 			keep > 10, so keep 11, 12, 13 ...
-  limit_mrna_freq = int(paramDict['limit_m_freq'])               #miRNA freq,			keep > 100, so keep 101, 102, 103, ...
-  limit_len = int(paramDict['limit_len'])                        #sRNA length,			keep > 18, so keep 19, 20, 21, ...
-  limit_nbLoc = int(paramDict['limit_nbLoc'])                    #nbLoc mapped with bowtie,	keep < 15, so keep 14, 13, 12, ...
-  miRNA_len_upperlimit = int(paramDict['miRNA_len_upperlimit'])  #				keep < 25, so keep 24, 23, 22, ...
-  miRNA_len_lowerlimit = int(paramDict['miRNA_len_lowerlimit'])  #				keep > 20, so keep 21, 22, 23, ...
-  premirna_max_len = int(paramDict['premirna_max_len'])          # 				keep < 301, so keep 300, 299, 298, ...
+  limit_srna_freq = int(paramDict['limit_s_freq']) -1            #sRNA freq, 			keep > 10, so keep 11, 12, 13 ...
+  limit_mrna_freq = int(paramDict['limit_m_freq']) -1            #miRNA freq,			keep > 100, so keep 101, 102, 103, ...
+  limit_len = int(paramDict['limit_len']) -1                     #sRNA length,			keep > 18, so keep 19, 20, 21, ...
+  limit_nbLoc = int(paramDict['limit_nbLoc']) +1                 #nbLoc mapped with bowtie,	keep < 15, so keep 14, 13, 12, ...
+  miRNA_len_upperlimit = int(paramDict['miRNA_len_upperlimit']) + 1  #				keep < 25, so keep 24, 23, 22, ...
+  miRNA_len_lowerlimit = int(paramDict['miRNA_len_lowerlimit']) - 1  #				keep > 20, so keep 21, 22, 23, ...
+  premirna_max_len = int(paramDict['premirna_max_len']) + 1          # 				keep < 301, so keep 300, 299, 298, ...
 
 
   #= bowtie
@@ -116,9 +117,11 @@ if __name__ == '__main__' :
   mcheck_param = paramDict['mcheck_param']          #'def'    # def : default parameters / mey : meyers parameters
 
   #= miRdup parameter
+  inactivateMirdup = paramDict['inactivateMirdup']
   mirdup_model = project_path + '/lib/miRdup_1.4/model/' + paramDict['mirdup_model']
   mirdup_jar = project_path + '/lib/miRdup_1.4/miRdup.jar'
-  mirdup_limit =  float(paramDict['mirdup_limit'])
+  #mirdup_limit =  float(paramDict['mirdup_limit'])
+  mirdup_limit =  0.98 # not tunable
 
   #= miRanda parameter
   target_file = paramDict['target_file']
@@ -183,7 +186,7 @@ if __name__ == '__main__' :
   
   for infile in infiles :
     if infile[-1:] == '~': 
-      print('omitting infile');continue
+      print('omitting infile', infile);continue
     print ("--Processing of the library: ", infile)
 
     inBasename = os.path.splitext(infile)[0] #= lib name
@@ -206,7 +209,7 @@ if __name__ == '__main__' :
     if distFile_rdd.isEmpty():
       print(infile, 'is an empty file, omit this file')
       continue
-    if reporting == 1: print(datetime.datetime.now(), 'NB distFile_rdd: ', distFile_rdd.count())#
+    if reporting == 1: print(datetime.datetime.now(), 'NB distFile_rdd: ', distFile_rdd.count(), '\t\tinput instances')#
 
     #= Unify different input formats to "seq freq" elements
     if input_type == 'raw':
@@ -245,13 +248,13 @@ if __name__ == '__main__' :
     ## in : ('seq', freq)
     ## out: ('seq', freq)
     sr_low_rdd = collapse_rdd.filter(lambda e: int(e[1]) > limit_srna_freq)
-    if reporting == 1: print(datetime.datetime.now(), 'NB sr_low_rdd: ', sr_low_rdd.count())
+    if reporting == 1: print(datetime.datetime.now(), 'NB sr_low_rdd: ', sr_low_rdd.count(), '\t\tremoved low expression if counts <=', limit_srna_freq)
     
     #= Filtering short length
     ## in : ('seq', freq)
     ## out: ('seq', freq)
     sr_short_rdd = sr_low_rdd.filter(lambda e: len(e[0]) > limit_len).persist()  # TO KEEP IT, reused in bowFrq_rdd 
-    if reporting == 1: print(datetime.datetime.now(), 'NB sr_short_rdd: ', sr_short_rdd.count())
+    if reporting == 1: print(datetime.datetime.now(), 'NB sr_short_rdd: ', sr_short_rdd.count(), '\t\tremoved short sequences if length <=', limit_len)
     
     #= Filtering with DustMasker
     ## in : ('seq', freq)
@@ -261,7 +264,7 @@ if __name__ == '__main__' :
                             .filter(lambda e: e.isupper() and not e.startswith('>'))\
                             .map(lambda e: str(e.rstrip()))\
                             .persist()
-    if reporting == 1: print(datetime.datetime.now(), 'NB dmask_rdd: ', dmask_rdd.count())
+    if reporting == 1: print(datetime.datetime.now(), 'NB dmask_rdd: ', dmask_rdd.count(), '\t\t\tremoved low complexity sequences by dustmasker')
 
     mergebowtie_rdd = sc.emptyRDD()
     for i in range(len(chromosomes)):
@@ -283,7 +286,7 @@ if __name__ == '__main__' :
                                        .persist()
       #================================================================================================================
       #================================================================================================================
-    if reporting == 1: print(datetime.datetime.now(), 'NB mergebowtie_rdd: ', mergebowtie_rdd.count())
+    if reporting == 1: print(datetime.datetime.now(), 'NB mergebowtie_rdd: ', mergebowtie_rdd.count(), '\t\tremoved sequences failed genomic alignment')
     print(datetime.datetime.now(), 'mergebowtie_rdd')
 
     
@@ -299,19 +302,19 @@ if __name__ == '__main__' :
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     mr_meyers2018len_rdd = bowFrq_rdd.filter(lambda e: len(e[0]) < miRNA_len_upperlimit and len(e[0]) > miRNA_len_lowerlimit)
-    if reporting == 1: print(datetime.datetime.now(), 'NB mr_meyers2018len_rdd: ', mr_meyers2018len_rdd.count())
+    if reporting == 1: print(datetime.datetime.now(), 'NB mr_meyers2018len_rdd: ', mr_meyers2018len_rdd.count(), '\tremoved sequences if length >= ', miRNA_len_upperlimit, 'and <=', miRNA_len_lowerlimit)
 
     #= Filtering miRNA low frequency
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     mr_low_rdd = mr_meyers2018len_rdd.filter(lambda e: e[1][0] > limit_mrna_freq)
-    if reporting == 1: print(datetime.datetime.now(), 'NB mr_low_rdd: ', mr_low_rdd.count())
+    if reporting == 1: print(datetime.datetime.now(), 'NB mr_low_rdd: ', mr_low_rdd.count(), '\t\t\tremoved sequences with counts <= ', limit_mrna_freq)
   
     #= Filtering high nbLocations and zero location
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     nbLoc_rdd = mr_low_rdd.filter(lambda e: e[1][1] > 0 and e[1][1] < limit_nbLoc)
-    if reporting == 1: print(datetime.datetime.now(), 'NB nbLoc_rdd: ', nbLoc_rdd.count())
+    if reporting == 1: print(datetime.datetime.now(), 'NB nbLoc_rdd: ', nbLoc_rdd.count(), '\t\t\tremoved sequences with numbers of genomic alignment >= ', limit_nbLoc)
     
     #= Flatmap the RDD
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
@@ -323,7 +326,7 @@ if __name__ == '__main__' :
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr])
     excluKnownNon_rdd = flat_rdd.filter(kn_obj.knFilterByCoor)
-    if reporting == 1: print(datetime.datetime.now(), 'excluKnownNon_rdd distinct: ', excluKnownNon_rdd.groupByKey().count())
+    if reporting == 1: print(datetime.datetime.now(), 'excluKnownNon_rdd distinct: ', excluKnownNon_rdd.groupByKey().count(), '\tremoved sequences known for not being a miRNA (CDS|rRNA|snoRNA|snRNA|tRNA)')
 
     mergeChromosomesResults_rdd = sc.emptyRDD()
     for i in range(len(chromosomes)):
@@ -358,13 +361,13 @@ if __name__ == '__main__' :
                                    .map(lambda e: (e[0] + e[1][2][0] + e[1][2][1] + str(e[1][2][2]) + e[1][3][4] + e[1][3][5], e)  )\
                                    .reduceByKey(lambda a, b: a)\
                                    .map(lambda e: e[1])
-    if reporting == 1: print(datetime.datetime.now(), 'NB pri_mircheck_rdd: ', pri_mircheck_rdd.groupByKey().count())
+    if reporting == 1: print(datetime.datetime.now(), 'NB pri_mircheck_rdd: ', pri_mircheck_rdd.groupByKey().count(), '\t\tremoved sequences failed mircheck')
     print(datetime.datetime.now(), 'pri_mircheck_rdd') #= BOTTLE NECK
 
 
     #= Filtering len(pre-mirna) < 301 nt
     len300_rdd = pri_mircheck_rdd.filter(lambda e: (int(e[1][3][5]) - int(e[1][3][4])) < premirna_max_len)
-    if reporting == 1: print(datetime.datetime.now(), 'NB len300_rdd: ', len300_rdd.groupByKey().count())
+    if reporting == 1: print(datetime.datetime.now(), 'NB len300_rdd: ', len300_rdd.groupByKey().count(), '\t\tremoved sequences with precursor length >= ', premirna_max_len)
     
   
     #======================#
@@ -375,7 +378,7 @@ if __name__ == '__main__' :
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
     one_loop_rdd = len300_rdd.filter(lambda e: ut.containsOnlyOneLoop(e[1][3][2][int(e[1][3][4]) : int(e[1][3][5])+1]))\
                              .repartition(partition)
-    if reporting == 1: print(datetime.datetime.now(), 'NB one_loop_rdd distinct : ', one_loop_rdd.groupByKey().count())
+    if reporting == 1: print(datetime.datetime.now(), 'NB one_loop_rdd distinct : ', one_loop_rdd.groupByKey().count(), '\t\tremoved sequences with precursor second loop not satisfying meyers2018')
 
 
 
@@ -403,18 +406,24 @@ if __name__ == '__main__' :
     #================================================================================================================
    
 
-    #======================#
+    #======================#low compexity sequences removed by dustmasker
     #= REPARTITION        =#
     #======================#
     #= Validating pre-mirna with miRdup zipWithUniqueId
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold']])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore']])
-    pre_mirdup_rdd = pre_fold_rdd.zipWithIndex()\
-                                 .map(mirdup_obj.run_miRdup)\
-                                 .filter(lambda e: e[1][4][3] == "true")\
-                                 .repartition(partition)
-    if reporting == 1: print(datetime.datetime.now(), 'NB pre_mirdup_rdd distinct: ', pre_mirdup_rdd.groupByKey().count())
-    print(datetime.datetime.now(), 'pre_mirdup_rdd distinct') #= BOTTLE NECK
+    if inactivateMirdup == '0':
+      pre_mirdup_rdd = pre_fold_rdd.zipWithIndex()\
+                                   .map(mirdup_obj.run_miRdup)\
+                                   .filter(lambda e: e[1][4][3] == "true")\
+                                   .repartition(partition)
+      if reporting == 1: print(datetime.datetime.now(), 'NB pre_mirdup_rdd distinct: ', pre_mirdup_rdd.groupByKey().count(), '\t\tremoved sequences not satisfying miRdup model')
+      print(datetime.datetime.now(), 'pre_mirdup_rdd distinct') #= BOTTLE NECK
+    if inactivateMirdup == '1':
+      pre_mirdup_rdd = pre_fold_rdd.map(mirdup_obj.run_miRdup_dummy)\
+                                   .repartition(partition)
+      if reporting == 1: print(datetime.datetime.now(), 'NB pre_mirdup_rdd distinct: ', pre_mirdup_rdd.groupByKey().count(), '\t\tremoved sequences not satisfying miRdup model')
+      print(datetime.datetime.now(), 'pre_mirdup_rdd distinct') #= BOTTLE NECK
     
     
     #= Filtering by expression profile (< 20%)
@@ -442,7 +451,7 @@ if __name__ == '__main__' :
       profile_value_rdd = profile_keyvalue_rdd.filter(lambda e: e[0] == chromo_strand)\
                                               .repartition(partition)\
                                               .map(lambda e: profile_obj.computeProfileFrq(e[1], broadcastVar_dict_bowtie_chromo_strand.value))\
-                                              .filter(lambda e: e[1][0] / (float(e[1][5]) + 0.1) > 0.2)
+                                              .filter(lambda e: int(e[1][5].split(',')[1]) / (float(e[1][5].split(',')[0]) + 0.1) > 0.2)
       mergeProfileChromo_rdd = mergeProfileChromo_rdd.union(profile_value_rdd)\
                                                      .repartition(partition)\
                                                      .persist()
@@ -453,7 +462,7 @@ if __name__ == '__main__' :
 
 
     if reporting == 1: print(datetime.datetime.now(), 'NB slim_rdd NON distinct: ', slim_rdd.count())
-    print('NB slim_rdd distinct: ', slim_rdd.groupByKey().count()) #= always report the nb of final prediction
+    print('NB slim_rdd distinct: ', slim_rdd.groupByKey().count(), '\t\tremoved sequences not dominating the expression within precursor range (expressions of their variants are considered)') #= always report the nb of final prediction
     print(datetime.datetime.now(), 'slim_rdd')
     
     #= collecting final miRNA predictions
@@ -462,7 +471,7 @@ if __name__ == '__main__' :
 
     endLib = time.time() 
     timeDict[inBasename] = endLib - startLib
-    print ('miRNA predcition time for lib ', inBasename, ': ', timeDict[inBasename])
+    print ('miRNA prediction time for lib ', inBasename, ': ', timeDict[inBasename])
     print ('  End of miRNA prediction     ', end='\n')
 
     #= write results to a file

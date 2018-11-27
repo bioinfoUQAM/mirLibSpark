@@ -16,16 +16,19 @@ def calculate_accuracy (tp, tn, fp, fn):
   acc = (tp + tn)/ float(tp + tn + fp + fn)
   return round (acc, 3)
 
+def sensitivity (tp, fn):
+  sens = tp / float(tp + fn)
+  return round (sens, 3)
+
 
 TP = 82
 TN = 990
 FP = 10
 FN = 18
 
-#= no 300 filter
 #===========
-TP = 74
-FP = 1
+TP = 84
+FP = 9
 
 FN = 100 - TP
 TN = 1000 - FP
@@ -33,6 +36,7 @@ TN = 1000 - FP
   
 f1 = calculate_F1_score (TP, TN, FP, FN)
 acc = calculate_accuracy (TP, TN, FP, FN)
+sens = sensitivity (TP, FN)
 
 print('TP\tTN\tFP\tFN\tF1\tAccuracy')
 data = [str(x) for x in [TP, TN, FP, FN, f1, acc]]

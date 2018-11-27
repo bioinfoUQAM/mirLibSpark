@@ -331,8 +331,31 @@ x 8762942     cjwu def-banire_c jv2-20-ath100t  PD N/A     30:00     1   32 (nul
  [memorystore] cjwu [~/project/cjwu/init_mirLibSpark/workdir]
  $ sbatch pyspark_submit_jv2_12_wheat032.sh 
 Submitted batch job 8791519
+Job ID: 8791519
+Cluster: graham
+User/Group: cjwu/cjwu
+State: COMPLETED (exit code 0)
+Nodes: 1
+Cores per node: 32
+CPU Utilized: 01:21:39
+CPU Efficiency: 1.92% of 2-22:56:00 core-walltime
+Job Wall-clock time: 02:13:00
+Memory Utilized: 66.08 GB
+Memory Efficiency: 58.84% of 112.30 GB
+
 
 #= Xms8g Xmx16g
  [memorystore] cjwu [~/project/cjwu/init_mirLibSpark/workdir]
  $ sbatch pyspark_submit_jv2_12_wheat032.sh 
 Submitted batch job 8791542
+Job ID: 8791542
+Cluster: graham
+User/Group: cjwu/cjwu
+State: OUT_OF_MEMORY (exit code 0)
+Nodes: 1
+Cores per node: 32
+CPU Utilized: 00:53:27
+CPU Efficiency: 1.46% of 2-13:07:12 core-walltime
+Job Wall-clock time: 01:54:36
+Memory Utilized: 75.07 GB
+Memory Efficiency: 66.84% of 112.30 GB

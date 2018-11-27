@@ -37,9 +37,21 @@ sub miR_check{
         $MAX_MIR_AS_BULGE = 2;    # maximum total # assymetrically unpaired bases in mir			#2 par defaut
         $MIN_UNPAIR = 1;          # minimum number of unpair bases in acceptable extended mirs/mir*s
         $BP_EXTENSION = 2;        # number of nt to extend mirs and mir*s
-        $PRINT = 0;               # print diagnostic output to screen
+        $PRINT = 0;               # print diagnostic output to screen    
+    }elsif($param eq "m18"){
+        # #parameters for miRNA checking (Meyers et al 2018) 
+        $MAX_UNPAIR = 4;          # max # unpaired bases in putative mir									#6 par defaut
+        $MAX_STAR_UNPAIR = 5;     # max # unpaired bases in putative mir*							#6 par defaut
+        $MAX_SIZEDIFFERENCE = 3;  # max size difference between mir and mir*
+        $MAX_MIR_GAP = 2;         # longest acceptable run of unpaired bases in mir						#3 par defaut
+        $MAX_STAR_GAP = 3;        # longest acceptable run of unpaired bases in mir*
+        $MIN_FBACK_SIZE = 60;     # shortest acceptable length of folback including mir and mir*	#54 par defaut
+        $MAX_MIR_AS_BULGE = 2;    # maximum total # assymetrically unpaired bases in mir			#2 par defaut
+        $MIN_UNPAIR = 1;          # minimum number of unpair bases in acceptable extended mirs/mir*s
+        $BP_EXTENSION = 2;        # number of nt to extend mirs and mir*s
+        $PRINT = 0;               # print diagnostic output to screen    
     }else{
-        die "Error!! you have to specify the parameters def or mey\n";
+        die "Error!! you have to specify the parameters def or mey or m18\n";
     }
 
     while (@_)

@@ -86,6 +86,7 @@ def bowtieBuild (fastaFile, NAMEbase):
   example: bowtie-build -f TAIR10_chr1.fas a_thaliana_t10_Chr1
   result: a_thaliana_t10_Chr1.1.ebwt and other files, total 6 files.
   '''
+  #cmd = 'bowtie-build --threads 32 -f ' + fastaFile + ' ' + NAMEbase #= --threads not tested yet
   cmd = 'bowtie-build -f ' + fastaFile + ' ' + NAMEbase
   os.system(cmd)
 
