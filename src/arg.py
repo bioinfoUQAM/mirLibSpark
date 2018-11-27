@@ -27,14 +27,15 @@ def getOpt (parser):
     parser.add_argument('--input_path')
     parser.add_argument('--output_path')
     parser.add_argument('--species', default = 'ath',\
-                         choices=['ath', 'wheat', 'corn', 'rice', 'potato', 'brome', 'wheatD'],
+                         choices=['ath', 'wheat', 'corn', 'rice', 'potato', 'brome', 'wheatD', 'custom'],
                          help='ath: 	Arabidopsis_thaliana.TAIR10;\
                                wheat: 	Triticum_aestivum.IWGSC;\
                                corn: 	Zea_mays.AGPv4;\
                                rice: 	Oryza_sativa.IRGSP-1.0;\
                                potato: Solanum_tuberosum.SolTub_3.0;\
                                brome: 	Brachypodium_distachyon.Brachypodium_distachyon_v3.0;\
-                               wheatD: Aegilops_tauschii.ASM34733v1.\
+                               wheatD: Aegilops_tauschii.ASM34733v1;\
+                               custom: custom species.\
                                Please use provided script to construct the dbs folder for selected species from ensembl-release40.')
     parser.add_argument('--input_type', default='w', choices=['raw', 'w', 'reads','r', 'fasta', 'a', 'fastq', 'q'])
     parser.add_argument('--adapter', default='none', help='example = TGGAATTCTCGGGTGCCAAGGAACTC')
@@ -128,13 +129,31 @@ def getOpt (parser):
       chromosomes = '1,2,3,4,5'
       args.chromosomes = 'All'
     elif args.species == 'wheatD': 
-      bowtie_index_suffix = 'WHEAT_D'
       bowtie_index_prefix = 'WHEAT_D'
       filename1 = 'Aegilops_tauschii.ASM34733v1.cdna.all.fa'
       filename2 = 'ats_gene_vs_pathway.txt'
       filename3 = 'ats_pathway_description.txt'
       chromosomes = 'toplevel'
       args.chromosomes = 'All'
+    elif args.species == 'custom':
+      args.bowtie_index_prefix = args.species
+      #if args.bowtie_index_prefix == None:
+      #  sys.stderr.write('bowtie_index_prefix must be provided for custom species.\n\
+      #                    Exit the program.')
+      #  sys.exit()
+      if args.target_file == None:
+        sys.stderr.write('target_file must be provided for custom species.\n\
+                          Exit the program.')
+        sys.exit()
+      if args.perform_KEGGpathways_enrichment_analysis == True:
+        if args.gene_vs_pathway_file == None:
+          sys.stderr.write('gene_vs_pathway_file must be provided for custom species.\n\
+                            Exit the program.')
+          sys.exit()
+        if args.pathway_description_file == None:
+          sys.stderr.write('pathway_description_file must be provided for custom species.\n\
+                            Exit the program.')
+          sys.exit()
     #
     if args.bowtie_index_prefix == None: args.bowtie_index_prefix = bowtie_index_prefix
     #
@@ -147,8 +166,9 @@ def getOpt (parser):
     key = '/dbs/' + 'ATH_TAIR10' + '/TAIR10_ncRNA_CDS.gff'
     if args.known_non_file == None: args.known_non_file = args.project_path + key   
     #
-    key = '/dbs/' + args.bowtie_index_prefix + '/' + filename1
-    if args.target_file == None: args.target_file = args.project_path + key
+    if args.target_file == None: 
+      key = '/dbs/' + args.bowtie_index_prefix + '/' + filename1    
+      args.target_file = args.project_path + key
     #
     if args.perform_differnatial_analysis == False: args.perform_differnatial_analysis = 'False'
     if args.perform_differnatial_analysis == True:
@@ -166,11 +186,17 @@ def getOpt (parser):
                           Exit the program.')
         sys.exit()
     #
-    key = '/dbs/' + args.bowtie_index_prefix + '/' + filename2
-    if args.gene_vs_pathway_file == None: args.gene_vs_pathway_file = args.project_path + key
+    if args.perform_KEGGpathways_enrichment_analysis == 'yes':
+      if args.gene_vs_pathway_file == None: 
+        args.gene_vs_pathway_file = args.project_path + key
+        key = '/dbs/' + args.bowtie_index_prefix + '/' + filename2
     #
-    key = '/dbs/' + args.bowtie_index_prefix + '/' + filename3
-    if args.pathway_description_file == None: args.pathway_description_file = args.project_path + key
+      if args.pathway_description_file == None: 
+        key = '/dbs/' + args.bowtie_index_prefix + '/' + filename3
+        args.pathway_description_file = args.project_path + key
+    else: 
+      args.gene_vs_pathway_file = 'None'
+      args.pathway_description_file = 'None'
     #
     if args.input_type == 'w': args.input_type = 'raw'
     elif args.input_type == 'r': args.input_type = 'reads'
@@ -185,7 +211,9 @@ def getOpt (parser):
     if args.dummy == False: paramDict['dummy'] = 'False'
     elif args.dummy == True:
       paramDict['dummy'] = 'True'
-      for k, v in sorted(paramDict.items()): print(k + ': ' +v)
+      for k, v in sorted(paramDict.items()): 
+        #print(k, ': ', v) # this line is for debugging
+        print(k + ': ' +v)
       print('============================================================\n')
       sys.stderr.write('Display registered parameters.\n\
                         Exit the program.')

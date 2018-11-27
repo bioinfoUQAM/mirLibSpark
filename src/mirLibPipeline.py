@@ -461,8 +461,8 @@ if __name__ == '__main__' :
     slim_rdd = mergeProfileChromo_rdd.map(mru.slimrule)
 
 
-    if reporting == 1: print(datetime.datetime.now(), 'NB slim_rdd NON distinct: ', slim_rdd.count())
-    print('NB slim_rdd distinct: ', slim_rdd.groupByKey().count(), '\t\tremoved sequences not dominating the expression within precursor range (expressions of their variants are considered)') #= always report the nb of final prediction
+    if reporting == 1: print(datetime.datetime.now(), 'NB slim_rdd NON distinct: ', slim_rdd.count(), '\t\tremoved sequences not dominating the expression within precursor range (expressions of their variants are considered)')
+    print('NB slim_rdd distinct: ', slim_rdd.groupByKey().count()) #= always report the nb of final prediction
     print(datetime.datetime.now(), 'slim_rdd')
     
     #= collecting final miRNA predictions
