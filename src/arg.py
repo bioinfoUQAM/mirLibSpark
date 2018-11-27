@@ -194,6 +194,9 @@ def getOpt (parser):
       if args.pathway_description_file == None: 
         key = '/dbs/' + args.bowtie_index_prefix + '/' + filename3
         args.pathway_description_file = args.project_path + key
+    else: 
+      args.gene_vs_pathway_file = 'None'
+      args.pathway_description_file = 'None'
     #
     if args.input_type == 'w': args.input_type = 'raw'
     elif args.input_type == 'r': args.input_type = 'reads'
@@ -208,7 +211,9 @@ def getOpt (parser):
     if args.dummy == False: paramDict['dummy'] = 'False'
     elif args.dummy == True:
       paramDict['dummy'] = 'True'
-      for k, v in sorted(paramDict.items()): print(k + ': ' +v)
+      for k, v in sorted(paramDict.items()): 
+        #print(k, ': ', v) # this line is for debugging
+        print(k + ': ' +v)
       print('============================================================\n')
       sys.stderr.write('Display registered parameters.\n\
                         Exit the program.')
