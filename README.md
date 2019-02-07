@@ -1,15 +1,30 @@
 # mirLibSpark
 A microRNA prediction and validation software using Spark framework
 
-### Install the `mirLibSpark project` in your computer.
-```
-git clone git@github.com:JulieCJWu/mirLibSpark.git
-```
 ### Dependencies:
 Languages: `python2.7, perl, java`
 Packages: `pyspark, duskmasker, bowtie, RNAfold`
 Distributed with mirLibSpark: `miranda, VARNA`
+Environment: `Linux` in `Cloudera` in a personal computer; or `Compute Canada`
 
+### Section 1: Compute Canada (tested in Graham)
+### Install the `mirLibSpark project` in your Compute Canada account.
+```
+git clone git@github.com:JulieCJWu/mirLibSpark.git
+```
+to write more
+
+File: pyspark_submit_jv2_20_ath032.sh
+Edit: 
+Line 81:
+```
+spark-submit --master ${MASTER_URL} --executor-memory ${SLURM_MEM_PER_NODE}M ../src/mirLibPipeline.py --input_path /home/cjwu/project/cjwu/init_mirLibSpark/input_ath/ 
+```
+
+
+### Section 2: Cloudera environment
+### Install the `mirLibSpark project` image in your Cloudera under Virtual Box.
+> descriptions for how to do this
 
 ### Basic usage in personal computer: one to several Arabidopsis library, no differential analysis.
 Step 1: create input folder in the `project`.
@@ -18,9 +33,13 @@ cd mirLibSpark
 mkdir input
 ```
 
-Step 2: put some RNA-seq libraries in input folder. Use an Arabidopsis library `GSM1087974` as an example.
+Step 2: put some RNA-seq libraries in input folder. Use an Arabidopsis library `GSM1087974` (100.txt) as an example; or use a small demo file (fake_a5.txt) for a quick test.
 ```
 cp input_samples/100.txt input
+```
+or
+```
+cp input_samples/fake_a5.txt input
 ```
 
 Step 3: verify mirLibSpark program parameters in `stdout`.
@@ -53,7 +72,9 @@ Step 2: edit the diffguide file `diffguide_ath.txt`.
 It looks like this:
 
 > Experiment->Control
+
 > fake_a3->fake_a
+
 > fake_a5->fake_a
 
 
