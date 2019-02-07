@@ -1,7 +1,7 @@
 # mirLibSpark
 A microRNA prediction and validation software using Spark framework
 
-### Basic usage in personal computer: one Arabidopsis library
+### Basic usage in personal computer: one to several Arabidopsis library, no differential analysis.
 step 1: download the `mirLibSpark project` in your computer.
 ```
 git clone git@github.com:JulieCJWu/mirLibSpark.git
