@@ -2,27 +2,16 @@
 A microRNA prediction and validation software using Spark framework
 
 ### Dependencies:
-Languages: `python2.7, perl, java`
+Languages: `python3 (scipy, statsmodels), perl, java`
 Packages: `pyspark, duskmasker, bowtie, RNAfold`
 Distributed with mirLibSpark: `miranda, VARNA`
 Environment: `Linux` in `Cloudera` in a personal computer; or `Compute Canada`
 
-### Section 1: Compute Canada (tested in Graham)
-### Install the `mirLibSpark project` in your Compute Canada account.
-```
-git clone git@github.com:JulieCJWu/mirLibSpark.git
-```
-to write more
-
-File: pyspark_submit_jv2_20_ath032.sh
-Edit: 
-Line 81:
-```
-spark-submit --master ${MASTER_URL} --executor-memory ${SLURM_MEM_PER_NODE}M ../src/mirLibPipeline.py --input_path /home/cjwu/project/cjwu/init_mirLibSpark/input_ath/ 
-```
 
 
-### Section 2: Cloudera environment
+
+
+### Section 1: Cloudera environment
 ### Install the `mirLibSpark project` image in your Cloudera under Virtual Box.
 > descriptions for how to do this
 
@@ -72,9 +61,7 @@ Step 2: edit the diffguide file `diffguide_ath.txt`.
 It looks like this:
 
 > Experiment->Control
-
 > fake_a3->fake_a
-
 > fake_a5->fake_a
 
 
@@ -90,6 +77,29 @@ Execute mirLibSpark program from `src` folder
 ```
 spark-submit mirLibPipeline.py --perform_differnatial_analysis --diffguide_file diffguide_ath.txt --perform_KEGGpathways_enrichment_analysis 2>/dev/null
 ```
+### Section 2: Compute Canada (tested in Graham)
+### Install the `mirLibSpark project` in your Compute Canada account.
+```
+git clone git@github.com:JulieCJWu/mirLibSpark.git
+```
+to write more
+
+### Edit the submission file `pyspark_submit_jv2_20_ath032.sh`
+### (1) General settings
+> #SBATCH --account=xxx
+
+> #SBATCH --time=hh:mm:ss
+
+> #SBATCH --mail-user=xxx@xxx.com
+
+### (2) Execution (line 81)
+```
+spark-submit --master ${MASTER_URL} --executor-memory ${SLURM_MEM_PER_NODE}M ../src/mirLibPipeline.py --input_path /home/xxx/xxx/mirLibSpark/input/ 
+```
+> --input_path /home/xxx/xxx/mirLibSpark/input/ 
+Need to specify the absolute path to the input folder.
+Modify other mirLibSpark parameters as needed.
+
 
 ## List and description of outputs
 | Name of output                                           | Description                                                                                                  |
