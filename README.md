@@ -19,7 +19,9 @@ Environment: `Docker iamge` in a personal computer; or `Compute Canada`; or `Lin
 
 ```
 mkdir input output
-docker run -v "C:\TEST\docker-py3-ubuntu-test11\output":/mirLibSpark/output -v "C:\TEST\docker-py3-ubuntu-test11\input":/mirLibSpark/input -it docker_pyspark3_new2
+
+docker build --tag=mirlibspark .
+docker run -v "C:\TEST\docker-py3-ubuntu-test11\output":/mirLibSpark/output -v "C:\TEST\docker-py3-ubuntu-test11\input":/mirLibSpark/input -it mirlibspark
 ```
 
 ### Basic usage in personal computer: one to several Arabidopsis library, no differential analysis.
