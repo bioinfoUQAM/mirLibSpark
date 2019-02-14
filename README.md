@@ -5,7 +5,7 @@ A microRNA prediction and validation software using Spark framework
 Languages: `python2 (scipy, statsmodels), perl, java`
 Packages: `pyspark, duskmasker, bowtie, RNAfold`
 Distributed with mirLibSpark: `miranda, VARNA`
-Environment: `Docker iamge` in a personal computer; or `Compute Canada`; or `Linux` in a personal computer (In this option, user has to install dependencies).
+Environment: `Docker image` in a personal computer; or `Compute Canada`; or `Linux` in a personal computer (In this option, user has to install dependencies).
 
 
 
