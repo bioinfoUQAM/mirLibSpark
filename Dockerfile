@@ -1,8 +1,13 @@
 # master progress of dockerfile
 # date: 2019-02-11
 # author: Chao-Jung Wu
+# version: 00.01.00
 # memo run  : docker run -it docker_pyspark3_new2 /bin/bash
 # memo build: docker build --tag=docker_pyspark3_new2 .
+#
+#
+# description: python2, pysaprk, without hadoop or nodes configuration
+# I gave this version to Hayda to test
 
 FROM ubuntu:latest
 
