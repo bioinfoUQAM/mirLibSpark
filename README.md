@@ -160,12 +160,11 @@ cd src
 In your terminal, run one of the following commands:
 
 ```
-python init_dbs_ensembl40_v2.py wheat 2 curl	
+python init_dbs_ensembl40_v2.py wheat 2 curl
 python init_dbs_ensembl40_v2.py corn 2 curl
 python init_dbs_ensembl40_v2.py rice 1 curl
 python init_dbs_ensembl40_v2.py potato 1 curl
 python init_dbs_ensembl40_v2.py brome 1 curl
-python init_dbs_ensembl40_v2.py wheatD 1 curl
 ```
 Edit the submission file `submit_init_dbs_ensembl40.sh`
 ```
