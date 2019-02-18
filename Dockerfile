@@ -1,13 +1,12 @@
 # master progress of dockerfile
 # date: 2019-02-11
 # author: Chao-Jung Wu
-# version: 00.01.00
-# memo run  : docker run -it docker_pyspark3_new2 /bin/bash
-# memo build: docker build --tag=docker_pyspark3_new2 .
+# version: 00.01.13
+# memo run  : docker run -it environmentv13 /bin/bash
+# memo build: docker build --tag=environmentv13 .
 #
 #
 # description: python2, pysaprk, without hadoop or nodes configuration
-# I gave this version to Hayda to test
 
 FROM ubuntu:latest
 
@@ -40,11 +39,6 @@ RUN \
 
 
 # Install PySpark and requirements
-#RUN \
-#    pip install --trusted-host pypi.python.org -r requirements.txt && \
-#    pip install pyspark --no-cache-dir
-
-
 RUN \
     pip install statsmodels && \
     pip install seaborn && \
@@ -56,32 +50,23 @@ RUN \
     apt-get update && \
     apt-get -y install curl
 
-
-# Install RNAfold (I think C compiler comes with pyspark.)
-RUN curl https://www.tbi.univie.ac.at/RNA/download/sourcecode/2_4_x/ViennaRNA-2.4.11.tar.gz -o file.tar.gz
-RUN tar xvzf file.tar.gz
+# Install RNAfold
 RUN \ 
     cd ViennaRNA-2.4.11 && \
     ./configure && \
     make && \
-    make install&& \
+    make install && \
     cd .. && \
     rm -fr ViennaRNA-2.4.11/
 
 
-
 # Install bowtie
-#= Do not use bowtie-1.2.2, it does not compile correctly.
-#= do not curl the link, it dose not download correctly
-# curl https://sourceforge.net/projects/bowtie-bio/files/bowtie/1.2.0/bowtie-1.2-source.zip -o xxx.zip
-# tar -xvf xxx.zip
 RUN \
     cd bowtie-1.2 && \
     make NO_TBB=1 && \
     make install && \
     cd .. && \
     rm -fr bowtie-1.2
-
 
 
 COPY dustmasker /usr/local/bin/

@@ -5,30 +5,25 @@ A microRNA prediction and validation software using Spark framework
 Languages: `python2 (scipy, statsmodels), perl, java`
 Packages: `pyspark, duskmasker, bowtie, RNAfold`
 Distributed with mirLibSpark: `miranda, VARNA`
-Environment: `Docker image` in a personal computer; or `Compute Canada`; or `Linux` in a personal computer (In this option, user has to install dependencies).
+Environments: `Docker image` in a personal computer; or `Compute Canada`; or `Linux` in a personal computer (In this option, user has to install dependencies).
 
 
 
 
 
 ### Section 1: Docker environment
-### Install the `mirLibSpark project` image in your Docker machine.
-> descriptions for how to do this
 
-### Run the image.
-
+### `Pull` and `run` the `mirLibSpark project` image in your local Docker machine.
 ```
 mkdir input output
-
-docker build --tag=mirlibspark .
-docker run -v "C:\TEST\docker-py3-ubuntu-test11\output":/mirLibSpark/output -v "C:\TEST\docker-py3-ubuntu-test11\input":/mirLibSpark/input -it mirlibspark
+docker pull 
+docker run -v "C:\TEST\docker-py3-ubuntu-test11\output":/mirLibSpark/output -v "C:\TEST\docker-py3-ubuntu-test11\input":/mirLibSpark/input -it mirlibsparkdockerv1.14
 ```
 
 ### Basic usage in personal computer: one to several Arabidopsis library, no differential analysis.
-Step 1: create input folder in the `project`.
+Step 1: go to the `project`.
 ```
 cd mirLibSpark
-mkdir input
 ```
 
 Step 2: put some RNA-seq libraries in input folder. Use a small demo file (fake_a5.txt) for a quick test; or use an Arabidopsis library `GSM1087974` (100.txt) as an example.
@@ -45,13 +40,13 @@ cp input_samples/100.txt input
 Step 3: verify mirLibSpark program parameters in `stdout`.
 ```
 cd src
-spark-submit mirLibPipeline.py --dummy 2>/dev/null
+spark-submit mirLibPipeline.py --dummy
 ```
 
 Step 4: execute mirLibSpark program from `src` folder. Modify the parameters if needed. 
 Note that the run takes minutes to a few hours, depending on the number of cores and the hardwares.
 ```
-spark-submit mirLibPipeline.py 2>/dev/null
+spark-submit mirLibPipeline.py
 ```
 
 Step 5: run descriptions are shown in `stdout`. 
