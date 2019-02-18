@@ -17,10 +17,10 @@ Environments: `Docker image` in a personal computer; or `Compute Canada`; or `Li
 ```
 mkdir input output
 docker pull juliewu/mirlibsparkdocker:v1.14 
-docker run -v "C:\TEST\docker-py3-ubuntu-test11\output":/mirLibSpark/output -v "C:\TEST\docker-py3-ubuntu-test11\input":/mirLibSpark/input -it mirlibsparkdockerv1.14
+docker run -v abs_path/to/output:/mirLibSpark/output -v abs_path/to/input":/mirLibSpark/input -it juliewu/mirlibsparkdocker:v1.14 
 ```
 
-### Basic usage in personal computer: one to several Arabidopsis library, no differential analysis.
+### Basic usage in docker: one to several Arabidopsis library, no differential analysis.
 Step 1: go to the `project`.
 ```
 cd mirLibSpark
@@ -83,6 +83,40 @@ Execute mirLibSpark program from `src` folder
 ```
 spark-submit mirLibPipeline.py --perform_differnatial_analysis --diffguide_file diffguide_ath.txt --perform_KEGGpathways_enrichment_analysis 2>/dev/null
 ```
+
+### Build supported species dbs
+```
+cd src
+```
+Choose one of the following commands:
+```
+python init_dbs_ensembl40_v2.py wheat 2 curl-build	
+```
+```
+python init_dbs_ensembl40_v2.py corn 2 curl-build
+```
+```
+python init_dbs_ensembl40_v2.py rice 1 curl-build
+```
+```
+python init_dbs_ensembl40_v2.py potato 1 curl-build
+```
+```
+python init_dbs_ensembl40_v2.py brome 1 curl-build
+```
+
+### Build supported species dbs
+
+Step 1: Put your custom genome fasta file in input folder.
+The genome file contains one to several sequences in fasta format.
+
+step 2:
+```
+cd src
+python  ../input/speciesname.fasta init_dbs_customGenome.py
+```
+
+
 ### Section 2: Compute Canada (tested in Graham)
 ### Install the `mirLibSpark project` in your Compute Canada account.
 ```
