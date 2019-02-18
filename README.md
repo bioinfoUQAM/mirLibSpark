@@ -69,7 +69,9 @@ Step 2: edit the diffguide file `diffguide_ath.txt`.
 It looks like this:
 
 > Experiment->Control
+
 > fake_a3->fake_a
+
 > fake_a5->fake_a
 
 
