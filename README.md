@@ -17,7 +17,7 @@ Environments: `Docker image` in a personal computer; or `Compute Canada`; or `Li
 ```
 mkdir input output
 docker pull juliewu/mirlibsparkdocker:v1.14 
-docker run -v abs_path/to/output:/mirLibSpark/output -v abs_path/to/input":/mirLibSpark/input -it juliewu/mirlibsparkdocker:v1.14 
+docker run -v abs_path/to/output:/mirLibSpark/output -v abs_path/to/input:/mirLibSpark/input -it juliewu/mirlibsparkdocker:v1.14 
 ```
 
 ### Basic usage in docker: one to several Arabidopsis library, no differential analysis.
@@ -50,7 +50,9 @@ spark-submit mirLibPipeline.py
 ```
 
 Step 5: run descriptions are shown in `stdout`. 
-When the run is done, find the reports in `output` folder. The name of the report folder looks like this: `local-1541850897436`
+When the run is done, find the reports in `output` folder. 
+The name of the report folder looks like this: `local-1541850897436`.
+The description of the report files is listed in the end of this manual.
 
 ### Demonstration of differential analysis.
 This analysis requires users to define the `Experiment-Control` pairs.
@@ -73,7 +75,7 @@ It looks like this:
 
 Step 3: execute mirLibSpark program from `src` folder.
 ```
-spark-submit mirLibPipeline.py --perform_differnatial_analysis --diffguide_file diffguide_ath.txt 2>/dev/null
+spark-submit mirLibPipeline.py --perform_differnatial_analysis --diffguide_file diffguide_ath.txt
 ```
 
 ### Demonstration of KEGG pathway enrichment analysis.
@@ -81,7 +83,7 @@ This analysis depends on the results of differential analysis.
 
 Execute mirLibSpark program from `src` folder
 ```
-spark-submit mirLibPipeline.py --perform_differnatial_analysis --diffguide_file diffguide_ath.txt --perform_KEGGpathways_enrichment_analysis 2>/dev/null
+spark-submit mirLibPipeline.py --perform_differnatial_analysis --diffguide_file diffguide_ath.txt --perform_KEGGpathways_enrichment_analysis
 ```
 
 ### Build supported species dbs
@@ -91,24 +93,16 @@ cd src
 Choose one of the following commands:
 ```
 python init_dbs_ensembl40_v2.py wheat 2 curl-build	
-```
-```
 python init_dbs_ensembl40_v2.py corn 2 curl-build
-```
-```
 python init_dbs_ensembl40_v2.py rice 1 curl-build
-```
-```
 python init_dbs_ensembl40_v2.py potato 1 curl-build
-```
-```
 python init_dbs_ensembl40_v2.py brome 1 curl-build
 ```
 
 ### Build supported species dbs
 
-Step 1: Put your custom genome fasta file in input folder.
-The genome file contains one to several sequences in fasta format.
+Step 1: put your custom genome fasta file in the input folder.
+The genome file may contain one to several sequences in fasta format.
 
 step 2:
 ```
@@ -118,27 +112,73 @@ python  ../input/speciesname.fasta init_dbs_customGenome.py
 
 
 ### Section 2: Compute Canada (tested in Graham)
-### Install the `mirLibSpark project` in your Compute Canada account.
+### Basic usage in Compute Canada.
+Step 1: install the `mirLibSpark project` in your Compute Canada account.
 ```
 git clone git@github.com:JulieCJWu/mirLibSpark.git
 ```
-to write more
 
-### Edit the submission file `pyspark_submit_jv2_20_ath032.sh`
-### (1) General settings
-> #SBATCH --account=xxx
+Step 2: put some RNA-seq libraries in input folder. Use a small demo file (fake_a5.txt) for a quick test; or use an Arabidopsis library GSM1087974 (100.txt) as an example.
+```
+cd mirLibSpark
+mkdir input
+cp input_samples/fake_a5.txt input
+```
+
+Step 3: edit the submission file `mirlibspark_submission.sh`
+Use your favorite editor to open and edit the file.
+```
+cd workdir
+vim mirlibspark_submission.sh
+```
+(1) General settings
+Set the following parameters
+> #SBATCH --account=youraccount
 
 > #SBATCH --time=hh:mm:ss
 
-> #SBATCH --mail-user=xxx@xxx.com
+> #SBATCH --mail-user=yourname@email.com
 
-### (2) Execution (line 81)
+(2) Execution (around line 63)
+Use the following command directly or modify it as needed. 
+Use `--dummy` to test your settings.
+
+> spark-submit --master ${MASTER_URL} --executor-memory ${SLURM_MEM_PER_NODE}M ../src/mirLibPipeline.py 
+
+Step 3: submit the submission file inthe job queue
 ```
-spark-submit --master ${MASTER_URL} --executor-memory ${SLURM_MEM_PER_NODE}M ../src/mirLibPipeline.py --input_path /home/xxx/xxx/mirLibSpark/input/ 
+sbatch mirlibspark_submission.sh
 ```
-> --input_path /home/xxx/xxx/mirLibSpark/input/ 
-Need to specify the absolute path to the input folder.
-Modify other mirLibSpark parameters as needed.
+
+### Build supported species dbs
+Because in submission runs, there is no internet access. The build is done in two steps, first download the files from internet, then use submission file to build the index.
+```
+cd src
+```
+In your terminal, run one of the following commands:
+
+```
+python init_dbs_ensembl40_v2.py wheat 2 curl	
+python init_dbs_ensembl40_v2.py corn 2 curl
+python init_dbs_ensembl40_v2.py rice 1 curl
+python init_dbs_ensembl40_v2.py potato 1 curl
+python init_dbs_ensembl40_v2.py brome 1 curl
+python init_dbs_ensembl40_v2.py wheatD 1 curl
+```
+Edit the submission file `submit_init_dbs_ensembl40.sh`
+```
+vim submit_init_dbs_ensembl40.sh
+```
+
+Remove `#` to activate the desired species.
+Submit the submission file in the job queue.
+```
+sbatch submit_init_dbs_ensembl40.sh
+```
+
+
+
+
 
 
 ## List and description of outputs
