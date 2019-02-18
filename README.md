@@ -16,7 +16,7 @@ Environments: `Docker image` in a personal computer; or `Compute Canada`; or `Li
 ### `Pull` and `run` the `mirLibSpark project` image in your local Docker machine.
 ```
 mkdir input output
-docker pull 
+docker pull juliewu/mirlibsparkdocker:v1.14 
 docker run -v "C:\TEST\docker-py3-ubuntu-test11\output":/mirLibSpark/output -v "C:\TEST\docker-py3-ubuntu-test11\input":/mirLibSpark/input -it mirlibsparkdockerv1.14
 ```
 
