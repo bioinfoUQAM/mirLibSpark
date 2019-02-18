@@ -1,0 +1,20 @@
+tail -n 30  */*9032690.out
+2018-11-10 09:11:40.134423 pre_mirdup_rdd distinct
+out of memory
+
+
+tail -n 30 1109MonitorBehavior-9074277.out
+mirLibPipeline.py: error: unrecognized arguments: --inactivateMirdup
+
+
+tail -n 30 1109MonitorBehavior-9074212.out
+reporting = 0, with mirdup_dummy
+Lib 100	0:02:40.282206	160.282                             #= NB slim_rdd distinct:  71
+Lib high_conf_mature_ath_uniq_raw	0:00:36.045165	36.045  #= NB slim_rdd distinct:  84
+Lib neg_ath1000	0:01:04.130563	64.131                      #= NB slim_rdd distinct:  9
+
+tail -n 100 1109MonitorBehavior-9074193.out
+reporting = 1, with mirdup_dummy
+Lib 100	0:02:56.285529	176.286
+Lib high_conf_mature_ath_uniq_raw	0:00:47.207737	47.208
+Lib neg_ath1000	0:01:16.823565	76.824
