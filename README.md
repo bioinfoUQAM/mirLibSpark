@@ -89,10 +89,7 @@ spark-submit mirLibPipeline.py --perform_differnatial_analysis --diffguide_file 
 ```
 
 ### Build supported species dbs
-```
-cd src
-```
-Choose one of the following commands:
+Execute one of the following commands from `src` folder.
 ```
 python init_dbs_ensembl40_v2.py wheat 2 curl-build	
 python init_dbs_ensembl40_v2.py corn 2 curl-build
@@ -103,12 +100,11 @@ python init_dbs_ensembl40_v2.py brome 1 curl-build
 
 ### Build supported species dbs
 
-Step 1: put your custom genome fasta file in the input folder.
+Step 1: put your custom genome fasta file in `input` folder.
 The genome file may contain one to several sequences in fasta format.
 
-step 2:
+step 2: execute mirLibSpark program from `src` folder.
 ```
-cd src
 python  ../input/speciesname.fasta init_dbs_customGenome.py
 ```
 
@@ -120,7 +116,7 @@ Step 1: install the `mirLibSpark project` in your Compute Canada account.
 git clone git@github.com:JulieCJWu/mirLibSpark.git
 ```
 
-Step 2: put some RNA-seq libraries in input folder. Use a small demo file (fake_a5.txt) for a quick test; or use an Arabidopsis library GSM1087974 (100.txt) as an example.
+Step 2: put some RNA-seq libraries in `input` folder. Use a small demo file (fake_a5.txt) for a quick test; or use an Arabidopsis library GSM1087974 (100.txt) as an example.
 ```
 cd mirLibSpark
 mkdir input
@@ -129,6 +125,7 @@ cp input_samples/fake_a5.txt input
 
 Step 3: edit the submission file `mirlibspark_submission.sh`
 Use your favorite editor to open and edit the file.
+Execute `mirLibSpark` program from `workdir` folder.
 ```
 cd workdir
 vim mirlibspark_submission.sh
@@ -154,23 +151,19 @@ sbatch mirlibspark_submission.sh
 
 ### Build supported species dbs
 Because in submission runs, there is no internet access. The build is done in two steps, first download the files from internet, then use submission file to build the index.
+Step1: execute one of the following commands from `src` folder.
 ```
-cd src
-```
-In your terminal, run one of the following commands:
-
-```
-python init_dbs_ensembl40_v2.py wheat 2 curl
+python init_dbs_ensembl40_v2.py wheat 2 curl	
 python init_dbs_ensembl40_v2.py corn 2 curl
 python init_dbs_ensembl40_v2.py rice 1 curl
 python init_dbs_ensembl40_v2.py potato 1 curl
 python init_dbs_ensembl40_v2.py brome 1 curl
+python init_dbs_ensembl40_v2.py wheatD 1 curl
 ```
-Edit the submission file `submit_init_dbs_ensembl40.sh`
+Step 2: edit the submission file `submit_init_dbs_ensembl40.sh` and then submit the task
 ```
 vim submit_init_dbs_ensembl40.sh
 ```
-
 Remove `#` to activate the desired species.
 Submit the submission file in the job queue.
 ```
