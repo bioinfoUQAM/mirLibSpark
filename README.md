@@ -68,7 +68,7 @@ cp input_samples/fake_a3.txt input
 cp input_samples/fake_a5.txt input
 ```
 
-Step 2: edit the diffguide file `diffguide_ath.txt`.
+Step 2: edit the diffguide file `diffguide_ath.txt` in mirLibSpark folder (root)
 It looks like this:
 
 > Experiment->Control
@@ -76,6 +76,16 @@ It looks like this:
 > fake_a3->fake_a
 
 > fake_a5->fake_a
+
+Because users can not edit files inside the docker, users can do the following steps to edit a file:
+```
+cp diffguide_ath.txt input
+```
+Then users open and edit the file from your local computer, outside the Docker machine.
+Once the editing is done, do the follwoing in mirLibSpark folder (root):
+```
+mv input/diffguide_ath.txt .
+```
 
 
 Step 3: execute mirLibSpark program from `src` folder.
