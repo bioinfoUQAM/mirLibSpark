@@ -8,7 +8,7 @@ Packages: `pyspark, duskmasker, bowtie, RNAfold`
 
 Distributed with mirLibSpark: `miranda, VARNA`
 
-Environments: `Docker image` in a personal computer; or `Compute Canada`; or `Linux` in a personal computer (In this option, user has to install dependencies).
+Environments: `Docker image` in a personal computer; or `Compute Canada`; or `Linux` in a personal computer (In linux option, user has to install dependencies).
 
 
 
