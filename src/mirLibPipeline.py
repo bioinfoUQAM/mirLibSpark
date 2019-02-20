@@ -52,7 +52,7 @@ if __name__ == '__main__' :
 
   #= Spark context
   sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory)
-  sc.setLogLevel("ERROR")
+  sc.setLogLevel("WARN")
 
   #= Spark application ID
   appId = str(sc.applicationId)
