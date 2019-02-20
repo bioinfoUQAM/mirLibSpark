@@ -97,8 +97,6 @@ def pyspark_configuration(appMaster, appName, masterMemory, execMemory):
   #             "spark.driver.cores"
   #             "spark.default.parallelism"
   
-  myConf.setLogLevel("ERROR")
-  
   return SparkContext(conf = myConf)
 
 def convertTOhadoop(rfile, hdfsFile):
