@@ -26,7 +26,7 @@ docker run -v abs_path/to/output:/mirLibSpark/output -v abs_path/to/input:/mirLi
 ### Basic usage in docker: one to several Arabidopsis library, no differential analysis.
 Step 1: put some RNA-seq libraries in input folder. Use a small demo file (library_a5.txt) for a quick test; or use an Arabidopsis library `GSM1087974` (100.txt) as an example.
 ```
-cp ../input_samples/library_a5.txt ../input
+cp ../input_samples/library_c_len5.txt ../input
 ```
 or
 ```
@@ -95,7 +95,7 @@ This analysis depends on the results of differential analysis.
 
 Execute mirLibSpark program from `src` folder
 ```
-spark-submit mirLibPipeline.py --perform_differnatial_analysis --diffguide_file diffguide_ath.txt --perform_KEGGpathways_enrichment_analysis
+spark-submit mirLibPipeline.py --perform_differential_analysis --diffguide_file diffguide_ath.txt --perform_KEGGpathways_enrichment_analysis
 ```
 
 ### Build supported species dbs
