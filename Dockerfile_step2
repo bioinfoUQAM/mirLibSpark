@@ -1,9 +1,9 @@
 # master progress of dockerfile
 # date: 2019-02-11
 # author: Chao-Jung Wu
-# version: 00.01.14
-# memo run  : docker run -it mirlibsparkdockerv1.14
-# memo build: docker build --tag=mirlibsparkdockerv1.14 .
+# version: 00.01.15
+# memo run  : docker run -it mirlibsparkdockerv1.15
+# memo build: docker build --tag=mirlibsparkdockerv1.15 .
 #
 #
 # description: python2, pysaprk, without hadoop or nodes configuration
@@ -14,6 +14,8 @@ FROM environmentv13
 # Copy the mirLibSpark (most updated) directory contents into the container
 COPY . /
 
+## Define working directory
+WORKDIR /mirLibSpark/src
 
 # Define default command
 CMD ["bash"]
