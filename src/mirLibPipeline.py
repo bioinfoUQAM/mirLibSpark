@@ -132,7 +132,7 @@ if __name__ == '__main__' :
   nbTargets = paramDict['nbTargets']
 
   #= differentail analysis
-  perform_differnatial_analysis = paramDict['perform_differnatial_analysis']
+  perform_differential_analysis = paramDict['perform_differential_analysis']
   diffguide_file = paramDict['diffguide_file']
 
   #= KEGG annotation
@@ -555,7 +555,7 @@ if __name__ == '__main__' :
   #===============================================================================================================
   ##appId = 'local-1538502520294'
   #= diff analysis 
-  if perform_differnatial_analysis == 'yes':
+  if perform_differential_analysis == 'yes':
     diff_outs = ut.diff_output(diffguide_file, rep_output, appId)
     print('Differential analysis done')
 

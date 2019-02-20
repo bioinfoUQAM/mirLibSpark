@@ -24,29 +24,23 @@ docker run -v abs_path/to/output:/mirLibSpark/output -v abs_path/to/input:/mirLi
 ```
 
 ### Basic usage in docker: one to several Arabidopsis library, no differential analysis.
-Step 1: go to the `project`.
+Step 1: put some RNA-seq libraries in input folder. Use a small demo file (library_a5.txt) for a quick test; or use an Arabidopsis library `GSM1087974` (100.txt) as an example.
 ```
-cd mirLibSpark
-```
-
-Step 2: put some RNA-seq libraries in input folder. Use a small demo file (fake_a5.txt) for a quick test; or use an Arabidopsis library `GSM1087974` (100.txt) as an example.
-```
-cp input_samples/fake_a5.txt input
+cp ../input_samples/library_a5.txt ../input
 ```
 or
 ```
-cp input_samples/100.txt input
+cp ../input_samples/100.txt ../input
 ```
 
 
 
-Step 3: verify mirLibSpark program parameters in `stdout`.
+Step 2: verify mirLibSpark program parameters in `stdout`.
 ```
-cd src
 spark-submit mirLibPipeline.py --dummy
 ```
 
-Step 4: execute mirLibSpark program from `src` folder. Modify the parameters if needed. 
+Step 3: execute mirLibSpark program from `src` folder. Modify the parameters if needed. 
 Note that the run takes minutes to a few hours, depending on the number of cores and the hardwares.
 ```
 spark-submit mirLibPipeline.py
@@ -62,35 +56,38 @@ This analysis requires users to define the `Experiment-Control` pairs.
 Step 1: put two or more files in `input` folder. 
 Assume you are in the root folder of the `project`. Use demo files as an example.
 ```
-rm -fr input/*
-cp input_samples/fake_a.txt input
-cp input_samples/fake_a3.txt input
-cp input_samples/fake_a5.txt input
+rm -fr ../input/*
+cp ../input_samples/library_a_len1.txt ../input
+cp ../input_samples/library_b_len3.txt ../input
+cp ../input_samples/library_c_len5.txt ../input
 ```
 
-Step 2: edit the diffguide file `diffguide_ath.txt` in mirLibSpark folder (root)
+Step 2: edit the diffguide file `diffguide_ath.txt`, as needed, in mirLibSpark folder (root)
 It looks like this:
 
 > Experiment->Control
 
-> fake_a3->fake_a
+> library_b_len3->library_a_len1
 
-> fake_a5->fake_a
+> library_a_len5->library_a_len1
+
+Users use diffguide file to tell the program your experimental design.
+In this example, two experiment-control pairs are defined.
 
 Because users can not edit files inside the docker, users can do the following steps to edit a file:
 ```
-cp diffguide_ath.txt input
+cp ../diffguide_ath.txt ../input
 ```
 Then users open and edit the file from your local computer, outside the Docker machine.
-Once the editing is done, do the follwoing in mirLibSpark folder (root):
+Once the editing is done, do the following in mirLibSpark folder (root):
 ```
-mv input/diffguide_ath.txt .
+mv ../input/diffguide_ath.txt ../
 ```
 
 
 Step 3: execute mirLibSpark program from `src` folder.
 ```
-spark-submit mirLibPipeline.py --perform_differnatial_analysis --diffguide_file diffguide_ath.txt
+spark-submit mirLibPipeline.py --perform_differential_analysis --diffguide_file diffguide_ath.txt
 ```
 
 ### Demonstration of KEGG pathway enrichment analysis.
@@ -129,11 +126,11 @@ Step 1: install the `mirLibSpark project` in your Compute Canada account.
 git clone git@github.com:JulieCJWu/mirLibSpark.git
 ```
 
-Step 2: put some RNA-seq libraries in `input` folder. Use a small demo file (fake_a5.txt) for a quick test; or use an Arabidopsis library GSM1087974 (100.txt) as an example.
+Step 2: put some RNA-seq libraries in `input` folder. Use a small demo file (library_a5.txt) for a quick test; or use an Arabidopsis library GSM1087974 (100.txt) as an example.
 ```
 cd mirLibSpark
 mkdir input
-cp input_samples/fake_a5.txt input
+cp input_samples/library_a5.txt input
 ```
 
 Step 3: edit the submission file `mirlibspark_submission.sh`
