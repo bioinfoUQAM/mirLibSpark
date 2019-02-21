@@ -13,8 +13,11 @@ Environments: `Docker image` in a personal computer; or `Compute Canada`; or `Li
 
 
 
-
+# Manual for docker and Compute Canada
 ### Section 1: Docker environment
+
+Users need to have installed `Docker Desktop` in your computer.
+Please refer to https://www.docker.com/products/docker-desktop.
 
 ### `Pull` and `run` the `mirLibSpark project` image in your local Docker machine.
 ```
@@ -22,6 +25,7 @@ mkdir input output
 docker pull juliewu/mirlibsparkdocker:v1.14 
 docker run -v abs_path/to/output:/mirLibSpark/output -v abs_path/to/input:/mirLibSpark/input -it juliewu/mirlibsparkdocker:v1.14 
 ```
+Once you are inside the docker image, you are in the `src` folder of the `mirLibSpark project`
 
 ### Basic usage in docker: one to several Arabidopsis library, no differential analysis.
 Step 1: put some RNA-seq libraries in input folder. Use a small demo file (library_a5.txt) for a quick test; or use an Arabidopsis library `GSM1087974` (100.txt) as an example.
@@ -33,14 +37,13 @@ or
 cp ../input_samples/100.txt ../input
 ```
 
-
-
 Step 2: verify mirLibSpark program parameters in `stdout`.
 ```
 spark-submit mirLibPipeline.py --dummy
 ```
 
-Step 3: execute mirLibSpark program from `src` folder. Modify the parameters if needed. 
+Step 3: execute mirLibSpark program from `src` folder.
+ Modify the parameters as needed. See the parameter options with `--help`.
 Note that the run takes minutes to a few hours, depending on the number of cores and the hardwares.
 ```
 spark-submit mirLibPipeline.py
@@ -48,13 +51,15 @@ spark-submit mirLibPipeline.py
 
 Step 5: run descriptions are shown in `stdout`. 
 When the run is done, find the reports in `output` folder. 
-The name of the report folder looks like this: `local-1541850897436`.
+The name of the report folder looks like this: `local-0000000000000`.
 The description of the report files is listed in the end of this manual.
 
 ### Demonstration of differential analysis.
 This analysis requires users to define the `Experiment-Control` pairs.
-Step 1: put two or more files in `input` folder. 
-Assume you are in the root folder of the `project`. Use demo files as an example.
+
+Step 1: put two or more files in `input` folder.
+Make sure that no other file is located in `input` folder.
+Assume you are in the `src` folder of the `project`. Use demo files as an example.
 ```
 rm -fr ../input/*
 cp ../input_samples/library_a_len1.txt ../input
@@ -62,7 +67,7 @@ cp ../input_samples/library_b_len3.txt ../input
 cp ../input_samples/library_c_len5.txt ../input
 ```
 
-Step 2: edit the diffguide file `diffguide_ath.txt`, as needed, in mirLibSpark folder (root)
+Step 2: edit the diffguide file `diffguide_ath.txt` as needed, in mirLibSpark folder (root)
 It looks like this:
 
 > Experiment->Control
@@ -73,6 +78,7 @@ It looks like this:
 
 Users use diffguide file to tell the program your experimental design.
 In this example, two experiment-control pairs are defined.
+Users need to make sure the mentioned libraries are provided in `input` folder.
 
 Because users can not edit files inside the docker, users can do the following steps to edit a file:
 ```
