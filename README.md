@@ -115,7 +115,7 @@ The genome file may contain one to several sequences in fasta format.
 
 step 2: execute mirLibSpark program from `src` folder.
 ```
-python  ../input/speciesname.fasta init_dbs_customGenome.py
+python init_dbs_customGenome.py ../input/speciesname.fasta
 ```
 
 
