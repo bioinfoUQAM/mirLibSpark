@@ -22,8 +22,8 @@ Please refer to https://www.docker.com/products/docker-desktop.
 ### `Pull` and `run` the `mirLibSpark project` image in your local Docker machine.
 ```
 mkdir input output
-docker pull juliewu/mirlibsparkdocker:v1.14 
-docker run -v abs_path/to/output:/mirLibSpark/output -v abs_path/to/input:/mirLibSpark/input -it juliewu/mirlibsparkdocker:v1.14 
+docker pull juliewu/mirlibsparkdocker:latest 
+docker run -v abs_path/to/output:/mirLibSpark/output -v abs_path/to/input:/mirLibSpark/input -it juliewu/mirlibsparkdocker:latest
 ```
 Once you are inside the docker image, you are in the `src` folder of the `mirLibSpark project`
 
