@@ -811,7 +811,7 @@ def __create_diff_annotation (rep_output, diff_outs, list_mirna_and_topscoredTar
         print(line, file=fh_out)
     fh_out.close()
 
-def __create_inputs_for_enrichment_analysis (diff_outs, pathway_description_file, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId):
+def __create_inputs_for_enrichment_analysis (diff_outs, pathway_description_file, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId, enrich_output):
   '''
   '''
   dict_pathway_description = __dictPathwayDescription (pathway_description_file)
@@ -822,16 +822,16 @@ def __create_inputs_for_enrichment_analysis (diff_outs, pathway_description_file
   if not os.path.exists(folder): os.makedirs(folder)
   __write_namecodefile (folder, ID, diff_outs)
 
-  enrich_output = rep_output + ID + '/output_comput_enrich'
-  if not os.path.exists(enrich_output): os.makedirs(enrich_output)
+  #enrich_output = rep_output + ID + '/output_comput_enrich'
+  #if not os.path.exists(enrich_output): os.makedirs(enrich_output)
 
   outfile = folder + '/background_' + ID
   __create_background (outfile, list_mirna_and_topscoredTargetsKEGGpathway, dict_pathway_description)
   __create_diff_annotation (rep_output, diff_outs, list_mirna_and_topscoredTargetsKEGGpathway, folder)
 
-def perform_enrichment_analysis (diff_outs, pathway_description_file, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId, project_path):
+def perform_enrichment_analysis (diff_outs, pathway_description_file, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId, project_path, enrich_output):
   keyword =  appId + '_topscoredTargetsKEGGpathway'
-  __create_inputs_for_enrichment_analysis (diff_outs, pathway_description_file, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId)
+  __create_inputs_for_enrichment_analysis (diff_outs, pathway_description_file, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId, enrich_output)
   #= cmd = 'perl compute_enrichment.pl ' + rep_output + keyword + '/namecode.txt ' + rep_output + keyword +'/output_comput_enrich 1'
   cmd = 'perl ' + project_path + '/src/'+ 'compute_enrichment.pl ' + rep_output + keyword + '/namecode.txt ' + rep_output + keyword +'/output_comput_enrich/ 1'
   os.system(cmd)

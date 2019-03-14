@@ -561,11 +561,16 @@ if __name__ == '__main__' :
     print('Differential analysis done')
 
   if perform_KEGGpathways_enrichment_analysis == 'yes':
+  
+    ##########################################################
+    enrich_output = rep_output + ID + '/output_comput_enrich'
+    ut.makedirs_reps (enrich_output)
+    ##########################################################
     #= KEGG annotation
     list_mirna_and_topscoredTargetsKEGGpathway = ut.annotate_target_genes_with_KEGGpathway (gene_vs_pathway_file, rep_output, appId)
     print('KEGG pathway annotation done')
     #= KEGG enrichment analysis 
-    ut.perform_enrichment_analysis (diff_outs, pathway_description_file, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId, project_path)
+    ut.perform_enrichment_analysis (diff_outs, pathway_description_file, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId, project_path, enrich_output)
     print('\nKEGG pathway enrichment analysis done')
   #===============================================================================================================
   #===============================================================================================================
