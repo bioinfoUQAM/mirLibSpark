@@ -188,8 +188,8 @@ def getOpt (parser):
     #
     if args.perform_KEGGpathways_enrichment_analysis == 'yes':
       if args.gene_vs_pathway_file == None: 
-        args.gene_vs_pathway_file = args.project_path + key
         key = '/dbs/' + args.bowtie_index_prefix + '/' + filename2
+        args.gene_vs_pathway_file = args.project_path + key
     #
       if args.pathway_description_file == None: 
         key = '/dbs/' + args.bowtie_index_prefix + '/' + filename3
