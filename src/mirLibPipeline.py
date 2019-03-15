@@ -563,7 +563,7 @@ if __name__ == '__main__' :
   if perform_KEGGpathways_enrichment_analysis == 'yes':
   
     ##########################################################
-    enrich_output = rep_output + appId + '/output_comput_enrich'
+    enrich_output = rep_output + '/output_comput_enrich'
     ut.makedirs_reps ([enrich_output])
     ##########################################################
     #= KEGG annotation
