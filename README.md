@@ -203,7 +203,7 @@ sbatch submit_init_dbs_ensembl40.sh
 | (9) mirna_and_targets.txt                                | the targets of each miRNA predicted by miRanda software.                                                     |
 | (10) targetsKEGGpathway.txt                              | the KEGG pathways of each target genes.                                                                      |
 | (11-12) differential_Lib2vsLib1.txt; and _Lib3vsLib1.txt | the statistics report of differential expressed miRNAs in Lib2 or Lib3 using Lib1 as baseline.               |
-| (13) enrichment.csv                                      | the statistics report as a table listing enriched KEGG pathways in each library.                             |
+| (13) enrichment_pval_upper.csv                                      | the statistics report as a table listing enriched KEGG pathways in each library.                             |
 
 
 
