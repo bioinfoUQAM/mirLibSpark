@@ -637,8 +637,8 @@ def __write_html (DATA, rep_output, appId):
   l='  <tr>';print(l, file=fh_out)
   l='    <th>Serial</th>';print(l, file=fh_out)
   #l='    <th>NewID</th>';print(l, file=fh_out)
-  l='    <th>miRNA.pre-miRNA.Structure</th>';print(l, file=fh_out)
-  l='    <th>Coordination</th>';print(l, file=fh_out)
+  l='    <th>pre-miRNA.Structure.Visualization</th>';print(l, file=fh_out)
+  l='    <th>miRNA.Sequence & Coordination / pre-miRNA.Sequence / pre-miRNA.Structure</th>';print(l, file=fh_out)
   l='  </tr>';print(l, file=fh_out)
 
   ## loop start
