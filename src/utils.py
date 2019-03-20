@@ -96,6 +96,9 @@ def pyspark_configuration(appMaster, appName, masterMemory, execMemory):
   # other keys: "spark.master" = 'spark://5.6.7.8:7077'
   #             "spark.driver.cores"
   #             "spark.default.parallelism"
+  #= hayda's experience for solving fail jobs: 190319
+  #myConf.set('spark.network.timeout', '1000s')
+  #myConf.set('spark.executor.heartbeatInterval', '120s')## 190319
   
   return SparkContext(conf = myConf)
 

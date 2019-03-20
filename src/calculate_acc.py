@@ -54,10 +54,11 @@ msg = 'simulation';print(msg)
 report (TP, 1000 - FP, FP, 100 - TP)
 
 #== 100.txt ==
-mature = 19+52
-FP = 52
+TP = 29
+FP = 343
+negset = 1838879 - 141
 msg = 'case study';print(msg)
-report ( (mature-FP), (1838879-FP), FP, (141-TP) )
+report ( TP, (negset-FP), FP, (141-TP) )
 #report (TP, TN, FP, FN)
 
 
