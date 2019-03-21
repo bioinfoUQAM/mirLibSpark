@@ -31,14 +31,14 @@ def validate_options(paramDict):
   adapter = paramDict['adapter']
   rep_input = paramDict['input_path']
   diffguide_file = paramDict['diffguide_file']
-  perform_differnatial_analysis = paramDict['perform_differnatial_analysis']
+  perform_differential_analysis = paramDict['perform_differential_analysis']
   perform_KEGGpathways_enrichment_analysis= paramDict['perform_KEGGpathways_enrichment_analysis']
 
   if input_type == 'a' and not adapter == 'none':
     sys.stderr.write("The adapter option must be 'none' for the input_type_a.\nExit the program.")
     sys.exit()
 
-  if perform_KEGGpathways_enrichment_analysis == 'yes' and perform_differnatial_analysis == 'no':
+  if perform_KEGGpathways_enrichment_analysis == 'yes' and perform_differential_analysis == 'no':
     sys.stderr.write("KEGG pathway enrichment analysis must be done after differential expression analysis.\nExit the program.")
     sys.exit()
   
@@ -48,7 +48,7 @@ def validate_options(paramDict):
     sys.exit()
 
   #= verify if input folder contain all files requisted by diffguide file
-  if perform_differnatial_analysis == 'yes':
+  if perform_differential_analysis == 'yes':
 
     #testInfiles = [f.split('.')[0] for f in infiles]
     diffguide, neededInfiles = __read_diffguide(diffguide_file)
@@ -96,6 +96,9 @@ def pyspark_configuration(appMaster, appName, masterMemory, execMemory):
   # other keys: "spark.master" = 'spark://5.6.7.8:7077'
   #             "spark.driver.cores"
   #             "spark.default.parallelism"
+  #= hayda's experience for solving fail jobs: 190319
+  #myConf.set('spark.network.timeout', '1000s')
+  #myConf.set('spark.executor.heartbeatInterval', '120s')## 190319
   
   return SparkContext(conf = myConf)
 
@@ -634,8 +637,8 @@ def __write_html (DATA, rep_output, appId):
   l='  <tr>';print(l, file=fh_out)
   l='    <th>Serial</th>';print(l, file=fh_out)
   #l='    <th>NewID</th>';print(l, file=fh_out)
-  l='    <th>miRNA.pre-miRNA.Structure</th>';print(l, file=fh_out)
-  l='    <th>Coordination</th>';print(l, file=fh_out)
+  l='    <th>pre-miRNA.Structure.Visualization</th>';print(l, file=fh_out)
+  l='    <th>miRNA.Sequence & Coordination / pre-miRNA.Sequence / pre-miRNA.Structure</th>';print(l, file=fh_out)
   l='  </tr>';print(l, file=fh_out)
 
   ## loop start
@@ -812,8 +815,6 @@ def __create_diff_annotation (rep_output, diff_outs, list_mirna_and_topscoredTar
     fh_out.close()
 
 def __create_inputs_for_enrichment_analysis (diff_outs, pathway_description_file, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId):
-  '''
-  '''
   dict_pathway_description = __dictPathwayDescription (pathway_description_file)
 
   diffKey = 'UP DOWN'.split()
@@ -822,20 +823,19 @@ def __create_inputs_for_enrichment_analysis (diff_outs, pathway_description_file
   if not os.path.exists(folder): os.makedirs(folder)
   __write_namecodefile (folder, ID, diff_outs)
 
-  enrich_output = rep_output + ID + '/output_comput_enrich'
-  if not os.path.exists(enrich_output): os.makedirs(enrich_output)
-
   outfile = folder + '/background_' + ID
   __create_background (outfile, list_mirna_and_topscoredTargetsKEGGpathway, dict_pathway_description)
   __create_diff_annotation (rep_output, diff_outs, list_mirna_and_topscoredTargetsKEGGpathway, folder)
 
 def perform_enrichment_analysis (diff_outs, pathway_description_file, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId, project_path):
+  ''' perl compute_enrichment.pl ../output/preXLOC_GO/namecode.txt ../output/preXLOC_GO/output_comput_enrich 1 '''
   keyword =  appId + '_topscoredTargetsKEGGpathway'
   __create_inputs_for_enrichment_analysis (diff_outs, pathway_description_file, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId)
-  #= cmd = 'perl compute_enrichment.pl ' + rep_output + keyword + '/namecode.txt ' + rep_output + keyword +'/output_comput_enrich 1'
   cmd = 'perl ' + project_path + '/src/'+ 'compute_enrichment.pl ' + rep_output + keyword + '/namecode.txt ' + rep_output + keyword +'/output_comput_enrich/ 1'
   os.system(cmd)
-
+  #cmd = 'cp rep_output' + keyword + '/output_comput_enrich/* rep_output/'
+  #os.system(cmd)
+  
 def roundup(x): 
   return x if x % 10 == 0 else x + 10 - x % 10
 

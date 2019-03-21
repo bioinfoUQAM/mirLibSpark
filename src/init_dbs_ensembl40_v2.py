@@ -1,7 +1,7 @@
 '''
 Chao-Jung Wu
 2018-10-01
-version: 00.02.00
+version: 00.02.01
 
 #= supported species
 ath: 	Arabidopsis_thaliana.TAIR10
@@ -14,7 +14,8 @@ wheatD: Aegilops_tauschii.ASM34733v1
 
 
 
-update: 2018-10-20 refactor for compute canada, beacuse worker nodes do not have access to internet and curl does not work.
+update: 2018-10-20 re-factor for Compute Canada, because worker nodes do not have access to internet and curl does not work.
+update: 2019-02-15 debug top level dna
 
 #= NOTE: there is a problem with wheatD build. I think the problem is the original genome, not my local operations. Hence inactivate the support of wheatD. 
 
@@ -197,6 +198,7 @@ def option1_forSmallGenome (key, URL_cdna, URL_ncrna, URL_toplevel, IDs, URL_dna
       if not os.path.exists(repAll): os.makedirs(repAll)
       #
       wanted_file = URL_toplevel.split('/')[-1]
+      curl_and_unzip_file (URL_toplevel, wanted_file)
       bowtieBuild (wanted_file[:-3], key)
       cmd = 'mv *.ebwt ' + repAll
       os.system(cmd)

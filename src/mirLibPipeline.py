@@ -53,6 +53,7 @@ if __name__ == '__main__' :
   #= Spark context
   sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory)
 
+
   #= Spark application ID
   appId = str(sc.applicationId)
   #print('spark.executor.memory: ', sc._conf.get('spark.executor.memory'))
@@ -131,9 +132,9 @@ if __name__ == '__main__' :
   Gap_Penalty = paramDict['Gap_Penalty']
   nbTargets = paramDict['nbTargets']
 
-  #= differentail analysis
-  perform_differnatial_analysis = paramDict['perform_differnatial_analysis']
-  diffguide_file = paramDict['diffguide_file']
+  #= differential analysis
+  perform_differential_analysis = paramDict['perform_differential_analysis']
+  diffguide_file = project_path + '/' + paramDict['diffguide_file']
 
   #= KEGG annotation
   gene_vs_pathway_file =  paramDict['gene_vs_pathway_file']
@@ -555,7 +556,7 @@ if __name__ == '__main__' :
   #===============================================================================================================
   ##appId = 'local-1538502520294'
   #= diff analysis 
-  if perform_differnatial_analysis == 'yes':
+  if perform_differential_analysis == 'yes':
     diff_outs = ut.diff_output(diffguide_file, rep_output, appId)
     print('Differential analysis done')
 

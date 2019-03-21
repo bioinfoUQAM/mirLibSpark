@@ -45,7 +45,7 @@ def getOpt (parser):
     parser.add_argument('--known_non_file', help='Only ath is provided.')
     parser.add_argument('--chromosomes', choices=['All', 'split'], help='Only ath has options. Other species have only one default choice. Genomes larger than 1G are splitted by chromosomes, otherwise all choromsomes are in one file.')
     parser.add_argument('--target_file')
-    parser.add_argument('--perform_differnatial_analysis', default='False', action='store_true')
+    parser.add_argument('--perform_differential_analysis', default='False', action='store_true')
     parser.add_argument('--diffguide_file', default='none')
     parser.add_argument('--perform_KEGGpathways_enrichment_analysis', action='store_true')
     parser.add_argument('--gene_vs_pathway_file')
@@ -170,26 +170,26 @@ def getOpt (parser):
       key = '/dbs/' + args.bowtie_index_prefix + '/' + filename1    
       args.target_file = args.project_path + key
     #
-    if args.perform_differnatial_analysis == False: args.perform_differnatial_analysis = 'False'
-    if args.perform_differnatial_analysis == True:
-      args.perform_differnatial_analysis = 'yes' 
+    if args.perform_differential_analysis == False: args.perform_differential_analysis = 'False'
+    if args.perform_differential_analysis == True:
+      args.perform_differential_analysis = 'yes' 
       if args.diffguide_file == 'none': 
-        sys.stderr.write('diffguide_file is required for perform_differnatial_analysis.\n\
+        sys.stderr.write('diffguide_file is required for perform_differential_analysis.\n\
                           Exit the program.')
         sys.exit()
     #
     if args.perform_KEGGpathways_enrichment_analysis == False: args.perform_KEGGpathways_enrichment_analysis = 'False'
     if args.perform_KEGGpathways_enrichment_analysis == True:
       args.perform_KEGGpathways_enrichment_analysis = 'yes'
-      if args.perform_differnatial_analysis == 'False': 
-        sys.stderr.write('perform_differnatial_analysis is required for perform_KEGGpathways_enrichment_analysis.\n\
+      if args.perform_differential_analysis == 'False': 
+        sys.stderr.write('perform_differential_analysis is required for perform_KEGGpathways_enrichment_analysis.\n\
                           Exit the program.')
         sys.exit()
     #
     if args.perform_KEGGpathways_enrichment_analysis == 'yes':
       if args.gene_vs_pathway_file == None: 
-        args.gene_vs_pathway_file = args.project_path + key
         key = '/dbs/' + args.bowtie_index_prefix + '/' + filename2
+        args.gene_vs_pathway_file = args.project_path + key
     #
       if args.pathway_description_file == None: 
         key = '/dbs/' + args.bowtie_index_prefix + '/' + filename3

@@ -22,48 +22,44 @@ def sensitivity (tp, fn):
   return round (sens, 3)
 
 def Matthews_correlation_coefficient (tp, tn, fp, fn):
+  '''
+  When the positive and negative classes are unbalanced, F1 can not be used. Instead, use MCC.
+  
+  The MCC value is between -1 and 1.
+  0 : random
+  -1: disagree
+  1 : agree
+  '''
   up = tp*tn - fp*fn
   dn = sqrt((tp+fp)*(tp+fn)*(tn+fp)*(tn+fn))
   return round (up/dn, 3)
-
-
-TP = 82
-TN = 990
-FP = 10
-FN = 18
-
-#===========
-TP = 84
-FP = 9
-
-FN = 100 - TP
-TN = 1000 - FP
-#===========
-
-##===========
-## 100.txt
-#mature = 71
-#FP = 52
-#TP = mature - FP
-#
-#FN = 141 - TP
-#TN = 1838738 - FP
-#===========
   
-f1 = calculate_F1_score (TP, TN, FP, FN)
-acc = calculate_accuracy (TP, TN, FP, FN)
-sens = sensitivity (TP, FN)
-mcc = Matthews_correlation_coefficient (TP, TN, FP, FN)
+def report (TP, TN, FP, FN):
+  f1 = calculate_F1_score (TP, TN, FP, FN)
+  acc = calculate_accuracy (TP, TN, FP, FN)
+  sens = sensitivity (TP, FN)
+  mcc = Matthews_correlation_coefficient (TP, TN, FP, FN)
+
+  print('TP\tTN\tFP\tFN\tF1\tAcc\tMCC\tsensitivity')
+  data = [str(x) for x in [TP, TN, FP, FN, f1, acc, mcc, sens]]
+  line = '\t'.join(data)
+  print(line)
+  print()
+
+msg = 'mirlibspark';print(msg)
+#== simulation ==
+TP = 22
+FP = 0
+msg = 'simulation';print(msg)
+report (TP, 1000 - FP, FP, 100 - TP)
+
+#== 100.txt ==
+TP = 29
+FP = 343
+negset = 1838879 - 141
+msg = 'case study';print(msg)
+report ( TP, (negset-FP), FP, (141-TP) )
+#report (TP, TN, FP, FN)
 
 
-print('TP\tTN\tFP\tFN\tF1\tAccuracy')
-data = [str(x) for x in [TP, TN, FP, FN, f1, acc]]
-line = '\t'.join(data)
-print(line)
 
-
-print()
-print('TP\tTN\tFP\tFN\tF1\tMCC')
-data = [str(x) for x in [TP, TN, FP, FN, f1, mcc]]
-line = '\t'.join(data)
-print(line)
