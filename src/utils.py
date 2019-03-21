@@ -833,8 +833,8 @@ def perform_enrichment_analysis (diff_outs, pathway_description_file, list_mirna
   __create_inputs_for_enrichment_analysis (diff_outs, pathway_description_file, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId)
   cmd = 'perl ' + project_path + '/src/'+ 'compute_enrichment.pl ' + rep_output + keyword + '/namecode.txt ' + rep_output + keyword +'/output_comput_enrich/ 1'
   os.system(cmd)
-  #cmd = 'cp rep_output' + keyword + '/output_comput_enrich/* rep_output/'
-  #os.system(cmd)
+  cmd = 'cp rep_output' + keyword + '/output_comput_enrich/* rep_output/'
+  os.system(cmd)
   
 def roundup(x): 
   return x if x % 10 == 0 else x + 10 - x % 10
