@@ -132,7 +132,7 @@ if __name__ == '__main__' :
   Gap_Penalty = paramDict['Gap_Penalty']
   nbTargets = paramDict['nbTargets']
 
-  #= differentail analysis
+  #= differential analysis
   perform_differential_analysis = paramDict['perform_differential_analysis']
   diffguide_file = project_path + '/' + paramDict['diffguide_file']
 
