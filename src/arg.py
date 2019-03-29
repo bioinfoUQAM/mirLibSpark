@@ -21,7 +21,7 @@ def getOpt (parser):
     project_path = find_project_path ()
     #
     parser.add_argument('--dummy', action='store_true', help='display configurations and exit')
-    parser.add_argument('--reporting', action='store_false', help='report the number of instances passing each of the parameters. Activating this option will result in significant prolonged execution time')
+    parser.add_argument('--reporting', action='store_true', help='report the number of instances passing each of the parameters. Activating this option will result in significant prolonged execution time')
     parser.add_argument('--message', default = 'None')
     parser.add_argument('--project_path', default = project_path)
     parser.add_argument('--input_path')
@@ -77,7 +77,6 @@ def getOpt (parser):
     #
     args = parser.parse_args()
     #
-    if args.reporting == True: args.reporting = '1'
     if args.inactivateMirdup == True: args.inactivateMirdup = '1'
     #
     args.project_path = args.project_path.rstrip('/')
