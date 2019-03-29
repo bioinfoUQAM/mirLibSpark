@@ -49,7 +49,7 @@ if __name__ == '__main__' :
   execMemory = paramDict['sc_execmemory']           #"4g"
   #execCores = paramDict['sc_execcores']             #2
   partition = int(paramDict['sc_partition'])
-  heartbeap = paramDict['sc_heartbeap']          #10
+  heartbeap = int(paramDict['sc_heartbeap'])        #10
 
   #= Spark context
   sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, heartbeap)
