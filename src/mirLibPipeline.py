@@ -135,7 +135,7 @@ if __name__ == '__main__' :
 
   #= differential analysis
   perform_differential_analysis = paramDict['perform_differential_analysis']
-  diffguide_file = project_path + '/' + paramDict['diffguide_file']
+  diffguide_file = project_path + '/src/' + paramDict['diffguide_file']
 
   #= KEGG annotation
   gene_vs_pathway_file =  paramDict['gene_vs_pathway_file']

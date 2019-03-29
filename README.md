@@ -19,7 +19,7 @@ Environments: `Docker image` in a personal computer; or `Compute Canada`; or `Li
 Users need to have installed `Docker Desktop` in your computer.
 Please refer to https://www.docker.com/products/docker-desktop.
 
-### `Pull` and `run` the `mirLibSpark project` image in your local Docker machine.
+### `Pull` and `run` `mirLibSpark` image.
 ```
 mkdir input output
 docker pull juliewu/mirlibsparkdocker:latest 
@@ -27,10 +27,11 @@ docker run -v abs_path/to/output:/mirLibSpark/output -v abs_path/to/input:/mirLi
 ```
 Once you are inside the docker image, you are in the `src` folder of the `mirLibSpark project`
 
-### Basic usage in docker: one to several Arabidopsis library, no differential analysis.
-Step 1: put some RNA-seq libraries in input folder. Use a small demo file (library_a5.txt) for a quick test; or use an Arabidopsis library `GSM1087974` (100.txt) as an example.
+### Pipeline usage: one to several Arabidopsis library.
+Step 1: put some RNA-seq libraries in input folder. Use a small demo file for a quick test; or use an Arabidopsis library `GSM1087974` (100.txt) as an example.
 ```
-cp ../input_samples/library_c_len5.txt ../input
+rm -fr ../input/*
+cp ../input_samples/library_a_len1.txt ../input
 ```
 or
 ```
@@ -54,7 +55,7 @@ When the run is done, find the reports in `output` folder.
 The name of the report folder looks like this: `local-0000000000000`.
 The description of the report files is listed in the end of this manual.
 
-### Demonstration of differential analysis.
+### Differential analysis pipeline.
 This analysis requires users to define the `Experiment-Control` pairs.
 
 Step 1: put two or more files in `input` folder.
@@ -67,7 +68,7 @@ cp ../input_samples/library_b_len3.txt ../input
 cp ../input_samples/library_c_len5.txt ../input
 ```
 
-Step 2: edit the diffguide file `diffguide_ath.txt` as needed, in mirLibSpark folder (root)
+Step 2: edit the diffguide file `diffguide_ath.txt` as needed, in `src` folder.
 It looks like this:
 
 > Experiment->Control
@@ -82,12 +83,12 @@ Users need to make sure the mentioned libraries are provided in `input` folder.
 
 Because users can not edit files inside the docker, users can do the following steps to edit a file:
 ```
-cp ../diffguide_ath.txt ../input
+cp diffguide_ath.txt ../input
 ```
 Then users open and edit the file from your local computer, outside the Docker machine.
 Once the editing is done, do the following in mirLibSpark folder (root):
 ```
-mv ../input/diffguide_ath.txt ../
+mv ../input/diffguide_ath.txt .
 ```
 
 
@@ -107,14 +108,14 @@ spark-submit mirLibPipeline.py --perform_differential_analysis --diffguide_file 
 ### Build supported species dbs
 Execute one of the following commands from `src` folder.
 ```
-python init_dbs_ensembl40_v2.py wheat 2 curl-build	
+python init_dbs_ensembl40_v2.py wheat 2 curl-build
 python init_dbs_ensembl40_v2.py corn 2 curl-build
 python init_dbs_ensembl40_v2.py rice 1 curl-build
 python init_dbs_ensembl40_v2.py potato 1 curl-build
 python init_dbs_ensembl40_v2.py brome 1 curl-build
 ```
 
-### Build supported species dbs
+### Build custom species dbs
 
 Step 1: put your custom genome fasta file in `input` folder.
 The genome file may contain one to several sequences in fasta format.
@@ -123,7 +124,7 @@ step 2: execute mirLibSpark program from `src` folder.
 ```
 python init_dbs_customGenome.py ../input/speciesname.fasta
 ```
-
+Resulting dbs files need to be copied outside of image.
 
 ### Section 2: Compute Canada (tested in Graham)
 ### Basic usage in Compute Canada.
@@ -148,7 +149,7 @@ vim mirlibspark_submission.sh
 ```
 (1) General settings
 Set the following parameters
-> #SBATCH --account=youraccount
+> #SBATCH --account=yourSponsorAccount
 
 > #SBATCH --time=hh:mm:ss
 
@@ -160,7 +161,7 @@ Use `--dummy` to test your settings.
 
 > spark-submit --master ${MASTER_URL} --executor-memory ${SLURM_MEM_PER_NODE}M ../src/mirLibPipeline.py 
 
-Step 3: submit the submission file inthe job queue
+Step 3: submit the submission file in the job queue
 ```
 sbatch mirlibspark_submission.sh
 ```
