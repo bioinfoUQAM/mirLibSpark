@@ -21,7 +21,7 @@ def getOpt (parser):
     project_path = find_project_path ()
     #
     parser.add_argument('--dummy', action='store_true', help='display configurations and exit')
-    parser.add_argument('--reporting', default='0', action='store_true', help='report the number of instances passing each of the parameters. Activating this option will result in significant prolonged execution time')
+    parser.add_argument('--reporting', action='store_false', help='report the number of instances passing each of the parameters. Activating this option will result in significant prolonged execution time')
     parser.add_argument('--message', default = 'None')
     parser.add_argument('--project_path', default = project_path)
     parser.add_argument('--input_path')
@@ -208,6 +208,9 @@ def getOpt (parser):
     paramDict = vars(args)
     #= add additional parameters in dict
     paramDict['sc_appname'] = 'mirLibSpark'
+    #
+    if args.reporting == False: paramDict['reporting'] = '0'
+    else: paramDict['reporting'] = '1'
     #
     if args.dummy == False: paramDict['dummy'] = 'False'
     elif args.dummy == True:
