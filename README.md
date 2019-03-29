@@ -28,7 +28,7 @@ docker run -v abs_path/to/output:/mirLibSpark/output -v abs_path/to/input:/mirLi
 Once you are inside the docker image, you are in the `src` folder of the `mirLibSpark project`
 
 ### Pipeline usage: one to several Arabidopsis library.
-Step 1: put some RNA-seq libraries in input folder. Use a small demo file for a quick test; or use an Arabidopsis library `GSM1087974` (100.txt) as an example.
+Step 1: put some RNA-seq libraries in input folder. Use a small demo file for a quick test; or use an Arabidopsis library `GSM1087974` (100.txt) as an example. Make sure input is empty before copying.
 ```
 rm -fr ../input/*
 cp ../input_samples/library_a_len1.txt ../input
@@ -38,14 +38,14 @@ or
 cp ../input_samples/100.txt ../input
 ```
 
-Step 2: verify mirLibSpark program parameters in `stdout`.
+Step 2: verify mirLibSpark program parameters in `stdout` with `--dummy`. See the parameter options with `--help`.
 ```
 spark-submit mirLibPipeline.py --dummy
 ```
 
 Step 3: execute mirLibSpark program from `src` folder.
- Modify the parameters as needed. See the parameter options with `--help`.
-Note that the run takes minutes to a few hours, depending on the number of cores and the hardwares.
+Modify the parameters as needed.
+Note that the run takes minutes to a few hours, depending on available resources in the hardware.
 ```
 spark-submit mirLibPipeline.py
 ```
@@ -95,7 +95,7 @@ Step 3: execute mirLibSpark program from `src` folder.
 spark-submit mirLibPipeline.py --perform_differential_analysis --diffguide_file diffguide_ath.txt
 ```
 
-### Demonstration of KEGG pathway enrichment analysis.
+### KEGG pathway enrichment analysis pipeline.
 This analysis depends on the results of differential analysis.
 
 Execute mirLibSpark program from `src` folder
@@ -122,14 +122,16 @@ step 2: execute mirLibSpark program from `src` folder.
 ```
 python init_dbs_customGenome.py ../input/speciesname.fasta
 ```
-Resulting dbs files need to be copied outside of image.
+Resulting dbs files need to be copied outside of image for future reuse.
 
 ### Section 2: Compute Canada (tested in Graham)
-### Basic usage in Compute Canada.
+### Pipeline usage
 Step 1: install the `mirLibSpark project` in your Compute Canada account.
 ```
 git clone git@github.com:JulieCJWu/mirLibSpark.git
 ```
+or download the latest release source code.
+https://github.com/JulieCJWu/mirLibSpark/releases
 
 Step 2: put some RNA-seq libraries in `input` folder. Use a small demo file for a quick test; or use an Arabidopsis library GSM1087974 (100.txt) as an example.
 ```
