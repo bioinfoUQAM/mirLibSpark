@@ -65,7 +65,6 @@ Assume you are in the `src` folder of the `project`. Use demo files as an exampl
 rm -fr ../input/*
 cp ../input_samples/library_a_len1.txt ../input
 cp ../input_samples/library_b_len3.txt ../input
-cp ../input_samples/library_c_len5.txt ../input
 ```
 
 Step 2: edit the diffguide file `diffguide_ath.txt` as needed, in `src` folder.
@@ -75,7 +74,6 @@ It looks like this:
 
 > library_b_len3->library_a_len1
 
-> library_a_len5->library_a_len1
 
 Users use diffguide file to tell the program your experimental design.
 In this example, two experiment-control pairs are defined.
@@ -86,7 +84,7 @@ Because users can not edit files inside the docker, users can do the following s
 cp diffguide_ath.txt ../input
 ```
 Then users open and edit the file from your local computer, outside the Docker machine.
-Once the editing is done, do the following in mirLibSpark folder (root):
+Once the editing is done, do the following:
 ```
 mv ../input/diffguide_ath.txt .
 ```
@@ -133,11 +131,11 @@ Step 1: install the `mirLibSpark project` in your Compute Canada account.
 git clone git@github.com:JulieCJWu/mirLibSpark.git
 ```
 
-Step 2: put some RNA-seq libraries in `input` folder. Use a small demo file (library_a5.txt) for a quick test; or use an Arabidopsis library GSM1087974 (100.txt) as an example.
+Step 2: put some RNA-seq libraries in `input` folder. Use a small demo file for a quick test; or use an Arabidopsis library GSM1087974 (100.txt) as an example.
 ```
 cd mirLibSpark
 mkdir input
-cp input_samples/library_a5.txt input
+cp ../input_samples/library_a_len1.txt ../input
 ```
 
 Step 3: edit the submission file `mirlibspark_submission.sh`
@@ -157,9 +155,11 @@ Set the following parameters
 
 (2) Execution (around line 63)
 Use the following command directly or modify it as needed. 
-Use `--dummy` to test your settings.
 
 > spark-submit --master ${MASTER_URL} --executor-memory ${SLURM_MEM_PER_NODE}M ../src/mirLibPipeline.py 
+
+Use `--dummy` to test your settings.
+> spark-submit --master ${MASTER_URL} --executor-memory ${SLURM_MEM_PER_NODE}M ../src/mirLibPipeline.py --dummy
 
 Step 3: submit the submission file in the job queue
 ```
@@ -170,7 +170,7 @@ sbatch mirlibspark_submission.sh
 Because in submission runs, there is no internet access. The build is done in two steps, first download the files from internet, then use submission file to build the index.
 Step1: execute one of the following commands from `src` folder.
 ```
-python init_dbs_ensembl40_v2.py wheat 2 curl	
+python init_dbs_ensembl40_v2.py wheat 2 curl
 python init_dbs_ensembl40_v2.py corn 2 curl
 python init_dbs_ensembl40_v2.py rice 1 curl
 python init_dbs_ensembl40_v2.py potato 1 curl
