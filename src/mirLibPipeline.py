@@ -214,7 +214,7 @@ if __name__ == '__main__' :
     if reporting == 1: print(datetime.datetime.now(), 'NB distFile_rdd: ', distFile_rdd.count(), '\t\tinput instances')#
 
     #= Unify different input formats to "seq freq" elements
-    if input_type == 'raw':
+    if input_type == 'readcounts':
     ## in : u'seq\tfreq'
     ## out: ('seq', freq)
       ## note that type_a does not need to collapse nor trim.
