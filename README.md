@@ -77,7 +77,7 @@ It looks like this:
 
 
 Users use diffguide file to tell the program your experimental design.
-In this example, two experiment-control pairs are defined.
+In this example, one experiment-control pair is defined.
 Users need to make sure the mentioned libraries are provided in `input` folder.
 
 Because users can not edit files inside the docker, users can do the following steps to edit a file:
@@ -131,7 +131,7 @@ Step 1: install the `mirLibSpark project` in your Compute Canada account.
 ```
 git clone git@github.com:JulieCJWu/mirLibSpark.git
 ```
-or download the latest release source code.
+or download the latest release of source codes
 https://github.com/JulieCJWu/mirLibSpark/releases
 
 Step 2: put some RNA-seq libraries in `input` folder. Use a small demo file for a quick test; or use an Arabidopsis library GSM1087974 (100.txt) as an example.
@@ -157,6 +157,7 @@ Set the following parameters
 > #SBATCH --mail-user=yourname@email.com
 
 (2) Execution (around line 63)
+
 Use the following command directly or modify it as needed. 
 
 > spark-submit --master ${MASTER_URL} --executor-memory ${SLURM_MEM_PER_NODE}M ../src/mirLibPipeline.py 
@@ -180,7 +181,7 @@ python init_dbs_ensembl40_v2.py potato 1 curl
 python init_dbs_ensembl40_v2.py brome 1 curl
 python init_dbs_ensembl40_v2.py wheatD 1 curl
 ```
-Step 2: edit the submission file `submit_init_dbs_ensembl40.sh` and then submit the task
+Step 2: edit the submission file `submit_init_dbs_ensembl40.sh` and then submit the task.
 ```
 vim submit_init_dbs_ensembl40.sh
 ```
@@ -203,11 +204,11 @@ sbatch submit_init_dbs_ensembl40.sh
 | (5) summaryBinary.txt                                    | a tabulated table indicating the presence of predicted miRNAs in each library.                               |
 | (6) summaryFreq.txt                                      | a tabulated table indicating the expression abundance of predicted miRNAs in each library.                   |
 | (7) precursorindex.txt                                   | the details of all predicted miRNAs in terms of unique genome coordinates.                                   |
-| (8) precursorindex.html                                  | an HTML table displaying the 2D structures of each precursor drawn by VARNA software \citep{darty2009varna}. |
+| (8) precursorindex.html                                  | an HTML table displaying the 2D structures of each precursor drawn by VARNA software.                        |
 | (9) mirna_and_targets.txt                                | the targets of each miRNA predicted by miRanda software.                                                     |
 | (10) targetsKEGGpathway.txt                              | the KEGG pathways of each target genes.                                                                      |
 | (11-12) differential_Lib2vsLib1.txt; and _Lib3vsLib1.txt | the statistics report of differential expressed miRNAs in Lib2 or Lib3 using Lib1 as baseline.               |
-| (13) enrichment_pval_upper.csv                                      | the statistics report as a table listing enriched KEGG pathways in each library.                             |
+| (13) enrichment_pval_upper.csv                           | the statistics report as a table listing enriched KEGG pathways in each library.                             |
 
 
 
