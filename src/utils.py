@@ -66,7 +66,7 @@ def transpose_txt(infile, outfile):
             print(y+'\t', end='', file=fho)
             #print >>fho, y+'\t', # the comma in the final signals not to print a new line in python2.x
         print('', file=fho)
-		
+
 def makedirs_reps (reps):
   for rep in reps:
     if not os.path.exists(rep):
@@ -78,7 +78,7 @@ def find_RNAfold_path ():
   (out, err) = proc.communicate()
   path_RNAfold = out[:-8]
   return path_RNAfold
-	  
+ 
 # Configure a spark context
 def pyspark_configuration(appMaster, appName, masterMemory, execMemory, heartbeap=10):
   from pyspark import SparkConf, SparkContext
