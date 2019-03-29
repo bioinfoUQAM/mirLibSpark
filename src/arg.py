@@ -73,7 +73,7 @@ def getOpt (parser):
     parser.add_argument('--sc_mstrmemory', default='20g')
     parser.add_argument('--sc_execmemory', default='20g')
     parser.add_argument('--sc_master', default='local[*]')
-    parser.add_argument('--sc_heartbeap', default=10)
+    parser.add_argument('--sc_heartbeap', default='10')
     #
     args = parser.parse_args()
     #
