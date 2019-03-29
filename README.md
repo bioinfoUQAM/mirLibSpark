@@ -46,8 +46,9 @@ spark-submit mirLibPipeline.py --dummy
 Step 3: execute mirLibSpark program from `src` folder.
 Modify the parameters as needed.
 Note that the run takes minutes to a few hours, depending on available resources in the hardware.
+`sc_heartbeap` needs to be increased for running in Docker.
 ```
-spark-submit mirLibPipeline.py
+spark-submit mirLibPipeline.py --sc_heartbeap 300
 ```
 
 Step 5: run descriptions are shown in `stdout`. 
@@ -92,7 +93,7 @@ mv ../input/diffguide_ath.txt .
 
 Step 3: execute mirLibSpark program from `src` folder.
 ```
-spark-submit mirLibPipeline.py --perform_differential_analysis --diffguide_file diffguide_ath.txt
+spark-submit mirLibPipeline.py --perform_differential_analysis --diffguide_file diffguide_ath.txt --sc_heartbeap 300
 ```
 
 ### KEGG pathway enrichment analysis pipeline.
@@ -100,7 +101,7 @@ This analysis depends on the results of differential analysis.
 
 Execute mirLibSpark program from `src` folder
 ```
-spark-submit mirLibPipeline.py --perform_differential_analysis --diffguide_file diffguide_ath.txt --perform_KEGGpathways_enrichment_analysis
+spark-submit mirLibPipeline.py --perform_differential_analysis --diffguide_file diffguide_ath.txt --perform_KEGGpathways_enrichment_analysis --sc_heartbeap 300
 ```
 
 ### Build supported species dbs
