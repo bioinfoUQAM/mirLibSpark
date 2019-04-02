@@ -19,7 +19,7 @@ Environments: `Docker image` in a personal computer; or `Compute Canada`; or `Li
 Users need to have installed `Docker Desktop` in your computer.
 Please refer to https://www.docker.com/products/docker-desktop.
 
-### `Pull` and `run` the `mirLibSpark project` image in your local Docker machine.
+### `Pull` and `run` `mirLibSpark` image.
 ```
 mkdir input output
 docker pull juliewu/mirlibsparkdocker:latest 
@@ -27,26 +27,28 @@ docker run -v abs_path/to/output:/mirLibSpark/output -v abs_path/to/input:/mirLi
 ```
 Once you are inside the docker image, you are in the `src` folder of the `mirLibSpark project`
 
-### Basic usage in docker: one to several Arabidopsis library, no differential analysis.
-Step 1: put some RNA-seq libraries in input folder. Use a small demo file (library_a5.txt) for a quick test; or use an Arabidopsis library `GSM1087974` (100.txt) as an example.
+### Pipeline usage: one to several Arabidopsis library.
+Step 1: put some RNA-seq libraries in input folder. Use a small demo file for a quick test; or use an Arabidopsis library `GSM1087974` (100.txt) as an example. Make sure input is empty before copying.
 ```
-cp ../input_samples/library_c_len5.txt ../input
+rm -fr ../input/*
+cp ../input_samples/library_a_len1.txt ../input
 ```
 or
 ```
 cp ../input_samples/100.txt ../input
 ```
 
-Step 2: verify mirLibSpark program parameters in `stdout`.
+Step 2: verify mirLibSpark program parameters in `stdout` with `--dummy`. See the parameter options with `--help`.
 ```
 spark-submit mirLibPipeline.py --dummy
 ```
 
 Step 3: execute mirLibSpark program from `src` folder.
- Modify the parameters as needed. See the parameter options with `--help`.
-Note that the run takes minutes to a few hours, depending on the number of cores and the hardwares.
+Modify the parameters as needed.
+Note that the run takes minutes to a few hours, depending on available resources in the hardware.
+`sc_heartbeap` needs to be increased for running in Docker.
 ```
-spark-submit mirLibPipeline.py
+spark-submit mirLibPipeline.py --sc_heartbeap 300
 ```
 
 Step 5: run descriptions are shown in `stdout`. 
@@ -54,7 +56,7 @@ When the run is done, find the reports in `output` folder.
 The name of the report folder looks like this: `local-0000000000000`.
 The description of the report files is listed in the end of this manual.
 
-### Demonstration of differential analysis.
+### Differential analysis pipeline.
 This analysis requires users to define the `Experiment-Control` pairs.
 
 Step 1: put two or more files in `input` folder.
@@ -64,57 +66,55 @@ Assume you are in the `src` folder of the `project`. Use demo files as an exampl
 rm -fr ../input/*
 cp ../input_samples/library_a_len1.txt ../input
 cp ../input_samples/library_b_len3.txt ../input
-cp ../input_samples/library_c_len5.txt ../input
 ```
 
-Step 2: edit the diffguide file `diffguide_ath.txt` as needed, in mirLibSpark folder (root)
+Step 2: edit the diffguide file `diffguide_ath.txt` as needed, in `src` folder.
 It looks like this:
 
 > Experiment->Control
 
 > library_b_len3->library_a_len1
 
-> library_a_len5->library_a_len1
 
 Users use diffguide file to tell the program your experimental design.
-In this example, two experiment-control pairs are defined.
+In this example, one experiment-control pair is defined.
 Users need to make sure the mentioned libraries are provided in `input` folder.
 
 Because users can not edit files inside the docker, users can do the following steps to edit a file:
 ```
-cp ../diffguide_ath.txt ../input
+cp diffguide_ath.txt ../input
 ```
 Then users open and edit the file from your local computer, outside the Docker machine.
-Once the editing is done, do the following in mirLibSpark folder (root):
+Once the editing is done, do the following:
 ```
-mv ../input/diffguide_ath.txt ../
+mv ../input/diffguide_ath.txt .
 ```
 
 
 Step 3: execute mirLibSpark program from `src` folder.
 ```
-spark-submit mirLibPipeline.py --perform_differential_analysis --diffguide_file diffguide_ath.txt
+spark-submit mirLibPipeline.py --perform_differential_analysis --diffguide_file diffguide_ath.txt --sc_heartbeap 300
 ```
 
-### Demonstration of KEGG pathway enrichment analysis.
+### KEGG pathway enrichment analysis pipeline.
 This analysis depends on the results of differential analysis.
 
 Execute mirLibSpark program from `src` folder
 ```
-spark-submit mirLibPipeline.py --perform_differential_analysis --diffguide_file diffguide_ath.txt --perform_KEGGpathways_enrichment_analysis
+spark-submit mirLibPipeline.py --perform_differential_analysis --diffguide_file diffguide_ath.txt --perform_KEGGpathways_enrichment_analysis --sc_heartbeap 300
 ```
 
 ### Build supported species dbs
 Execute one of the following commands from `src` folder.
 ```
-python init_dbs_ensembl40_v2.py wheat 2 curl-build	
+python init_dbs_ensembl40_v2.py wheat 2 curl-build
 python init_dbs_ensembl40_v2.py corn 2 curl-build
 python init_dbs_ensembl40_v2.py rice 1 curl-build
 python init_dbs_ensembl40_v2.py potato 1 curl-build
 python init_dbs_ensembl40_v2.py brome 1 curl-build
 ```
 
-### Build supported species dbs
+### Build custom species dbs
 
 Step 1: put your custom genome fasta file in `input` folder.
 The genome file may contain one to several sequences in fasta format.
@@ -123,20 +123,22 @@ step 2: execute mirLibSpark program from `src` folder.
 ```
 python init_dbs_customGenome.py ../input/speciesname.fasta
 ```
-
+Resulting dbs files need to be copied outside of image for future reuse.
 
 ### Section 2: Compute Canada (tested in Graham)
-### Basic usage in Compute Canada.
+### Pipeline usage
 Step 1: install the `mirLibSpark project` in your Compute Canada account.
 ```
 git clone git@github.com:JulieCJWu/mirLibSpark.git
 ```
+or download the latest release of source codes
+https://github.com/JulieCJWu/mirLibSpark/releases
 
-Step 2: put some RNA-seq libraries in `input` folder. Use a small demo file (library_a5.txt) for a quick test; or use an Arabidopsis library GSM1087974 (100.txt) as an example.
+Step 2: put some RNA-seq libraries in `input` folder. Use a small demo file for a quick test; or use an Arabidopsis library GSM1087974 (100.txt) as an example.
 ```
 cd mirLibSpark
 mkdir input
-cp input_samples/library_a5.txt input
+cp ../input_samples/library_a_len1.txt ../input
 ```
 
 Step 3: edit the submission file `mirlibspark_submission.sh`
@@ -148,19 +150,22 @@ vim mirlibspark_submission.sh
 ```
 (1) General settings
 Set the following parameters
-> #SBATCH --account=youraccount
+> #SBATCH --account=yourSponsorAccount
 
 > #SBATCH --time=hh:mm:ss
 
 > #SBATCH --mail-user=yourname@email.com
 
 (2) Execution (around line 63)
+
 Use the following command directly or modify it as needed. 
-Use `--dummy` to test your settings.
 
 > spark-submit --master ${MASTER_URL} --executor-memory ${SLURM_MEM_PER_NODE}M ../src/mirLibPipeline.py 
 
-Step 3: submit the submission file inthe job queue
+Use `--dummy` to test your settings.
+> spark-submit --master ${MASTER_URL} --executor-memory ${SLURM_MEM_PER_NODE}M ../src/mirLibPipeline.py --dummy
+
+Step 3: submit the submission file in the job queue
 ```
 sbatch mirlibspark_submission.sh
 ```
@@ -169,14 +174,14 @@ sbatch mirlibspark_submission.sh
 Because in submission runs, there is no internet access. The build is done in two steps, first download the files from internet, then use submission file to build the index.
 Step1: execute one of the following commands from `src` folder.
 ```
-python init_dbs_ensembl40_v2.py wheat 2 curl	
+python init_dbs_ensembl40_v2.py wheat 2 curl
 python init_dbs_ensembl40_v2.py corn 2 curl
 python init_dbs_ensembl40_v2.py rice 1 curl
 python init_dbs_ensembl40_v2.py potato 1 curl
 python init_dbs_ensembl40_v2.py brome 1 curl
 python init_dbs_ensembl40_v2.py wheatD 1 curl
 ```
-Step 2: edit the submission file `submit_init_dbs_ensembl40.sh` and then submit the task
+Step 2: edit the submission file `submit_init_dbs_ensembl40.sh` and then submit the task.
 ```
 vim submit_init_dbs_ensembl40.sh
 ```
@@ -199,11 +204,11 @@ sbatch submit_init_dbs_ensembl40.sh
 | (5) summaryBinary.txt                                    | a tabulated table indicating the presence of predicted miRNAs in each library.                               |
 | (6) summaryFreq.txt                                      | a tabulated table indicating the expression abundance of predicted miRNAs in each library.                   |
 | (7) precursorindex.txt                                   | the details of all predicted miRNAs in terms of unique genome coordinates.                                   |
-| (8) precursorindex.html                                  | an HTML table displaying the 2D structures of each precursor drawn by VARNA software \citep{darty2009varna}. |
+| (8) precursorindex.html                                  | an HTML table displaying the 2D structures of each precursor drawn by VARNA software.                        |
 | (9) mirna_and_targets.txt                                | the targets of each miRNA predicted by miRanda software.                                                     |
 | (10) targetsKEGGpathway.txt                              | the KEGG pathways of each target genes.                                                                      |
 | (11-12) differential_Lib2vsLib1.txt; and _Lib3vsLib1.txt | the statistics report of differential expressed miRNAs in Lib2 or Lib3 using Lib1 as baseline.               |
-| (13) enrichment_pval_upper.csv                                      | the statistics report as a table listing enriched KEGG pathways in each library.                             |
+| (13) enrichment_pval_upper.csv                           | the statistics report as a table listing enriched KEGG pathways in each library.                             |
 
 
 

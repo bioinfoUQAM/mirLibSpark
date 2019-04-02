@@ -66,7 +66,7 @@ def transpose_txt(infile, outfile):
             print(y+'\t', end='', file=fho)
             #print >>fho, y+'\t', # the comma in the final signals not to print a new line in python2.x
         print('', file=fho)
-		
+
 def makedirs_reps (reps):
   for rep in reps:
     if not os.path.exists(rep):
@@ -78,30 +78,27 @@ def find_RNAfold_path ():
   (out, err) = proc.communicate()
   path_RNAfold = out[:-8]
   return path_RNAfold
-	  
+ 
 # Configure a spark context
-def pyspark_configuration(appMaster, appName, masterMemory, execMemory):
+def pyspark_configuration(appMaster, appName, masterMemory, execMemory, heartbeap):
   from pyspark import SparkConf, SparkContext
   myConf = SparkConf()
   myConf.setAppName(appName)  #= 'mirLibSpark'
-  myConf.set("spark.driver.maxResultSize", '1500M') #= default 1g
+  myConf.setMaster(appMaster) #= 'local[2] or local[*]'
   #
+  myConf.set("spark.driver.maxResultSize", '1500M') #= default 1g
   myConf.set("spark.driver.memory", masterMemory)
   myConf.set("spark.executor.memory", execMemory)
-  myConf.setMaster(appMaster) #= 'local[2] or local[*]'
+  #
+  timeout = heartbeap * 12
+  myConf.set('spark.network.timeout', str(timeout) + 's')
+  myConf.set('spark.executor.heartbeatInterval', str(heartbeap) + 's')
   #
   #= no need to configure the followings
   #myConf.set("spark.cores.max", execCores) 
-  #
   # other keys: "spark.master" = 'spark://5.6.7.8:7077'
   #             "spark.driver.cores"
   #             "spark.default.parallelism"
-  #= hayda's experience for solving fail jobs: 190319
-  heartbeap = 300
-  timeout = heartbeap * 12
-  myConf.set('spark.network.timeout', str(timeout) + 's')
-  myConf.set('spark.executor.heartbeatInterval', str(timeout) + 's')## 190319
-  
   return SparkContext(conf = myConf)
 
 def convertTOhadoop(rfile, hdfsFile):

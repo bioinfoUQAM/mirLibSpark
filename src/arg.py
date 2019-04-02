@@ -21,7 +21,7 @@ def getOpt (parser):
     project_path = find_project_path ()
     #
     parser.add_argument('--dummy', action='store_true', help='display configurations and exit')
-    parser.add_argument('--reporting', default='0', action='store_true', help='report the number of instances passing each of the parameters. Activating this option will result in significant prolonged execution time')
+    parser.add_argument('--reporting', action='store_true', help='report the number of instances passing each of the parameters. Activating this option will result in significant prolonged execution time')
     parser.add_argument('--message', default = 'None')
     parser.add_argument('--project_path', default = project_path)
     parser.add_argument('--input_path')
@@ -37,7 +37,7 @@ def getOpt (parser):
                                wheatD: Aegilops_tauschii.ASM34733v1;\
                                custom: custom species.\
                                Please use provided script to construct the dbs folder for selected species from ensembl-release40.')
-    parser.add_argument('--input_type', default='w', choices=['raw', 'w', 'reads','r', 'fasta', 'a', 'fastq', 'q'])
+    parser.add_argument('--input_type', default='w', choices=['readcounts', 'w', 'reads','r', 'fasta', 'a', 'fastq', 'q'])
     parser.add_argument('--adapter', default='none', help='example = TGGAATTCTCGGGTGCCAAGGAACTC')
     parser.add_argument('--bowtie_index_prefix')
     parser.add_argument('--genome_path')
@@ -73,10 +73,10 @@ def getOpt (parser):
     parser.add_argument('--sc_mstrmemory', default='20g')
     parser.add_argument('--sc_execmemory', default='20g')
     parser.add_argument('--sc_master', default='local[*]')
+    parser.add_argument('--sc_heartbeap', default='10')
     #
     args = parser.parse_args()
     #
-    if args.reporting == True: args.reporting = '1'
     if args.inactivateMirdup == True: args.inactivateMirdup = '1'
     #
     args.project_path = args.project_path.rstrip('/')
@@ -198,7 +198,7 @@ def getOpt (parser):
       args.gene_vs_pathway_file = 'None'
       args.pathway_description_file = 'None'
     #
-    if args.input_type == 'w': args.input_type = 'raw'
+    if args.input_type == 'w': args.input_type = 'readcounts'
     elif args.input_type == 'r': args.input_type = 'reads'
     elif args.input_type == 'a': args.input_type = 'fasta'
     elif args.input_type == 'q': args.input_type = 'fastq'
@@ -207,6 +207,9 @@ def getOpt (parser):
     paramDict = vars(args)
     #= add additional parameters in dict
     paramDict['sc_appname'] = 'mirLibSpark'
+    #
+    if args.reporting == False: paramDict['reporting'] = '0'
+    else: paramDict['reporting'] = '1'
     #
     if args.dummy == False: paramDict['dummy'] = 'False'
     elif args.dummy == True:
