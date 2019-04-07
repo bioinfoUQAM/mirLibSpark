@@ -787,7 +787,9 @@ def __create_background (outfile, list_mirna_and_topscoredTargetsKEGGpathway, di
     for p in pathways:
       if p in dict_pathway_description.keys():
         desc = dict_pathway_description[p]
-      else: desc = 'to be retrived from KEGG'
+      else: 
+        p = 'unknown'
+        desc = 'unknown'
       line = '\t'.join( [mirna, p, desc])
       print(line, file=fh_out)
   fh_out.close()
