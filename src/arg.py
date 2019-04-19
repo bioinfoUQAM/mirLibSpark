@@ -50,7 +50,7 @@ def getOpt (parser):
     parser.add_argument('--perform_KEGGpathways_enrichment_analysis', action='store_true')
     parser.add_argument('--gene_vs_pathway_file')
     parser.add_argument('--pathway_description_file')
-    parser.add_argument('--inactivateMirdup', default='0', action='store_true')
+    parser.add_argument('--activateMirdup', default='0', action='store_true')
     parser.add_argument('--mirdup_model', default='thaliana.model',\
                          choices=['Viridiplantae.model', 'thaliana.model'])
     parser.add_argument('--limit_s_freq', default='10')
@@ -77,7 +77,7 @@ def getOpt (parser):
     #
     args = parser.parse_args()
     #
-    if args.inactivateMirdup == True: args.inactivateMirdup = '1'
+    if args.activateMirdup == True: args.activateMirdup = '1'
     #
     args.project_path = args.project_path.rstrip('/')
     if args.input_path == None: args.input_path = args.project_path + '/input/'
