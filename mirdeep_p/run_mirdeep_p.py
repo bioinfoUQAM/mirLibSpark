@@ -144,7 +144,7 @@ project_path = '/home/cjwu/project/cjwu/gitRepo/testprofile'
 mirdeep_path = project_path + '/mirdeep_p/'
 rep_input = project_path + '/input_mirdeep/'
 options = ['tair9', 'tair10']
-len_pri = '250' #'700'
+len_pri = '300' #'700'
 #
 loadModule_graham ()
 genome, f_annotated = init_mirdeep_p ('tair10')
