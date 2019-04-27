@@ -1,6 +1,7 @@
 #!/bin/bash
-#SBATCH --job-name=mirdeeppLeiS-190426
-#SBATCH --account=def-banire
+#SBATCH --job-name=mirdeepp
+#SBATCH --account=youraccount
+#SBATCH --mail-user=yourname@email.com
 #SBATCH --time=60:10:00
 #SBATCH --nodes=1
 #SBATCH --mem=5000M
@@ -8,7 +9,6 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --error=%x-%j.err
 #SBATCH --output=%x-%j.out
-#SBATCH --mail-user=g39103001@gm.ym.edu.tw
 #SBATCH --mail-type=ALL
 
 module load nixpkgs/16.09
@@ -19,8 +19,3 @@ module load blast+/2.6.0
 module load python/2.7.14
 
 time python run_mirdeep_p.py 2>/dev/null
-
-
-#= sbatch submit.sh
-#= squeue -u cjwu
-#= scancel <jobid>
