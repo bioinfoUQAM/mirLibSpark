@@ -17,10 +17,14 @@ import os
 import re
 import subprocess
 import sys
+from collections import defaultdict
 
 import os.path
 from os import listdir
 
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns; sns.set()
 
 
 def validate_options(paramDict):
@@ -429,6 +433,7 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
   outfile = rep_output + appId + '_summaryFreq.trs' 
   outfile2 = rep_output + appId + '_summaryBinary.trs'
   #outfile3 = rep_output + appId + '_summaryGenoLoci.txt' #= outfile3 is not in a good format yet
+  figfile1 = rep_output + appId + '_summaryFreq.png'
 
   fh_out = open (outfile, 'w')
   fh_out2 = open (outfile2, 'w')
@@ -481,10 +486,10 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
           tmp_master_distinctPrecursor_infos[key] = infos
         #################################### 
 
-  dictLibSeqFreq = {}
+  dictLibSeqFreq = defaultdict(list)
   for f in sorted(infiles):
     libname = f.split(keyword)[1][:-4]
-    dictLibSeqFreq[libname] = []
+    #dictLibSeqFreq[libname] = []
     tmpDict = {}
     with open (rep_output + f, 'r') as fh:
       fh.readline()
@@ -516,6 +521,14 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
       line += str(i) + '\t'
     line = line.rstrip('\t')
     print(line, file=fh_out2)
+  
+  # create freq heatmap from dictLibSeqFreq
+  # convert dictLibSeqFreq to numpy ndarray
+  npLibSeqFreq = np.array([i for k in dictLibSeqFreq for i in dictLibSeqFreq[k]])
+  npLibSeqFreq = npLibSeqFreq.reshape((len(dictLibSeqFreq), len(master_predicted_distinctMiRNAs)))
+  
+  sns.heatmap(npLibSeqFreq)
+  plt.savefig(figfile1)
 
   master_distinctPrecursor_infos = []
   for k in sorted(tmp_master_distinctPrecursor_infos.keys()):
