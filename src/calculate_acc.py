@@ -5,6 +5,8 @@ Date: 2017-11-07
 from __future__ import print_function
 from math import sqrt
 
+def calculate_precision (tp, fp):
+  return round (tp / (tp + fp). 3)
 
 def calculate_F1_score (tp, tn, fp, fn):
   #= p: precision; r: recall
