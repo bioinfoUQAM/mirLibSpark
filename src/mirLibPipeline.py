@@ -272,7 +272,8 @@ if __name__ == '__main__' :
     for i in range(len(chromosomes)):
       ch = chromosomes[i]
       p = b_index_path + ch + '/' + bowtie_index_prefix
-      bowtie_obj = mru.prog_bowtie(p)
+      mismatch = 0
+      bowtie_obj = mru.prog_bowtie(p, mismatch)
       bowtie_cmd, bowtie_env = bowtie_obj.Bowtie_pipe_cmd()
       #================================================================================================================
       #================================================================================================================

@@ -89,9 +89,10 @@ class prog_dustmasker ():
 
 class prog_bowtie ():
 
-  def __init__(self, b_index):
+  def __init__(self, b_index, mismatch):
     self.bowtie_index = b_index
     self.env = os.environ
+    self.mismatch = mismatch
 
   def run_bowtie(self, seq):
     mappings = []
@@ -128,7 +129,7 @@ class prog_bowtie ():
     '''
     -v 0 : allowing zero mismatch in alignment
     '''
-    cmd = bin + "bowtie --mm -a -v 0 --suppress 1,6,7,8 -r " + self.bowtie_index + " - "
+    cmd = bin + "bowtie --mm -a -v " + str(self.mismatch) + " --suppress 1,6,7,8 -r " + self.bowtie_index + " - "
     return cmd, self.env
   
   def bowtie_rearrange_map (self, elem):
