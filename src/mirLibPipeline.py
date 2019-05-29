@@ -100,6 +100,7 @@ if __name__ == '__main__' :
   b_index_path = paramDict['b_index_path']
   chromosomes = paramDict['chromosomes'].split(',')
   bowtie_index_prefix = paramDict['bowtie_index_prefix']
+  mismatch = str(paramDict['bowtie_mismatch'])
 
   #= file and list of known non miRNA
   known_non = paramDict['known_non_file'] 
@@ -272,7 +273,7 @@ if __name__ == '__main__' :
     for i in range(len(chromosomes)):
       ch = chromosomes[i]
       p = b_index_path + ch + '/' + bowtie_index_prefix
-      bowtie_obj = mru.prog_bowtie(p)
+      bowtie_obj = mru.prog_bowtie(p, mismatch)
       bowtie_cmd, bowtie_env = bowtie_obj.Bowtie_pipe_cmd()
       #================================================================================================================
       #================================================================================================================

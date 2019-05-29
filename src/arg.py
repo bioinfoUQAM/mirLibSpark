@@ -42,6 +42,7 @@ def getOpt (parser):
     parser.add_argument('--bowtie_index_prefix')
     parser.add_argument('--genome_path')
     parser.add_argument('--b_index_path')
+    parser.add_argument('--bowtie_mismatch', default = '0')
     parser.add_argument('--known_non_file', help='Only ath is provided.')
     parser.add_argument('--chromosomes', choices=['All', 'split'], help='Only ath has options. Other species have only one default choice. Genomes larger than 1G are splitted by chromosomes, otherwise all choromsomes are in one file.')
     parser.add_argument('--target_file')
