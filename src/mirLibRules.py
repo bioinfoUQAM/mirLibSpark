@@ -89,7 +89,7 @@ class prog_dustmasker ():
 
 class prog_bowtie ():
 
-  def __init__(self, b_index, mismatch):
+  def __init__(self, b_index, mismatch=0):
     self.bowtie_index = b_index
     self.env = os.environ
     self.mismatch = mismatch
@@ -99,7 +99,7 @@ class prog_bowtie ():
     FNULL = open(os.devnull, 'w')
     
     # cmd = 'bowtie --mm -a -v 0 --suppress 1,5,6,7,8 -c ' + self.bowtie_index + ' '+ seq  # shell=True
-    cmd = [bin + 'bowtie', '--mm', '-a', '-v', '0', '--suppress', '1,5,6,7,8', '-c', self.bowtie_index, seq] # shell=False
+    cmd = [bin + 'bowtie', '--mm', '-a', '-v', self.mismatch, '0', '--suppress', '1,5,6,7,8', '-c', self.bowtie_index, seq] # shell=False
     
     sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
     bsout = sproc.communicate()[0]
