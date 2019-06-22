@@ -188,7 +188,8 @@ Install the `mirLibSpark project` in your Compute Canada account.
 git clone git@github.com:JulieCJWu/mirLibSpark.git
 ```
 or download the latest release of source codes
-https://github.com/JulieCJWu/mirLibSpark/releases
+https://github.com/bioinfoUQAM/mirLibSpark/releases
+
 
 ### B1. Pipeline usage
 
