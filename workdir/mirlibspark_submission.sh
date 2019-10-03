@@ -29,6 +29,8 @@ module load python/2.7.14
 #
 #= python requirements: statsmodels (includes: numpy, scipy, pandas, patsy), 
 #                       seaborn (includes: matplotlib)
+virtualenv --no-download $SLURM_TMPDIR/env
+source $SLURM_TMPDIR/env/bin/activate
 pip install --user requests
 pip install --user -r requirements.txt
 #
