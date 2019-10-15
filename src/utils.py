@@ -80,7 +80,7 @@ def find_RNAfold_path ():
   return path_RNAfold
  
 # Configure a spark context
-def pyspark_configuration(appMaster, appName, masterMemory, execMemory, heartbeap):
+def pyspark_configuration(appMaster, appName, masterMemory, execMemory, heartbeat):
   from pyspark import SparkConf, SparkContext
   myConf = SparkConf()
   myConf.setAppName(appName)  #= 'mirLibSpark'
@@ -92,7 +92,7 @@ def pyspark_configuration(appMaster, appName, masterMemory, execMemory, heartbea
   #
   timeout = heartbeap * 12
   myConf.set('spark.network.timeout', str(timeout) + 's')
-  myConf.set('spark.executor.heartbeatInterval', str(heartbeap) + 's')
+  myConf.set('spark.executor.heartbeatInterval', str(heartbeat) + 's')
   #
   #= no need to configure the followings
   #myConf.set("spark.cores.max", execCores) 

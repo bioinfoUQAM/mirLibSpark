@@ -78,7 +78,7 @@ Modify the parameters as needed.
 Note that the run takes minutes to a few hours, depending on available resources in the hardware.
 
 ```
-spark-submit mirLibPipeline.py --sc_heartbeap 300
+spark-submit mirLibPipeline.py --sc_heartbeat 300
 ```
 
 Step 5: run descriptions are shown in `stdout`. 
@@ -123,13 +123,13 @@ mv ../input/diffguide_ath.txt .
 
 Step 3: execute mirLibSpark program from `src` folder.
 ```
-spark-submit mirLibPipeline.py --perform_differential_analysis --diffguide_file diffguide_ath.txt --sc_heartbeap 300
+spark-submit mirLibPipeline.py --perform_differential_analysis --diffguide_file diffguide_ath.txt --sc_heartbeat 300
 ```
 
 ### A3. KEGG pathway enrichment analysis pipeline.
 Execute mirLibSpark program from `src` folder
 ```
-spark-submit mirLibPipeline.py --perform_differential_analysis --diffguide_file diffguide_ath.txt --perform_KEGGpathways_enrichment_analysis --sc_heartbeap 300
+spark-submit mirLibPipeline.py --perform_differential_analysis --diffguide_file diffguide_ath.txt --perform_KEGGpathways_enrichment_analysis --sc_heartbeat 300
 ```
 Because this analysis depends on the activation of differential analysis, users may notice that in the command line above, both *perform_differential_analysis* and *perform_KEGGpathways_enrichment_analysis* are flagged.
 

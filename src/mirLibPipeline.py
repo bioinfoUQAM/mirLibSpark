@@ -49,14 +49,15 @@ if __name__ == '__main__' :
   execMemory = paramDict['sc_execmemory']           #"4g"
   #execCores = paramDict['sc_execcores']             #2
   partition = int(paramDict['sc_partition'])
-  heartbeap = int(paramDict['sc_heartbeap'])        #10
+  heartbeap = int(paramDict['sc_heartbeat'])        #10
 
   #= Spark context
   sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, heartbeap)
 
 
   #= Spark application ID
-  appId = str(sc.applicationId)
+  appId = paramDict['jobid']
+  if appId == '--': appId = str(sc.applicationId)
   #print('spark.executor.memory: ', sc._conf.get('spark.executor.memory'))
   #print('spark.driver.memory: ', sc._conf.get('spark.driver.memory'))
   #print('spark.master: ', sc._conf.get('spark.master'))
