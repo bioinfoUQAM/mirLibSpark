@@ -10,9 +10,21 @@ __Zero-dependency__: dependencies are automatically installed.
 ### Citation:
 Please cite the paper for your work using this tool.
 
-Title: MirLibSpark: A Scalable NGS Plant MicroRNA Prediction Pipeline for Multi-Library Functional Annotation
+__Title__: MirLibSpark: A Scalable NGS Plant MicroRNA Prediction Pipeline for Multi-Library Functional Annotation
 
-__Cite__: Chao-Jung Wu, Amine M. Remita and Abdoulaye Baniré Diallo. 2019, September. ParBio'19-8th Workshop on Parallel and Cloud-based Bioinformatics and Biomedicine. In Proceedings of the 10th ACM International Conference on Bioinformatics, Computational Biology and Health Informatics Pages 669-674. ACM.
+__Cite__: Chao-Jung Wu, Amine M. Remita and Abdoulaye Baniré Diallo. 2019, September. MirLibSpark: A Scalable NGS Plant MicroRNA Prediction Pipeline for Multi-Library Functional Annotation. ParBio'19-8th Workshop on Parallel and Cloud-based Bioinformatics and Biomedicine. In Proceedings of the 10th ACM International Conference on Bioinformatics, Computational Biology and Health Informatics Pages 669-674. ACM.
+
+__BibTex__:
+```
+@article{wu2019mirlibspark,
+  title={MirLibSpark: A Scalable NGS Plant MicroRNA Prediction Pipeline for Multi-Library Functional Annotation},
+  author={Wu, Chao-Jung and Remita, Amine M. and Diallo, Abdoulaye Banir{\'e}},
+  journal={ParBio'19-8th Workshop on Parallel and Cloud-based Bioinformatics and Biomedicine. In Proceedings of the 10th ACM International Conference on Bioinformatics, Computational Biology and Health Informatics},
+  pages={669-674},
+  year={2019},
+  publisher={ACM}
+}
+```
 
 Link to download the paper: https://dl.acm.org/citation.cfm?id=3343463
 
