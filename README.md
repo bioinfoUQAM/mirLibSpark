@@ -7,6 +7,12 @@ It is a standalone and fully automated package with zero-dependency.
 __Fully automated__: one command line to analyze your data, and annotate miRNAs and their functions in one run.
 __Zero-dependency__: dependencies are automatically installed.
 
+Please cite the paper for your work using this tool.
+Title: MirLibSpark: A Scalable NGS Plant MicroRNA Prediction Pipeline for Multi-Library Functional Annotation
+Cite: Chao-Jung Wu, Amine M. Remita and Abdoulaye Baniré Diallo. 2019, September. ParBio'19-8th Workshop on Parallel and Cloud-based Bioinformatics and Biomedicine. In Proceedings of the 10th ACM International Conference on Bioinformatics, Computational Biology and Health Informatics Pages 669-674. ACM.
+Link to download the paper: https://dl.acm.org/citation.cfm?id=3343463
+
+
 
 ### Dependencies:
 __Languages__: `python2` (scipy, statsmodels), `perl`, `java`
