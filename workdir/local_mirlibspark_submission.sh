@@ -7,8 +7,8 @@
 #SBATCH --cpus-per-task=32
 #SBATCH --mem=110G
 #
-#SBATCH --account=def-banire
-#SBATCH --mail-user=g39103001@gm.ym.edu.tw
+#SBATCH --account=your-account
+#SBATCH --mail-user=your@email.com
 #SBATCH --mail-type=ALL
 #SBATCH --error=%x-%j.err
 #SBATCH --output=%x-%j.out
