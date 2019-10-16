@@ -12,7 +12,7 @@ Please cite the paper for your work using this tool.
 
 __Title__: MirLibSpark: A Scalable NGS Plant MicroRNA Prediction Pipeline for Multi-Library Functional Annotation
 
-__Cite__: Chao-Jung Wu, Amine M. Remita and Abdoulaye Baniré Diallo. 2019, September. MirLibSpark: A Scalable NGS Plant MicroRNA Prediction Pipeline for Multi-Library Functional Annotation. ParBio'19-8th Workshop on Parallel and Cloud-based Bioinformatics and Biomedicine. In Proceedings of the 10th ACM International Conference on Bioinformatics, Computational Biology and Health Informatics Pages 669-674. ACM.
+__Cite__: Chao-Jung Wu, Amine M. Remita and Abdoulaye Baniré Diallo. 2019, September. MirLibSpark: A Scalable NGS Plant MicroRNA Prediction Pipeline for Multi-Library Functional Annotation. ParBio'19-8th Workshop on Parallel and Cloud-based Bioinformatics and Biomedicine. In Proceedings of the 10th ACM International Conference on Bioinformatics, Computational Biology and Health Informatics. Pages 669-674. ACM.
 
 __BibTex__:
 ```
@@ -105,7 +105,7 @@ spark-submit mirLibPipeline.py --sc_heartbeat 300
 
 Step 5: run descriptions are shown in `stdout`. 
 When the run is done, find the reports in `output` folder. 
-The name of the report folder looks like this: `local-0000000000000`.
+The name of the report folder is the same as the job id created by linux time.
 The description of the report files is listed in the end of this manual.
 
 ### A2. Differential analysis pipeline.
