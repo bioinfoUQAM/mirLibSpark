@@ -49,10 +49,10 @@ if __name__ == '__main__' :
   execMemory = paramDict['sc_execmemory']           #"4g"
   #execCores = paramDict['sc_execcores']             #2
   partition = int(paramDict['sc_partition'])
-  heartbeap = int(paramDict['sc_heartbeat'])        #10
+  heartbeat = int(paramDict['sc_heartbeat'])        #10
 
   #= Spark context
-  sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, heartbeap)
+  sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, heartbeat)
 
 
   #= Spark application ID

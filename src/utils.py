@@ -90,7 +90,7 @@ def pyspark_configuration(appMaster, appName, masterMemory, execMemory, heartbea
   myConf.set("spark.driver.memory", masterMemory)
   myConf.set("spark.executor.memory", execMemory)
   #
-  timeout = heartbeap * 12
+  timeout = heartbeat * 12
   myConf.set('spark.network.timeout', str(timeout) + 's')
   myConf.set('spark.executor.heartbeatInterval', str(heartbeat) + 's')
   #
