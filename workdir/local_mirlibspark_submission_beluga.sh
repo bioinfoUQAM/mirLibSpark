@@ -28,7 +28,7 @@ module load viennarna/2.4.11
 module load bowtie/1.1.2
 module load blast+/2.7.1
 module load spark/2.4.4
-#module load python/2.7.14
+module load python/2.7.14
 
 #= python requirements: statsmodels (includes: numpy, scipy, pandas, patsy), 
 #                       seaborn (includes: matplotlib)
