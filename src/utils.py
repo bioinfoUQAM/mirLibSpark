@@ -78,7 +78,7 @@ def find_RNAfold_path ():
   (out, err) = proc.communicate()
   path_RNAfold = out[:-8]
   return path_RNAfold
- 
+'''
 # Configure a spark context
 def pyspark_configuration(appMaster, appName, masterMemory, execMemory, heartbeat):
   from pyspark import SparkConf, SparkContext
@@ -100,6 +100,30 @@ def pyspark_configuration(appMaster, appName, masterMemory, execMemory, heartbea
   #             "spark.driver.cores"
   #             "spark.default.parallelism"
   return SparkContext(conf = myConf)
+'''
+
+# Configure a spark context
+def pyspark_configuration(appName, masterMemory, heartbeat):
+  from pyspark import SparkConf, SparkContext
+  myConf = SparkConf()
+  myConf.setAppName(appName)  #= 'mirLibSpark'
+  ###myConf.setMaster(appMaster) #= 'local[2] or local[*]'
+  #
+  myConf.set("spark.driver.maxResultSize", '1500M') #= default 1g
+  myConf.set("spark.driver.memory", masterMemory)
+  ###myConf.set("spark.executor.memory", execMemory)
+  #
+  timeout = heartbeat * 12
+  myConf.set('spark.network.timeout', str(timeout) + 's')
+  myConf.set('spark.executor.heartbeatInterval', str(heartbeat) + 's')
+  #
+  #= no need to configure the followings
+  #myConf.set("spark.cores.max", execCores) 
+  # other keys: "spark.master" = 'spark://5.6.7.8:7077'
+  #             "spark.driver.cores"
+  #             "spark.default.parallelism"
+  return SparkContext(conf = myConf)
+
 
 def convertTOhadoop(rfile, hdfsFile):
   '''

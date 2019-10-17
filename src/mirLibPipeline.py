@@ -43,16 +43,18 @@ if __name__ == '__main__' :
   for k, v in sorted(paramDict.items()): print(k, ': ', v)
 
   #= spark configuration
-  appMaster = paramDict['sc_master']                #"local[*]" 
+  ###appMaster = paramDict['sc_master']                #"local[*]" 
   appName = paramDict['sc_appname']                 #"mirLibSpark"
   mstrMemory = paramDict['sc_mstrmemory']           #"4g"
-  execMemory = paramDict['sc_execmemory']           #"4g"
+  ###execMemory = paramDict['sc_execmemory']           #"4g"
   #execCores = paramDict['sc_execcores']             #2
   partition = int(paramDict['sc_partition'])
   heartbeat = int(paramDict['sc_heartbeat'])        #10
 
   #= Spark context
-  sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, heartbeat)
+  #sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, heartbeat)
+  sc = ut.pyspark_configuration(appName, mstrMemory, heartbeat)
+
 
 
   #= Spark application ID

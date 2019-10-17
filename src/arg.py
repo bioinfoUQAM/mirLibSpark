@@ -32,10 +32,10 @@ def getOpt (parser):
                                wheat: 	Triticum_aestivum.IWGSC;\
                                corn: 	Zea_mays.AGPv4;\
                                rice: 	Oryza_sativa.IRGSP-1.0;\
-                               potato: Solanum_tuberosum.SolTub_3.0;\
+                               potato:  Solanum_tuberosum.SolTub_3.0;\
                                brome: 	Brachypodium_distachyon.Brachypodium_distachyon_v3.0;\
-                               wheatD: Aegilops_tauschii.ASM34733v1;\
-                               custom: custom species.\
+                               wheatD:  Aegilops_tauschii.ASM34733v1;\
+                               custom:  custom species;\
                                Please use provided script to construct the dbs folder for selected species from ensembl-release40.')
     parser.add_argument('--input_type', default='w', choices=['readcounts', 'w', 'reads','r', 'fasta', 'a', 'fastq', 'q'])
     parser.add_argument('--adapter', default='none', help='example = TGGAATTCTCGGGTGCCAAGGAACTC')
@@ -44,7 +44,7 @@ def getOpt (parser):
     parser.add_argument('--b_index_path')
     parser.add_argument('--bowtie_mismatch', default = '0')
     parser.add_argument('--known_non_file', help='Only ath is provided.')
-    parser.add_argument('--chromosomes', choices=['All', 'split'], help='Only ath has options. Other species have only one default choice. Genomes larger than 1G are splitted by chromosomes, otherwise all choromsomes are in one file.')
+    parser.add_argument('--chromosomes', help='{All,split} Only ath has options. Other species have only one default choice. Genomes larger than 1G are splitted by chromosomes, otherwise all choromsomes are in one file.')
     parser.add_argument('--target_file')
     parser.add_argument('--perform_differential_analysis', default='False', action='store_true')
     parser.add_argument('--diffguide_file', default='none')
@@ -72,8 +72,8 @@ def getOpt (parser):
     parser.add_argument('--nbTargets', default='100')
     parser.add_argument('--sc_partition', default='64')
     parser.add_argument('--sc_mstrmemory', default='20g')
-    parser.add_argument('--sc_execmemory', default='20g')
-    parser.add_argument('--sc_master', default='local[*]')
+    ###parser.add_argument('--sc_execmemory', default='20g')
+    ###parser.add_argument('--sc_master', default='local[*]')
     parser.add_argument('--sc_heartbeat', default='10')
     parser.add_argument('--jobid', default='--')
     #
@@ -101,14 +101,14 @@ def getOpt (parser):
       filename2 = 'ko_gene_vs_pathway.txt'
       filename3 = 'ko_pathway_description.txt'
       chromosomes = '1A,1B,1D,2A,2B,2D,3A,3B,3D,4A,4B,4D,5A,5B,5D,6A,6B,6D,7A,7B,7D'
-      args.chromosomes = chromosomes
+      if args.chromosomes == None: args.chromosomes = chromosomes
     elif args.species == 'corn': 
       bowtie_index_prefix = 'CORN_AGPv4'
       filename1 = 'Zea_mays.AGPv4.cdna.all.fa.gz'
       filename2 = 'zma_gene_vs_pathway.txt'
       filename3 = 'zma_pathway_description.txt'
       chromosomes = '1,2,3,4,5,6,7,8,9,10,Mt,Pt'
-      args.chromosomes = chromosomes
+      if args.chromosomes == None: args.chromosomes = chromosomes
     elif args.species == 'rice': 
       bowtie_index_prefix = 'RICE_IRGSP_1'
       filename1 = 'Oryza_sativa.IRGSP-1.0.cdna.all.fa'
@@ -139,14 +139,14 @@ def getOpt (parser):
       args.chromosomes = 'All'
     elif args.species == 'custom':
       args.bowtie_index_prefix = args.species
-      #if args.bowtie_index_prefix == None:
-      #  sys.stderr.write('bowtie_index_prefix must be provided for custom species.\n\
-      #                    Exit the program.')
-      #  sys.exit()
+      if args.bowtie_index_prefix == None:
+        sys.stderr.write('bowtie_index_prefix must be provided for custom species.\n\
+                          Exit the program.')
+        sys.exit()
       if args.target_file == None:
         sys.stderr.write('target_file must be provided for custom species.\n\
                           Exit the program.')
-        sys.exit()
+        args.target_file = 'notSpecified'
       if args.perform_KEGGpathways_enrichment_analysis == True:
         if args.gene_vs_pathway_file == None:
           sys.stderr.write('gene_vs_pathway_file must be provided for custom species.\n\
