@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=localspark
+#SBATCH --job-name=localspark.module
 #SBATCH --time=00:10:00
 #
 #SBATCH --nodes=1
@@ -15,10 +15,6 @@
 
 ## --------------------------------------
 ## author: Chao-Jung Wu
-## update: 19-10-11
-## (1) enable local spark
-## (2) use virtualenv to manage python packages
-## (3) change the range of java option
 ## --------------------------------------
 
 
@@ -27,13 +23,12 @@
 #= included dependencies: miranda, VARNA
 #= viennarna will load python3.7, so need to reload python2.7.14 to override
 module load nixpkgs/16.09
-module load spark/2.3.0
-module load gcc/5.4.0
-module load viennarna/2.4.9
+module load gcc/7.3.0
+module load viennarna/2.4.11
 module load bowtie/1.1.2
-module load blast+/2.6.0
+module load blast+/2.7.1
+module load spark/2.4.4
 module load python/2.7.14
-
 
 #= python requirements: statsmodels (includes: numpy, scipy, pandas, patsy), 
 #                       seaborn (includes: matplotlib)
