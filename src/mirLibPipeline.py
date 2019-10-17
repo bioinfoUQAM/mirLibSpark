@@ -28,6 +28,7 @@ import datetime
 from os import listdir
 #
 import utils as ut
+import utilsMir as utm
 import mirLibRules as mru
 import arg
 
@@ -52,7 +53,6 @@ if __name__ == '__main__' :
   heartbeat = int(paramDict['sc_heartbeat'])        #10
 
   #= Spark context
-  #sc = ut.pyspark_configuration(appMaster, appName, mstrMemory, execMemory, heartbeat)
   sc = ut.pyspark_configuration(appName, mstrMemory, heartbeat)
 
 
@@ -107,11 +107,11 @@ if __name__ == '__main__' :
 
   #= file and list of known non miRNA
   known_non = paramDict['known_non_file'] 
-  d_ncRNA_CDS = ut.get_nonMirna_coors (known_non) #= nb = 198736
+  d_ncRNA_CDS = utm.get_nonMirna_coors (known_non) #= nb = 198736
   broadcastVar_d_ncRNA_CDS = sc.broadcast(d_ncRNA_CDS)
 
   #= RNAfold
-  path_RNAfold = ut.find_RNAfold_path () #mirdup needs it
+  path_RNAfold = utm.find_RNAfold_path () #mirdup needs it
   temperature = int(paramDict['temperature']) 
 
   #= pri-mirna
@@ -156,6 +156,7 @@ if __name__ == '__main__' :
 
   #= addFile
   sc.addPyFile(project_path + '/src/utils.py')
+  sc.addPyFile(project_path + '/src/utilsMir.py')
   sc.addPyFile(project_path + '/src/mirLibRules.py')
   sc.addFile(project_path + '/src/eval_mircheck.pl')
   sc.addFile(project_path + '/lib/miRcheck.pm')
@@ -382,7 +383,7 @@ if __name__ == '__main__' :
     #= Filtering structure with branched loop
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold','mkPred','mkStart','mkStop']])
-    one_loop_rdd = len300_rdd.filter(lambda e: ut.containsOnlyOneLoop(e[1][3][2][int(e[1][3][4]) : int(e[1][3][5])+1]))\
+    one_loop_rdd = len300_rdd.filter(lambda e: utm.containsOnlyOneLoop(e[1][3][2][int(e[1][3][4]) : int(e[1][3][5])+1]))\
                              .repartition(partition)
     if reporting == 1: print(datetime.datetime.now(), 'NB one_loop_rdd distinct : ', one_loop_rdd.groupByKey().count(), '\t\tremoved sequences with precursor second loop not satisfying meyers2018')
 
@@ -482,7 +483,7 @@ if __name__ == '__main__' :
 
     #= write results to a file
     eachLiboutFile = rep_output  +  appId + '_miRNAprediction_' + inBasename + '.txt'
-    ut.writeToFile (libresults, eachLiboutFile)
+    utm.writeToFile (libresults, eachLiboutFile)
 
   #= print executions time  to a file
   outTime = rep_output + appId + '_time.txt'
@@ -497,7 +498,7 @@ if __name__ == '__main__' :
   #= make summary table of all libraries in one submission with expressions in the field
   keyword = appId + '_miRNAprediction_'
   infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
-  Precursor, distResultSmallRNA = ut.writeSummaryExpressionToFile (infiles, rep_output, appId)
+  Precursor, distResultSmallRNA = utm.writeSummaryExpressionToFile (infiles, rep_output, appId)
 
   ### in : ( 'seq' )
   ### out: ( 'seq', zipindex)
@@ -517,7 +518,7 @@ if __name__ == '__main__' :
   PrecursorVis = Precursor_rdd.map(varna_obj.run_VARNA)\
                               .map(lambda e: mru.matchRNAidRule(e, d_rna_index))\
                               .collect()
-  ut.write_index (PrecursorVis, rep_output, appId)
+  utm.write_index (PrecursorVis, rep_output, appId)
   print('PrecursorVis done')
   
   
@@ -528,7 +529,7 @@ if __name__ == '__main__' :
   sc.addFile(target_file)
   mirna_and_targets = distResultSmallRNA_rdd.map(miranda_obj.computeTargetbyMiranda)\
                                             .collect()
-  ut.writeTargetsToFile (mirna_and_targets, rep_output, appId)
+  utm.writeTargetsToFile (mirna_and_targets, rep_output, appId)
   print('Target prediction done')
   
 
@@ -562,15 +563,15 @@ if __name__ == '__main__' :
   ##appId = 'local-1538502520294'
   #= diff analysis 
   if perform_differential_analysis == 'yes':
-    diff_outs = ut.diff_output(diffguide_file, rep_output, appId)
+    diff_outs = utm.diff_output(diffguide_file, rep_output, appId)
     print('Differential analysis done')
 
   if perform_KEGGpathways_enrichment_analysis == 'yes':
     #= KEGG annotation
-    list_mirna_and_topscoredTargetsKEGGpathway = ut.annotate_target_genes_with_KEGGpathway (gene_vs_pathway_file, rep_output, appId)
+    list_mirna_and_topscoredTargetsKEGGpathway = utm.annotate_target_genes_with_KEGGpathway (gene_vs_pathway_file, rep_output, appId)
     print('KEGG pathway annotation done')
     #= KEGG enrichment analysis 
-    ut.perform_enrichment_analysis (diff_outs, pathway_description_file, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId, project_path)
+    utm.perform_enrichment_analysis (diff_outs, pathway_description_file, list_mirna_and_topscoredTargetsKEGGpathway, rep_output, appId, project_path)
     print('\nKEGG pathway enrichment analysis done')
   #===============================================================================================================
   #===============================================================================================================
