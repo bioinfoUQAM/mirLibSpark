@@ -397,7 +397,7 @@ class prog_dominant_profile () :
     len_mirseq = len(elem[0])
     varfrq = self.variants_frq (bowbloc, x, y, lenmirna)
     #
-    totalfrq = self.calculateTotalfrq (bowbloc, x, y)
+    totalfrq = self.calculateTotalfrq (bowbloc, x-1, y+1) # +1, -1 to cover the variant range
     result = str(totalfrq) + ',' + str(varfrq)
     elem[1].append(result)
     return elem
