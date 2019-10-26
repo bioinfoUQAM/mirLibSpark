@@ -357,14 +357,17 @@ class prog_dominant_profile () :
       index += 1
     return totalfrq
 
-  def variants_frq (self, bowbloc, posgen):
+  def variants_frq (self, bowbloc, posgen, lenmirna):
     '''
     meyers 2018 takes into account the expression (freq) or 4 variants of both miRNA and corresponding miRNA*.
     I conclude and simplfy those positions as miRNA=(p, p+1, p-1), miRNA*=(p-2, p-1, p-3)
     but my current pipeline design can only collect frq of the same chrmo_strand
     '''
-    x, y = posgen -2, posgen + 2
-    return self.calculateTotalfrq (bowbloc, x, y)
+    x1, y1 = posgen -2, posgen + 2
+    x2, y2 = posgen -2 + lenmirna - 1, posgen + 2 + lenmirna - 1
+    mirFrq = self.calculateTotalfrq (bowbloc, x1, y1)
+    mirStarFrq = self.calculateTotalfrq (bowbloc, x2, y2)
+    return mirFrq + mirStarFrq
 
   def profile_range (self, elem):
     ''' 
@@ -384,16 +387,16 @@ class prog_dominant_profile () :
     else:
       y = posgen + len(mirseq) + mirpos_on_pre -1
       x = y-len(preseq) + 1
-    return x-1, y+1                  #= exclusive  x < a < y
+    return x-1, y+1, len(mirseq) #= exclusive  x < a < y
 
   def computeProfileFrq(self, elem, dict_bowtie_chromo_strand):
-    x, y = self.profile_range (elem)
+    x, y, lenmirna = self.profile_range (elem)
     bowtie_bloc_key = elem[1][2][1] + elem[1][2][0]  #=chrom+strand
     bowbloc = dict_bowtie_chromo_strand[bowtie_bloc_key]
 
     #
     posgen = int(elem[1][2][2])
-    varfrq = self.variants_frq (bowbloc, posgen)
+    varfrq = self.variants_frq (bowbloc, posgen, lenmirna)
     #
 
     totalfrq = self.calculateTotalfrq (bowbloc, x, y)
