@@ -362,6 +362,7 @@ class prog_dominant_profile () :
     meyers 2018 takes into account the expression (freq) or 4 variants of both miRNA and corresponding miRNA*.
     I conclude and simplfy those positions as miRNA=(deb, deb+1, deb-1), miRNA*=(fin, fin+1, fin-1)
     I consider all lengths of sRNA mapping on these sites, including 20, 21, 22, 23 and 24 nt.
+    Because my bowbloc does not store the size of sRNA.
     '''
     deb1, fin1 = x - 2, x + 2
     deb2, fin2 = y - lenmirna - 2, y - lenmirna + 2 
