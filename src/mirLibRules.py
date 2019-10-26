@@ -316,6 +316,24 @@ class prog_mirCheck ():
     return elem
 
 class prog_dominant_profile (pre_flank) :
+  '''
+  preseq = pre_flank + mircheck_precurso + pre_flank
+  len(miR) = len(miR*)
+  variants = sRNA mapping starts one position before, and/or ends one position after miR or miR*
+  len(variants) = {21, 22, 23, 24 nt}
+
+  dominant_formula = sigma( freq (mapping on preseq[c:d, e:f]) ) / sigma( freq (mapping on preseq[a:b]) )
+  positions (a, b, ..., f) are inclusive
+
+  #========================================================================================================
+  #= ILLUSTRATION
+  #========================================================================================================
+  VARIANTS:        +++..                                                       +++...                      <==== varaints sequence range (ending not explicitly defined)
+                    miR                                                         miR*                       <==== mirseq
+  preflank----------____________________mircheck_precursor__________________________----------preflank     <==== preseq
+  a                c   d                                                       e    f                b     <==== positions
+  #========================================================================================================
+  '''
 
   def __init__(self):
     self.env = os.environ
