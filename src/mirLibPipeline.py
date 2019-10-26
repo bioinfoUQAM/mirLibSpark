@@ -172,7 +172,7 @@ if __name__ == '__main__' :
   rnafold_obj = mru.prog_RNAfold(temperature)
   mircheck_obj = mru.prog_mirCheck(mcheck_param, project_path)
   mirdup_obj = mru.prog_miRdup (rep_tmp, mirdup_model, mirdup_jar, path_RNAfold)
-  profile_obj = mru.prog_dominant_profile()
+  profile_obj = mru.prog_dominant_profile(pre_flank)
   miranda_obj = mru.prog_miRanda(Max_Score_cutoff, Max_Energy_cutoff, target_file, rep_tmp, miranda_binary, Gap_Penalty, nbTargets)
 
 
@@ -433,7 +433,7 @@ if __name__ == '__main__' :
       print(datetime.datetime.now(), 'pre_mirdup_rdd distinct') #= BOTTLE NECK
     
     
-    #= Filtering by expression profile (< 20%)
+    #= Filtering by expression profile (< 80%), considering variants
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore']])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq])
 

@@ -12,16 +12,6 @@ from operator import itemgetter
 
 bin = ''
 
-   
-def slimrule (e):
-  ## in: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq])
-  ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['slimmed',posMirPri,'slimmed', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq])
-  data = e[1][3]
-  data[0] = 'slimmed'
-  data[2] = 'slimmed'
-  return (e[0], [e[1][0], e[1][1], e[1][2], data, e[1][4], e[1][5]])
-
-   
 def slimrule (e):
   ## in: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq])
   ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['slimmed',posMirPri,'slimmed', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq])
@@ -325,10 +315,11 @@ class prog_mirCheck ():
       
     return elem
 
-class prog_dominant_profile () :
+class prog_dominant_profile (pre_flank) :
 
   def __init__(self):
     self.env = os.environ
+    self.pre_flank = pre_flank
   
   def get_bowtie_strandchromo_dict (self, bowtie_rdd_collect):
     #= bowtie_rdd_collect = (key, [poschr, freq]) #= key = chromo + strand
@@ -364,8 +355,12 @@ class prog_dominant_profile () :
     I consider all lengths of sRNA mapping on these sites, including 20, 21, 22, 23 and 24 nt.
     Because my bowbloc does not store the size of sRNA.
     '''
+    #= adjust for the flanking sequence length, update the exact range of the mircheck precursor
+    x = x + self.pre_flank
+    y = y - self.pre_flank
+    #= calculate the ded and fin of the VARIANTS of miR and miR* 
     deb1, fin1 = x - 2, x + 2
-    deb2, fin2 = y - lenmirna - 2, y - lenmirna + 2 
+    deb2, fin2 = y - (lenmirna - 1) - 2, y - (lenmirna - 1) + 2 
     mirFrq = self.calculateTotalfrq (bowbloc,  deb1, fin1)
     mirStarFrq = self.calculateTotalfrq (bowbloc, deb2, fin2)
     return mirFrq + mirStarFrq
