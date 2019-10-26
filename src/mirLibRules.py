@@ -357,23 +357,22 @@ class prog_dominant_profile () :
       index += 1
     return totalfrq
 
-  def variants_frq (self, bowbloc, posgen, lenmirna):
+  def variants_frq (self, bowbloc, x, y, lenmirna):
     '''
     meyers 2018 takes into account the expression (freq) or 4 variants of both miRNA and corresponding miRNA*.
-    I conclude and simplfy those positions as miRNA=(p, p+1, p-1), miRNA*=(p-2, p-1, p-3)
-    but my current pipeline design can only collect frq of the same chrmo_strand
+    I conclude and simplfy those positions as miRNA=(deb, deb+1, deb-1), miRNA*=(fin, fin+1, fin-1)
+    I consider all lengths of sRNA mapping on these sites, including 20, 21, 22, 23 and 24 nt.
     '''
-    x1, y1 = posgen -2, posgen + 2
-    x2, y2 = posgen -2 + lenmirna - 1, posgen + 2 + lenmirna - 1
-    mirFrq = self.calculateTotalfrq (bowbloc, x1, y1)
-    mirStarFrq = self.calculateTotalfrq (bowbloc, x2, y2)
+    deb1, fin1 = x - 2, x + 2
+    deb2, fin2 = y - lenmirna - 2, y - lenmirna + 2 
+    mirFrq = self.calculateTotalfrq (bowbloc,  deb1, fin1)
+    mirStarFrq = self.calculateTotalfrq (bowbloc, deb2, fin2)
     return mirFrq + mirStarFrq
 
   def profile_range (self, elem):
     ''' 
     define x, y with pre_vld_rdd
-    old : elem = (id, [seq, frq, nbloc, [bowtie], [pri_miRNA], [pre_miRNA]])
-    new : elem = (seq, [frq, nbloc, [bowtie], [pri_miRNA], [pre_miRNA]])
+    elem = (seq, [frq, nbloc, [bowtie], [pri_miRNA], [pre_miRNA]])
     ''' 
     posgen = elem[1][2][2]
     mirseq = elem[0]
@@ -387,18 +386,16 @@ class prog_dominant_profile () :
     else:
       y = posgen + len(mirseq) + mirpos_on_pre -1
       x = y-len(preseq) + 1
-    return x-1, y+1, len(mirseq) #= exclusive  x < a < y
+    return x-1, y+1 #= exclusive  x < a < y
 
   def computeProfileFrq(self, elem, dict_bowtie_chromo_strand):
-    x, y, lenmirna = self.profile_range (elem)
+    x, y = self.profile_range (elem)
     bowtie_bloc_key = elem[1][2][1] + elem[1][2][0]  #=chrom+strand
     bowbloc = dict_bowtie_chromo_strand[bowtie_bloc_key]
-
     #
-    posgen = int(elem[1][2][2])
-    varfrq = self.variants_frq (bowbloc, posgen, lenmirna)
+    len_mirseq = len(elem[0])
+    varfrq = self.variants_frq (bowbloc, x, y, lenmirna)
     #
-
     totalfrq = self.calculateTotalfrq (bowbloc, x, y)
     result = str(totalfrq) + ',' + str(varfrq)
     elem[1].append(result)
