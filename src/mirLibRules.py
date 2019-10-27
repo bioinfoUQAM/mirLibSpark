@@ -368,8 +368,8 @@ class prog_dominant_profile () :
     bowbloc does not store the size of sRNA.
     '''
     a, b = posmir, posstar = x+1, y-(lenmirna-1)+1 #= inclusive
-    freq_varmir  = self.__calculateTotalfrq (self, bowbloc, a-2, a+2) #varmir  = [a-1, a, a+1]
-    freq_varstar = self.__calculateTotalfrq (self, bowbloc, b-2, b+2) #varstar = [b-1, b, b+1]
+    freq_varmir  = self.__calculateTotalfrq (bowbloc, a-2, a+2) #varmir  = [a-1, a, a+1]
+    freq_varstar = self.__calculateTotalfrq (bowbloc, b-2, b+2) #varstar = [b-1, b, b+1]
     return sum(freq_varmir) + sum(freq_varstar)
 
   def __profile_range (self, elem):
@@ -416,8 +416,8 @@ class prog_dominant_profile () :
     lenmirna = len(elem[0])
     #
     a, b = posmir, posstar = x+1, y-(lenmirna-1)+1 #= inclusive
-    freq_mir  = self.__calculateTotalfrq (self, bowbloc, a-1, a+1)
-    freq_star = self.__calculateTotalfrq (self, bowbloc, b-1, b+1)
+    freq_mir  = self.__calculateTotalfrq (bowbloc, a-1, a+1)
+    freq_star = self.__calculateTotalfrq (bowbloc, b-1, b+1)
     #
     if freq_mir > 0 and freq_star > 0: return True
     return False
