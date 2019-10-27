@@ -367,12 +367,10 @@ class prog_dominant_profile (pre_flank) :
     I consider all lengths of sRNA mapping on these sites, including 20, 21, 22, 23 and 24 nt.
     Because my bowbloc does not store the size of sRNA.
     '''
-    #= calculate the deb and fin of the VARIANTS of miR and miR* 
-    deb1, fin1 = x-1, x+1
-    deb2, fin2 = y-1-(lenmirna-1), y+1-(lenmirna-1)
-    mirFrq = self.__calculateTotalfrq (bowbloc, deb1, fin1)
-    mirStarFrq = self.__calculateTotalfrq (bowbloc, deb2, fin2)
-    return mirFrq + mirStarFrq
+    a, b = posmir, posstar = x+1, y-(lenmirna-1)+1 #= inclusive
+    freq_varmir  = [ bowbloc[a-1], bowbloc[a], bowbloc[a+1] ] #varmir  = [a-1, a, a+1]
+    freq_varstar = [ bowbloc[b-1], bowbloc[b], bowbloc[b+1] ] #varstar = [b-1, b, b+1]
+    return sum(freq_varmir) + sum(freq_varstar)
 
   def __profile_range (self, elem):
     ''' 
@@ -399,7 +397,7 @@ class prog_dominant_profile (pre_flank) :
     return x-1, y+1 #= exclusive  x < a < y
 
   def computeProfileFrq(self, elem, dict_bowtie_chromo_strand):
-    x, y = self.__profile_range (elem) 
+    x, y = self.__profile_range (elem) #= exclusive
     bowtie_bloc_key = elem[1][2][1] + elem[1][2][0]  #=chrom+strand
     bowbloc = dict_bowtie_chromo_strand[bowtie_bloc_key]
     #
@@ -410,6 +408,18 @@ class prog_dominant_profile (pre_flank) :
     result = str(totalfrq) + ',' + str(varfrq)
     elem[1].append(result)
     return elem
+
+  def mir_mirstar_duplex (self, elem, dict_bowtie_chromo_strand):
+    x, y = self.__profile_range (elem) #= exclusive
+    bowtie_bloc_key = elem[1][2][1] + elem[1][2][0]  #=chrom+strand
+    bowbloc = dict_bowtie_chromo_strand[bowtie_bloc_key]
+    len_mirseq = len(elem[0])
+    #
+    a, b = posmir, posstar = x+1, y-(lenmirna-1)+1 #= inclusive
+    freq_mir  = bowbloc[a]
+    freq_star = bowbloc[b]
+    if freq_mir > 0 and freq_star > 0: return True
+    return False
 
 class prog_miRanda ():
   def __init__ (self, Max_Score_cutoff, Max_Energy_cutoff, target_file, rep_tmp, miranda_exe, Gap_Penalty, nbTargets):

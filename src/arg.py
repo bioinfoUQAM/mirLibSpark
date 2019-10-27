@@ -66,6 +66,7 @@ def getOpt (parser):
     parser.add_argument('--pre_flank', default='10')
     parser.add_argument('--temperature', default='25', help='Celsius')
     parser.add_argument('--mcheck_param', default='mey', choices=['def', 'mey', 'm18'])
+    parser.add_argument('--check_duplex', action='store_true', help='if flag as true, make sure limit_s_freq = 1')
     parser.add_argument('--Max_Score_cutoff', default='170')
     parser.add_argument('--Max_Energy_cutoff', default='-15')
     parser.add_argument('--Gap_Penalty', default='-15')
@@ -212,6 +213,9 @@ def getOpt (parser):
     #
     if args.reporting == False: paramDict['reporting'] = '0'
     else: paramDict['reporting'] = '1'
+    #
+    if args.check_duplex == True: paramDict['check_duplex'] = 'True'
+    else: paramDict['check_duplex'] = 'False'
     #
     if args.dummy == False: paramDict['dummy'] = 'False'
     elif args.dummy == True:

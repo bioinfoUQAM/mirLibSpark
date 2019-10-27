@@ -98,7 +98,6 @@ if __name__ == '__main__' :
   miRNA_len_lowerlimit = int(paramDict['miRNA_len_lowerlimit']) - 1  #				keep > 20, so keep 21, 22, 23, ...
   premirna_max_len = int(paramDict['premirna_max_len']) + 1          # 				keep < 301, so keep 300, 299, 298, ...
 
-
   #= bowtie
   b_index_path = paramDict['b_index_path']
   chromosomes = paramDict['chromosomes'].split(',')
@@ -128,6 +127,9 @@ if __name__ == '__main__' :
   mirdup_jar = project_path + '/lib/miRdup_1.4/miRdup.jar'
   #mirdup_limit =  float(paramDict['mirdup_limit'])
   mirdup_limit =  0.98 # not tunable
+
+  #= check both miR and miR* exist (duplex rule)
+  check_duplex =  paramDict['check_duplex']
 
   #= miRanda parameter
   target_file = paramDict['target_file']
@@ -432,7 +434,8 @@ if __name__ == '__main__' :
       if reporting == 1: print(datetime.datetime.now(), 'NB pre_mirdup_rdd distinct: ', pre_mirdup_rdd.groupByKey().count(), '\t\tremoved sequences not satisfying miRdup model')
       print(datetime.datetime.now(), 'pre_mirdup_rdd distinct') #= BOTTLE NECK
     
-    
+   
+    #= Filtering by mir_mir* duplex if exists, and 
     #= Filtering by expression profile (< 80%), considering variants
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore']])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq])
@@ -459,6 +462,9 @@ if __name__ == '__main__' :
                                               .repartition(partition)\
                                               .map(lambda e: profile_obj.computeProfileFrq(e[1], broadcastVar_dict_bowtie_chromo_strand.value))\
                                               .filter(lambda e: int(e[1][5].split(',')[1]) / (float(e[1][5].split(',')[0]) + 0.1) > 0.8)
+      if check_duplex == 'True':
+        check_duplex_rdd = profile_value_rdd.filter(profile_obj.mir_mirstar_duplex(e[1], broadcastVar_dict_bowtie_chromo_strand.value))
+      else: check_duplex_rdd = profile_value_rdd
       mergeProfileChromo_rdd = mergeProfileChromo_rdd.union(profile_value_rdd)\
                                                      .repartition(partition)\
                                                      .persist()
