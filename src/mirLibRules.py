@@ -315,7 +315,7 @@ class prog_mirCheck ():
       
     return elem
 
-class prog_dominant_profile (pre_flank) :
+class prog_dominant_profile () :
   '''
   preseq = pre_flank + mircheck_precurso + pre_flank
   len(miR) = len(miR*)
@@ -333,7 +333,7 @@ class prog_dominant_profile (pre_flank) :
   #========================================================================================================
   '''
 
-  def __init__(self):
+  def __init__(self, pre_flank):
     self.env = os.environ
     self.pre_flank = pre_flank
   
@@ -362,10 +362,10 @@ class prog_dominant_profile (pre_flank) :
 
   def __variants_frq (self, bowbloc, x, y, lenmirna):
     '''
-    meyers 2018 takes into account the expression (freq) or 4 variants of both miRNA and corresponding miRNA*.
+    Meyers 2018 takes into account the expression (freq) or 4 variants of both miRNA and corresponding miRNA*.
     I conclude and simplfy those positions as miRNA=(deb, deb+1, deb-1), miRNA*=(fin, fin+1, fin-1)
-    I consider all lengths of sRNA mapping on these sites, including 20, 21, 22, 23 and 24 nt.
-    Because my bowbloc does not store the size of sRNA.
+    I consider all lengths of sRNA mapping on these sites, length= 20, 21, 22, 23 and 24 nt.
+    bowbloc does not store the size of sRNA.
     '''
     a, b = posmir, posstar = x+1, y-(lenmirna-1)+1 #= inclusive
     freq_varmir  = [ bowbloc[a-1], bowbloc[a], bowbloc[a+1] ] #varmir  = [a-1, a, a+1]
@@ -551,7 +551,6 @@ class prog_knownNonMiRNA ():
     chr = bowtie[1]
     posBegin = int(bowtie[2])
     posEnd = posBegin + len(seq) - 1
-
     for coor in self.non_miRNA.values():
       nonmir_chromo = coor[1]
       if not chr == nonmir_chromo: continue
@@ -569,7 +568,6 @@ class prog_varna ():
     self.appId = appId
     self.rep_output = rep_output
 
-
   def __editing___run_VARNA_prog (self, preSEQ, preFOLD, miRNApos, title, filename):
     ''' this does not work yet ''' 
     FNULL = open(os.devnull, 'w')
@@ -577,8 +575,6 @@ class prog_varna ():
     sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
     out = sproc.communicate() #= this line is essential!
     FNULL.close()
-
-
 
   def run_VARNA_prog (self, preSEQ, preFOLD, miRNApos, title, filename):
     #-highlightRegion "48-63:fill=#bcffdd;81-102:fill=#bcffdd"
