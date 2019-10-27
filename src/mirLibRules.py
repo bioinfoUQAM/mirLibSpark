@@ -401,7 +401,7 @@ class prog_dominant_profile () :
     bowtie_bloc_key = elem[1][2][1] + elem[1][2][0]  #=chrom+strand
     bowbloc = dict_bowtie_chromo_strand[bowtie_bloc_key]
     #
-    len_mirseq = len(elem[0])
+    lenmirna = len(elem[0])
     varfrq = self.__variants_frq (bowbloc, x, y, lenmirna)
     #
     totalfrq = self.__calculateTotalfrq (bowbloc, x, y) 
@@ -413,7 +413,7 @@ class prog_dominant_profile () :
     x, y = self.__profile_range (elem) #= exclusive
     bowtie_bloc_key = elem[1][2][1] + elem[1][2][0]  #=chrom+strand
     bowbloc = dict_bowtie_chromo_strand[bowtie_bloc_key]
-    len_mirseq = len(elem[0])
+    lenmirna = len(elem[0])
     #
     a, b = posmir, posstar = x+1, y-(lenmirna-1)+1 #= inclusive
     freq_mir  = bowbloc[a]
