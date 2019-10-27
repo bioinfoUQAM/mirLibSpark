@@ -370,7 +370,7 @@ class prog_dominant_profile () :
     a, b = posmir, posstar = x+1, y-(lenmirna-1)+1 #= inclusive
     freq_varmir  = self.__calculateTotalfrq (bowbloc, a-2, a+2) #varmir  = [a-1, a, a+1]
     freq_varstar = self.__calculateTotalfrq (bowbloc, b-2, b+2) #varstar = [b-1, b, b+1]
-    return sum(freq_varmir) + sum(freq_varstar)
+    return freq_varmir + freq_varstar
 
   def __profile_range (self, elem):
     ''' 
