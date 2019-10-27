@@ -416,8 +416,8 @@ class prog_dominant_profile () :
     lenmirna = len(elem[0])
     #
     a, b = posmir, posstar = x+1, y-(lenmirna-1)+1 #= inclusive
-    freq_mir  = __calculateTotalfrq (self, bowbloc, a-1, a+1)
-    freq_star = __calculateTotalfrq (self, bowbloc, b-1, b+1)
+    freq_mir  = self.__calculateTotalfrq (self, bowbloc, a-1, a+1)
+    freq_star = self.__calculateTotalfrq (self, bowbloc, b-1, b+1)
     #
     if freq_mir > 0 and freq_star > 0: return True
     return False
