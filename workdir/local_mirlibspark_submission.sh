@@ -10,8 +10,8 @@
 #SBATCH --account=your-account
 #SBATCH --mail-user=your@email.com
 #SBATCH --mail-type=ALL
-#SBATCH --error=%x-%j.err
-#SBATCH --output=%x-%j.out
+#SBATCH --error=%j-%x.err
+#SBATCH --output=%j-%x.out
 
 ## --------------------------------------
 ## author: Chao-Jung Wu
