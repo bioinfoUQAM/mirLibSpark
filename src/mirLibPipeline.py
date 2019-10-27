@@ -32,10 +32,6 @@ import utilsMir as utm
 import mirLibRules as mru
 import arg
 
-#= 1: display intermediate rdd.count(), this makes the time longer
-#= 0: not reporting rdd.count() makes the time shorter
-#reporting = 1
-
 if __name__ == '__main__' :
 
   print('\nInitiating and verifying parameters ...')
@@ -44,28 +40,17 @@ if __name__ == '__main__' :
   for k, v in sorted(paramDict.items()): print(k, ': ', v)
 
   #= spark configuration
-  ###appMaster = paramDict['sc_master']                #"local[*]" 
   appName = paramDict['sc_appname']                 #"mirLibSpark"
   mstrMemory = paramDict['sc_mstrmemory']           #"4g"
-  ###execMemory = paramDict['sc_execmemory']           #"4g"
-  #execCores = paramDict['sc_execcores']             #2
   partition = int(paramDict['sc_partition'])
   heartbeat = int(paramDict['sc_heartbeat'])        #10
 
   #= Spark context
   sc = ut.pyspark_configuration(appName, mstrMemory, heartbeat)
 
-
-
   #= Spark application ID
   appId = paramDict['jobid']
   if appId == '--': appId = str(sc.applicationId)
-  #print('spark.executor.memory: ', sc._conf.get('spark.executor.memory'))
-  #print('spark.driver.memory: ', sc._conf.get('spark.driver.memory'))
-  #print('spark.master: ', sc._conf.get('spark.master'))
-  #print('spark.driver.memoryOverhead: ', sc._conf.get('spark.driver.memoryOverhead')) = none
-  #print('spark.executor.memoryOverhead: ', sc._conf.get('spark.executor.memoryOverhead')) = none
-  #print('spark.cores.max: ', sc._conf.get('spark.cores.max'))
 
   #= broadcast paramDict
   broadcastVar_paramDict = sc.broadcast(paramDict)
@@ -79,12 +64,7 @@ if __name__ == '__main__' :
   project_path = paramDict['project_path']
   rep_input = paramDict['input_path']
   rep_output = paramDict['output_path'] + '/' + appId + '/'
-  #rep_tmp = '../tmp' + appId + '/' #= do not write files in worker node, often mirdup has problem, OUT-OF-MEMORY
   rep_tmp = project_path + '/tmp' + '/' + appId + '/'
-
-  #= print appId to a file
-  #outfile = project_path + '/appId.txt'
-  #with open (outfile, 'w') as fh: print(appId, file=fh) 
 
   #= genome
   genome_path = paramDict['genome_path'] 
@@ -125,7 +105,6 @@ if __name__ == '__main__' :
   activateMirdup = paramDict['activateMirdup']
   mirdup_model = project_path + '/lib/miRdup_1.4/model/' + paramDict['mirdup_model']
   mirdup_jar = project_path + '/lib/miRdup_1.4/miRdup.jar'
-  #mirdup_limit =  float(paramDict['mirdup_limit'])
   mirdup_limit =  0.98 # not tunable
 
   #= check both miR and miR* exist (duplex rule)
@@ -526,8 +505,8 @@ if __name__ == '__main__' :
                               .collect()
   utm.write_index (PrecursorVis, rep_output, appId)
   print('PrecursorVis done')
-  
-  
+ 
+
   #= miranda target prediction
   ## in : ('miRNAseq', zipindex)
   ## out: ('miRNAseq', [[target1 and its scores], [target2 and its scores]])
@@ -537,16 +516,7 @@ if __name__ == '__main__' :
                                             .collect()
   utm.writeTargetsToFile (mirna_and_targets, rep_output, appId)
   print('Target prediction done')
-  
-
-  ## I dont know what is the use of this, maybe there is no use...
-  ## in: ('miRNAseq', [[targetgene1 and its scores], [targetgene2 and its scores]])
-  ## out:( 'targetgene' )
-  #master_distinctTG = miranda_rdd.map(lambda e: [  i[0].split('.')[0] for i in e[1]  ])\
-  #                               .reduce(lambda a, b: a+b)
-  #master_distinctTG = sorted(list(set(master_distinctTG)))
-  #print( master_distinctTG )
-
+ 
 
   #= clear caches (memory leak)
   broadcastVar_paramDict.unpersist()
@@ -566,7 +536,6 @@ if __name__ == '__main__' :
   print(datetime.datetime.now(), 'sc stop time')
   #===============================================================================================================
   #===============================================================================================================
-  ##appId = 'local-1538502520294'
   #= diff analysis 
   if perform_differential_analysis == 'yes':
     diff_outs = utm.diff_output(diffguide_file, rep_output, appId)
@@ -587,9 +556,3 @@ if __name__ == '__main__' :
   print(time_b, 'finish time')
   print('total running time: ', time_b - time_a)
   print('====================== End of ' + appId + ' =============\n')
-
-
-
-
-
-
