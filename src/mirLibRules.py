@@ -320,7 +320,7 @@ class prog_dominant_profile () :
   preseq = pre_flank + mircheck_precurso + pre_flank
   len(miR) = len(miR*)
   variants = sRNA mapping starts one position before, and/or ends one position after miR or miR*
-  len(variants) = {21, 22, 23, 24 nt}
+  len(variants) = {19, 20, ... nt}
   dominant_formula = sigma( freq (mapping on preseq[c:d, e:f]) ) / sigma( freq (mapping on preseq[a:b]) ), pos inclusive in this illustration.
   The actual implementation of this class has to use exclusive positions.
   #========================================================================================================
@@ -364,7 +364,7 @@ class prog_dominant_profile () :
     '''
     Meyers 2018 takes into account the expression (freq) or 4 variants of both miRNA and corresponding miRNA*.
     I conclude and simplfy those positions as miRNA=(deb, deb+1, deb-1), miRNA*=(fin, fin+1, fin-1)
-    I consider all lengths of sRNA mapping on these sites, length= 20, 21, 22, 23 and 24 nt.
+    I consider all lengths of sRNA mapping on these sites, length= 19, 20, 21, ... nt
     bowbloc does not store the size of sRNA.
     '''
     a, b = posmir, posstar = x+1, y-(lenmirna-1)+1 #= inclusive
@@ -442,7 +442,7 @@ class prog_miRanda ():
     $miranda ../tmp/tmp_mirna_seq.txt ../Arabidopsis/TAIR/Genome/TAIR10_blastsets/TAIR10_cdna_20101214_updated_1cdna.fasta
     $miranda ../tmp/GCTCACTGCTCTTTCTGTCAGA_tmpseq_forMiranda.txt TAIR10_cdna_20101214_updated_39cdna.fasta
 
-    ## NOTE before disable miranda (170714): need to modify the code to use options such as -sc, -en, -go, -ge, -quiet
+    ## NOTE (170714): see to modify the code to use options such as -sc, -en, -go, -ge, -quiet
     '''
     #= names are like this atg1234.1, atg1234.2, so even collected 2 targets, in fact there is only 1. 
     #= This kind of duplicate has been resolved.
@@ -569,7 +569,7 @@ class prog_varna ():
     self.rep_output = rep_output
 
   def __editing___run_VARNA_prog (self, preSEQ, preFOLD, miRNApos, title, filename):
-    ''' this does not work yet ''' 
+    ''' this does not work yet, to use subprocess instead of shell ''' 
     FNULL = open(os.devnull, 'w')
     cmd = ['java', '-cp', '../lib/VARNAv3-93.jar', 'fr.orsay.lri.varna.applications.VARNAcmd', '-sequenceDBN', '"' + preSEQ + '"', '-structureDBN', '"' + preFOLD + '"', '-highlightRegion', '"' + miRNApos + ':fill=#ff0000"', '-title', '"' + title + '"', '-o', filename + '.jpg']
     sproc = sbp.Popen(cmd, stdout=sbp.PIPE, stderr=FNULL, shell=False, env=self.env)
