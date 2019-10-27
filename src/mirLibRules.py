@@ -321,10 +321,8 @@ class prog_dominant_profile (pre_flank) :
   len(miR) = len(miR*)
   variants = sRNA mapping starts one position before, and/or ends one position after miR or miR*
   len(variants) = {21, 22, 23, 24 nt}
-
-  dominant_formula = sigma( freq (mapping on preseq[c:d, e:f]) ) / sigma( freq (mapping on preseq[a:b]) )
-  positions (a, b, ..., f) are inclusive
-
+  dominant_formula = sigma( freq (mapping on preseq[c:d, e:f]) ) / sigma( freq (mapping on preseq[a:b]) ), pos inclusive in this illustration.
+  The actual implementation of this class has to use exclusive positions.
   #========================================================================================================
   #= ILLUSTRATION
   #========================================================================================================
@@ -339,25 +337,21 @@ class prog_dominant_profile (pre_flank) :
     self.env = os.environ
     self.pre_flank = pre_flank
   
-  def get_bowtie_strandchromo_dict (self, bowtie_rdd_collect):
+  def get_bowtie_chromostrand_dict (self, bowtie_rdd_collect):
     #= bowtie_rdd_collect = (key, [poschr, freq]) #= key = chromo + strand
     dict_bowtie_chromo_strand = {}
-
     for elem in bowtie_rdd_collect :
       chromo_strand = elem[0]
       poschr = elem[1][0]
       freq = elem[1][1]
-   
       if chromo_strand not in dict_bowtie_chromo_strand:
         dict_bowtie_chromo_strand[chromo_strand] = {}
-
       if poschr not in dict_bowtie_chromo_strand[chromo_strand]:
         dict_bowtie_chromo_strand[chromo_strand][poschr] = freq
       else: dict_bowtie_chromo_strand[chromo_strand][poschr] += freq 
-    
     return dict_bowtie_chromo_strand
   
-  def calculateTotalfrq (self, bowbloc, x, y):
+  def __calculateTotalfrq (self, bowbloc, x, y):
     #= bowbloc = {poschr: freq}
     totalfrq = 0
     index = x+1
@@ -366,51 +360,53 @@ class prog_dominant_profile (pre_flank) :
       index += 1
     return totalfrq
 
-  def variants_frq (self, bowbloc, x, y, lenmirna):
+  def __variants_frq (self, bowbloc, x, y, lenmirna):
     '''
     meyers 2018 takes into account the expression (freq) or 4 variants of both miRNA and corresponding miRNA*.
     I conclude and simplfy those positions as miRNA=(deb, deb+1, deb-1), miRNA*=(fin, fin+1, fin-1)
     I consider all lengths of sRNA mapping on these sites, including 20, 21, 22, 23 and 24 nt.
     Because my bowbloc does not store the size of sRNA.
     '''
-    #= adjust for the flanking sequence length, update the exact range of the mircheck precursor
-    x = x + self.pre_flank
-    y = y - self.pre_flank
-    #= calculate the ded and fin of the VARIANTS of miR and miR* 
-    deb1, fin1 = x - 2, x + 2
-    deb2, fin2 = y - (lenmirna - 1) - 2, y - (lenmirna - 1) + 2 
-    mirFrq = self.calculateTotalfrq (bowbloc,  deb1, fin1)
-    mirStarFrq = self.calculateTotalfrq (bowbloc, deb2, fin2)
+    #= calculate the deb and fin of the VARIANTS of miR and miR* 
+    deb1, fin1 = x-1, x+1
+    deb2, fin2 = y-1-(lenmirna-1), y+1-(lenmirna-1)
+    mirFrq = self.__calculateTotalfrq (bowbloc, deb1, fin1)
+    mirStarFrq = self.__calculateTotalfrq (bowbloc, deb2, fin2)
     return mirFrq + mirStarFrq
 
-  def profile_range (self, elem):
+  def __profile_range (self, elem):
     ''' 
-    define x, y with pre_vld_rdd
+    Define the profile range as the positions of the deb and fin of the precursor.
+    Note that the precursor here contains extra flaning sequence, pre_flank length.
     elem = (seq, [frq, nbloc, [bowtie], [pri_miRNA], [pre_miRNA]])
+    pre_miRNA = ['preSeq',posMirPre,'preFold','mpPred','mpScore']
     ''' 
-    posgen = elem[1][2][2]
+    posgen = elem[1][2][2] #= pos on genome
     mirseq = elem[0]
     mirpos_on_pre = elem[1][4][1]
     preseq = elem[1][4][0]
     strand = elem[1][2][0]
-    
     if strand == '+':
       x = posgen - mirpos_on_pre    #= inclusive
       y = x + len(preseq) - 1       #= inclusive
     else:
-      y = posgen + len(mirseq) + mirpos_on_pre -1
-      x = y-len(preseq) + 1
+      y = posgen + len(mirseq) + mirpos_on_pre - 1
+      x = y - len(preseq) + 1
+    #= adjust for the flanking sequence length, update the exact range of the mircheck precursor
+    x = x + self.pre_flank
+    y = y - self.pre_flank
+    #= if the precursor is located on 20_to_45, then x, y = 19, 46
     return x-1, y+1 #= exclusive  x < a < y
 
   def computeProfileFrq(self, elem, dict_bowtie_chromo_strand):
-    x, y = self.profile_range (elem)
+    x, y = self.__profile_range (elem) 
     bowtie_bloc_key = elem[1][2][1] + elem[1][2][0]  #=chrom+strand
     bowbloc = dict_bowtie_chromo_strand[bowtie_bloc_key]
     #
     len_mirseq = len(elem[0])
-    varfrq = self.variants_frq (bowbloc, x, y, lenmirna)
+    varfrq = self.__variants_frq (bowbloc, x, y, lenmirna)
     #
-    totalfrq = self.calculateTotalfrq (bowbloc, x-1, y+1) 
+    totalfrq = self.__calculateTotalfrq (bowbloc, x, y) 
     result = str(totalfrq) + ',' + str(varfrq)
     elem[1].append(result)
     return elem
