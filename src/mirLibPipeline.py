@@ -32,10 +32,6 @@ import utilsMir as utm
 import mirLibRules as mru
 import arg
 
-#= 1: display intermediate rdd.count(), this makes the time longer
-#= 0: not reporting rdd.count() makes the time shorter
-#reporting = 1
-
 if __name__ == '__main__' :
 
   print('\nInitiating and verifying parameters ...')
@@ -44,28 +40,17 @@ if __name__ == '__main__' :
   for k, v in sorted(paramDict.items()): print(k, ': ', v)
 
   #= spark configuration
-  ###appMaster = paramDict['sc_master']                #"local[*]" 
   appName = paramDict['sc_appname']                 #"mirLibSpark"
   mstrMemory = paramDict['sc_mstrmemory']           #"4g"
-  ###execMemory = paramDict['sc_execmemory']           #"4g"
-  #execCores = paramDict['sc_execcores']             #2
   partition = int(paramDict['sc_partition'])
   heartbeat = int(paramDict['sc_heartbeat'])        #10
 
   #= Spark context
   sc = ut.pyspark_configuration(appName, mstrMemory, heartbeat)
 
-
-
   #= Spark application ID
   appId = paramDict['jobid']
   if appId == '--': appId = str(sc.applicationId)
-  #print('spark.executor.memory: ', sc._conf.get('spark.executor.memory'))
-  #print('spark.driver.memory: ', sc._conf.get('spark.driver.memory'))
-  #print('spark.master: ', sc._conf.get('spark.master'))
-  #print('spark.driver.memoryOverhead: ', sc._conf.get('spark.driver.memoryOverhead')) = none
-  #print('spark.executor.memoryOverhead: ', sc._conf.get('spark.executor.memoryOverhead')) = none
-  #print('spark.cores.max: ', sc._conf.get('spark.cores.max'))
 
   #= broadcast paramDict
   broadcastVar_paramDict = sc.broadcast(paramDict)
@@ -79,12 +64,7 @@ if __name__ == '__main__' :
   project_path = paramDict['project_path']
   rep_input = paramDict['input_path']
   rep_output = paramDict['output_path'] + '/' + appId + '/'
-  #rep_tmp = '../tmp' + appId + '/' #= do not write files in worker node, often mirdup has problem, OUT-OF-MEMORY
   rep_tmp = project_path + '/tmp' + '/' + appId + '/'
-
-  #= print appId to a file
-  #outfile = project_path + '/appId.txt'
-  #with open (outfile, 'w') as fh: print(appId, file=fh) 
 
   #= genome
   genome_path = paramDict['genome_path'] 
@@ -97,7 +77,6 @@ if __name__ == '__main__' :
   miRNA_len_upperlimit = int(paramDict['miRNA_len_upperlimit']) + 1  #				keep < 25, so keep 24, 23, 22, ...
   miRNA_len_lowerlimit = int(paramDict['miRNA_len_lowerlimit']) - 1  #				keep > 20, so keep 21, 22, 23, ...
   premirna_max_len = int(paramDict['premirna_max_len']) + 1          # 				keep < 301, so keep 300, 299, 298, ...
-
 
   #= bowtie
   b_index_path = paramDict['b_index_path']
@@ -126,8 +105,10 @@ if __name__ == '__main__' :
   activateMirdup = paramDict['activateMirdup']
   mirdup_model = project_path + '/lib/miRdup_1.4/model/' + paramDict['mirdup_model']
   mirdup_jar = project_path + '/lib/miRdup_1.4/miRdup.jar'
-  #mirdup_limit =  float(paramDict['mirdup_limit'])
   mirdup_limit =  0.98 # not tunable
+
+  #= check both miR and miR* exist (duplex rule)
+  check_duplex =  paramDict['check_duplex']
 
   #= miRanda parameter
   target_file = paramDict['target_file']
@@ -172,7 +153,7 @@ if __name__ == '__main__' :
   rnafold_obj = mru.prog_RNAfold(temperature)
   mircheck_obj = mru.prog_mirCheck(mcheck_param, project_path)
   mirdup_obj = mru.prog_miRdup (rep_tmp, mirdup_model, mirdup_jar, path_RNAfold)
-  profile_obj = mru.prog_dominant_profile()
+  profile_obj = mru.prog_dominant_profile(pre_flank)
   miranda_obj = mru.prog_miRanda(Max_Score_cutoff, Max_Energy_cutoff, target_file, rep_tmp, miranda_binary, Gap_Penalty, nbTargets)
 
 
@@ -432,8 +413,9 @@ if __name__ == '__main__' :
       if reporting == 1: print(datetime.datetime.now(), 'NB pre_mirdup_rdd distinct: ', pre_mirdup_rdd.groupByKey().count(), '\t\tremoved sequences not satisfying miRdup model')
       print(datetime.datetime.now(), 'pre_mirdup_rdd distinct') #= BOTTLE NECK
     
-    
-    #= Filtering by expression profile (< 20%)
+   
+    #= Filtering by mir_mir* duplex if exists, and 
+    #= Filtering by expression profile (< 80%), considering variants
     ## in : ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore']])
     ## out: ('seq', [freq, nbLoc, ['strd','chr',posChr], ['priSeq',posMirPri,'priFold', 'mkPred','mkStart','mkStop'], ['preSeq',posMirPre,'preFold','mpPred','mpScore'], totalfrq])
 
@@ -454,11 +436,14 @@ if __name__ == '__main__' :
       #= REPARTITION x2     =#
       #======================#
       y_rdd = x_rdd.filter(lambda e: e[0] == chromo_strand)
-      broadcastVar_dict_bowtie_chromo_strand = sc.broadcast(profile_obj.get_bowtie_strandchromo_dict(y_rdd.collect()))
+      broadcastVar_dict_bowtie_chromo_strand = sc.broadcast(profile_obj.get_bowtie_chromostrand_dict(y_rdd.collect()))
       profile_value_rdd = profile_keyvalue_rdd.filter(lambda e: e[0] == chromo_strand)\
                                               .repartition(partition)\
                                               .map(lambda e: profile_obj.computeProfileFrq(e[1], broadcastVar_dict_bowtie_chromo_strand.value))\
-                                              .filter(lambda e: int(e[1][5].split(',')[1]) / (float(e[1][5].split(',')[0]) + 0.1) > 0.2)
+                                              .filter(lambda e: int(e[1][5].split(',')[1]) / (float(e[1][5].split(',')[0]) + 0.1) > 0.8)
+      if check_duplex == 'True':
+        check_duplex_rdd = profile_value_rdd.filter(profile_obj.mir_mirstar_duplex(e[1], broadcastVar_dict_bowtie_chromo_strand.value))
+      else: check_duplex_rdd = profile_value_rdd
       mergeProfileChromo_rdd = mergeProfileChromo_rdd.union(profile_value_rdd)\
                                                      .repartition(partition)\
                                                      .persist()
@@ -520,8 +505,8 @@ if __name__ == '__main__' :
                               .collect()
   utm.write_index (PrecursorVis, rep_output, appId)
   print('PrecursorVis done')
-  
-  
+ 
+
   #= miranda target prediction
   ## in : ('miRNAseq', zipindex)
   ## out: ('miRNAseq', [[target1 and its scores], [target2 and its scores]])
@@ -531,16 +516,7 @@ if __name__ == '__main__' :
                                             .collect()
   utm.writeTargetsToFile (mirna_and_targets, rep_output, appId)
   print('Target prediction done')
-  
-
-  ## I dont know what is the use of this, maybe there is no use...
-  ## in: ('miRNAseq', [[targetgene1 and its scores], [targetgene2 and its scores]])
-  ## out:( 'targetgene' )
-  #master_distinctTG = miranda_rdd.map(lambda e: [  i[0].split('.')[0] for i in e[1]  ])\
-  #                               .reduce(lambda a, b: a+b)
-  #master_distinctTG = sorted(list(set(master_distinctTG)))
-  #print( master_distinctTG )
-
+ 
 
   #= clear caches (memory leak)
   broadcastVar_paramDict.unpersist()
@@ -560,7 +536,6 @@ if __name__ == '__main__' :
   print(datetime.datetime.now(), 'sc stop time')
   #===============================================================================================================
   #===============================================================================================================
-  ##appId = 'local-1538502520294'
   #= diff analysis 
   if perform_differential_analysis == 'yes':
     diff_outs = utm.diff_output(diffguide_file, rep_output, appId)
@@ -581,9 +556,3 @@ if __name__ == '__main__' :
   print(time_b, 'finish time')
   print('total running time: ', time_b - time_a)
   print('====================== End of ' + appId + ' =============\n')
-
-
-
-
-
-
