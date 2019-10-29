@@ -461,7 +461,7 @@ if __name__ == '__main__' :
     libresults = slim_rdd.collect()
     print(datetime.datetime.now(), 'libresults=slim_rdd.collect()')#= BOTTLE NECK
 
-
+    '''
     #================================================================================================================
     #================================================================================================================
     #================================================================================================================
@@ -567,6 +567,7 @@ if __name__ == '__main__' :
     data = list(set(set10)-set(set11))
     with open (outfile, 'w') as fh: 
       for i in data: print(i, file=fh)
+    '''
 
 
     endLib = time.time() 
@@ -582,7 +583,7 @@ if __name__ == '__main__' :
   outTime = rep_output + appId + '_time.txt'
   ut.writeTimeLibToFile (timeDict, outTime, appId, paramDict)
 
-  '''
+  #'''
   #===============================================================================================================
   #=
   #= Post processing after miRNA prediction
@@ -624,7 +625,7 @@ if __name__ == '__main__' :
                                             .collect()
   utm.writeTargetsToFile (mirna_and_targets, rep_output, appId)
   print('Target prediction done')
-  '''
+  #'''
 
   #= clear caches (memory leak)
   broadcastVar_paramDict.unpersist()
