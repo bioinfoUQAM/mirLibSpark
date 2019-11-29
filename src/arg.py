@@ -22,6 +22,7 @@ def getOpt (parser):
     #
     parser.add_argument('--dummy', action='store_true', help='display configurations and exit')
     parser.add_argument('--reporting', action='store_true', help='report the number of instances passing each of the parameters. Activating this option will result in significant prolonged execution time')
+    parser.add_argument('--printing_removed', action='store_true', help='report the removed sequences at each filter step in a file')
     parser.add_argument('--message', default = 'None')
     parser.add_argument('--project_path', default = project_path)
     parser.add_argument('--input_path')
@@ -214,6 +215,9 @@ def getOpt (parser):
     #
     if args.reporting == False: paramDict['reporting'] = '0'
     else: paramDict['reporting'] = '1'
+    if args.printing_removed == False: paramDict['printing_removed'] = '0'
+    else: paramDict['printing_removed'] = '1'
+
     #
     if args.check_duplex == True: paramDict['check_duplex'] = 'True'
     else: paramDict['check_duplex'] = 'False'
