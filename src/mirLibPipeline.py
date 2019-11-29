@@ -462,7 +462,7 @@ if __name__ == '__main__' :
     print(datetime.datetime.now(), 'libresults=slim_rdd.collect()')#= BOTTLE NECK
 
 
-    if printing_removed = 1:
+    if printing_removed == 1:
       #print(datetime.datetime.now(), 'NB collapse_rdd: ', collapse_rdd.count(), '\t\tinput instances')
       set1 = collapse_rdd.map(lambda e: e[0]).collect()
       print(datetime.datetime.now(), 'set1\t\tinput instances', 'remaining NB = ', len(set1))
