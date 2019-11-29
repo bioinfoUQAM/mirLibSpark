@@ -108,6 +108,10 @@ if __name__ == '__main__' :
   check_duplex =  paramDict['check_duplex']
   #= cutoff for expression profile considering meyers variants
   varaints_profile_cutoff =  float(paramDict['variants_profile_cutoff'])
+  #= replicate validation for multi-libraries
+  replicate_validation =  int(paramDict['replicate_validation'])
+  repthreshold2122 =  int(paramDict['repthreshold2122'])
+  repthreshold2324 =  int(paramDict['repthreshold2324'])
 
   #= miRanda parameter
   target_file = paramDict['target_file']
@@ -586,7 +590,7 @@ if __name__ == '__main__' :
   #= make summary table of all libraries in one submission with expressions in the field
   keyword = appId + '_miRNAprediction_'
   infiles = [f for f in listdir(rep_output) if (os.path.isfile(os.path.join(rep_output, f)) and f.startswith(keyword))]
-  Precursor, distResultSmallRNA = utm.writeSummaryExpressionToFile (infiles, rep_output, appId)
+  Precursor, distResultSmallRNA = utm.writeSummaryExpressionToFile (infiles, rep_output, appId, replicate_validation, repthreshold2122, repthreshold2324)
 
   ### in : ( 'seq' )
   ### out: ( 'seq', zipindex)

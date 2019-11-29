@@ -69,6 +69,11 @@ def getOpt (parser):
     parser.add_argument('--mcheck_param', default='mey', choices=['def', 'mey', 'm18'])
     parser.add_argument('--check_duplex', action='store_true', help='if flag as true, make sure limit_s_freq = 1')
     parser.add_argument('--variants_profile_cutoff', default='0.75')
+    #
+    parser.add_argument('--replicate_validation', action='store_true', help='if input contains several libraries, possible to choose miRNA candidates based on their presence in multiple libraries (Meyers 2018 criteria).')
+    parser.add_argument('--repthreshold2122', default='1')
+    parser.add_argument('--repthreshold2324', default='3')
+    #
     parser.add_argument('--Max_Score_cutoff', default='170')
     parser.add_argument('--Max_Energy_cutoff', default='-15')
     parser.add_argument('--Gap_Penalty', default='-15')
@@ -217,7 +222,8 @@ def getOpt (parser):
     else: paramDict['reporting'] = '1'
     if args.printing_removed == False: paramDict['printing_removed'] = '0'
     else: paramDict['printing_removed'] = '1'
-
+    if args.--replicate_validation == False: paramDict['--replicate_validation'] = '0'
+    else: paramDict['--replicate_validation'] = '1'
     #
     if args.check_duplex == True: paramDict['check_duplex'] = 'True'
     else: paramDict['check_duplex'] = 'False'

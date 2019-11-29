@@ -168,7 +168,34 @@ def writeToFile (results, outfile):
       print(line, file=fh_out)
     fh_out.close()
 
-def writeSummaryExpressionToFile (infiles, rep_output, appId):
+##################
+def check_Length_and_binaryExpression (lenRNA, sumValues, repthreshold2122, repthreshold2324):
+  if lenRNA == 21 or lenRNA == 22:
+    if sumValues > repthreshold2122: return True
+    else: False
+  elif lenRNA == 23 or lenRNA == 24:
+    if sumValues > repthreshold2324: return True
+    else: False
+
+def parse_to_make_sum (infile, outfile, repthreshold2122, repthreshold2324):
+  count = 0
+  fh_out = open (outfile, "w")
+  with open (infile, "r") as fh:
+    for i in fh:
+      if count == 0:
+        print(i.rstrip("\n"), file=fh_out)
+        count += 1
+        continue
+      data = i.rstrip("\n").split("\t") #['TCGGACCAGGCTTCATCCCCC', '1', '1', ..., '1', '1']
+      sRNAseq = data[0]
+      sumValues = make_sum (data)
+      result = check_Length_and_binaryExpression (len(sRNAseq), sumValues, repthreshold2122, repthreshold2324)
+      if result == True: 
+        print(i.rstrip("\n"), file=fh_out)
+  fh_out.close()
+##################
+
+def writeSummaryExpressionToFile (infiles, rep_output, appId, replicate_validation, repthreshold2122, repthreshold2324):
   '''
   ## in : [miRNAseq, frq, nbLoc, strand, chromo, posChr, mkPred, mkStart, mkStop, preSeq, posMirPre, newfbstart, newfbstop, preFold, mpPred, mpScore, totalFrq]
   '''
@@ -270,7 +297,12 @@ def writeSummaryExpressionToFile (infiles, rep_output, appId):
   infile = outfile2
   outfile = infile[:-4] + '.txt'
   transpose_txt(infile, outfile)
-  os.remove(infile) 
+  os.remove(infile)
+
+  if replicate_validation == 1:
+    infile = outfile
+    outfile = infile[:-4] + '_replicate_validation.txt'
+    parse_to_make_sum (infile, outfile, repthreshold2122, repthreshold2324)
 
   return sorted(master_distinctPrecursor_infos), sorted(master_predicted_distinctMiRNAs)
 
