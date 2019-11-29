@@ -517,7 +517,7 @@ if __name__ == '__main__' :
 
       #print(datetime.datetime.now(), 'NB nbLoc_rdd: ', nbLoc_rdd.count(), '\t\t\tremoved sequences with numbers of genomic alignment >= ', limit_nbLoc)
       set8 = nbLoc_rdd.map(lambda e: e[0]).collect()
-      print(datetime.datetime.now(), 'set8\t\t\tremoved sequences with counts <= ', limit_mrna_freq, 'remaining NB = ', len(set8))
+      print(datetime.datetime.now(), 'set8\t\t\tremoved sequences with counts <= ', limit_mrna_freq, 'remaining NB = ', len(set(set8)))
       outfile = rep_output  +  appId + '_excludedItems_set8_' + inBasename + '.txt'
       data = list(set(set7)-set(set8))
       with open (outfile, 'w') as fh: 
@@ -525,7 +525,7 @@ if __name__ == '__main__' :
 
       #print(datetime.datetime.now(), 'excluKnownNon_rdd distinct: ', excluKnownNon_rdd.groupByKey().count(), '\tremoved sequences known for not being a miRNA (CDS|rRNA|snoRNA|snRNA|tRNA)')
       set9 = excluKnownNon_rdd.map(lambda e: e[0]).collect()
-      print(datetime.datetime.now(), 'set9\tremoved sequences known for not being a miRNA (CDS|rRNA|snoRNA|snRNA|tRNA)', 'remaining NB = ', len(set9))
+      print(datetime.datetime.now(), 'set9\tremoved sequences known for not being a miRNA (CDS|rRNA|snoRNA|snRNA|tRNA)', 'remaining NB = ', len(set(set9)))
       outfile = rep_output  +  appId + '_excludedItems_set9_' + inBasename + '.txt'
       data = list(set(set8)-set(set9))
       with open (outfile, 'w') as fh: 
@@ -533,7 +533,7 @@ if __name__ == '__main__' :
 
       #print(datetime.datetime.now(), 'NB pri_mircheck_rdd: ', pri_mircheck_rdd.groupByKey().count(), '\t\tremoved sequences failed mircheck')
       set10 = pri_mircheck_rdd.map(lambda e: e[0]).collect()
-      print(datetime.datetime.now(), 'set10\t\tremoved sequences failed mircheck', 'remaining NB = ', len(set10))
+      print(datetime.datetime.now(), 'set10\t\tremoved sequences failed mircheck', 'remaining NB = ', len(set(set10)))
       outfile = rep_output  +  appId + '_excludedItems_set10_' + inBasename + '.txt'
       data = list(set(set9)-set(set10))
       with open (outfile, 'w') as fh: 
