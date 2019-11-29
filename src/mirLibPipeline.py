@@ -14,10 +14,6 @@ Le programme implemente le pipeline d'analyse des sRAN et prediction des miRNAs.
   - 4 Repliement du precurseur
   - 5 prediction/validation du miRNA
   - 6 validaiton/filtrage avec l'expression
-
-#= programming note 181028:
-#= repartition(num) is better than partitionBy(num) because the latter we might consider segregating chromosomes. But the number of chrs are different in each species. So it is not easyo to say a number that suits everyone.
-
 '''
 
 from __future__ import print_function
@@ -109,6 +105,8 @@ if __name__ == '__main__' :
 
   #= check both miR and miR* exist (duplex rule)
   check_duplex =  paramDict['check_duplex']
+  #= cutoff for expression profile considering meyers variants
+  varaints_profile_cutoff =  float(paramDict['variants_profile_cutoff'])
 
   #= miRanda parameter
   target_file = paramDict['target_file']
@@ -289,7 +287,7 @@ if __name__ == '__main__' :
     #= Filtering, keep miRNA length = 21, 22, 23, 24
     ## in : ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
     ## out: ('seq', [freq, nbLoc, [['strd','chr',posChr],..]])
-    mr_meyers2018len_rdd = bowFrq_rdd.filter(lambda e: len(e[0]) < miRNA_len_upperlimit and len(e[0]) > miRNA_len_lowerlimit)
+    mr_meyers2018len_rdd = bowFrq_rdd.filter(lambda e: miRNA_len_lowerlimit < len(e[0]) < miRNA_len_upperlimit)
     if reporting == 1: print(datetime.datetime.now(), 'NB mr_meyers2018len_rdd: ', mr_meyers2018len_rdd.count(), '\tremoved sequences if length >= ', miRNA_len_upperlimit, 'and <=', miRNA_len_lowerlimit)
 
     #= Filtering miRNA low frequency
@@ -348,7 +346,8 @@ if __name__ == '__main__' :
                                    .filter(lambda e: any(e[1][3]))\
                                    .map(lambda e: (e[0] + e[1][2][0] + e[1][2][1] + str(e[1][2][2]) + e[1][3][4] + e[1][3][5], e)  )\
                                    .reduceByKey(lambda a, b: a)\
-                                   .map(lambda e: e[1])
+                                   .map(lambda e: e[1])\
+                                   .persist()
     if reporting == 1: print(datetime.datetime.now(), 'NB pri_mircheck_rdd: ', pri_mircheck_rdd.groupByKey().count(), '\t\tremoved sequences failed mircheck')
     print(datetime.datetime.now(), 'pri_mircheck_rdd') #= BOTTLE NECK
 
@@ -440,7 +439,7 @@ if __name__ == '__main__' :
       profile_value_rdd = profile_keyvalue_rdd.filter(lambda e: e[0] == chromo_strand)\
                                               .repartition(partition)\
                                               .map(lambda e: profile_obj.computeProfileFrq(e[1], broadcastVar_dict_bowtie_chromo_strand.value))\
-                                              .filter(lambda e: int(e[1][5].split(',')[1]) / (float(e[1][5].split(',')[0]) + 0.1) > 0.75)
+                                              .filter(lambda e: int(e[1][5].split(',')[1]) / (float(e[1][5].split(',')[0]) + 0.1) > varaints_profile_cutoff)
       if check_duplex == 'True':
         check_duplex_rdd = profile_value_rdd.filter(profile_obj.mir_mirstar_duplex(e[1], broadcastVar_dict_bowtie_chromo_strand.value))
       else: check_duplex_rdd = profile_value_rdd
@@ -450,7 +449,7 @@ if __name__ == '__main__' :
       #================================================================================================================
       #================================================================================================================
 
-    slim_rdd = mergeProfileChromo_rdd.map(mru.slimrule)
+    slim_rdd = mergeProfileChromo_rdd.map(mru.slimrule).persist()
 
 
     if reporting == 1: print(datetime.datetime.now(), 'NB slim_rdd NON distinct: ', slim_rdd.count(), '\t\tremoved sequences not dominating the expression within precursor range (expressions of their variants are considered)')
@@ -461,7 +460,7 @@ if __name__ == '__main__' :
     libresults = slim_rdd.collect()
     print(datetime.datetime.now(), 'libresults=slim_rdd.collect()')#= BOTTLE NECK
 
-    '''
+    #'''
     #================================================================================================================
     #================================================================================================================
     #================================================================================================================
@@ -567,7 +566,25 @@ if __name__ == '__main__' :
     data = list(set(set10)-set(set11))
     with open (outfile, 'w') as fh: 
       for i in data: print(i, file=fh)
-    '''
+
+
+    #print(datetime.datetime.now(), 'NB one_loop_rdd distinct : ', one_loop_rdd.groupByKey().count(), '\t\tremoved sequences with precursor second loop not satisfying meyers2018')
+    set12 = one_loop_rdd.groupByKey().map(lambda e: e[0]).collect()
+    print(datetime.datetime.now(), 'set12\t\tremoved sequences with precursor second loop not satisfying meyers2018, remaining NB = ', len(set12))
+    outfile = rep_output  +  appId + '_excludedItems_set12_' + inBasename + '.txt'
+    data = list(set(set11)-set(set12))
+    with open (outfile, 'w') as fh: 
+      for i in data: print(i, file=fh)
+
+    #print(datetime.datetime.now(), 'NB slim_rdd NON distinct: ', slim_rdd.count(), '\t\tremoved sequences not dominating the expression within precursor range (expressions of their variants are considered)')
+    set13 = slim_rdd.groupByKey().map(lambda e: e[0]).collect()
+    print(datetime.datetime.now(), 'set13\t\tremoved sequences whose expressions do not dominate within precursor range (expressions of their variants are considered), remaining NB = ', len(set13))
+    outfile = rep_output  +  appId + '_excludedItems_set13_' + inBasename + '.txt'
+    data = list(set(set12)-set(set13))
+    with open (outfile, 'w') as fh: 
+      for i in data: print(i, file=fh)
+
+    #'''
 
 
     endLib = time.time() 
@@ -635,9 +652,12 @@ if __name__ == '__main__' :
   mergeChromosomesResults_rdd.unpersist()
   broadcastVar_d_ncRNA_CDS.unpersist()
   bowFrq_rdd.unpersist()
+  pri_mircheck_rdd.unpersist()
   mergeProfileChromo_rdd.unpersist()
   broadcastVar_dict_bowtie_chromo_strand.unpersist()
   profile_keyvalue_rdd.unpersist()
+  slim_rdd.unpersist()
+
 
 
   #= end of spark context, stop to allow running multiple SparkContexts

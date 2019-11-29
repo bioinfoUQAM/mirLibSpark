@@ -67,6 +67,7 @@ def getOpt (parser):
     parser.add_argument('--temperature', default='25', help='Celsius')
     parser.add_argument('--mcheck_param', default='mey', choices=['def', 'mey', 'm18'])
     parser.add_argument('--check_duplex', action='store_true', help='if flag as true, make sure limit_s_freq = 1')
+    parser.add_argument('--variants_profile_cutoff', default='0.75')
     parser.add_argument('--Max_Score_cutoff', default='170')
     parser.add_argument('--Max_Energy_cutoff', default='-15')
     parser.add_argument('--Gap_Penalty', default='-15')
