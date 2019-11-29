@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=localspark.module
+#SBATCH --job-name=mirlibspark
 #SBATCH --time=00:10:00
 #
 #SBATCH --nodes=1
@@ -40,11 +40,13 @@ pip install --no-index -r requirements.txt
 
 #= JAVA memory allocation (space for else than RDD operations)
 export _JAVA_OPTIONS="-Xms3g -Xmx10g"
-#export SPARK_IDENT_STRING=$SLURM_JOBID
 #export SPARK_WORKER_DIR=$SLURM_TMPDIR
 
 
 spark-submit --master local[*] \
              --executor-memory ${SLURM_MEM_PER_NODE}M \
              ../src/mirLibPipeline.py \
-             --jobid ${SLURM_JOBID}
+             --jobid ${SLURM_JOBID} \
+             --printing_removed \
+             --check_duplex \
+             --variants_profile_cutoff 0.75
