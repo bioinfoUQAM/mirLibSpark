@@ -472,84 +472,96 @@ if __name__ == '__main__' :
       print(datetime.datetime.now(), 'set2', 'remaining NB = ', len(set2))
       outfile = rep_output  +  appId + '_excludedItems_set2_' + inBasename + '.txt'
       data = list(set(set1)-set(set2))
-      with open (outfile, 'w') as fh: for i in data: print(i, file=fh)
+      with open (outfile, 'w') as fh: 
+        for i in data: print(i, file=fh)
 
       #print(datetime.datetime.now(), 'NB sr_short_rdd: ', sr_short_rdd.count(), '\t\tremoved short sequences if length <=', limit_len)
       set3 = sr_short_rdd.map(lambda e: e[0]).collect()
       print(datetime.datetime.now(), 'set3\t\tremoved low expression if counts <=', limit_srna_freq, 'remaining NB = ', len(set3))
       outfile = rep_output  +  appId + '_excludedItems_set3_' + inBasename + '.txt'
       data = list(set(set2)-set(set3))
-      with open (outfile, 'w') as fh: for i in data: print(i, file=fh)
+      with open (outfile, 'w') as fh: 
+        for i in data: print(i, file=fh)
 
       #print(datetime.datetime.now(), 'NB dmask_rdd: ', dmask_rdd.count(), '\t\t\tremoved low complexity sequences by dustmasker')
       set4 = dmask_rdd.collect()
       print(datetime.datetime.now(), 'set4', 'remaining NB = ', len(set4))
       outfile = rep_output  +  appId + '_excludedItems_set4_' + inBasename + '.txt'
       data = list(set(set3)-set(set4))
-      with open (outfile, 'w') as fh: for i in data: print(i, file=fh)
+      with open (outfile, 'w') as fh: 
+        for i in data: print(i, file=fh)
 
       #print(datetime.datetime.now(), 'NB mergebowtie_rdd: ', mergebowtie_rdd.count(), '\t\tremoved sequences failed genomic alignment')
       set5 = mergebowtie_rdd.map(lambda e: e[0]).collect()
       print(datetime.datetime.now(), 'set5\t\t\tremoved low complexity sequences by dustmasker', 'remaining NB = ', len(set5))
       outfile = rep_output  +  appId + '_excludedItems_set5_' + inBasename + '.txt'
       data = list(set(set4)-set(set5))
-      with open (outfile, 'w') as fh: for i in data: print(i, file=fh)
+      with open (outfile, 'w') as fh: 
+        for i in data: print(i, file=fh)
 
       #print(datetime.datetime.now(), 'NB mr_meyers2018len_rdd: ', mr_meyers2018len_rdd.count(), '\tremoved sequences if length >= ', miRNA_len_upperlimit, 'and <=', miRNA_len_lowerlimit)
       set6 = mr_meyers2018len_rdd.map(lambda e: e[0]).collect()
       print(datetime.datetime.now(), 'set6\tremoved sequences if length >= ', miRNA_len_upperlimit, 'and <=', miRNA_len_lowerlimit, 'remaining NB = ', len(set6))
       outfile = rep_output  +  appId + '_excludedItems_set6_' + inBasename + '.txt'
       data = list(set(set5)-set(set6))
-      with open (outfile, 'w') as fh: for i in data: print(i, file=fh)
+      with open (outfile, 'w') as fh: 
+        for i in data: print(i, file=fh)
 
       #print(datetime.datetime.now(), 'NB mr_low_rdd: ', mr_low_rdd.count(), '\t\t\tremoved sequences with counts <= ', limit_mrna_freq)
       set7 = mr_low_rdd.map(lambda e: e[0]).collect()
       print(datetime.datetime.now(), 'set7', 'remaining NB = ', len(set7))
       outfile = rep_output  +  appId + '_excludedItems_set7_' + inBasename + '.txt'
       data = list(set(set6)-set(set7))
-      with open (outfile, 'w') as fh: for i in data: print(i, file=fh)
+      with open (outfile, 'w') as fh: 
+        for i in data: print(i, file=fh)
 
       #print(datetime.datetime.now(), 'NB nbLoc_rdd: ', nbLoc_rdd.count(), '\t\t\tremoved sequences with numbers of genomic alignment >= ', limit_nbLoc)
       set8 = nbLoc_rdd.map(lambda e: e[0]).collect()
       print(datetime.datetime.now(), 'set8\t\t\tremoved sequences with counts <= ', limit_mrna_freq, 'remaining NB = ', len(set8))
       outfile = rep_output  +  appId + '_excludedItems_set8_' + inBasename + '.txt'
       data = list(set(set7)-set(set8))
-      with open (outfile, 'w') as fh: for i in data: print(i, file=fh)
+      with open (outfile, 'w') as fh: 
+        for i in data: print(i, file=fh)
 
       #print(datetime.datetime.now(), 'excluKnownNon_rdd distinct: ', excluKnownNon_rdd.groupByKey().count(), '\tremoved sequences known for not being a miRNA (CDS|rRNA|snoRNA|snRNA|tRNA)')
       set9 = excluKnownNon_rdd.map(lambda e: e[0]).collect()
       print(datetime.datetime.now(), 'set9\tremoved sequences known for not being a miRNA (CDS|rRNA|snoRNA|snRNA|tRNA)', 'remaining NB = ', len(set9))
       outfile = rep_output  +  appId + '_excludedItems_set9_' + inBasename + '.txt'
       data = list(set(set8)-set(set9))
-      with open (outfile, 'w') as fh: for i in data: print(i, file=fh)
+      with open (outfile, 'w') as fh: 
+        for i in data: print(i, file=fh)
 
       #print(datetime.datetime.now(), 'NB pri_mircheck_rdd: ', pri_mircheck_rdd.groupByKey().count(), '\t\tremoved sequences failed mircheck')
       set10 = pri_mircheck_rdd.map(lambda e: e[0]).collect()
       print(datetime.datetime.now(), 'set10\t\tremoved sequences failed mircheck', 'remaining NB = ', len(set10))
       outfile = rep_output  +  appId + '_excludedItems_set10_' + inBasename + '.txt'
       data = list(set(set9)-set(set10))
-      with open (outfile, 'w') as fh: for i in data: print(i, file=fh)
+      with open (outfile, 'w') as fh: 
+        for i in data: print(i, file=fh)
 
       #print(datetime.datetime.now(), 'NB len300_rdd: ', len300_rdd.groupByKey().count(), '\t\tremoved sequences with precursor length >= ', premirna_max_len)
       set11 = len300_rdd.groupByKey().map(lambda e: e[0]).collect()
       print(datetime.datetime.now(), 'set11\t\tremoved sequences with precursor length >= ', premirna_max_len, 'remaining NB = ', len(set11))
       outfile = rep_output  +  appId + '_excludedItems_set11_' + inBasename + '.txt'
       data = list(set(set10)-set(set11))
-      with open (outfile, 'w') as fh: for i in data: print(i, file=fh)
+      with open (outfile, 'w') as fh: 
+        for i in data: print(i, file=fh)
 
       #print(datetime.datetime.now(), 'NB one_loop_rdd distinct : ', one_loop_rdd.groupByKey().count(), '\t\tremoved sequences with precursor second loop not satisfying meyers2018')
       set12 = one_loop_rdd.groupByKey().map(lambda e: e[0]).collect()
       print(datetime.datetime.now(), 'set12\t\tremoved sequences with precursor second loop not satisfying meyers2018, remaining NB = ', len(set12))
       outfile = rep_output  +  appId + '_excludedItems_set12_' + inBasename + '.txt'
       data = list(set(set11)-set(set12))
-      with open (outfile, 'w') as fh: for i in data: print(i, file=fh)
+      with open (outfile, 'w') as fh: 
+        for i in data: print(i, file=fh)
 
       #print(datetime.datetime.now(), 'NB slim_rdd NON distinct: ', slim_rdd.count(), '\t\tremoved sequences not dominating the expression within precursor range (expressions of their variants are considered)')
       set13 = slim_rdd.groupByKey().map(lambda e: e[0]).collect()
       print(datetime.datetime.now(), 'set13\t\tremoved sequences whose expressions do not dominate within precursor range (expressions of their variants are considered), remaining NB = ', len(set13))
       outfile = rep_output  +  appId + '_excludedItems_set13_' + inBasename + '.txt'
       data = list(set(set12)-set(set13))
-      with open (outfile, 'w') as fh: for i in data: print(i, file=fh)
+      with open (outfile, 'w') as fh: 
+        for i in data: print(i, file=fh)
 
 
     endLib = time.time() 
