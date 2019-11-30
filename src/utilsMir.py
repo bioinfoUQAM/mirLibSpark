@@ -171,7 +171,7 @@ def writeToFile (results, outfile):
 ##################
 def make_sum (data):
     sumValues = 0
-    for j in data[1:]:
+    for j in data[1:-1]:
       sumValues += int(j)
     return sumValues
 
