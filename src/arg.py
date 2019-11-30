@@ -223,7 +223,7 @@ def getOpt (parser):
     if args.printing_removed == False: paramDict['printing_removed'] = '0'
     else: paramDict['printing_removed'] = '1'
     if args.replicate_validation == False: paramDict['replicate_validation'] = '0'
-    else: paramDict['--replicate_validation'] = '1'
+    else: paramDict['replicate_validation'] = '1'
     #
     if args.check_duplex == True: paramDict['check_duplex'] = 'True'
     else: paramDict['check_duplex'] = 'False'
