@@ -169,6 +169,12 @@ def writeToFile (results, outfile):
     fh_out.close()
 
 ##################
+def make_sum (data):
+    sumValues = 0
+    for j in data[1:]:
+      sumValues += int(j)
+    return sumValues
+
 def check_Length_and_binaryExpression (lenRNA, sumValues, repthreshold2122, repthreshold2324):
   if lenRNA == 21 or lenRNA == 22:
     if sumValues > repthreshold2122: return True
