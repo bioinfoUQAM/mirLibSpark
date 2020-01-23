@@ -308,11 +308,11 @@ class prog_mirCheck ():
     
     mirCheck_results = self.run_mirCheck(folding, pos_miRNA_start, pos_miRNA_stop)
     
-    if 'prime' in mirCheck_results[0]:
-      elem[1][field].extend(mirCheck_results)
-    else :
-      del elem[1][field][:]
-      
+    #if 'prime' in mirCheck_results[0]:
+    #  elem[1][field].extend(mirCheck_results)
+    #else :
+    #  del elem[1][field][:]
+    elem[1][field].extend(mirCheck_results)
     return elem
 
 class prog_dominant_profile () :
