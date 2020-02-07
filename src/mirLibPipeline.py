@@ -153,7 +153,7 @@ if __name__ == '__main__' :
   rnafold_obj = mru.prog_RNAfold(temperature)
   mircheck_obj = mru.prog_mirCheck(mcheck_param, project_path)
   mirdup_obj = mru.prog_miRdup (rep_tmp, mirdup_model, mirdup_jar, path_RNAfold)
-  profile_obj = mru.prog_dominant_profile(pre_flank)
+  profile_obj = mru.prog_dominant_profile()
   miranda_obj = mru.prog_miRanda(Max_Score_cutoff, Max_Energy_cutoff, target_file, rep_tmp, miranda_binary, Gap_Penalty, nbTargets)
 
 
