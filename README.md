@@ -28,7 +28,11 @@ __BibTex__:
 
 Link to download the paper: https://dl.acm.org/citation.cfm?id=3343463
 
-
+### Branches:
+`master`: the version used in ACMBCB-ParBiopaper
+`meyers18criteria`: pipeline fullfill meyers18 criteria
+`reportRemoved`: based on meyers18criteria branch, report all filters rejcting reasons step by step.
+`checkreason`: based on meyers18criteria branch, report MIRcheck rejecting reasons, and MIRcheck not filtering
 
 ### Dependencies:
 __Languages__: `python2` (scipy, statsmodels), `perl`, `java`
