@@ -286,11 +286,11 @@ if __name__ == '__main__' :
       ## out: ('seq', [nbLoc, [['strd','chr',posChr],..]])
       bowtie_rdd = dmask_rdd.map(lambda e: " "+e)\
                             .pipe(bowtie_cmd, bowtie_env)\
-                            .map(bowtie_obj.bowtie_rearrange_map)\
-                            .groupByKey()\
-                            .map(lambda e: (e[0], [len(list(e[1])), list(e[1])]))
+                            .map(bowtie_obj.bowtie_rearrange_map)
       mergebowtie_rdd = mergebowtie_rdd.union(bowtie_rdd)\
                                        .persist()
+    mergebowtie_rdd = mergebowtie_rdd.groupByKey()\
+                                     .map(lambda e: (e[0], [len(list(e[1])), list(e[1])]))
       #================================================================================================================
       #================================================================================================================
     if reporting == 1: print(datetime.datetime.now(), 'NB mergebowtie_rdd: ', mergebowtie_rdd.count(), '\t\tremoved sequences failed genomic alignment')

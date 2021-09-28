@@ -1,3 +1,5 @@
+workdir/*.err
+workdir/*.out
 */genome/
 .DS_Store
 input*/
